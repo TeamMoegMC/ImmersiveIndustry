@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "immersiveindustry:block/multiblocks/crucible_cup",
+    "side": "immersiveindustry:block/multiblocks/crucible_cup"
+  },
+  "loader": "forge:obj",
+  "model": "immersiveindustry:models/block/multiblocks/crucible.obj",
+  "detectCullableFaces": false,
+  "flip-v": true
+}

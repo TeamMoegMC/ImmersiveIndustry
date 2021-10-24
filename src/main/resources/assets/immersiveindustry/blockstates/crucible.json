@@ -1,0 +1,42 @@
+{
+  "variants": {
+    "facing=north,lit=false": {
+      "model": "immersiveindustry:block/multiblocks/crucible_split",
+      "uvlock": true
+    },
+    "facing=south,lit=false": {
+      "model": "immersiveindustry:block/multiblocks/crucible_split",
+      "y": 180,
+      "uvlock": true
+    },
+    "facing=west,lit=false": {
+      "model": "immersiveindustry:block/multiblocks/crucible_split",
+      "y": 270,
+      "uvlock": true
+    },
+    "facing=east,lit=false": {
+      "model": "immersiveindustry:block/multiblocks/crucible_split",
+      "y": 90,
+      "uvlock": true
+    },
+    "facing=north,lit=true": {
+      "model": "immersiveindustry:block/multiblocks/crucible_lit_split",
+      "uvlock": true
+    },
+    "facing=south,lit=true": {
+      "model": "immersiveindustry:block/multiblocks/crucible_lit_split",
+      "y": 180,
+      "uvlock": true
+    },
+    "facing=west,lit=true": {
+      "model": "immersiveindustry:block/multiblocks/crucible_lit_split",
+      "y": 270,
+      "uvlock": true
+    },
+    "facing=east,lit=true": {
+      "model": "immersiveindustry:block/multiblocks/crucible_lit_split",
+      "y": 90,
+      "uvlock": true
+    }
+  }
+}
