@@ -215,9 +215,28 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
         if (!world.isRemote && formed && !isDummy()) {
             CrucibleRecipe recipe = getRecipe();
             updatetick++;
-            if (temperature > 0 && updatetick > 10) {
-                updatetick = 0;
-                this.markContainingBlockForUpdate(null);
+            if (updatetick > 10) {
+                final boolean activeBeforeTick = getIsActive();
+                if (temperature > 0) {
+                    updatetick = 0;
+                    this.markContainingBlockForUpdate(null);
+                    if (!activeBeforeTick)
+                        setActive(true);
+                } else if (activeBeforeTick)
+                    setActive(false);
+                final boolean activeAfterTick = getIsActive();
+                if (activeBeforeTick != activeAfterTick) {
+                    this.markDirty();
+                    // scan 3x4x3
+                    for (int x = 0; x < 3; ++x)
+                        for (int y = 0; y < 4; ++y)
+                            for (int z = 0; z < 3; ++z) {
+                                BlockPos actualPos = getBlockPosForPos(new BlockPos(x, y, z));
+                                TileEntity te = Utils.getExistingTileEntity(world, actualPos);
+                                if (te instanceof CrucibleTileEntity)
+                                    ((CrucibleTileEntity) te).setActive(activeAfterTick);
+                            }
+                }
             }
             if (burnTime > 0 && temperature < 1600) {
                 temperature++;
@@ -235,7 +254,6 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
             }
             if (temperature > 1500) {
                 int blast = getFromPreheater(BlastFurnacePreheaterTileEntity::doSpeedup, 0);
-                final boolean activeBeforeTick = getIsActive();
                 if (process > 0) {
                     if (inventory.get(0).isEmpty()) {
                         process = 0;
@@ -252,8 +270,6 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                     }
                     this.markContainingBlockForUpdate(null);
                 } else {
-
-                    if (activeBeforeTick) {
                         if (recipe != null) {
                             Utils.modifyInvStackSize(inventory, 0, -recipe.input.getCount());
                             Utils.modifyInvStackSize(inventory, 1, -recipe.input2.getCount());
@@ -263,26 +279,10 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                                 inventory.set(2, recipe.output.copy());
                         }
                         processMax = 0;
-                        setActive(false);
-                    }
                     if (recipe != null) {
                         this.process = recipe.time;
                         this.processMax = process;
-                        setActive(true);
                     }
-                }
-                final boolean activeAfterTick = getIsActive();
-                if (activeBeforeTick != activeAfterTick) {
-                    this.markDirty();
-                    // scan 3x4x3
-                    for (int x = 0; x < 3; ++x)
-                        for (int y = 0; y < 4; ++y)
-                            for (int z = 0; z < 3; ++z) {
-                                BlockPos actualPos = getBlockPosForPos(new BlockPos(x, y, z));
-                                TileEntity te = Utils.getExistingTileEntity(world, actualPos);
-                                if (te instanceof CrucibleTileEntity)
-                                    ((CrucibleTileEntity) te).setActive(activeAfterTick);
-                            }
                 }
             }
         }

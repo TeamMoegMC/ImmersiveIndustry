@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
@@ -89,6 +90,7 @@ public class IIRecipeReloadListener implements IResourceManagerReloadListener {
         if (recipes.size() == 0)
             return;
         CrucibleRecipe.recipeList = filterRecipes(recipes, CrucibleRecipe.class, CrucibleRecipe.TYPE);
+        ElectrolyzerRecipe.recipeList = filterRecipes(recipes, ElectrolyzerRecipe.class, ElectrolyzerRecipe.TYPE);
     }
 
     static <R extends IRecipe<?>> Map<ResourceLocation, R> filterRecipes(Collection<IRecipe<?>> recipes, Class<R> recipeClass, IRecipeType<R> recipeType) {

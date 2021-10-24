@@ -90,11 +90,14 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
         checkForNeedlessTicking();
 
         if (!world.isRemote && !isRSDisabled() && !tanks.getFluid().isEmpty()) {
+
             List<IEnergyStorage> presentOutputs = outputs.stream()
                     .map(CapabilityReference::getNullable)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
-            if (!presentOutputs.isEmpty() && EnergyHelper.distributeFlux(presentOutputs, 256, false) < 256) {
+            if (!presentOutputs.isEmpty() &&
+                    tanks.getFluidAmount() >= 64 &&
+                    EnergyHelper.distributeFlux(presentOutputs, 256, false) < 256) {
                 tanks.drain(64, IFluidHandler.FluidAction.EXECUTE);
             }
         }

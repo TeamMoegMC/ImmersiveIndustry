@@ -1,13 +1,14 @@
 {
-  "type": "immersiveindustry:crucible",
+  "type": "immersiveindustry:electrolyzer",
   "result": {
     "item": "immersiveengineering:ingot_steel"
   },
   "input": {
     "item": "minecraft:iron_ingot"
   },
-  "input2": {
-    "item": "kubejs:flux"
+  "fluid": {
+    "tag": "minecraft:water",
+    "amount": 1
   },
   "time": 1200
 }

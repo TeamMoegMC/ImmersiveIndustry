@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableSet;
 import com.teammoeg.immersiveindustry.content.IIBaseBlock;
 import com.teammoeg.immersiveindustry.content.IIBlockItem;
 import com.teammoeg.immersiveindustry.content.crucible.*;
+import com.teammoeg.immersiveindustry.content.electrolyzer.*;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineBlock;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineMultiblock;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineTileEntity;
@@ -36,6 +37,7 @@ public class IIContent {
         public static void init() {
         }
 
+        public static Block electrolyzer = new ElectrolyzerBlock("electrolyzer", AbstractBlock.Properties.create(Material.IRON), IIBlockItem::new);
         public static Block burning_chamber = new IIBaseBlock("burning_chamber", AbstractBlock.Properties.create(Material.IRON), IIBlockItem::new);
     }
 
@@ -62,6 +64,9 @@ public class IIContent {
         public static final RegistryObject<TileEntityType<SteamTurbineTileEntity>> STEAMTURBINE = REGISTER.register(
                 "steam_turbine", makeType(() -> new SteamTurbineTileEntity(), () -> IIMultiblocks.steam_turbine)
         );
+        public static final RegistryObject<TileEntityType<ElectrolyzerTileEntity>> ELECTROLYZER = REGISTER.register(
+                "electrolyzer", makeType(() -> new ElectrolyzerTileEntity(), () -> IIBlocks.electrolyzer)
+        );
 
         private static <T extends TileEntity> Supplier<TileEntityType<T>> makeType(Supplier<T> create, Supplier<Block> valid) {
             return makeTypeMultipleBlocks(create, () -> ImmutableSet.of(valid.get()));
@@ -80,14 +85,17 @@ public class IIContent {
 
         static {
             CrucibleRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("crucible", CrucibleRecipeSerializer::new);
+            ElectrolyzerRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("electrolyzer", ElectrolyzerRecipeSerializer::new);
         }
 
         public static void registerRecipeTypes() {
             CrucibleRecipe.TYPE = IRecipeType.register(IIMain.MODID + ":crucible");
+            ElectrolyzerRecipe.TYPE = IRecipeType.register(IIMain.MODID + ":electrolyzer");
         }
     }
 
     public static void registerContainers() {
         GuiHandler.register(CrucibleTileEntity.class, new ResourceLocation(IIMain.MODID, "crucible"), CrucibleContainer::new);
+        GuiHandler.register(ElectrolyzerTileEntity.class, new ResourceLocation(IIMain.MODID, "electrolyzer"), ElectrolyzerContainer::new);
     }
 }

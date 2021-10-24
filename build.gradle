@@ -37,6 +37,10 @@ repositories {
         name = "DVS1 Maven FS"
         url = "https://dvs1.progwml6.com/files/maven"
     }
+	maven {
+        name = "teammoeg maven"
+        url = "http://server.teammoeg.com:8888/releases"
+    }
 }
 minecraft {
 
@@ -136,6 +140,12 @@ sourceSets {
             ]
         }
     }
+	datagen {
+        compileClasspath += main.compileClasspath
+        runtimeClasspath += main.runtimeClasspath
+        compileClasspath += main.output
+        runtimeClasspath += main.output
+    }
 }
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
@@ -143,6 +153,10 @@ dependencies {
 
     compile fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:1.16.5-5.0.0-135")
     implementation fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:1.16.5-5.0.0-135:datagen")
+	
+	compile fg.deobf('com.cannolicatfish:Project-Rankine:1.16.5-1.3')
+    implementation fg.deobf('com.cannolicatfish:Project-Rankine:1.16.5-1.3')
+
 
     compile fg.deobf("mezz.jei:jei-1.16.5:7.6.4.88")
 
@@ -178,6 +192,7 @@ def getPrivateString(String key) {
         return "NULL"
     }
 }
+
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
     archiveClassifier.set('javadoc')
