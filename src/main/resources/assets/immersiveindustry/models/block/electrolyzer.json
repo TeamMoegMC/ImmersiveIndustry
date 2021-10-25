@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "top": "immersiveindustry:block/electrolyzer_top",
+    "bottom": "immersiveindustry:block/electrolyzer_top",
+    "side": "immersiveindustry:block/electrolyzer_top",
+    "front": "immersiveindustry:block/electrolyzer"
+  }
+}

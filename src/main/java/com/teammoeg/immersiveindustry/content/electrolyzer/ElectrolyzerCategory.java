@@ -38,12 +38,10 @@ public class ElectrolyzerCategory<T extends ElectrolyzerRecipe> implements IReci
     public static ResourceLocation UID = new ResourceLocation(IIMain.MODID, "electrolyzer");
     private IDrawable BACKGROUND;
     private IDrawable ICON;
-    private IDrawable overlay;
 
     public ElectrolyzerCategory(IGuiHelper guiHelper) {
-        this.ICON = guiHelper.createDrawableIngredient(new ItemStack(IIContent.IIBlocks.burning_chamber));
-        this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/electrolyzer.png"), 19, 0, 130, 40);
-        this.overlay = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/container/electrolyzer.png"), 176, 0, 16, 71);
+        this.ICON = guiHelper.createDrawableIngredient(new ItemStack(IIContent.IIBlocks.electrolyzer));
+        this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/electrolyzer.png"), 17, 14, 115, 60);
     }
 
     @Override
@@ -84,12 +82,12 @@ public class ElectrolyzerCategory<T extends ElectrolyzerRecipe> implements IReci
         IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
         IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
         if (recipe.input_fluid != null) {
-            guiFluidStacks.init(0, true, 7, 10, 16, 47, FluidAttributes.BUCKET_VOLUME / 20, false, overlay);
-            guiFluidStacks.set(0, recipe.input_fluid.getMatchingFluidStacks());
+            guiFluidStacks.init(2, true, 4, 4, 16, 47, FluidAttributes.BUCKET_VOLUME / 20, false, null);
+            guiFluidStacks.set(2, recipe.input_fluid.getMatchingFluidStacks());
         }
-        guiItemStacks.init(0, true, 10, 10);
+        guiItemStacks.init(0, true, 33, 19);
 
-        guiItemStacks.init(1, false, 86, 10);
+        guiItemStacks.init(1, false, 89, 19);
 
         guiItemStacks.set(ingredients);
     }

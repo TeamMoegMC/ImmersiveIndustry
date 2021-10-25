@@ -18,6 +18,7 @@
 
 package com.teammoeg.immersiveindustry;
 
+import com.teammoeg.immersiveindustry.data.IIRecipeCachingReloadListener;
 import com.teammoeg.immersiveindustry.data.IIRecipeReloadListener;
 import net.minecraft.resources.DataPackRegistries;
 import net.minecraftforge.event.AddReloadListenerEvent;
@@ -33,4 +34,9 @@ public class ForgeEvents {
         event.addListener(new IIRecipeReloadListener(dataPackRegistries));
     }
 
+    @SubscribeEvent
+    public static void addReloadListenersLowest(AddReloadListenerEvent event) {
+        DataPackRegistries dataPackRegistries = event.getDataPackRegistries();
+        event.addListener(new IIRecipeCachingReloadListener(dataPackRegistries));
+    }
 }

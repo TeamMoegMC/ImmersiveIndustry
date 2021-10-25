@@ -13,7 +13,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import javax.annotation.Nonnull;
 
 
-@Mod("immersiveindustry")
+@Mod(IIMain.MODID)
 public class IIMain {
     public static final String MODID = "immersiveindustry";
     public static final String MODNAME = "Immersive Industry";

@@ -1,7 +1,9 @@
 {
   "itemGroup.immersiveindustry": "沉浸工业",
   "block.immersiveindustry.burning_chamber": "燃烧室",
+  "block.immersiveindustry.electrolyzer": "电解机",
   "block.immersiveindustry.crucible": "炼钢坩埚",
   "block.immersiveindustry.steam_turbine": "工业蒸汽轮机",
-  "gui.jei.category.immersiveindustry.crucible": "炼钢坩埚"
+  "gui.jei.category.immersiveindustry.crucible": "炼钢坩埚",
+  "gui.jei.category.immersiveindustry.electrolyzer": "电解机"
 }

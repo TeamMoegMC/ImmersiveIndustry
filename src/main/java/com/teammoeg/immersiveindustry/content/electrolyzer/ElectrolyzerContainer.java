@@ -30,14 +30,14 @@ public class ElectrolyzerContainer extends IEBaseContainer<ElectrolyzerTileEntit
         super(inventoryPlayer, tile, id);
 
         // input
-        this.addSlot(new IESlot(this, this.inv, 0, 51, 48) {
+        this.addSlot(new IESlot(this, this.inv, 0, 51, 34) {
             @Override
             public boolean isItemValid(ItemStack itemStack) {
                 return ElectrolyzerRecipe.isValidRecipeInput(itemStack);
             }
         });
         // output
-        this.addSlot(new IESlot.Output(this, this.inv, 1, 107, 48));
+        this.addSlot(new IESlot.Output(this, this.inv, 1, 107, 34));
         // input fuel
         slotCount = 2;
 
