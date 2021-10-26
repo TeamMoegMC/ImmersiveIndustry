@@ -269,19 +269,18 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                         }
                     }
                     this.markContainingBlockForUpdate(null);
-                } else {
-                        if (recipe != null) {
-                            Utils.modifyInvStackSize(inventory, 0, -recipe.input.getCount());
-                            Utils.modifyInvStackSize(inventory, 1, -recipe.input2.getCount());
-                            if (!inventory.get(2).isEmpty())
-                                inventory.get(2).grow(recipe.output.copy().getCount());
-                            else if (inventory.get(2).isEmpty())
-                                inventory.set(2, recipe.output.copy());
-                        }
-                        processMax = 0;
-                    if (recipe != null) {
+                } else if (recipe != null) {
+                    if (processMax == 0) {
                         this.process = recipe.time;
                         this.processMax = process;
+                    } else {
+                        Utils.modifyInvStackSize(inventory, 0, -recipe.input.getCount());
+                        Utils.modifyInvStackSize(inventory, 1, -recipe.input2.getCount());
+                        if (!inventory.get(2).isEmpty())
+                            inventory.get(2).grow(recipe.output.copy().getCount());
+                        else if (inventory.get(2).isEmpty())
+                            inventory.set(2, recipe.output.copy());
+                        processMax = 0;
                     }
                 }
             }

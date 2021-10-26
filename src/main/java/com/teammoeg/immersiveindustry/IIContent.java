@@ -13,6 +13,7 @@ import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineMultibloc
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineTileEntity;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -20,6 +21,7 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -37,8 +39,8 @@ public class IIContent {
         public static void init() {
         }
 
-        public static Block electrolyzer = new ElectrolyzerBlock("electrolyzer", AbstractBlock.Properties.create(Material.IRON), IIBlockItem::new);
-        public static Block burning_chamber = new IIBaseBlock("burning_chamber", AbstractBlock.Properties.create(Material.IRON), IIBlockItem::new);
+        public static Block electrolyzer = new ElectrolyzerBlock("electrolyzer", IIProps.METALProps, IIBlockItem::new);
+        public static Block burning_chamber = new IIBaseBlock("burning_chamber", IIProps.METALProps, IIBlockItem::new);
     }
 
     public static class IIMultiblocks {
@@ -97,5 +99,17 @@ public class IIContent {
     public static void registerContainers() {
         GuiHandler.register(CrucibleTileEntity.class, new ResourceLocation(IIMain.MODID, "crucible"), CrucibleContainer::new);
         GuiHandler.register(ElectrolyzerTileEntity.class, new ResourceLocation(IIMain.MODID, "electrolyzer"), ElectrolyzerContainer::new);
+    }
+
+    public static class IIProps {
+        public static void init() {
+        }
+
+        public static final AbstractBlock.Properties METALProps = AbstractBlock.Properties
+                .create(Material.IRON)
+                .sound(SoundType.METAL)
+                .setRequiresTool()
+                .harvestTool(ToolType.PICKAXE)
+                .hardnessAndResistance(2, 10);
     }
 }

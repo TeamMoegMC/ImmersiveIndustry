@@ -73,7 +73,7 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
     public static ElectrolyzerRecipe findRecipe(ItemStack input, FluidStack input_fluid) {
         for (ElectrolyzerRecipe recipe : recipeList.values())
             if (recipe != null && recipe.input.test(input))
-                if (recipe.input_fluid.testIgnoringAmount(input_fluid))
+                if (recipe.input_fluid.test(input_fluid))
                     return recipe;
         return null;
     }

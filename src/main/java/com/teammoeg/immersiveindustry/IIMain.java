@@ -28,9 +28,10 @@ public class IIMain {
     public IIMain() {
         IEventBus mod = FMLJavaModLoadingContext.get().getModEventBus();
         mod.addListener(this::setup);
+        IIConfig.register();
+        IIContent.IIProps.init();
         IIContent.IIBlocks.init();
         IIContent.IIMultiblocks.init();
-
         IIContent.registerContainers();
         IIContent.IITileTypes.REGISTER.register(mod);
         IIContent.IIRecipes.RECIPE_SERIALIZERS.register(mod);

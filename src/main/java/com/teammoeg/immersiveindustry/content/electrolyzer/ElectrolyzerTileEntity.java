@@ -1,11 +1,16 @@
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
+import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ItemStackHelper;
@@ -18,6 +23,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -27,16 +33,18 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInventory,
+public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInventory, EnergyHelper.IIEInternalFluxHandler,
         ITickableTileEntity, IEBlockInterfaces.IProcessTile, IEBlockInterfaces.IStateBasedDirectional, IEBlockInterfaces.IInteractionObjectIE {
     public int process = 0;
     public int processMax = 0;
+    public final int energyConsume;
     public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(20000);
     public FluidTank tank = new FluidTank(8 * FluidAttributes.BUCKET_VOLUME, ElectrolyzerRecipe::isValidRecipeFluid);
     private NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 
     public ElectrolyzerTileEntity() {
         super(IIContent.IITileTypes.ELECTROLYZER.get());
+        energyConsume = IIConfig.COMMON.electrolyzerConsume.get();
     }
 
     @Override
@@ -59,7 +67,58 @@ public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInven
 
     @Override
     public void tick() {
+        if (!world.isRemote) {
+            if (energyStorage.getEnergyStored() >= energyConsume) {
+                ElectrolyzerRecipe recipe = getRecipe();
+                if (process > 0) {
+                    if (inventory.get(0).isEmpty()) {
+                        process = 0;
+                        processMax = 0;
+                    }
+                    // during process
+                    else {
+                        if (recipe == null || recipe.time != processMax) {
+                            process = 0;
+                            processMax = 0;
+                        } else {
+                            process--;
+                            energyStorage.extractEnergy(energyConsume, false);
+                        }
+                    }
+                    this.markContainingBlockForUpdate(null);
+                } else if (recipe != null) {
+                    if (processMax == 0) {
+                        this.process = recipe.time;
+                        this.processMax = process;
+                    } else {
+                        Utils.modifyInvStackSize(inventory, 0, -recipe.input.getCount());
+                        tank.drain(recipe.input_fluid.getAmount(), IFluidHandler.FluidAction.EXECUTE);
+                        if (!inventory.get(1).isEmpty())
+                            inventory.get(1).grow(recipe.output.copy().getCount());
+                        else if (inventory.get(1).isEmpty())
+                            inventory.set(1, recipe.output.copy());
+                        processMax = 0;
+                    }
+                }
+            } else if (process > 0) {
+                process = processMax;
+                this.markContainingBlockForUpdate(null);
+            }
+        }
+    }
 
+    @Nullable
+    public ElectrolyzerRecipe getRecipe() {
+        if (inventory.get(0).isEmpty())
+            return null;
+        ElectrolyzerRecipe recipe = ElectrolyzerRecipe.findRecipe(inventory.get(0), tank.getFluid());
+        if (recipe == null)
+            return null;
+        if (inventory.get(1).isEmpty() || (ItemStack.areItemsEqual(inventory.get(1), recipe.output) &&
+                inventory.get(1).getCount() + recipe.output.getCount() <= getSlotLimit(1))) {
+            return recipe;
+        }
+        return null;
     }
 
     @Override
@@ -72,7 +131,8 @@ public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInven
         return new int[]{processMax};
     }
 
-    LazyOptional<IFluidHandler> fluidHandler = LazyOptional.of(() -> tank);
+
+    public LazyOptional<IFluidHandler> fluidHandler = registerConstantCap(new FluidHandler(this));
     LazyOptional<IItemHandler> invHandler = registerConstantCap(
             new IEInventoryHandler(2, this, 0, new boolean[]{true, false},
                     new boolean[]{false, true})
@@ -86,6 +146,86 @@ public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInven
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
             return invHandler.cast();
         return super.getCapability(capability, facing);
+    }
+
+    @Nonnull
+    @Override
+    public FluxStorage getFluxStorage() {
+        return energyStorage;
+    }
+
+    @Nonnull
+    @Override
+    public IEEnums.IOSideConfig getEnergySideConfig(@Nullable Direction facing) {
+        return IEEnums.IOSideConfig.INPUT;
+    }
+
+    EnergyHelper.IEForgeEnergyWrapper wrapper = new EnergyHelper.IEForgeEnergyWrapper(this, null);
+
+    @Nullable
+    @Override
+    public EnergyHelper.IEForgeEnergyWrapper getCapabilityWrapper(Direction facing) {
+        return wrapper;
+    }
+
+    static class FluidHandler implements IFluidHandler {
+        ElectrolyzerTileEntity tile;
+
+        @Nullable
+        FluidHandler(ElectrolyzerTileEntity tile) {
+            this.tile = tile;
+        }
+
+        @Override
+        public int fill(FluidStack resource, FluidAction doFill) {
+            if (resource == null)
+                return 0;
+
+            int i = tile.tank.fill(resource, doFill);
+            if (i > 0) {
+                tile.markDirty();
+                tile.markContainingBlockForUpdate(null);
+            }
+            return i;
+        }
+
+        @Override
+        public FluidStack drain(FluidStack resource, FluidAction doDrain) {
+            if (resource == null)
+                return FluidStack.EMPTY;
+            return this.drain(resource.getAmount(), doDrain);
+        }
+
+        @Override
+        public FluidStack drain(int maxDrain, FluidAction doDrain) {
+            FluidStack f = tile.tank.drain(maxDrain, doDrain);
+            if (!f.isEmpty()) {
+                tile.markDirty();
+                tile.markContainingBlockForUpdate(null);
+            }
+            return f;
+        }
+
+        @Override
+        public int getTanks() {
+            return 1;
+        }
+
+        @Nonnull
+        @Override
+        public FluidStack getFluidInTank(int tank) {
+            return tile.tank.getFluidInTank(tank);
+        }
+
+        @Override
+        public int getTankCapacity(int tank) {
+            return tile.tank.getTankCapacity(tank);
+        }
+
+        @Override
+        public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+            return tile.tank.isFluidValid(tank, stack);
+        }
     }
 
     @Nullable
