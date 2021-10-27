@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import com.google.common.collect.ImmutableSet;
+import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
@@ -53,11 +54,13 @@ import java.util.stream.Collectors;
 public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbineTileEntity> implements IEBlockInterfaces.IBlockBounds {
     public FluidTank tanks = new FluidTank(24 * FluidAttributes.BUCKET_VOLUME);
     public boolean active = false;
+    public final int energy;
     public static Fluid steam = ForgeRegistries.FLUIDS.getValue(new ResourceLocation("steampowered", "steam"));
 
     //public static Fluid steam = Fluids.WATER;
     public SteamTurbineTileEntity() {
         super(IIContent.IIMultiblocks.STEAMTURBINE, IIContent.IITileTypes.STEAMTURBINE.get(), true);
+        this.energy = IIConfig.COMMON.steamTurbineGenerator.get();
     }
 
     @Override
@@ -97,7 +100,7 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
                     .collect(Collectors.toList());
             if (!presentOutputs.isEmpty() &&
                     tanks.getFluidAmount() >= 64 &&
-                    EnergyHelper.distributeFlux(presentOutputs, 256, false) < 256) {
+                    EnergyHelper.distributeFlux(presentOutputs, energy, false) < energy) {
                 tanks.drain(64, IFluidHandler.FluidAction.EXECUTE);
             }
         }
