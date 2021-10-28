@@ -1,14 +1,14 @@
 modLoader = "javafml" #mandatory
 loaderVersion = "[36,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
 license = "GPLv3"
-issueTrackerURL = "https://github.com/TeamMoegMC"
+issueTrackerURL = "https://github.com/TeamMoegMC/ImmersiveIndustry/issues"
 [[mods]] #mandatory
 modId = "immersiveindustry" #mandatory
-version = "1.16.5-0.1" #mandatory
+version = "1.16.5-0.1.0" #mandatory
 displayName = "Immersive Industry" #mandatory
-authors = "[TeamMoeg] dashuaibia"
+authors = "[TeamMoeg] dashuaibia YueSha"
 description = '''
-Some heat in the cold...
+Introduce more various process and energy production machines to Immersive Engineering.
 '''
 [[dependencies.immersiveindustry]]
     modId = "forge"
