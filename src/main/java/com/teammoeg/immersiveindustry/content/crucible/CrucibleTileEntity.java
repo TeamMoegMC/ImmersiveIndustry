@@ -239,7 +239,10 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                 }
             }
             if (burnTime > 0 && temperature < 1600) {
-                temperature++;
+                if (getFromPreheater(BlastFurnacePreheaterTileEntity::doSpeedup, 0) > 0)
+                    temperature++;
+                else if (temperature < 1200)
+                    temperature++;
             } else if (burnTime <= 0 && temperature > 0) {
                 temperature--;
             }
@@ -252,8 +255,7 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                     this.markDirty();
                 }
             }
-            if (temperature > 1500) {
-                int blast = getFromPreheater(BlastFurnacePreheaterTileEntity::doSpeedup, 0);
+            if (temperature > 1400) {
                 if (process > 0) {
                     if (inventory.get(0).isEmpty()) {
                         process = 0;
@@ -264,7 +266,7 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                         if (recipe == null || recipe.time != processMax) {
                             process = 0;
                             processMax = 0;
-                        } else if (blast > 0) {
+                        } else {
                             process--;
                         }
                     }
