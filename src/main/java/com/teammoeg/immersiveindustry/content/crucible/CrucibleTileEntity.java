@@ -268,6 +268,7 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                             processMax = 0;
                         } else {
                             process--;
+                            getFromPreheater(BlastFurnacePreheaterTileEntity::doSpeedup, 0);
                         }
                     }
                     this.markContainingBlockForUpdate(null);
