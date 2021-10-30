@@ -203,7 +203,7 @@ curseforge {
         def envApiKey = System.getenv('CURSEFORGE_API_KEY')
         apiKey = envApiKey == null ? 'nope' : envApiKey
 
-        id = '534610' // Steam Powered
+        id = '542053' // Immersive Industry
         changelog = "See github commits"
 
         changelogType = 'markdown'

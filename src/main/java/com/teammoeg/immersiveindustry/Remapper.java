@@ -42,31 +42,14 @@ public class Remapper {
         }
     }
 
-    @SubscribeEvent
-    public static void registerTileRemappings(final RegistryEvent.MissingMappings<TileEntityType<?>> event) {
-        Map<ResourceLocation, TileEntityType<?>> teRemappings = IIRemappings.getTeRemappings();
-        ImmutableList<RegistryEvent.MissingMappings.Mapping<TileEntityType<?>>> mappings = event.getAllMappings();
-        for (RegistryEvent.MissingMappings.Mapping<TileEntityType<?>> map : mappings) {
-            if (teRemappings.containsKey(map.key)) {
-                map.remap(teRemappings.get(map.key));
-            }
-        }
-    }
-
     public static class IIRemappings {
         public static Map<ResourceLocation, Block> blockRemappings = new HashMap<>();
-        public static Map<ResourceLocation, TileEntityType<?>> teRemappings = new HashMap<>();
 
         public static Map<ResourceLocation, Block> getBlockRemappings() {
             blockRemappings.put(new ResourceLocation("frostedheart:crucible"), IIContent.IIMultiblocks.crucible);
             blockRemappings.put(new ResourceLocation("frostedheart:steam_turbine"), IIContent.IIMultiblocks.steam_turbine);
+            blockRemappings.put(new ResourceLocation("frostedheart:burning_chamber"), IIContent.IIBlocks.burning_chamber);
             return blockRemappings;
-        }
-
-        public static Map<ResourceLocation, TileEntityType<?>> getTeRemappings() {
-            teRemappings.put(new ResourceLocation("frostedheart:crucible"), IIContent.IITileTypes.CRUCIBLE.get());
-            teRemappings.put(new ResourceLocation("frostedheart:steam_turbine"), IIContent.IITileTypes.STEAMTURBINE.get());
-            return teRemappings;
         }
 
     }
