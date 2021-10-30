@@ -28,6 +28,8 @@ import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -55,7 +57,6 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
     public FluidTank tanks = new FluidTank(24 * FluidAttributes.BUCKET_VOLUME);
     public boolean active = false;
     public final int energy;
-    public static Fluid steam = ForgeRegistries.FLUIDS.getValue(new ResourceLocation("steampowered", "steam"));
 
     //public static Fluid steam = Fluids.WATER;
     public SteamTurbineTileEntity() {
@@ -107,8 +108,12 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
     }
 
     @Override
-    protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resources) {
-        return resources.getFluid() == steam;
+    protected boolean canFillTankFrom(int iTank, Direction side, FluidStack fluidStack) {
+        ITag<Fluid> steamTag = FluidTags.getCollection().get(new ResourceLocation("forge", "steam"));
+        if (steamTag != null)
+            return fluidStack.getFluid().isIn(steamTag);
+        else
+            return fluidStack.getFluid() == ForgeRegistries.FLUIDS.getValue(new ResourceLocation("steampowered", "steam"));
     }
 
     @Override

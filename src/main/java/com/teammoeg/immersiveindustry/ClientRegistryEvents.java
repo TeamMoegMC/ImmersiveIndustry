@@ -18,7 +18,12 @@
 
 package com.teammoeg.immersiveindustry;
 
+import blusunrize.immersiveengineering.api.ManualHelper;
+import blusunrize.immersiveengineering.client.manual.ManualElementMultiblock;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
+import blusunrize.lib.manual.ManualEntry;
+import blusunrize.lib.manual.ManualInstance;
+import blusunrize.lib.manual.Tree;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleScreen;
 import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerScreen;
 import net.minecraft.client.gui.IHasContainer;
@@ -44,7 +49,7 @@ public class ClientRegistryEvents {
         RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.crucible, RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.steam_turbine, RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(IIContent.IIBlocks.electrolyzer, RenderType.getCutoutMipped());
-
+        // addManual();
     }
 
     public static <C extends Container, S extends Screen & IHasContainer<C>> void
@@ -53,5 +58,15 @@ public class ClientRegistryEvents {
         ScreenManager.registerFactory(type, factory);
     }
 
+    public static void addManual() {
+        ManualInstance Man = ManualHelper.getManual();
+        Tree.InnerNode<ResourceLocation, ManualEntry> iiCat = Man.getRoot().getOrCreateSubnode(new ResourceLocation(IIMain.MODID, "machine"), 100);
+        {
+            ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(Man);
+            builder.addSpecialElement("multiblock", 0, new ManualElementMultiblock(Man, IIContent.IIMultiblocks.CRUCIBLE));
+            builder.readFromFile(new ResourceLocation(IIMain.MODID, "crucible"));
+            Man.addEntry(iiCat, builder.create(), 0);
+        }
+    }
 
 }
