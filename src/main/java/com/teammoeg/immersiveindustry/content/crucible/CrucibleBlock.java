@@ -36,20 +36,12 @@ import net.minecraftforge.fml.RegistryObject;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class CrucibleBlock<T extends MultiblockPartTileEntity<? super T>> extends IEMultiblockBlock {
-    private RegistryObject<TileEntityType<T>> type;
+public class CrucibleBlock<T extends MultiblockPartTileEntity<? super T>> extends IEMultiblockBlock<T> {
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
     public CrucibleBlock(String name, RegistryObject type) {
-        super(name, Properties.create(Material.IRON).hardnessAndResistance(4.0F, 40.0F).notSolid());
-        this.type = type;
+        super(name, Properties.create(Material.IRON).hardnessAndResistance(4.0F, 40.0F).notSolid(),type);
         this.setDefaultState(this.stateContainer.getBaseState().with(LIT, false));
-    }
-
-    @Nullable
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return type.get().create();
     }
 
     @Override

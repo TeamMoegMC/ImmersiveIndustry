@@ -155,7 +155,7 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
     }
 
     @Override
-    public void doGraphicalUpdates(int slot) {
+    public void doGraphicalUpdates() {
 
     }
 
@@ -178,8 +178,8 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
     @Override
     public void readCustomNBT(CompoundNBT nbt, boolean descPacket) {
         super.readCustomNBT(nbt, descPacket);
-        setTemperature(nbt.getInt("temperature"));
-        setBurnTime(nbt.getInt("burntime"));
+        temperature=nbt.getInt("temperature");
+        burnTime=nbt.getInt("burntime");
         if (!descPacket) {
             ItemStackHelper.loadAllItems(nbt, inventory);
             process = nbt.getInt("process");

@@ -263,7 +263,7 @@ public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInven
     }
 
     @Override
-    public void doGraphicalUpdates(int slot) {
+    public void doGraphicalUpdates() {
 
     }
 
