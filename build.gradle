@@ -204,7 +204,7 @@ curseforge {
         apiKey = envApiKey == null ? 'nope' : envApiKey
 
         id = '542053' // Immersive Industry
-        changelog = "See github commits"
+        changelog = "Allow IE 5.0.5"
 
         changelogType = 'markdown'
 
