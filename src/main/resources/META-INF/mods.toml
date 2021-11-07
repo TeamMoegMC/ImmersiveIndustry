@@ -4,7 +4,7 @@ license = "GPLv3"
 issueTrackerURL = "https://github.com/TeamMoegMC/ImmersiveIndustry/issues"
 [[mods]] #mandatory
 modId = "immersiveindustry" #mandatory
-version = "1.16.5-0.1.1" #mandatory
+version = "${file.jarVersion}" #mandatory
 displayName = "Immersive Industry" #mandatory
 authors = "[TeamMoeg] dashuaibia YueSha"
 description = '''
