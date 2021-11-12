@@ -18,11 +18,13 @@
 
 package com.teammoeg.immersiveindustry.content.steamturbine;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import com.google.common.collect.ImmutableSet;
 import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent;
@@ -53,7 +55,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbineTileEntity> implements IEBlockInterfaces.IBlockBounds {
+public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbineTileEntity> implements
+        IEBlockInterfaces.IBlockBounds {
     public FluidTank tanks = new FluidTank(24 * FluidAttributes.BUCKET_VOLUME);
     public boolean active = false;
     public final int energy;
@@ -92,21 +95,27 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
     @Override
     public void tick() {
         checkForNeedlessTicking();
-
-        if (!world.isRemote && !isRSDisabled() && !tanks.getFluid().isEmpty()) {
-
-            List<IEnergyStorage> presentOutputs = outputs.stream()
-                    .map(CapabilityReference::getNullable)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
-            if (!presentOutputs.isEmpty() &&
-                    tanks.getFluidAmount() >= 64 &&
-                    EnergyHelper.distributeFlux(presentOutputs, energy, false) < energy) {
-                tanks.drain(64, IFluidHandler.FluidAction.EXECUTE);
+        if (!this.isDummy()) {
+            if (!world.isRemote) {
+                if (!isRSDisabled() && !tanks.getFluid().isEmpty()) {
+                    List<IEnergyStorage> presentOutputs = outputs.stream()
+                            .map(CapabilityReference::getNullable)
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toList());
+                    if (!presentOutputs.isEmpty() &&
+                            tanks.getFluidAmount() >= 64 &&
+                            EnergyHelper.distributeFlux(presentOutputs, energy, false) < energy) {
+                        tanks.drain(64, IFluidHandler.FluidAction.EXECUTE);
+                        if (!active)
+                            active = true;
+                    }
+                } else if (active)
+                    active = false;
+            } else if (active) {
+                ImmersiveEngineering.proxy.handleTileSound(IESounds.dieselGenerator, this, this.active, 0.5F, 1.0F);
             }
         }
     }
-
     @Override
     protected boolean canFillTankFrom(int iTank, Direction side, FluidStack fluidStack) {
         ITag<Fluid> steamTag = FluidTags.getCollection().get(new ResourceLocation("forge", "steam"));
