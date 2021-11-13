@@ -60,7 +60,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbineTileEntity> implements
-        IEBlockInterfaces.IBlockBounds {
+        IEBlockInterfaces.IBlockBounds, IEBlockInterfaces.ISoundTile {
     public FluidTank tanks = new FluidTank(24 * FluidAttributes.BUCKET_VOLUME);
     public boolean active = false;
     public final int energy;
@@ -179,4 +179,9 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
                     () -> new DirectionalBlockPos(this.getBlockPosForPos(new BlockPos(2, 1, 6)).add(0, 1, 0), Direction.DOWN),
                     CapabilityEnergy.ENERGY)
     );
+
+    @Override
+    public boolean shouldPlaySound(String sound) {
+        return this.active;
+    }
 }
