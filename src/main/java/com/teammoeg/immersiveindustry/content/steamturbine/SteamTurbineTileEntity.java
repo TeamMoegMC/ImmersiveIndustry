@@ -21,10 +21,13 @@ package com.teammoeg.immersiveindustry.content.steamturbine;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
+import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent;
@@ -34,10 +37,10 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -46,6 +49,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -60,6 +64,7 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
     public FluidTank tanks = new FluidTank(24 * FluidAttributes.BUCKET_VOLUME);
     public boolean active = false;
     public final int energy;
+    private static final CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> SHAPES = CachedShapesWithTransform.createForMultiblock(SteamTurbineTileEntity::getShape);
 
     //public static Fluid steam = Fluids.WATER;
     public SteamTurbineTileEntity() {
@@ -133,7 +138,30 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
     @Nonnull
     @Override
     public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx) {
-        return VoxelShapes.fullCube();
+        return this.getShape(SHAPES);
+    }
+
+    private static List<AxisAlignedBB> getShape(BlockPos posInMultiblock) {
+        if (posInMultiblock.equals(new BlockPos(0, 1, 0)))
+            return ImmutableList.of(new AxisAlignedBB(0.5D, 0D, 0D, 1.0D, 1D, 1.0D));
+        else if (posInMultiblock.getZ() == 5 && posInMultiblock.getY() == 1) {
+            if (posInMultiblock.getX() % 2 == 0)
+                return Utils.flipBoxes(false, posInMultiblock.getX() == 2, new AxisAlignedBB(0D, 0D, 0D, 0.75D, 0.5D, 1.0D));
+            else return ImmutableList.of(new AxisAlignedBB(0D, 0D, 0D, 1.0D, 0.5D, 1.0D));
+        } else if (posInMultiblock.getX() % 2 == 0 && posInMultiblock.getZ() != 6) {
+            if (posInMultiblock.getY() == 0)
+                return ImmutableList.of(new AxisAlignedBB(0D, 0D, 0D, 1.0D, 0.5D, 1.0D));
+            else if (posInMultiblock.getY() == 1)
+                return Utils.flipBoxes(false, posInMultiblock.getX() == 2, new AxisAlignedBB(0D, 0D, 0D, 0.75D, 1D, 1.0D));
+            else if (posInMultiblock.getZ() == 0)
+                return ImmutableList.of(new AxisAlignedBB(0.25D, 0D, 0.0D, 1D, 0.5D, 0.2D));
+            else return ImmutableList.of(new AxisAlignedBB(0.25D, 0D, 0D, 1D, 0.5D, 1.0D));
+        } else if (posInMultiblock.getY() == 2) {
+            return ImmutableList.of(new AxisAlignedBB(0D, 0D, 0D, 1.0D, 0.5D, 1.0D));
+        } else if (posInMultiblock.equals(new BlockPos(1, 0, 0)))
+            return ImmutableList.of(new AxisAlignedBB(0D, 0D, 0D, 1.0D, 0.5D, 1.0D));
+
+        else return ImmutableList.of(new AxisAlignedBB(0, 0, 0, 1.0D, 1.0D, 1.0D));
     }
 
     @Override
