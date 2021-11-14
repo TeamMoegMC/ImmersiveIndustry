@@ -30,7 +30,7 @@ public class SteamTurbineBlock<T extends MultiblockPartTileEntity<? super T>> ex
 
     public SteamTurbineBlock(String name, RegistryObject type) {
         super(name, Properties.create(Material.IRON).hardnessAndResistance(4.0F, 40.0F).notSolid(), type);
-    }
+        }
 
     @Override
     public boolean hasTileEntity(BlockState state) {
