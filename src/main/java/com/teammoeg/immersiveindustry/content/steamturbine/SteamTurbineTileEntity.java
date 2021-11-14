@@ -150,7 +150,7 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
             else return ImmutableList.of(new AxisAlignedBB(0D, 0D, 0D, 1.0D, 0.5D, 1.0D));
         } else if (posInMultiblock.getX() % 2 == 0 && posInMultiblock.getZ() != 6) {
             if (posInMultiblock.getY() == 0)
-                return ImmutableList.of(new AxisAlignedBB(0D, 0D, 0D, 1.0D, 0.5D, 1.0D));
+                return ImmutableList.of(new AxisAlignedBB(0D, 0D, 0D, 1.0D, 0.5D, 1.0D), Utils.flipBox(false, posInMultiblock.getX() == 2, new AxisAlignedBB(0D, 0.5D, 0D, 0.75D, 1D, 1.0D)));
             else if (posInMultiblock.getY() == 1)
                 return Utils.flipBoxes(false, posInMultiblock.getX() == 2, new AxisAlignedBB(0D, 0D, 0D, 0.75D, 1D, 1.0D));
             else if (posInMultiblock.getZ() == 0)
