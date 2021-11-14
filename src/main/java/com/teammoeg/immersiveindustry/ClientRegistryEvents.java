@@ -47,7 +47,7 @@ public class ClientRegistryEvents {
         registerIEScreen(new ResourceLocation(IIMain.MODID, "crucible"), CrucibleScreen::new);
         registerIEScreen(new ResourceLocation(IIMain.MODID, "electrolyzer"), ElectrolyzerScreen::new);
         RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.crucible, RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.steam_turbine, RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.steam_turbine, RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(IIContent.IIBlocks.electrolyzer, RenderType.getCutoutMipped());
         // addManual();
     }
