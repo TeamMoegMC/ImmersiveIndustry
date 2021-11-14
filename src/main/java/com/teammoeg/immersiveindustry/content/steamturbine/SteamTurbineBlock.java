@@ -18,23 +18,17 @@
 
 package com.teammoeg.immersiveindustry.content.steamturbine;
 
-import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.MetalMultiblockBlock;
+
 import com.teammoeg.immersiveindustry.IIMain;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
-public class SteamTurbineBlock<T extends MultiblockPartTileEntity<? super T>> extends IEMultiblockBlock<T> {
+public class SteamTurbineBlock<T extends MultiblockPartTileEntity<? super T>> extends MetalMultiblockBlock {
 
     public SteamTurbineBlock(String name, RegistryObject type) {
-        super(name, Properties.create(Material.IRON).hardnessAndResistance(4.0F, 40.0F).notSolid(), type);
-        }
-
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
+        super(name, type);
     }
 
     @Override
