@@ -117,7 +117,7 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
                 } else if (active)
                     active = false;
             } else if (active) {
-                ImmersiveEngineering.proxy.handleTileSound(IESounds.dieselGenerator, this, this.active, 0.5F, 1.0F);
+                ImmersiveEngineering.proxy.handleTileSound(IESounds.dieselGenerator, this, this.active, 0.3F, 0.5F);
             }
         }
     }
