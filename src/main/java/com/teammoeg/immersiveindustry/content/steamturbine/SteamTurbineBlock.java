@@ -23,19 +23,14 @@ import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileE
 import com.teammoeg.immersiveindustry.IIMain;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.IBlockReader;
 import net.minecraftforge.fml.RegistryObject;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class SteamTurbineBlock<T extends MultiblockPartTileEntity<? super T>> extends IEMultiblockBlock<T> {
 
     public SteamTurbineBlock(String name, RegistryObject type) {
-        super(name, Properties.create(Material.IRON).hardnessAndResistance(4.0F, 40.0F).notSolid(),type);
+        super(name, Properties.create(Material.IRON).hardnessAndResistance(4.0F, 40.0F).notSolid(), type);
+        lightOpacity = 0;
     }
 
     @Override

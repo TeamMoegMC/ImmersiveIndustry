@@ -117,7 +117,7 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
                 } else if (active)
                     active = false;
             } else if (active) {
-                ImmersiveEngineering.proxy.handleTileSound(IESounds.dieselGenerator, this, this.active, 0.3F, 0.5F);
+                ImmersiveEngineering.proxy.handleTileSound(IESounds.dieselGenerator, this, this.active, 0.15F, 1.0F);
             }
         }
     }
@@ -183,5 +183,10 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
     @Override
     public boolean shouldPlaySound(String sound) {
         return this.active;
+    }
+
+    @Override
+    public float getSoundRadiusSq() {
+        return 156;
     }
 }
