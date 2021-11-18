@@ -20,9 +20,12 @@ package com.teammoeg.immersiveindustry.content.crucible;
 
 import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nonnull;
 
 public class CrucibleContainer extends IEBaseContainer<CrucibleTileEntity> {
     public CrucibleTileEntity.CrucibleData data;
@@ -52,7 +55,7 @@ public class CrucibleContainer extends IEBaseContainer<CrucibleTileEntity> {
                 return itemStack.getItem().getTags().contains(CrucibleTileEntity.coal_coke);
             }
         });
-        slotCount = 3;
+        slotCount = 4;
 
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 9; j++)
@@ -61,6 +64,32 @@ public class CrucibleContainer extends IEBaseContainer<CrucibleTileEntity> {
             addSlot(new Slot(inventoryPlayer, i, 8 + i * 18, 142));
         data = tile.guiData;
         trackIntArray(data);
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack transferStackInSlot(PlayerEntity player, int slot) {
+        ItemStack itemstack = ItemStack.EMPTY;
+        Slot slotObject = this.inventorySlots.get(slot);
+        if (slotObject != null && slotObject.getHasStack()) {
+            ItemStack itemstack1 = slotObject.getStack();
+            itemstack = itemstack1.copy();
+            if (slot < this.slotCount) {
+                if (!this.mergeItemStack(itemstack1, this.slotCount, this.inventorySlots.size(), true)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (!this.mergeItemStack(itemstack1, 0, this.slotCount, false)) {
+                return ItemStack.EMPTY;
+            }
+
+            if (itemstack1.isEmpty()) {
+                slotObject.putStack(ItemStack.EMPTY);
+            } else {
+                slotObject.onSlotChanged();
+            }
+        }
+
+        return itemstack;
     }
 }
 
