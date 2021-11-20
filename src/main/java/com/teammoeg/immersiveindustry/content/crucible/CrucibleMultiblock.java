@@ -18,12 +18,15 @@
 
 package com.teammoeg.immersiveindustry.content.crucible;
 
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.util.Direction;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
@@ -36,29 +39,29 @@ public class CrucibleMultiblock extends IETemplateMultiblock {
                 () -> IIContent.IIMultiblocks.crucible.getDefaultState());
     }
 
-    @Override
-    public BlockPos multiblockToModelPos(BlockPos posInMultiblock) {
-        return super.multiblockToModelPos(new BlockPos(
-                getSize(null).getX() - posInMultiblock.getX() - 1,
-                posInMultiblock.getY(),
-                getSize(null).getZ() - posInMultiblock.getZ() - 1
-        ));
-    }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public boolean canRenderFormedStructure() {
-        return false;
+        return true;
     }
+
+    @OnlyIn(Dist.CLIENT)
+    private static ItemStack renderStack;
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderFormedStructure(MatrixStack transform, IRenderTypeBuffer buffer) {
-    }
+        if (renderStack == null)
+            renderStack = new ItemStack(IIContent.IIMultiblocks.crucible);
+        transform.translate(1.5D, 1.5D, 1.5D);
+        ClientUtils.mc().getItemRenderer().renderItem(
+                renderStack,
+                ItemCameraTransforms.TransformType.NONE,
+                0xf000f0,
+                OverlayTexture.NO_OVERLAY,
+                transform, buffer);
 
-    @Override
-    public float getManualScale() {
-        return 16;
     }
 
     @Override
@@ -67,12 +70,9 @@ public class CrucibleMultiblock extends IETemplateMultiblock {
     }
 
     @Override
-    public Direction transformDirection(Direction original) {
-        return original.getOpposite();
+    public float getManualScale() {
+        return 16;
     }
 
-    @Override
-    public Direction untransformDirection(Direction transformed) {
-        return transformed.getOpposite();
-    }
+
 }

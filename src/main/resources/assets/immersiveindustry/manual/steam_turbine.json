@@ -1,0 +1,6 @@
+{
+  "steam_turbine": {
+    "type": "multiblock",
+    "name": "immersiveindustry:multiblocks/steam_turbine"
+  }
+}

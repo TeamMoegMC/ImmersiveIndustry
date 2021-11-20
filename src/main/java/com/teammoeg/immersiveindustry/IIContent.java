@@ -62,8 +62,8 @@ public class IIContent {
     }
 
     public static class IIMultiblocks {
-        public static IETemplateMultiblock CRUCIBLE = new CrucibleMultiblock();
-        public static IETemplateMultiblock STEAMTURBINE = new SteamTurbineMultiblock();
+        public static final IETemplateMultiblock CRUCIBLE = new CrucibleMultiblock();
+        public static final IETemplateMultiblock STEAMTURBINE = new SteamTurbineMultiblock();
 
         public static Block crucible = new CrucibleBlock("crucible", IITileTypes.CRUCIBLE);
         public static Block steam_turbine = new SteamTurbineBlock("steam_turbine", IITileTypes.STEAMTURBINE);

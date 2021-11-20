@@ -1,6 +1,6 @@
 {
-  "multiblock": {
+  "crucible": {
     "type": "multiblock",
-    "name": "multiblocks/crucible"
+    "name": "immersiveindustry:multiblocks/crucible"
   }
 }

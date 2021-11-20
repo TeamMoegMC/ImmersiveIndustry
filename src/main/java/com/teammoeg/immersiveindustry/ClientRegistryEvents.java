@@ -41,6 +41,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(modid = IIMain.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientRegistryEvents {
+    private static Tree.InnerNode<ResourceLocation, ManualEntry> CATEGORY;
     @SubscribeEvent
     public static void onClientSetup(final FMLClientSetupEvent event) {
         ;
@@ -49,7 +50,7 @@ public class ClientRegistryEvents {
         RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.crucible, RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.steam_turbine, RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(IIContent.IIBlocks.electrolyzer, RenderType.getCutoutMipped());
-        // addManual();
+        addManual();
     }
 
     public static <C extends Container, S extends Screen & IHasContainer<C>> void
@@ -59,13 +60,19 @@ public class ClientRegistryEvents {
     }
 
     public static void addManual() {
-        ManualInstance Man = ManualHelper.getManual();
-        Tree.InnerNode<ResourceLocation, ManualEntry> iiCat = Man.getRoot().getOrCreateSubnode(new ResourceLocation(IIMain.MODID, "machine"), 100);
+        ManualInstance man = ManualHelper.getManual();
+        CATEGORY = man.getRoot().getOrCreateSubnode(new ResourceLocation(IIMain.MODID, "main"), 100);
         {
-            ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(Man);
-            builder.addSpecialElement("multiblock", 0, new ManualElementMultiblock(Man, IIContent.IIMultiblocks.CRUCIBLE));
+            ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
+            builder.addSpecialElement("crucible", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.CRUCIBLE));
             builder.readFromFile(new ResourceLocation(IIMain.MODID, "crucible"));
-            Man.addEntry(iiCat, builder.create(), 0);
+            man.addEntry(CATEGORY, builder.create(), 0);
+        }
+        {
+            ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
+            builder.addSpecialElement("steam_turbine", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.STEAMTURBINE));
+            builder.readFromFile(new ResourceLocation(IIMain.MODID, "steam_turbine"));
+            man.addEntry(CATEGORY, builder.create(), 1);
         }
     }
 

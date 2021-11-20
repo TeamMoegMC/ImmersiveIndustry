@@ -38,7 +38,7 @@ public class CrucibleCategory<T extends CrucibleRecipe> implements IRecipeCatego
     private IDrawable ICON;
 
     public CrucibleCategory(IGuiHelper guiHelper) {
-        this.ICON = guiHelper.createDrawableIngredient(new ItemStack(IIContent.IIBlocks.burning_chamber));
+        this.ICON = guiHelper.createDrawableIngredient(new ItemStack(IIContent.IIMultiblocks.crucible));
         this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/crucible.png"), 19, 0, 130, 40);
     }
 
