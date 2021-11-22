@@ -67,6 +67,17 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
     public CrucibleTileEntity() {
         super(IIContent.IIMultiblocks.CRUCIBLE, IIContent.IITileTypes.CRUCIBLE.get(), false);
     }
+    @Override
+	public void disassemble()
+	{
+		if(formed&&!world.isRemote)
+		{
+			tempMasterTE = master();
+			BlockPos startPos = getOrigin();
+			multiblockInstance.disassemble(world, startPos, getIsMirrored(), multiblockInstance.untransformDirection(getFacing()));
+			world.destroyBlock(pos, false);
+		}
+	}
 
     @Nonnull
     @Override
@@ -208,10 +219,24 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
         if (master() != null)
             master().burnTime = burnTime;
     }
-
+    boolean uncheckedLocation=true;
     @Override
     public void tick() {
+    	if(uncheckedLocation&&!world.isRemote) {
+    		if(master()==null) {
+    			this.setFacing(this.getFacing().getOpposite());
+    			this.offsetToMaster=new BlockPos(-offsetToMaster.getX(),offsetToMaster.getY(),-offsetToMaster.getZ());
+    			if(master()==null) {
+    				this.setFacing(this.getFacing().getOpposite());
+    				this.offsetToMaster=new BlockPos(-offsetToMaster.getX(),offsetToMaster.getY(),-offsetToMaster.getZ());
+    			}else {
+    				this.markContainingBlockForUpdate(null);
+    			}
+    		}
+    		uncheckedLocation=false;
+    	}
         checkForNeedlessTicking();
+        
         if (!world.isRemote && formed && !isDummy()) {
             CrucibleRecipe recipe = getRecipe();
             updatetick++;
