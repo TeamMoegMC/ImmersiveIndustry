@@ -69,7 +69,7 @@ public class CrucibleScreen extends IEContainerScreen<CrucibleContainer> {
             this.blit(transform, guiLeft + 76, guiTop + 14, 204, 15, 21 - h, 15);
         }
         if ((Boolean) tile.getFromPreheater(PREHEATER_ACTIVE, false)) {
-            this.blit(transform, this.guiLeft + 28, this.guiTop + 57, 199, 32, 12, 11);
+            this.blit(transform, this.guiLeft + 28, this.guiTop + 54, 199, 32, 12, 11);
         }
     }
 
