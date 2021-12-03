@@ -105,12 +105,12 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
                             .filter(Objects::nonNull)
                             .collect(Collectors.toList());
                     if (!presentOutputs.isEmpty()) {
-                    	float energyPerSteam=IIConfig.COMMON.steamTurbineGenerator.get()/64F;
-                    	int amount=tanks.drain(64, IFluidHandler.FluidAction.EXECUTE).getAmount();
-                    	float energy=energyPerSteam*amount;
-                    	EnergyHelper.distributeFlux(presentOutputs, (int) energy, false);
-                        if (!active)
+                    	int out=IIConfig.COMMON.steamTurbineGenerator.get();
+                    	if(!presentOutputs.isEmpty()&&tanks.getFluidAmount() >= 64&&EnergyHelper.distributeFlux(presentOutputs, out, false) < out)
+    					{
                             active = true;
+    						tanks.drain(64, IFluidHandler.FluidAction.EXECUTE);
+    					}
                     }
                 } else if (active)
                     active = false;
