@@ -63,13 +63,11 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
         IEBlockInterfaces.IBlockBounds, IEBlockInterfaces.ISoundTile {
     public FluidTank tanks = new FluidTank(24 * FluidAttributes.BUCKET_VOLUME);
     public boolean active = false;
-    public final int energy;
     private static final CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> SHAPES = CachedShapesWithTransform.createForMultiblock(SteamTurbineTileEntity::getShape);
 
     //public static Fluid steam = Fluids.WATER;
     public SteamTurbineTileEntity() {
         super(IIContent.IIMultiblocks.STEAMTURBINE, IIContent.IITileTypes.STEAMTURBINE.get(), true);
-        this.energy = IIConfig.COMMON.steamTurbineGenerator.get();
     }
 
     @Override
@@ -101,15 +99,16 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
         checkForNeedlessTicking();
         if (!this.isDummy()) {
             if (!world.isRemote) {
-                if (!isRSDisabled() && !tanks.getFluid().isEmpty()) {
+                if (!isRSDisabled() && !tanks.isEmpty()) {
                     List<IEnergyStorage> presentOutputs = outputs.stream()
                             .map(CapabilityReference::getNullable)
                             .filter(Objects::nonNull)
                             .collect(Collectors.toList());
-                    if (!presentOutputs.isEmpty() &&
-                            tanks.getFluidAmount() >= 64 &&
-                            EnergyHelper.distributeFlux(presentOutputs, energy, false) < energy) {
-                        tanks.drain(64, IFluidHandler.FluidAction.EXECUTE);
+                    if (!presentOutputs.isEmpty()) {
+                    	float energyPerSteam=IIConfig.COMMON.steamTurbineGenerator.get()/64F;
+                    	int amount=tanks.drain(64, IFluidHandler.FluidAction.EXECUTE).getAmount();
+                    	float energy=energyPerSteam*amount;
+                    	EnergyHelper.distributeFlux(presentOutputs, (int) energy, false);
                         if (!active)
                             active = true;
                     }
@@ -125,8 +124,7 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
         ITag<Fluid> steamTag = FluidTags.getCollection().get(new ResourceLocation("forge", "steam"));
         if (steamTag != null)
             return fluidStack.getFluid().isIn(steamTag);
-        else
-            return fluidStack.getFluid() == ForgeRegistries.FLUIDS.getValue(new ResourceLocation("steampowered", "steam"));
+		return fluidStack.getFluid() == ForgeRegistries.FLUIDS.getValue(new ResourceLocation("steampowered", "steam"));
     }
 
     @Override
@@ -146,7 +144,7 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
         else if (posInMultiblock.getZ() == 5 && posInMultiblock.getY() == 1) {
             if (posInMultiblock.getX() % 2 == 0)
                 return Utils.flipBoxes(false, posInMultiblock.getX() == 2, new AxisAlignedBB(0D, 0D, 0D, 0.75D, 0.5D, 1.0D));
-            else return ImmutableList.of(new AxisAlignedBB(0D, 0D, 0D, 1.0D, 0.5D, 1.0D));
+			return ImmutableList.of(new AxisAlignedBB(0D, 0D, 0D, 1.0D, 0.5D, 1.0D));
         } else if (posInMultiblock.getX() % 2 == 0 && posInMultiblock.getZ() != 6) {
             if (posInMultiblock.getY() == 0)
                 return ImmutableList.of(new AxisAlignedBB(0D, 0D, 0D, 1.0D, 0.5D, 1.0D), Utils.flipBox(false, posInMultiblock.getX() == 2, new AxisAlignedBB(0D, 0.5D, 0D, 0.75D, 1D, 1.0D)));
