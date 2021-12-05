@@ -18,17 +18,20 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
+import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.MetalMultiblockBlock;
 import com.teammoeg.immersiveindustry.IIMain;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
-public class IndustrialElectrolyzerBlock<T extends MultiblockPartTileEntity<? super T>> extends MetalMultiblockBlock {
+public class IndustrialElectrolyzerBlock<T extends MultiblockPartTileEntity<? super T>> extends IEMultiblockBlock {
 
     public IndustrialElectrolyzerBlock(String name, RegistryObject type) {
-        super(name, type);
+        super(name, Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(4.0F, 40.0F).notSolid(), type);
     }
+
 
     @Override
     public ResourceLocation createRegistryName() {

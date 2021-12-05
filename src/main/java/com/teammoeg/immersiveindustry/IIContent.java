@@ -122,6 +122,7 @@ public class IIContent {
     public static void registerContainers() {
         GuiHandler.register(CrucibleTileEntity.class, new ResourceLocation(IIMain.MODID, "crucible"), CrucibleContainer::new);
         GuiHandler.register(ElectrolyzerTileEntity.class, new ResourceLocation(IIMain.MODID, "electrolyzer"), ElectrolyzerContainer::new);
+        GuiHandler.register(IndustrialElectrolyzerTileEntity.class, new ResourceLocation(IIMain.MODID, "industrial_electrolyzer"), IndustrialElectrolyzerContainer::new);
     }
 
     public static class IIProps {

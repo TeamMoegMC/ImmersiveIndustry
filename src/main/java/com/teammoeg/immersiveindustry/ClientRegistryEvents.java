@@ -26,6 +26,7 @@ import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.Tree;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleScreen;
 import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerScreen;
+import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerScreen;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.screen.Screen;
@@ -47,6 +48,7 @@ public class ClientRegistryEvents {
         ;
         registerIEScreen(new ResourceLocation(IIMain.MODID, "crucible"), CrucibleScreen::new);
         registerIEScreen(new ResourceLocation(IIMain.MODID, "electrolyzer"), ElectrolyzerScreen::new);
+        registerIEScreen(new ResourceLocation(IIMain.MODID, "industrial_electrolyzer"), IndustrialElectrolyzerScreen::new);
         RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.crucible, RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.steam_turbine, RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(IIContent.IIBlocks.electrolyzer, RenderType.getCutoutMipped());

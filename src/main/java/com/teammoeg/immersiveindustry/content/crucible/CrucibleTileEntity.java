@@ -237,7 +237,7 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
     	}
         checkForNeedlessTicking();
         
-        if (!world.isRemote && formed && !isDummy()) {
+        if (!isDummy() && !world.isRemote && formed) {
             CrucibleRecipe recipe = getRecipe();
             updatetick++;
             if (updatetick > 10) {
