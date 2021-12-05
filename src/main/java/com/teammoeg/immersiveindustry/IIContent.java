@@ -64,13 +64,15 @@ public class IIContent {
     public static class IIMultiblocks {
         public static final IETemplateMultiblock CRUCIBLE = new CrucibleMultiblock();
         public static final IETemplateMultiblock STEAMTURBINE = new SteamTurbineMultiblock();
+        public static final IETemplateMultiblock IND_ELE = new IndustrialElectrolyzerMultiblock();
 
         public static Block crucible = new CrucibleBlock("crucible", IITileTypes.CRUCIBLE);
         public static Block steam_turbine = new SteamTurbineBlock("steam_turbine", IITileTypes.STEAMTURBINE);
-
+        public static Block industrial_electrolyzer = new IndustrialElectrolyzerBlock("industrial_electrolyzer", IITileTypes.IND_ELE);
         public static void init() {
             MultiblockHandler.registerMultiblock(IIMultiblocks.CRUCIBLE);
             MultiblockHandler.registerMultiblock(IIMultiblocks.STEAMTURBINE);
+            MultiblockHandler.registerMultiblock(IIMultiblocks.IND_ELE);
         }
     }
 
@@ -86,6 +88,9 @@ public class IIContent {
         );
         public static final RegistryObject<TileEntityType<ElectrolyzerTileEntity>> ELECTROLYZER = REGISTER.register(
                 "electrolyzer", makeType(() -> new ElectrolyzerTileEntity(), () -> IIBlocks.electrolyzer)
+        );
+        public static final RegistryObject<TileEntityType<IndustrialElectrolyzerTileEntity>> IND_ELE = REGISTER.register(
+                "industrial_electrolyzer", makeType(() -> new IndustrialElectrolyzerTileEntity(), () -> IIMultiblocks.industrial_electrolyzer)
         );
 
         private static <T extends TileEntity> Supplier<TileEntityType<T>> makeType(Supplier<T> create, Supplier<Block> valid) {

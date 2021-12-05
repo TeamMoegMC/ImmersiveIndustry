@@ -50,6 +50,7 @@ public class ClientRegistryEvents {
         RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.crucible, RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.steam_turbine, RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(IIContent.IIBlocks.electrolyzer, RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.industrial_electrolyzer, RenderType.getCutoutMipped());
         addManual();
     }
 
@@ -73,6 +74,12 @@ public class ClientRegistryEvents {
             builder.addSpecialElement("steam_turbine", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.STEAMTURBINE));
             builder.readFromFile(new ResourceLocation(IIMain.MODID, "steam_turbine"));
             man.addEntry(CATEGORY, builder.create(), 1);
+        }
+        {
+            ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
+            builder.addSpecialElement("industrial_electrolyzer", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.IND_ELE));
+            builder.readFromFile(new ResourceLocation(IIMain.MODID, "industrial_electrolyzer"));
+            man.addEntry(CATEGORY, builder.create(), 2);
         }
     }
 

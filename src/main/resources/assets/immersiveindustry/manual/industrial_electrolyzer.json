@@ -1,0 +1,6 @@
+{
+  "industrial_electrolyzer": {
+    "type": "multiblock",
+    "name": "immersiveindustry:multiblocks/industrial_electrolyzer"
+  }
+}
