@@ -119,18 +119,19 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
     @Override
     public void tick() {
         checkForNeedlessTicking();
-        if (!isDummy() && !world.isRemote) {
-            if (energyStorage.getEnergyStored() >= energyConsume) {
-                ElectrolyzerRecipe recipe = getRecipe();
-                if (process > 0) {
-                    if (inventory.get(0).isEmpty()) {
-                        process = 0;
-                        processMax = 0;
-                    }
-                    // during process
-                    else {
-                        if (recipe == null || recipe.time != processMax) {
+        if (!isDummy()) {
+            if (!world.isRemote) {
+                if (energyStorage.getEnergyStored() >= energyConsume) {
+                    ElectrolyzerRecipe recipe = getRecipe();
+                    if (process > 0) {
+                        if (inventory.get(0).isEmpty()) {
                             process = 0;
+                            processMax = 0;
+                        }
+                        // during process
+                        else {
+                            if (recipe == null || recipe.time != processMax) {
+                                process = 0;
                             processMax = 0;
                         } else {
                             process--;
@@ -152,9 +153,10 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
                         processMax = 0;
                     }
                 }
-            } else if (process > 0) {
-                process = processMax;
-                this.markContainingBlockForUpdate(null);
+                } else if (process > 0) {
+                    process = processMax;
+                    this.markContainingBlockForUpdate(null);
+                }
             }
         }
     }
