@@ -121,38 +121,40 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
         checkForNeedlessTicking();
         if (!isDummy()) {
             if (!world.isRemote) {
-                if (energyStorage.getEnergyStored() >= energyConsume) {
-                    ElectrolyzerRecipe recipe = getRecipe();
-                    if (process > 0) {
-                        if (inventory.get(0).isEmpty()) {
-                            process = 0;
-                            processMax = 0;
-                        }
-                        // during process
-                        else {
-                            if (recipe == null || recipe.time != processMax) {
+                if (!isRSDisabled()) {
+                    if (energyStorage.getEnergyStored() >= energyConsume) {
+                        ElectrolyzerRecipe recipe = getRecipe();
+                        if (process > 0) {
+                            if (inventory.get(0).isEmpty()) {
                                 process = 0;
-                            processMax = 0;
-                        } else {
-                            process--;
-                            energyStorage.extractEnergy(energyConsume, false);
+                                processMax = 0;
+                            }
+                            // during process
+                            else {
+                                if (recipe == null || recipe.time != processMax) {
+                                    process = 0;
+                                    processMax = 0;
+                                } else {
+                                    process--;
+                                    energyStorage.extractEnergy(energyConsume, false);
+                                }
+                            }
+                            this.markContainingBlockForUpdate(null);
+                        } else if (recipe != null) {
+                            if (processMax == 0) {
+                                this.process = recipe.time / 2;
+                                this.processMax = process;
+                            } else {
+                                Utils.modifyInvStackSize(inventory, 0, -recipe.input.getCount());
+                                tank.drain(recipe.input_fluid.getAmount(), IFluidHandler.FluidAction.EXECUTE);
+                                if (!inventory.get(1).isEmpty())
+                                    inventory.get(1).grow(recipe.output.copy().getCount());
+                                else if (inventory.get(1).isEmpty())
+                                    inventory.set(1, recipe.output.copy());
+                                processMax = 0;
+                            }
                         }
                     }
-                    this.markContainingBlockForUpdate(null);
-                } else if (recipe != null) {
-                    if (processMax == 0) {
-                        this.process = recipe.time / 2;
-                        this.processMax = process;
-                    } else {
-                        Utils.modifyInvStackSize(inventory, 0, -recipe.input.getCount());
-                        tank.drain(recipe.input_fluid.getAmount(), IFluidHandler.FluidAction.EXECUTE);
-                        if (!inventory.get(1).isEmpty())
-                            inventory.get(1).grow(recipe.output.copy().getCount());
-                        else if (inventory.get(1).isEmpty())
-                            inventory.set(1, recipe.output.copy());
-                        processMax = 0;
-                    }
-                }
                 } else if (process > 0) {
                     process = processMax;
                     this.markContainingBlockForUpdate(null);
