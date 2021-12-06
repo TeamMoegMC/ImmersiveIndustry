@@ -34,7 +34,7 @@ public class IIConfig {
         public final ForgeConfigSpec.IntValue steamTurbineGenerator;
         Common(ForgeConfigSpec.Builder builder) {
             electrolyzerConsume = builder.defineInRange("electrolyzerConsume", 24, 0, 4096);
-            steamTurbineGenerator = builder.defineInRange("steamTurbineGenerator", 64, 0, 4096);
+            steamTurbineGenerator = builder.defineInRange("steamTurbineGenerator", 128, 0, 4096);
         }
     }
 

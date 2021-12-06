@@ -51,8 +51,8 @@ public class IndustrialElectrolyzerScreen extends IEContainerScreen<IndustrialEl
     public void render(MatrixStack transform, int mouseX, int mouseY, float partial) {
         super.render(transform, mouseX, mouseY, partial);
         List<ITextComponent> tooltip = new ArrayList<>();
-        GuiHelper.handleGuiTank(transform, tile.tank, guiLeft + 21, guiTop + 18, 16, 47, 177, 86, 20, 51, mouseX, mouseY, TEXTURE, tooltip);
-        if (mouseX >= this.guiLeft + 158 && mouseX < this.guiLeft + 165 && mouseY > this.guiTop + 22 && mouseY < this.guiTop + 68) {
+        GuiHelper.handleGuiTank(transform, tile.tank, guiLeft + 10, guiTop + 25, 16, 47, 177, 86, 20, 51, mouseX, mouseY, TEXTURE, tooltip);
+        if (mouseX >= this.guiLeft + 154 && mouseX < this.guiLeft + 162 && mouseY > this.guiTop + 25 && mouseY < this.guiTop + 70) {
             tooltip.add(new StringTextComponent(this.tile.getEnergyStored((Direction) null) + "/" + this.tile.getMaxEnergyStored((Direction) null) + " IF"));
         }
         if (!tooltip.isEmpty()) {
@@ -64,11 +64,11 @@ public class IndustrialElectrolyzerScreen extends IEContainerScreen<IndustrialEl
     protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float partial, int x, int y) {
         ClientUtils.bindTexture(TEXTURE);
         this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
-        GuiHelper.handleGuiTank(transform, tile.tank, guiLeft + 21, guiTop + 18, 16, 47, 177, 86, 20, 51, x, y, TEXTURE, null);
+        GuiHelper.handleGuiTank(transform, tile.tank, guiLeft + 10, guiTop + 25, 16, 47, 177, 86, 20, 51, x, y, TEXTURE, null);
 
         if (tile.processMax > 0 && tile.process > 0) {
             int h = (int) (21 * (tile.process / (float) tile.processMax));
-            this.blit(transform, guiLeft + 76, guiTop + 35, 178, 57, 21 - h, 15);
+            this.blit(transform, guiLeft + 77, guiTop + 40, 178, 57, 21 - h, 15);
         }
         int stored = (int) (46.0F * ((float) this.tile.getEnergyStored(null) / (float) this.tile.getMaxEnergyStored(null)));
         this.fillGradient(transform, this.guiLeft + 154, this.guiTop + 19 + (46 - stored), this.guiLeft + 161, this.guiTop + 65, -4909824, -10482944);

@@ -30,14 +30,14 @@ public class IndustrialElectrolyzerContainer extends IEBaseContainer<IndustrialE
         super(inventoryPlayer, tile, id);
 
         // input
-        this.addSlot(new IESlot(this, this.inv, 0, 51, 34) {
+        this.addSlot(new IESlot(this, this.inv, 0, 52, 39) {
             @Override
             public boolean isItemValid(ItemStack itemStack) {
                 return ElectrolyzerRecipe.isValidRecipeInput(itemStack);
             }
         });
         // output
-        this.addSlot(new IESlot.Output(this, this.inv, 1, 107, 34));
+        this.addSlot(new IESlot.Output(this, this.inv, 1, 108, 39));
         // input fuel
         slotCount = 2;
 
