@@ -30,6 +30,7 @@ import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableSet;
 import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
@@ -60,6 +61,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
     public int processMax = 0;
     public final int energyConsume;
     public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
+    EnergyHelper.IEForgeEnergyWrapper wrapper = new EnergyHelper.IEForgeEnergyWrapper(this, null);
     public FluidTank tank = new FluidTank(8 * FluidAttributes.BUCKET_VOLUME, ElectrolyzerRecipe::isValidRecipeFluid);
     private NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 
@@ -100,6 +102,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 
     @Override
     public void readCustomNBT(CompoundNBT nbt, boolean descPacket) {
+        super.readCustomNBT(nbt, descPacket);
         energyStorage.readFromNBT(nbt);
         tank.readFromNBT(nbt.getCompound("tank"));
         process = nbt.getInt("process");
@@ -109,6 +112,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 
     @Override
     public void writeCustomNBT(CompoundNBT nbt, boolean descPacket) {
+        super.writeCustomNBT(nbt, descPacket);
         energyStorage.writeToNBT(nbt);
         nbt.put("tank", tank.writeToNBT(new CompoundNBT()));
         nbt.putInt("process", process);
@@ -121,18 +125,17 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
         checkForNeedlessTicking();
         if (!isDummy()) {
             if (!world.isRemote) {
-                if (!isRSDisabled()) {
-                    if (energyStorage.getEnergyStored() >= energyConsume) {
-                        ElectrolyzerRecipe recipe = getRecipe();
-                        if (process > 0) {
-                            if (inventory.get(0).isEmpty()) {
+                if (!isRSDisabled() && energyStorage.getEnergyStored() >= energyConsume) {
+                    ElectrolyzerRecipe recipe = getRecipe();
+                    if (process > 0) {
+                        if (inventory.get(0).isEmpty()) {
+                            process = 0;
+                            processMax = 0;
+                        }
+                        // during process
+                        else {
+                            if (recipe == null || recipe.time != processMax) {
                                 process = 0;
-                                processMax = 0;
-                            }
-                            // during process
-                            else {
-                                if (recipe == null || recipe.time != processMax) {
-                                    process = 0;
                                     processMax = 0;
                                 } else {
                                     process--;
@@ -158,7 +161,6 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
                         process = processMax;
                         this.markContainingBlockForUpdate(null);
                     }
-                }
             }
         }
     }
@@ -229,7 +231,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
     }
 
     public Set<BlockPos> getEnergyPos() {
-        return ImmutableSet.of(new BlockPos(1, 1, 4));
+        return ImmutableSet.of(new BlockPos(1, 1, 0));
     }
 
     @Override
@@ -239,22 +241,27 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
         );
     }
 
-    EnergyHelper.IEForgeEnergyWrapper wrapper = new EnergyHelper.IEForgeEnergyWrapper(this, null);
-
     @Nullable
     @Override
     public EnergyHelper.IEForgeEnergyWrapper getCapabilityWrapper(Direction facing) {
-        return wrapper;
+        return this.formed && this.isEnergyPos() ? this.wrapper : null;
+    }
+
+    public void postEnergyTransferUpdate(int energy, boolean simulate) {
+        if (!simulate) {
+            this.updateMasterBlock((BlockState) null, energy != 0);
+        }
+
     }
 
     @Nullable
     @Override
     public IEBlockInterfaces.IInteractionObjectIE getGuiMaster() {
-        return this;
+        return master();
     }
 
     @Override
     public boolean canUseGui(PlayerEntity player) {
-        return true;
+        return formed;
     }
 }
