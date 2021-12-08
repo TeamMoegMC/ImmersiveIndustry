@@ -34,14 +34,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fluids.FluidAttributes;
 
-public class ElectrolyzerCategory<T extends ElectrolyzerRecipe> implements IRecipeCategory<ElectrolyzerRecipe> {
-    public static ResourceLocation UID = new ResourceLocation(IIMain.MODID, "electrolyzer");
+public class IndustrialElectrolyzerCategory<T extends ElectrolyzerRecipe> implements IRecipeCategory<ElectrolyzerRecipe> {
+    public static ResourceLocation UID = new ResourceLocation(IIMain.MODID, "industrial_electrolyzer");
     private IDrawable BACKGROUND;
     private IDrawable ICON;
 
-    public ElectrolyzerCategory(IGuiHelper guiHelper) {
+    public IndustrialElectrolyzerCategory(IGuiHelper guiHelper) {
         this.ICON = guiHelper.createDrawableIngredient(new ItemStack(IIContent.IIBlocks.electrolyzer));
-        this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/electrolyzer.png"), 17, 14, 115, 60);
+        this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/industrial_electrolyzer.png"), 17, 14, 134, 60);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class ElectrolyzerCategory<T extends ElectrolyzerRecipe> implements IReci
 
 
     public String getTitle() {
-        return (new TranslationTextComponent("gui.jei.category." + IIMain.MODID + ".electrolyzer").getString());
+        return (new TranslationTextComponent("gui.jei.category." + IIMain.MODID + ".industrial_electrolyzer").getString());
     }
 
     @Override
@@ -71,11 +71,9 @@ public class ElectrolyzerCategory<T extends ElectrolyzerRecipe> implements IReci
 
     @Override
     public void setIngredients(ElectrolyzerRecipe recipe, IIngredients ingredients) {
-        if (!recipe.flag) {
-            ingredients.setInputs(VanillaTypes.FLUID, recipe.input_fluid.getMatchingFluidStacks());
-            ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).build());
-            ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
-        }
+        ingredients.setInputs(VanillaTypes.FLUID, recipe.input_fluid.getMatchingFluidStacks());
+        ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).add(recipe.input2).build());
+        ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
     }
 
 
@@ -84,12 +82,12 @@ public class ElectrolyzerCategory<T extends ElectrolyzerRecipe> implements IReci
         IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
         IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
         if (recipe.input_fluid != null) {
-            guiFluidStacks.init(2, true, 4, 4, 16, 47, FluidAttributes.BUCKET_VOLUME / 20, false, null);
-            guiFluidStacks.set(2, recipe.input_fluid.getMatchingFluidStacks());
+            guiFluidStacks.init(3, true, 4, 4, 16, 47, FluidAttributes.BUCKET_VOLUME / 20, false, null);
+            guiFluidStacks.set(3, recipe.input_fluid.getMatchingFluidStacks());
         }
-        guiItemStacks.init(0, true, 33, 19);
-
-        guiItemStacks.init(1, false, 89, 19);
+        guiItemStacks.init(0, true, 15, 19);
+        guiItemStacks.init(1, true, 33, 19);
+        guiItemStacks.init(2, false, 89, 19);
 
         guiItemStacks.set(ingredients);
     }

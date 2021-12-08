@@ -4,7 +4,9 @@
   "block.immersiveindustry.electrolyzer": "Electrolyzer",
   "block.immersiveindustry.crucible": "Steel Mill Crucible",
   "block.immersiveindustry.steam_turbine": "Industrial Steam Turbine",
+  "block.immersiveindustry.industrial_electrolyzer": "Industrial Electrolyzer",
   "gui.jei.category.immersiveindustry.crucible": "Steel Mill Crucible",
-  "gui.jei.category.immersiveindustry.electrolyzer": "Electrolyzer",
+  "gui.jei.category.immersiveindustry.electrolyzer": "Simple Electrolyzer",
+  "gui.jei.category.immersiveindustry.industrial_electrolyzer": "Industrial Electrolyzer",
   "manual.immersiveindustry.main": "Immersive Industry"
 }

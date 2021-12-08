@@ -30,7 +30,6 @@ import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableSet;
 import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
@@ -43,7 +42,6 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -62,8 +60,8 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
     public final int energyConsume;
     public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
     EnergyHelper.IEForgeEnergyWrapper wrapper = new EnergyHelper.IEForgeEnergyWrapper(this, null);
-    public FluidTank tank = new FluidTank(8 * FluidAttributes.BUCKET_VOLUME, ElectrolyzerRecipe::isValidRecipeFluid);
-    private NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+    public FluidTank[] tank = new FluidTank[]{new FluidTank(16000, ElectrolyzerRecipe::isValidRecipeFluid), new FluidTank(16000)};
+    private NonNullList<ItemStack> inventory = NonNullList.withSize(5, ItemStack.EMPTY);
 
 
     public IndustrialElectrolyzerTileEntity() {
@@ -83,9 +81,13 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
     @Override
     protected IFluidTank[] getAccessibleFluidTanks(Direction side) {
         IndustrialElectrolyzerTileEntity master = master();
-        if (master != null && (posInMultiblock.getZ() == 3 && posInMultiblock.getY() == 0)
-                && (side == null || side == getFacing().getOpposite()))
-            return new FluidTank[]{master.tank};
+        if (master != null) {
+            if (posInMultiblock.getZ() == 3 && posInMultiblock.getY() == 0
+                    && side == null || side == getFacing().getOpposite()) {
+
+                return new FluidTank[]{master.tank[0]};
+            }
+        }
         return new FluidTank[0];
     }
 
@@ -104,7 +106,8 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
     public void readCustomNBT(CompoundNBT nbt, boolean descPacket) {
         super.readCustomNBT(nbt, descPacket);
         energyStorage.readFromNBT(nbt);
-        tank.readFromNBT(nbt.getCompound("tank"));
+        tank[0].readFromNBT(nbt.getCompound("tank0"));
+        tank[1].readFromNBT(nbt.getCompound("tank1"));
         process = nbt.getInt("process");
         processMax = nbt.getInt("processMax");
         ItemStackHelper.loadAllItems(nbt, inventory);
@@ -114,7 +117,8 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
     public void writeCustomNBT(CompoundNBT nbt, boolean descPacket) {
         super.writeCustomNBT(nbt, descPacket);
         energyStorage.writeToNBT(nbt);
-        nbt.put("tank", tank.writeToNBT(new CompoundNBT()));
+        nbt.put("tank0", tank[0].writeToNBT(new CompoundNBT()));
+        nbt.put("tank1", tank[1].writeToNBT(new CompoundNBT()));
         nbt.putInt("process", process);
         nbt.putInt("processMax", processMax);
         ItemStackHelper.saveAllItems(nbt, inventory);
@@ -149,7 +153,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
                                 this.processMax = process;
                             } else {
                                 Utils.modifyInvStackSize(inventory, 0, -recipe.input.getCount());
-                                tank.drain(recipe.input_fluid.getAmount(), IFluidHandler.FluidAction.EXECUTE);
+                                tank[0].drain(recipe.input_fluid.getAmount(), IFluidHandler.FluidAction.EXECUTE);
                                 if (!inventory.get(1).isEmpty())
                                     inventory.get(1).grow(recipe.output.copy().getCount());
                                 else if (inventory.get(1).isEmpty())
@@ -169,7 +173,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
     public ElectrolyzerRecipe getRecipe() {
         if (inventory.get(0).isEmpty())
             return null;
-        ElectrolyzerRecipe recipe = ElectrolyzerRecipe.findRecipe(inventory.get(0), tank.getFluid());
+        ElectrolyzerRecipe recipe = ElectrolyzerRecipe.findRecipe(inventory.get(0), inventory.get(1), tank[0].getFluid());
         if (recipe == null)
             return null;
         if (inventory.get(1).isEmpty() || (ItemStack.areItemsEqual(inventory.get(1), recipe.output) &&
@@ -180,8 +184,8 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
     }
 
     LazyOptional<IItemHandler> invHandler = registerConstantCap(
-            new IEInventoryHandler(2, this, 0, new boolean[]{true, false},
-                    new boolean[]{false, true})
+            new IEInventoryHandler(2, this, 0, new boolean[]{true, true, false, true, true},
+                    new boolean[]{false, false, true, false, false})
     );
 
     @Nonnull
@@ -200,7 +204,11 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 
     @Override
     public boolean isStackValid(int slot, ItemStack stack) {
-        return ElectrolyzerRecipe.isValidRecipeInput(stack);
+        if (slot == 0)
+            return ElectrolyzerRecipe.isValidRecipeInput(stack, false);
+        else if (slot == 1)
+            return ElectrolyzerRecipe.isValidRecipeInput(stack, true);
+        return false;
     }
 
     @Override
@@ -249,7 +257,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 
     public void postEnergyTransferUpdate(int energy, boolean simulate) {
         if (!simulate) {
-            this.updateMasterBlock((BlockState) null, energy != 0);
+            this.updateMasterBlock(null, energy != 0);
         }
 
     }

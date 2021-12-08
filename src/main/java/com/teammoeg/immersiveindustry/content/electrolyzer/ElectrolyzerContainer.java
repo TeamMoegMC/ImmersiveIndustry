@@ -33,7 +33,7 @@ public class ElectrolyzerContainer extends IEBaseContainer<ElectrolyzerTileEntit
         this.addSlot(new IESlot(this, this.inv, 0, 51, 34) {
             @Override
             public boolean isItemValid(ItemStack itemStack) {
-                return ElectrolyzerRecipe.isValidRecipeInput(itemStack);
+                return ElectrolyzerRecipe.isValidRecipeInput(itemStack, false);
             }
         });
         // output

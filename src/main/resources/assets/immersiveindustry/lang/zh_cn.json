@@ -4,7 +4,9 @@
   "block.immersiveindustry.electrolyzer": "电解机",
   "block.immersiveindustry.crucible": "炼钢坩埚",
   "block.immersiveindustry.steam_turbine": "工业蒸汽轮机",
+  "block.immersiveindustry.industrial_electrolyzer": "工业电解槽",
   "gui.jei.category.immersiveindustry.crucible": "炼钢坩埚",
-  "gui.jei.category.immersiveindustry.electrolyzer": "电解机",
+  "gui.jei.category.immersiveindustry.electrolyzer": "简易电解槽",
+  "gui.jei.category.immersiveindustry.industrial_electrolyzer": "工业电解槽",
   "manual.immersiveindustry.main": "沉浸工业"
 }

@@ -20,6 +20,7 @@ package com.teammoeg.immersiveindustry.content.electrolyzer;
 
 import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.items.IEItems;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -30,16 +31,34 @@ public class IndustrialElectrolyzerContainer extends IEBaseContainer<IndustrialE
         super(inventoryPlayer, tile, id);
 
         // input
-        this.addSlot(new IESlot(this, this.inv, 0, 52, 39) {
+        this.addSlot(new IESlot(this, this.inv, 0, 34, 39) {
             @Override
             public boolean isItemValid(ItemStack itemStack) {
-                return ElectrolyzerRecipe.isValidRecipeInput(itemStack);
+                return ElectrolyzerRecipe.isValidRecipeInput(itemStack, false);
+            }
+        });
+        this.addSlot(new IESlot(this, this.inv, 1, 52, 39) {
+            @Override
+            public boolean isItemValid(ItemStack itemStack) {
+                return ElectrolyzerRecipe.isValidRecipeInput(itemStack, true);
             }
         });
         // output
-        this.addSlot(new IESlot.Output(this, this.inv, 1, 108, 39));
-        // input fuel
-        slotCount = 2;
+        this.addSlot(new IESlot.Output(this, this.inv, 2, 108, 39));
+        slotCount = 3;
+
+        this.addSlot(new IESlot(this, this.inv, 3, 34, 10) {
+            @Override
+            public boolean isItemValid(ItemStack itemStack) {
+                return itemStack.getItem() == IEItems.Misc.graphiteElectrode;
+            }
+        });
+        this.addSlot(new IESlot(this, this.inv, 4, 52, 10) {
+            @Override
+            public boolean isItemValid(ItemStack itemStack) {
+                return itemStack.getItem() == IEItems.Misc.graphiteElectrode;
+            }
+        });
 
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 9; j++)

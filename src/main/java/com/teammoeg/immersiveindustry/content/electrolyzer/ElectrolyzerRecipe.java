@@ -38,16 +38,20 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
     public static RegistryObject<IERecipeSerializer<ElectrolyzerRecipe>> SERIALIZER;
 
     public final IngredientWithSize input;
+    public final IngredientWithSize input2;
     public final FluidTagInput input_fluid;
     public final ItemStack output;
     public final int time;
+    public final boolean flag;
 
-    public ElectrolyzerRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input, FluidTagInput input_fluid, int time) {
+    public ElectrolyzerRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input, IngredientWithSize input2, FluidTagInput input_fluid, int time, boolean flag) {
         super(output, TYPE, id);
         this.output = output;
         this.input = input;
+        this.input2 = input2;
         this.input_fluid = input_fluid;
         this.time = time;
+        this.flag = flag;
     }
 
     @Override
@@ -63,18 +67,23 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
     // Initialized by reload listener
     public static Map<ResourceLocation, ElectrolyzerRecipe> recipeList = Collections.emptyMap();
 
-    public static boolean isValidRecipeInput(ItemStack input) {
+    public static boolean isValidRecipeInput(ItemStack input, boolean b) {
         for (ElectrolyzerRecipe recipe : recipeList.values())
-            if (recipe != null && recipe.input.test(input))
+            if (recipe != null) {
+                if (recipe.input.test(input) && b)
+                    return true;
+                else if (recipe.input2.test(input) && !b) ;
                 return true;
+            }
         return false;
     }
 
-    public static ElectrolyzerRecipe findRecipe(ItemStack input, FluidStack input_fluid) {
+    public static ElectrolyzerRecipe findRecipe(ItemStack input, ItemStack input2, FluidStack input_fluid) {
         for (ElectrolyzerRecipe recipe : recipeList.values())
             if (recipe != null && recipe.input.test(input))
-                if (recipe.input_fluid.test(input_fluid))
-                    return recipe;
+                if (recipe.input2.test(input2) || recipe.input2 == null)
+                    if (recipe.input_fluid.test(input_fluid))
+                        return recipe;
         return null;
     }
 
@@ -89,6 +98,7 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
     public NonNullList<Ingredient> getIngredients() {
         NonNullList<Ingredient> nonnulllist = NonNullList.create();
         nonnulllist.add(this.input.getBaseIngredient());
+        nonnulllist.add(this.input2.getBaseIngredient());
         return nonnulllist;
     }
 }
