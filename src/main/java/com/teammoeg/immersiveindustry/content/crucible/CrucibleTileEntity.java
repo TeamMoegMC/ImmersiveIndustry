@@ -263,11 +263,14 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                                 }
                     }
                 }
-                if (burnTime > 0 && temperature < 1600) {
-                    if (getFromPreheater(BlastFurnacePreheaterTileEntity::doSpeedup, 0) > 0)
-                        temperature++;
-                    else if (temperature < 1100)
-                        temperature++;
+                if (burnTime > 0){
+                    if (getFromPreheater(BlastFurnacePreheaterTileEntity::doSpeedup, 0) > 0) {
+                    	if(temperature < 1600)
+                    		temperature++;//with preheater, boost
+                    }else if (temperature < 1100)
+                        temperature++;//without preheater, up to 1100
+                    else
+                    	temperature--;//without preheater, reduce
                 } else if (burnTime <= 0 && temperature > 0) {
                     temperature--;
                 }
