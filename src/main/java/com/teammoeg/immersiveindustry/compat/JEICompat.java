@@ -23,9 +23,7 @@ import com.teammoeg.immersiveindustry.IIMain;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleCategory;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleScreen;
-import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerCategory;
-import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipe;
-import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerScreen;
+import com.teammoeg.immersiveindustry.content.electrolyzer.*;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -53,6 +51,7 @@ public class JEICompat implements IModPlugin {
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(new ItemStack(IIContent.IIBlocks.burning_chamber), CrucibleCategory.UID);
         registration.addRecipeCatalyst(new ItemStack(IIContent.IIBlocks.electrolyzer), ElectrolyzerCategory.UID);
+        registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.industrial_electrolyzer), IndustrialElectrolyzerCategory.UID);
     }
 
     @Override
@@ -63,6 +62,7 @@ public class JEICompat implements IModPlugin {
 
         registration.addRecipes(new ArrayList<>(CrucibleRecipe.recipeList.values()), CrucibleCategory.UID);
         registration.addRecipes(new ArrayList<>(ElectrolyzerRecipe.recipeList.values()), ElectrolyzerCategory.UID);
+        registration.addRecipes(new ArrayList<>(ElectrolyzerRecipe.recipeList.values()), IndustrialElectrolyzerCategory.UID);
     }
 
     @Override
@@ -70,13 +70,15 @@ public class JEICompat implements IModPlugin {
         IGuiHelper guiHelper = registration.getJeiHelpers().getGuiHelper();
         registration.addRecipeCategories(
                 new CrucibleCategory(guiHelper),
-                new ElectrolyzerCategory(guiHelper)
+                new ElectrolyzerCategory(guiHelper),
+                new IndustrialElectrolyzerCategory(guiHelper)
         );
     }
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registry) {
         registry.addRecipeClickArea(ElectrolyzerScreen.class, 76, 35, 19, 25, ElectrolyzerCategory.UID);
+        registry.addRecipeClickArea(IndustrialElectrolyzerScreen.class, 76, 35, 19, 25, IndustrialElectrolyzerCategory.UID);
         registry.addRecipeClickArea(CrucibleScreen.class, 76, 14, 19, 25, CrucibleCategory.UID);
     }
 

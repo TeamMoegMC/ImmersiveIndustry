@@ -129,8 +129,8 @@ public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInven
     public ElectrolyzerRecipe getRecipe() {
         if (inventory.get(0).isEmpty())
             return null;
-        ElectrolyzerRecipe recipe = ElectrolyzerRecipe.findRecipe(inventory.get(0), tank.getFluid());
-        if (recipe == null)
+        ElectrolyzerRecipe recipe = ElectrolyzerRecipe.findRecipe(inventory.get(0), null, tank.getFluid());
+        if (recipe == null && recipe.flag)
             return null;
         if (inventory.get(1).isEmpty() || (ItemStack.areItemsEqual(inventory.get(1), recipe.output) &&
                 inventory.get(1).getCount() + recipe.output.getCount() <= getSlotLimit(1))) {

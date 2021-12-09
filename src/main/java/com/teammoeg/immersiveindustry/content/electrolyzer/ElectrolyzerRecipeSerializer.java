@@ -40,9 +40,11 @@ public class ElectrolyzerRecipeSerializer extends IERecipeSerializer<Electrolyze
     public ElectrolyzerRecipe readFromJson(ResourceLocation recipeId, JsonObject json) {
         ItemStack output = readOutput(json.get("result"));
         IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
+        IngredientWithSize input2 = IngredientWithSize.deserialize(json.get("input2"));
         FluidTagInput input_fluid = FluidTagInput.deserialize(JSONUtils.getJsonObject(json, "fluid"));
         int time = JSONUtils.getInt(json, "time");
-        return new ElectrolyzerRecipe(recipeId, output, input, input_fluid, time);
+        boolean flag = JSONUtils.getBoolean(json, "flag");
+        return new ElectrolyzerRecipe(recipeId, output, input, input2, input_fluid, time, flag);
     }
 
     @Nullable
@@ -50,16 +52,20 @@ public class ElectrolyzerRecipeSerializer extends IERecipeSerializer<Electrolyze
     public ElectrolyzerRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
         ItemStack output = buffer.readItemStack();
         IngredientWithSize input = IngredientWithSize.read(buffer);
+        IngredientWithSize input2 = IngredientWithSize.read(buffer);
         FluidTagInput input_fluid = FluidTagInput.read(buffer);
         int time = buffer.readInt();
-        return new ElectrolyzerRecipe(recipeId, output, input, input_fluid, time);
+        boolean flag = buffer.readBoolean();
+        return new ElectrolyzerRecipe(recipeId, output, input, input2, input_fluid, time, flag);
     }
 
     @Override
     public void write(PacketBuffer buffer, ElectrolyzerRecipe recipe) {
         buffer.writeItemStack(recipe.output);
         recipe.input.write(buffer);
+        recipe.input2.write(buffer);
         recipe.input_fluid.write(buffer);
         buffer.writeInt(recipe.time);
+        buffer.writeBoolean(recipe.flag);
     }
 }
