@@ -74,7 +74,8 @@ public class IndustrialElectrolyzerCategory<T extends ElectrolyzerRecipe> implem
 
     @Override
     public void setIngredients(ElectrolyzerRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputs(VanillaTypes.FLUID, recipe.input_fluid.getMatchingFluidStacks());
+    	if(recipe.input_fluid!=null)
+    		ingredients.setInputs(VanillaTypes.FLUID, recipe.input_fluid.getMatchingFluidStacks());
         if(recipe.inputs.length==2)
         	ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.inputs[0]).add(recipe.inputs[1]).build());
         else if(recipe.inputs.length==1)

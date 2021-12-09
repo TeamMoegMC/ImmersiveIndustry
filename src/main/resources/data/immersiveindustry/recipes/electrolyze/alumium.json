@@ -1,0 +1,10 @@
+{
+	"type":"immersiveindustry:electrolyzer",
+	"input":{
+		"item":"immersiveengineering:ore_aluminum"
+	},
+	"result":{
+		"item":"immersiveengineering:dust_aluminum"
+	},
+	"time":10
+}

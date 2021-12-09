@@ -22,6 +22,8 @@ import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
+import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
@@ -44,12 +46,15 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -69,8 +74,90 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 	EnergyHelper.IEForgeEnergyWrapper wrapper = new EnergyHelper.IEForgeEnergyWrapper(this, null);
 	public FluidTank[] tank = new FluidTank[] { new FluidTank(16000, ElectrolyzerRecipe::isValidRecipeFluid),
 			new FluidTank(16000) };
+	private static BlockPos out1=new BlockPos(3,0,0);
+	private static BlockPos out2=new BlockPos(3,0,2);
+	private CapabilityReference<IItemHandler> outputCap1 = CapabilityReference.forTileEntityAt(this,
+			() -> {
+				Direction fw = getFacing().rotateY();
+				return new DirectionalBlockPos(this.pos.offset(getFacing().getOpposite()).offset(Direction.DOWN).offset(fw,2), fw.getOpposite());
+			}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+	private CapabilityReference<IItemHandler> outputCap2 = CapabilityReference.forTileEntityAt(this,
+			() -> {
+				Direction fw = getFacing().rotateYCCW();
+				return new DirectionalBlockPos(this.pos.offset(getFacing().getOpposite()).offset(Direction.DOWN).offset(fw,2),fw.getOpposite());
+			}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+	private CapabilityReference<IFluidHandler> outputfCap1 = CapabilityReference.forTileEntityAt(this,
+			() -> {
+				Direction fw = getFacing().rotateYCCW();
+				return new DirectionalBlockPos(this.pos.offset(getFacing().getOpposite()).offset(Direction.DOWN).offset(fw,2), fw.getOpposite());
+			}, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+	private CapabilityReference<IFluidHandler> outputfCap2 = CapabilityReference.forTileEntityAt(this,
+			() -> {
+				Direction fw = getFacing().rotateY();
+				return new DirectionalBlockPos(this.pos.offset(getFacing().getOpposite()).offset(Direction.DOWN).offset(fw,2),fw.getOpposite());
+			}, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+	public IFluidTank[] iotank=new IFluidTank[] {
+			new ICapFluidTank(tank[0]) {
+				@Override
+				public FluidStack drain(int maxDrain, FluidAction action) {
+					return FluidStack.EMPTY;
+				}
+				@Override
+				public FluidStack drain(FluidStack resource, FluidAction action) {
+					return FluidStack.EMPTY;
+				}
+			},
+			new ICapFluidTank(tank[1]) {
+				@Override
+				public int fill(FluidStack resource, FluidAction action) {
+					return 0;
+				}
+			}
+	};
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(5, ItemStack.EMPTY);
+	static class ICapFluidTank implements IFluidTank{
+		final FluidTank innertank;
+		
+		public ICapFluidTank(FluidTank tank) {
+			this.innertank = tank;
+		}
 
+		@Override
+		public FluidStack getFluid() {
+			return innertank.getFluid();
+		}
+
+		@Override
+		public int getFluidAmount() {
+			return innertank.getFluidAmount();
+		}
+
+		@Override
+		public int getCapacity() {
+			return innertank.getCapacity();
+		}
+
+		@Override
+		public boolean isFluidValid(FluidStack stack) {
+			return innertank.isFluidValid(stack);
+		}
+
+		@Override
+		public int fill(FluidStack resource, FluidAction action) {
+			return innertank.fill(resource, action);
+		}
+
+		@Override
+		public FluidStack drain(int maxDrain, FluidAction action) {
+			return innertank.drain(maxDrain, action);
+		}
+
+		@Override
+		public FluidStack drain(FluidStack resource, FluidAction action) {
+			return innertank.drain(resource, action);
+		}
+		
+	}
 	public IndustrialElectrolyzerTileEntity() {
 		super(IIContent.IIMultiblocks.IND_ELE, IIContent.IITileTypes.IND_ELE.get(), true);
 		energyConsume = IIConfig.COMMON.electrolyzerConsume.get() * 2;
@@ -87,10 +174,11 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 	protected IFluidTank[] getAccessibleFluidTanks(Direction side) {
 		IndustrialElectrolyzerTileEntity master = master();
 		if (master != null) {
-			if (posInMultiblock.getZ() == 3 && posInMultiblock.getY() == 0 && side == null
-					|| side == getFacing().getOpposite()) {
-
-				return new FluidTank[] { master.tank[0] };
+			if(side.getYOffset()==0&&this.offsetToMaster.getY()==-1&&this.offsetToMaster.getX()!=0) {
+				if(this.offsetToMaster.getZ()==-1)
+					return new IFluidTank[] { master.iotank[0] };
+				if(this.offsetToMaster.getZ()==1)
+					return new IFluidTank[] { master.iotank[1] };
 			}
 		}
 		return new FluidTank[0];
@@ -137,6 +225,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 		checkForNeedlessTicking();
 		if (!isDummy()) {
 			if (!world.isRemote) {
+				tryOutput();
 				if (!isRSDisabled() && energyStorage.getEnergyStored() >= energyConsume) {
 					if (process > 0) {
 						process--;
@@ -149,10 +238,12 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 							inventory.set(2, result);
 							result = ItemStack.EMPTY;
 							process = processMax = 0;
+							this.markContainingBlockForUpdate(null);
 						} else if (inventory.get(2).isItemEqual(result)) {
 							inventory.get(2).grow(result.getCount());
 							result = ItemStack.EMPTY;
 							process = processMax = 0;
+							this.markContainingBlockForUpdate(null);
 						} else
 							return;
 					}
@@ -166,7 +257,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 					}
 					ElectrolyzerRecipe recipe = getRecipe();
 					if (recipe != null) {
-						this.processMax = this.process = recipe.time;
+						
 						if (recipe.inputs.length > 0) {
 							outer: for (IngredientWithSize iws : recipe.inputs) {
 								for (int i = 0; i < 2; i++) {
@@ -180,6 +271,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 								return;
 							}
 						}
+						this.processMax = this.process = recipe.time;
 						if (recipe.input_fluid != null)
 							tank[0].drain(recipe.input_fluid.getAmount(), IFluidHandler.FluidAction.EXECUTE);
 						result = recipe.output.copy();
@@ -188,6 +280,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 							if (!matching.isEmpty())
 								resultFluid = matching.get(0).copy();
 						}
+						this.markContainingBlockForUpdate(null);
 					}
 				} else if (process > 0) {
 					process = processMax;
@@ -197,7 +290,70 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 			}
 		}
 	}
+	public void tryOutput(){
+		boolean update=false;
+		if(this.tank[1].getFluidAmount() > 0)
+		{
+			FluidStack out = Utils.copyFluidStackWithAmount(this.tank[1].getFluid(), Math.min(this.tank[1].getFluidAmount(), 80), false);
+			if(outputfCap1.isPresent()){
+				IFluidHandler output=outputfCap1.getNullable();
+				int accepted = output.fill(out, FluidAction.SIMULATE);
 
+				if(accepted > 0)
+				{
+					int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false), FluidAction.EXECUTE);
+					this.tank[1].drain(drained, FluidAction.EXECUTE);
+					out.shrink(accepted);
+					update |=true;
+				}
+			}
+			if(!out.isEmpty()&&outputfCap2.isPresent()){
+				IFluidHandler output=outputfCap2.getNullable();
+				int accepted = output.fill(out, FluidAction.SIMULATE);
+
+				if(accepted > 0)
+				{
+					int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false), FluidAction.EXECUTE);
+					this.tank[1].drain(drained, FluidAction.EXECUTE);
+					out.shrink(accepted);
+					update |=true;
+				}
+			}
+		}
+		if(!inventory.get(2).isEmpty()&&world.getGameTime()%8==0)
+		{
+			boolean succeed=false;
+			if(outputCap1.isPresent())
+			{
+				ItemStack stack = ItemHandlerHelper.copyStackWithSize(inventory.get(2), 1);
+				stack = Utils.insertStackIntoInventory(outputCap1, stack, false);
+				if(stack.isEmpty())
+				{
+					this.inventory.get(2).shrink(1);
+					succeed=true;
+					if(this.inventory.get(2).getCount() <= 0)
+						this.inventory.set(2, ItemStack.EMPTY);
+				}
+			}
+			if(!succeed&&outputCap2.isPresent())
+			{
+				ItemStack stack = ItemHandlerHelper.copyStackWithSize(inventory.get(2), 1);
+				stack = Utils.insertStackIntoInventory(outputCap1, stack, false);
+				if(stack.isEmpty())
+				{
+					this.inventory.get(2).shrink(1);
+					if(this.inventory.get(2).getCount() <= 0)
+						this.inventory.set(2, ItemStack.EMPTY);
+				}
+			}
+		}
+
+		if(update)
+		{
+			this.markDirty();
+			this.markContainingBlockForUpdate(null);
+		}
+	}
 	@Nullable
 	public ElectrolyzerRecipe getRecipe() {
 		ElectrolyzerRecipe recipe = ElectrolyzerRecipe.findRecipe(inventory.get(0), inventory.get(1),
@@ -211,29 +367,37 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 		return null;
 	}
 
-	LazyOptional<IItemHandler> invHandler = registerConstantCap(new IEInventoryHandler(2, this, 0,
-			new boolean[] { true, true, false, true, true }, new boolean[] { false, false, true, false, false }));
-
+	LazyOptional<IItemHandler> inHandler = registerConstantCap(new IEInventoryHandler(2, this , 0, true , false));
+	LazyOptional<IItemHandler> outHandler = registerConstantCap(new IEInventoryHandler(1, this , 2, false, true));
 	@Nonnull
 	@Override
 	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing) {
-		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return invHandler.cast();
+		if(facing.getYOffset()==0&&this.offsetToMaster.getY()==-1&&this.offsetToMaster.getX()!=0) {
+			if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+				if (this.offsetToMaster.getZ()==-1)
+					return inHandler.cast();
+				else if(this.offsetToMaster.getZ()==1)
+					return outHandler.cast();
+				return LazyOptional.empty();
+			}
+		}
 		return super.getCapability(capability, facing);
 	}
 
 	@Nullable
 	@Override
 	public NonNullList<ItemStack> getInventory() {
-		return this.inventory;
+		if(master()!=null)
+			return master().inventory;
+		return null;
 	}
 
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack) {
 		if (slot == 0)
-			return ElectrolyzerRecipe.isValidRecipeInput(stack, false);
+			return ElectrolyzerRecipe.isValidRecipeInput(stack);
 		else if (slot == 1)
-			return ElectrolyzerRecipe.isValidRecipeInput(stack, true);
+			return ElectrolyzerRecipe.isValidRecipeInput(stack);
 		return false;
 	}
 

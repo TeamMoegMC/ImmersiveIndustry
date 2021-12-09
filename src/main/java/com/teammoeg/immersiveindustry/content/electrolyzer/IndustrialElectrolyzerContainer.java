@@ -34,13 +34,13 @@ public class IndustrialElectrolyzerContainer extends IEBaseContainer<IndustrialE
         this.addSlot(new IESlot(this, this.inv, 0, 34, 39) {
             @Override
             public boolean isItemValid(ItemStack itemStack) {
-                return ElectrolyzerRecipe.isValidRecipeInput(itemStack, false);
+                return ElectrolyzerRecipe.isValidRecipeInput(itemStack);
             }
         });
         this.addSlot(new IESlot(this, this.inv, 1, 52, 39) {
             @Override
             public boolean isItemValid(ItemStack itemStack) {
-                return ElectrolyzerRecipe.isValidRecipeInput(itemStack, true);
+                return ElectrolyzerRecipe.isValidRecipeInput(itemStack);
             }
         });
         // output

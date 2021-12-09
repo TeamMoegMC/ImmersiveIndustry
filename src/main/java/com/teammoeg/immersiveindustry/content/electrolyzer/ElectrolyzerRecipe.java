@@ -67,7 +67,7 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
     // Initialized by reload listener
     public static Map<ResourceLocation, ElectrolyzerRecipe> recipeList = Collections.emptyMap();
 
-    public static boolean isValidRecipeInput(ItemStack input, boolean isLarge) {
+    public static boolean isValidRecipeInput(ItemStack input) {
         for (ElectrolyzerRecipe recipe : recipeList.values())
             for(IngredientWithSize is:recipe.inputs) {
             	if(is.testIgnoringSize(input))
