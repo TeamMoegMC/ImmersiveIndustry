@@ -269,7 +269,7 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                     		temperature++;//with preheater, boost
                     }else if (temperature < 1100)
                         temperature++;//without preheater, up to 1100
-                    else
+                    else if(temperature >1100)
                     	temperature--;//without preheater, reduce
                 } else if (burnTime <= 0 && temperature > 0) {
                     temperature--;
