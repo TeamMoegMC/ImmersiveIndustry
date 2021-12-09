@@ -37,21 +37,21 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
     public static IRecipeType<ElectrolyzerRecipe> TYPE;
     public static RegistryObject<IERecipeSerializer<ElectrolyzerRecipe>> SERIALIZER;
 
-    public final IngredientWithSize input;
-    public final IngredientWithSize input2;
+    public final IngredientWithSize[] inputs;
     public final FluidTagInput input_fluid;
     public final ItemStack output;
+    public final FluidTagInput output_fluid;
     public final int time;
     public final boolean flag;
 
-    public ElectrolyzerRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input, IngredientWithSize input2, FluidTagInput input_fluid, int time, boolean flag) {
+    public ElectrolyzerRecipe(ResourceLocation id, ItemStack output, IngredientWithSize[] input, FluidTagInput input_fluid,FluidTagInput output_fluid, int time, boolean flag) {
         super(output, TYPE, id);
         this.output = output;
-        this.input = input;
-        this.input2 = input2;
+        this.inputs = input;
         this.input_fluid = input_fluid;
         this.time = time;
         this.flag = flag;
+        this.output_fluid=output_fluid;
     }
 
     @Override
@@ -67,23 +67,30 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
     // Initialized by reload listener
     public static Map<ResourceLocation, ElectrolyzerRecipe> recipeList = Collections.emptyMap();
 
-    public static boolean isValidRecipeInput(ItemStack input, boolean b) {
+    public static boolean isValidRecipeInput(ItemStack input, boolean isLarge) {
         for (ElectrolyzerRecipe recipe : recipeList.values())
-            if (recipe != null) {
-                if (recipe.input.test(input) && b)
-                    return true;
-                else if (recipe.input2.test(input) && !b) ;
-                return true;
+            for(IngredientWithSize is:recipe.inputs) {
+            	if(is.testIgnoringSize(input))
+            		return true;
             }
         return false;
     }
 
-    public static ElectrolyzerRecipe findRecipe(ItemStack input, ItemStack input2, FluidStack input_fluid) {
-        for (ElectrolyzerRecipe recipe : recipeList.values())
-            if (recipe != null && recipe.input.test(input))
-                if (recipe.input2.test(input2) || recipe.input2 == null)
-                    if (recipe.input_fluid.test(input_fluid))
-                        return recipe;
+    public static ElectrolyzerRecipe findRecipe(ItemStack input, ItemStack input2, FluidStack input_fluid,boolean isLarge) {
+    	int size=(input.isEmpty()?0:1)+(input2.isEmpty()?0:1);
+    	outer:
+    	for (ElectrolyzerRecipe recipe : recipeList.values())
+        	if(isLarge||!recipe.flag) {
+        		if(recipe.inputs.length>0&&recipe.inputs.length<=size) {
+        			for(IngredientWithSize is:recipe.inputs) {
+        				if(!is.test(input)&&!is.test(input2))
+        					continue outer;
+        			}
+        		}
+        		if(recipe.input_fluid!=null&&!recipe.input_fluid.test(input_fluid))
+        			continue;
+        		return recipe;
+        	}
         return null;
     }
 
@@ -97,8 +104,8 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
     @Override
     public NonNullList<Ingredient> getIngredients() {
         NonNullList<Ingredient> nonnulllist = NonNullList.create();
-        nonnulllist.add(this.input.getBaseIngredient());
-        nonnulllist.add(this.input2.getBaseIngredient());
+        for(IngredientWithSize is:this.inputs)
+        	nonnulllist.add(is.getBaseIngredient());
         return nonnulllist;
     }
 }

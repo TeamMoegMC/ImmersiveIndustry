@@ -39,6 +39,7 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @JeiPlugin
 public class JEICompat implements IModPlugin {
@@ -61,8 +62,8 @@ public class JEICompat implements IModPlugin {
         RecipeManager recipeManager = world.getRecipeManager();
 
         registration.addRecipes(new ArrayList<>(CrucibleRecipe.recipeList.values()), CrucibleCategory.UID);
-        registration.addRecipes(new ArrayList<>(ElectrolyzerRecipe.recipeList.values()), ElectrolyzerCategory.UID);
-        registration.addRecipes(new ArrayList<>(ElectrolyzerRecipe.recipeList.values()), IndustrialElectrolyzerCategory.UID);
+        registration.addRecipes(ElectrolyzerRecipe.recipeList.values().stream().filter(r->!r.flag).filter(r->r.inputs.length<2).collect(Collectors.toList()), ElectrolyzerCategory.UID);
+        registration.addRecipes(ElectrolyzerRecipe.recipeList.values().stream().filter(r->r.inputs.length<3).collect(Collectors.toList()), IndustrialElectrolyzerCategory.UID);
     }
 
     @Override

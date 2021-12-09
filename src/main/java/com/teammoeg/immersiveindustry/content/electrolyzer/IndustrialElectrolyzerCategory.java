@@ -19,6 +19,9 @@
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
+
+import java.util.Arrays;
+
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
 import mezz.jei.api.constants.VanillaTypes;
@@ -72,7 +75,12 @@ public class IndustrialElectrolyzerCategory<T extends ElectrolyzerRecipe> implem
     @Override
     public void setIngredients(ElectrolyzerRecipe recipe, IIngredients ingredients) {
         ingredients.setInputs(VanillaTypes.FLUID, recipe.input_fluid.getMatchingFluidStacks());
-        ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).add(recipe.input2).build());
+        if(recipe.inputs.length==2)
+        	ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.inputs[0]).add(recipe.inputs[1]).build());
+        else if(recipe.inputs.length==1)
+        	ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.inputs[0]).build());
+        else
+        	ingredients.setInputLists(VanillaTypes.ITEM,Arrays.asList(Arrays.asList(ItemStack.EMPTY)));
         ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
     }
 
