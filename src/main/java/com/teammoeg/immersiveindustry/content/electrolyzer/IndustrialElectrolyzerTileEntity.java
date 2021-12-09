@@ -18,6 +18,16 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.google.common.collect.ImmutableSet;
+import com.teammoeg.immersiveindustry.IIConfig;
+import com.teammoeg.immersiveindustry.IIContent;
+
 import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
@@ -30,9 +40,6 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import com.google.common.collect.ImmutableSet;
-import com.teammoeg.immersiveindustry.IIConfig;
-import com.teammoeg.immersiveindustry.IIContent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
@@ -46,7 +53,6 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -55,12 +61,6 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import java.util.List;
-import java.util.Set;
 
 public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<IndustrialElectrolyzerTileEntity>
 		implements IEBlockInterfaces.IBlockBounds, EnergyHelper.IIEInternalFluxHandler, IIEInventory,
@@ -74,27 +74,27 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 	EnergyHelper.IEForgeEnergyWrapper wrapper = new EnergyHelper.IEForgeEnergyWrapper(this, null);
 	public FluidTank[] tank = new FluidTank[] { new FluidTank(16000, ElectrolyzerRecipe::isValidRecipeFluid),
 			new FluidTank(16000) };
-	private static BlockPos out1=new BlockPos(3,0,0);
-	private static BlockPos out2=new BlockPos(3,0,2);
+	private static BlockPos out1=new BlockPos(3,0,3);
+	private static BlockPos out2=new BlockPos(-1,0,3);
 	private CapabilityReference<IItemHandler> outputCap1 = CapabilityReference.forTileEntityAt(this,
 			() -> {
-				Direction fw = getFacing().rotateY();
-				return new DirectionalBlockPos(this.pos.offset(getFacing().getOpposite()).offset(Direction.DOWN).offset(fw,2), fw.getOpposite());
+				Direction fw = getFacing().rotateYCCW();
+				return new DirectionalBlockPos(this.getBlockPosForPos(out1), fw);
 			}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 	private CapabilityReference<IItemHandler> outputCap2 = CapabilityReference.forTileEntityAt(this,
 			() -> {
-				Direction fw = getFacing().rotateYCCW();
-				return new DirectionalBlockPos(this.pos.offset(getFacing().getOpposite()).offset(Direction.DOWN).offset(fw,2),fw.getOpposite());
+				Direction fw = getFacing().rotateY();
+				return new DirectionalBlockPos(this.getBlockPosForPos(out2),fw);
 			}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 	private CapabilityReference<IFluidHandler> outputfCap1 = CapabilityReference.forTileEntityAt(this,
 			() -> {
 				Direction fw = getFacing().rotateYCCW();
-				return new DirectionalBlockPos(this.pos.offset(getFacing().getOpposite()).offset(Direction.DOWN).offset(fw,2), fw.getOpposite());
+				return new DirectionalBlockPos(this.getBlockPosForPos(out1), fw);
 			}, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
 	private CapabilityReference<IFluidHandler> outputfCap2 = CapabilityReference.forTileEntityAt(this,
 			() -> {
 				Direction fw = getFacing().rotateY();
-				return new DirectionalBlockPos(this.pos.offset(getFacing().getOpposite()).offset(Direction.DOWN).offset(fw,2),fw.getOpposite());
+				return new DirectionalBlockPos(this.getBlockPosForPos(out2),fw);
 			}, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
 	public IFluidTank[] iotank=new IFluidTank[] {
 			new ICapFluidTank(tank[0]) {
@@ -338,7 +338,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 			if(!succeed&&outputCap2.isPresent())
 			{
 				ItemStack stack = ItemHandlerHelper.copyStackWithSize(inventory.get(2), 1);
-				stack = Utils.insertStackIntoInventory(outputCap1, stack, false);
+				stack = Utils.insertStackIntoInventory(outputCap2, stack, false);
 				if(stack.isEmpty())
 				{
 					this.inventory.get(2).shrink(1);
