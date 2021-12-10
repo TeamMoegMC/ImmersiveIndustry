@@ -58,7 +58,7 @@ public class ElectrolyzerCategory implements IRecipeCategory<ElectrolyzerRecipe>
 	public void draw(ElectrolyzerRecipe recipe, MatrixStack transform, double mouseX, double mouseY)
 	{
 		
-		ARROW.draw(transform,71, 34);
+		ARROW.draw(transform,59, 21);
 	}
     @Override
     public ResourceLocation getUid() {

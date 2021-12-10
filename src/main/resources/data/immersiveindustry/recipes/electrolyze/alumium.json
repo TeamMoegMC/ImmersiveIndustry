@@ -9,10 +9,11 @@
 	},
 	"result_fluid":{
 		"tag":"minecraft:water",
-		"amount":1200
+		"amount":1000
 	},
 	"result":{
-		"item":"immersiveengineering:dust_aluminum"
+		"item":"immersiveengineering:dust_aluminum",
+		"count":3
 	},
 	"time":10
 }
