@@ -160,7 +160,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 	}
 	public IndustrialElectrolyzerTileEntity() {
 		super(IIContent.IIMultiblocks.IND_ELE, IIContent.IITileTypes.IND_ELE.get(), true);
-		energyConsume = IIConfig.COMMON.electrolyzerConsume.get() * 2;
+		energyConsume = IIConfig.COMMON.electrolyzerConsume.get() * 6;
 	}
 
 	@Nonnull
@@ -228,7 +228,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 				tryOutput();
 				if (!isRSDisabled() && energyStorage.getEnergyStored() >= energyConsume) {
 					if (process > 0) {
-						process--;
+						process-=8;
 						energyStorage.extractEnergy(energyConsume, false);
 						this.markContainingBlockForUpdate(null);
 						return;
