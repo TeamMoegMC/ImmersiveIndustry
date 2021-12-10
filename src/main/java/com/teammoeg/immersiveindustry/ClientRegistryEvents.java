@@ -24,8 +24,11 @@ import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.Tree;
+
+import com.teammoeg.immersiveindustry.IIContent.IITileTypes;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleScreen;
 import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerScreen;
+import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerRenderer;
 import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerScreen;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
@@ -37,6 +40,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -53,6 +57,7 @@ public class ClientRegistryEvents {
         RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.steam_turbine, RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(IIContent.IIBlocks.electrolyzer, RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.industrial_electrolyzer, RenderType.getCutoutMipped());
+        ClientRegistry.bindTileEntityRenderer(IITileTypes.IND_ELE.get(), IndustrialElectrolyzerRenderer::new);
         addManual();
     }
 
