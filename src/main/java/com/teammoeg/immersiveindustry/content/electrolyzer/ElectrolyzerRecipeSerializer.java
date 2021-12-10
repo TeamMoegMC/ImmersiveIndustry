@@ -61,7 +61,7 @@ public class ElectrolyzerRecipeSerializer extends IERecipeSerializer<Electrolyze
         }else inputs=new IngredientWithSize[0];
         FluidTagInput input_fluid =null;
         if(json.has("fluid"))
-        	FluidTagInput.deserialize(JSONUtils.getJsonObject(json, "fluid"));
+        	input_fluid =FluidTagInput.deserialize(JSONUtils.getJsonObject(json, "fluid"));
         int time = JSONUtils.getInt(json, "time");
         boolean flag = JSONUtils.getBoolean(json, "large_only",false);
         FluidTagInput result_fluid =null;

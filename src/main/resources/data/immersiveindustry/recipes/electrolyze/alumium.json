@@ -3,6 +3,14 @@
 	"input":{
 		"item":"immersiveengineering:ore_aluminum"
 	},
+	"fluid":{
+		"tag":"minecraft:water",
+		"amount":1000
+	},
+	"result_fluid":{
+		"tag":"minecraft:water",
+		"amount":1200
+	},
 	"result":{
 		"item":"immersiveengineering:dust_aluminum"
 	},

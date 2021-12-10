@@ -49,7 +49,7 @@ public class ElectrolyzerScreen extends IEContainerScreen<ElectrolyzerContainer>
     public void render(MatrixStack transform, int mouseX, int mouseY, float partial) {
         super.render(transform, mouseX, mouseY, partial);
         List<ITextComponent> tooltip = new ArrayList<>();
-        GuiHelper.handleGuiTank(transform, tile.tank, guiLeft + 21, guiTop + 18, 16, 47, 177, 86, 20, 51, mouseX, mouseY, TEXTURE, tooltip);
+        GuiHelper.handleGuiTank(transform, tile.tank, guiLeft + 21, guiTop + 18, 16, 47, 195, 0, 20, 51, mouseX, mouseY, TEXTURE, tooltip);
         if (!tooltip.isEmpty()) {
             GuiUtils.drawHoveringText(transform, tooltip, mouseX, mouseY, width, height, -1, font);
         }
@@ -59,7 +59,7 @@ public class ElectrolyzerScreen extends IEContainerScreen<ElectrolyzerContainer>
     protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float partial, int x, int y) {
         ClientUtils.bindTexture(TEXTURE);
         this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
-        GuiHelper.handleGuiTank(transform, tile.tank, guiLeft + 21, guiTop + 18, 16, 47, 177, 86, 20, 51, x, y, TEXTURE, null);
+        GuiHelper.handleGuiTank(transform, tile.tank, guiLeft + 21, guiTop + 18, 16, 47, 195, 0, 20, 51, x, y, TEXTURE, null);
 
         if (tile.processMax > 0 && tile.process > 0) {
             int h = (int) (21 * (tile.process / (float) tile.processMax));

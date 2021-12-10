@@ -32,7 +32,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public class CrucibleCategory<T extends CrucibleRecipe> implements IRecipeCategory<CrucibleRecipe> {
+public class CrucibleCategory implements IRecipeCategory<CrucibleRecipe> {
     public static ResourceLocation UID = new ResourceLocation(IIMain.MODID, "crucible");
     private IDrawable BACKGROUND;
     private IDrawable ICON;
