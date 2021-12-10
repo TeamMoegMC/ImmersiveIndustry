@@ -18,6 +18,7 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
@@ -27,6 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
 
@@ -42,9 +44,10 @@ public class ElectrolyzerRecipeSerializer extends IERecipeSerializer<Electrolyze
         IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
         IngredientWithSize input2 = IngredientWithSize.deserialize(json.get("input2"));
         FluidTagInput input_fluid = FluidTagInput.deserialize(JSONUtils.getJsonObject(json, "fluid"));
+        FluidStack output_fluid = ApiUtils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "output_fluid"));
         int time = JSONUtils.getInt(json, "time");
         boolean flag = JSONUtils.getBoolean(json, "flag");
-        return new ElectrolyzerRecipe(recipeId, output, input, input2, input_fluid, time, flag);
+        return new ElectrolyzerRecipe(recipeId, output, input, input2, input_fluid, output_fluid, time, flag);
     }
 
     @Nullable
@@ -54,9 +57,10 @@ public class ElectrolyzerRecipeSerializer extends IERecipeSerializer<Electrolyze
         IngredientWithSize input = IngredientWithSize.read(buffer);
         IngredientWithSize input2 = IngredientWithSize.read(buffer);
         FluidTagInput input_fluid = FluidTagInput.read(buffer);
+        FluidStack output_fluid = buffer.readFluidStack();
         int time = buffer.readInt();
         boolean flag = buffer.readBoolean();
-        return new ElectrolyzerRecipe(recipeId, output, input, input2, input_fluid, time, flag);
+        return new ElectrolyzerRecipe(recipeId, output, input, input2, input_fluid, output_fluid, time, flag);
     }
 
     @Override
@@ -65,6 +69,7 @@ public class ElectrolyzerRecipeSerializer extends IERecipeSerializer<Electrolyze
         recipe.input.write(buffer);
         recipe.input2.write(buffer);
         recipe.input_fluid.write(buffer);
+        buffer.writeFluidStack(recipe.output_fluid);
         buffer.writeInt(recipe.time);
         buffer.writeBoolean(recipe.flag);
     }

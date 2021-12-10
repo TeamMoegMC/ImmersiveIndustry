@@ -40,16 +40,18 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
     public final IngredientWithSize input;
     public final IngredientWithSize input2;
     public final FluidTagInput input_fluid;
+    public final FluidStack output_fluid;
     public final ItemStack output;
     public final int time;
     public final boolean flag;
 
-    public ElectrolyzerRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input, IngredientWithSize input2, FluidTagInput input_fluid, int time, boolean flag) {
+    public ElectrolyzerRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input, IngredientWithSize input2, FluidTagInput input_fluid, FluidStack output_fluid, int time, boolean flag) {
         super(output, TYPE, id);
         this.output = output;
         this.input = input;
         this.input2 = input2;
         this.input_fluid = input_fluid;
+        this.output_fluid = output_fluid;
         this.time = time;
         this.flag = flag;
     }

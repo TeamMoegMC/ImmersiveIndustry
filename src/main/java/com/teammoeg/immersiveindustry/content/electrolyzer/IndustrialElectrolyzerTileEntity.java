@@ -129,7 +129,8 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
         checkForNeedlessTicking();
         if (!isDummy()) {
             if (!world.isRemote) {
-                if (!isRSDisabled() && energyStorage.getEnergyStored() >= energyConsume) {
+                if (!isRSDisabled() && energyStorage.getEnergyStored() >= energyConsume && hasElectrodes()) {
+
                     ElectrolyzerRecipe recipe = getRecipe();
                     if (process > 0) {
                         if (inventory.get(0).isEmpty()) {
@@ -176,8 +177,9 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
         ElectrolyzerRecipe recipe = ElectrolyzerRecipe.findRecipe(inventory.get(0), inventory.get(1), tank[0].getFluid());
         if (recipe == null)
             return null;
-        if (inventory.get(1).isEmpty() || (ItemStack.areItemsEqual(inventory.get(1), recipe.output) &&
-                inventory.get(1).getCount() + recipe.output.getCount() <= getSlotLimit(1))) {
+        if (inventory.get(3).isEmpty() && this.tank[1].isEmpty() || (ItemStack.areItemsEqual(inventory.get(3), recipe.output) &&
+                inventory.get(3).getCount() + recipe.output.getCount() <= getSlotLimit(3))
+                && this.tank[1].getFluidAmount() + recipe.output_fluid.getAmount() <= this.tank[0].getCapacity()) {
             return recipe;
         }
         return null;
@@ -271,5 +273,15 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
     @Override
     public boolean canUseGui(PlayerEntity player) {
         return formed;
+    }
+
+    public boolean hasElectrodes() {
+        for (int i = 3; i < 5; ++i) {
+            if (this.inventory.get(i).isEmpty()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

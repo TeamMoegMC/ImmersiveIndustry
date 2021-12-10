@@ -40,8 +40,8 @@ public class IndustrialElectrolyzerCategory<T extends ElectrolyzerRecipe> implem
     private IDrawable ICON;
 
     public IndustrialElectrolyzerCategory(IGuiHelper guiHelper) {
-        this.ICON = guiHelper.createDrawableIngredient(new ItemStack(IIContent.IIBlocks.electrolyzer));
-        this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/industrial_electrolyzer.png"), 17, 14, 134, 60);
+        this.ICON = guiHelper.createDrawableIngredient(new ItemStack(IIContent.IIMultiblocks.industrial_electrolyzer));
+        this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/industrial_electrolyzer.png"), 6, 8, 146, 137);
     }
 
     @Override
@@ -74,6 +74,7 @@ public class IndustrialElectrolyzerCategory<T extends ElectrolyzerRecipe> implem
         ingredients.setInputs(VanillaTypes.FLUID, recipe.input_fluid.getMatchingFluidStacks());
         ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).add(recipe.input2).build());
         ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
+        ingredients.setOutput(VanillaTypes.FLUID, recipe.output_fluid);
     }
 
 
@@ -82,12 +83,16 @@ public class IndustrialElectrolyzerCategory<T extends ElectrolyzerRecipe> implem
         IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
         IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
         if (recipe.input_fluid != null) {
-            guiFluidStacks.init(3, true, 4, 4, 16, 47, FluidAttributes.BUCKET_VOLUME / 20, false, null);
+            guiFluidStacks.init(3, true, 4, 17, 16, 47, FluidAttributes.BUCKET_VOLUME / 20, false, null);
             guiFluidStacks.set(3, recipe.input_fluid.getMatchingFluidStacks());
         }
-        guiItemStacks.init(0, true, 15, 19);
-        guiItemStacks.init(1, true, 33, 19);
-        guiItemStacks.init(2, false, 89, 19);
+        if (recipe.output_fluid != null) {
+            guiFluidStacks.init(4, false, 126, 17, 16, 47, FluidAttributes.BUCKET_VOLUME / 20, false, null);
+            guiFluidStacks.set(4, recipe.output_fluid);
+        }
+        guiItemStacks.init(0, true, 28, 27);
+        guiItemStacks.init(1, true, 46, 27);
+        guiItemStacks.init(2, false, 102, 27);
 
         guiItemStacks.set(ingredients);
     }

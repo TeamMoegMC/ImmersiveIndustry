@@ -71,7 +71,7 @@ public class ElectrolyzerCategory<T extends ElectrolyzerRecipe> implements IReci
 
     @Override
     public void setIngredients(ElectrolyzerRecipe recipe, IIngredients ingredients) {
-        if (!recipe.flag) {
+        if (!recipe.flag || recipe.input2 == null) {
             ingredients.setInputs(VanillaTypes.FLUID, recipe.input_fluid.getMatchingFluidStacks());
             ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).build());
             ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
@@ -83,14 +83,16 @@ public class ElectrolyzerCategory<T extends ElectrolyzerRecipe> implements IReci
     public void setRecipe(IRecipeLayout recipeLayout, ElectrolyzerRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
         IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
-        if (recipe.input_fluid != null) {
-            guiFluidStacks.init(2, true, 4, 4, 16, 47, FluidAttributes.BUCKET_VOLUME / 20, false, null);
-            guiFluidStacks.set(2, recipe.input_fluid.getMatchingFluidStacks());
+        if (!recipe.flag || recipe.input2 == null) {
+            if (recipe.input_fluid != null) {
+                guiFluidStacks.init(2, true, 4, 4, 16, 47, FluidAttributes.BUCKET_VOLUME / 20, false, null);
+                guiFluidStacks.set(2, recipe.input_fluid.getMatchingFluidStacks());
+            }
+            guiItemStacks.init(0, true, 33, 19);
+
+            guiItemStacks.init(1, false, 89, 19);
+
+            guiItemStacks.set(ingredients);
         }
-        guiItemStacks.init(0, true, 33, 19);
-
-        guiItemStacks.init(1, false, 89, 19);
-
-        guiItemStacks.set(ingredients);
     }
 }
