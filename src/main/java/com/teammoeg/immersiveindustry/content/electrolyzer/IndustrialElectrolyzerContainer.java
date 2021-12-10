@@ -49,14 +49,24 @@ public class IndustrialElectrolyzerContainer extends IEBaseContainer<IndustrialE
 
         this.addSlot(new IESlot(this, this.inv, 3, 34, 10) {
             @Override
+            public int getSlotStackLimit() {
+                return 1;
+            }
+
+            @Override
             public boolean isItemValid(ItemStack itemStack) {
-                return itemStack.getItem() == IEItems.Misc.graphiteElectrode;
+                return !itemStack.isEmpty() && IEItems.Misc.graphiteElectrode.equals(itemStack.getItem());
             }
         });
         this.addSlot(new IESlot(this, this.inv, 4, 52, 10) {
             @Override
+            public int getSlotStackLimit() {
+                return 1;
+            }
+
+            @Override
             public boolean isItemValid(ItemStack itemStack) {
-                return itemStack.getItem() == IEItems.Misc.graphiteElectrode;
+                return !itemStack.isEmpty() && IEItems.Misc.graphiteElectrode.equals(itemStack.getItem());
             }
         });
 
