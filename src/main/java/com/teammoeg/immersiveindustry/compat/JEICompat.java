@@ -39,6 +39,7 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @JeiPlugin
 public class JEICompat implements IModPlugin {
@@ -61,8 +62,8 @@ public class JEICompat implements IModPlugin {
         RecipeManager recipeManager = world.getRecipeManager();
 
         registration.addRecipes(new ArrayList<>(CrucibleRecipe.recipeList.values()), CrucibleCategory.UID);
-        registration.addRecipes(new ArrayList<>(ElectrolyzerRecipe.recipeList.values()), ElectrolyzerCategory.UID);
-        registration.addRecipes(new ArrayList<>(ElectrolyzerRecipe.recipeList.values()), IndustrialElectrolyzerCategory.UID);
+        registration.addRecipes(ElectrolyzerRecipe.recipeList.values().stream().filter(r->!r.flag).filter(r->r.inputs.length<2).collect(Collectors.toList()), ElectrolyzerCategory.UID);
+        registration.addRecipes(ElectrolyzerRecipe.recipeList.values().stream().filter(r->r.inputs.length<3).collect(Collectors.toList()), IndustrialElectrolyzerCategory.UID);
     }
 
     @Override
@@ -77,8 +78,8 @@ public class JEICompat implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registry) {
-        registry.addRecipeClickArea(ElectrolyzerScreen.class, 76, 35, 19, 25, ElectrolyzerCategory.UID);
-        registry.addRecipeClickArea(IndustrialElectrolyzerScreen.class, 76, 35, 19, 25, IndustrialElectrolyzerCategory.UID);
+        registry.addRecipeClickArea(ElectrolyzerScreen.class, 76, 35, 21, 25, ElectrolyzerCategory.UID);
+        registry.addRecipeClickArea(IndustrialElectrolyzerScreen.class, 76, 35,21, 25, IndustrialElectrolyzerCategory.UID);
         registry.addRecipeClickArea(CrucibleScreen.class, 76, 14, 19, 25, CrucibleCategory.UID);
     }
 
