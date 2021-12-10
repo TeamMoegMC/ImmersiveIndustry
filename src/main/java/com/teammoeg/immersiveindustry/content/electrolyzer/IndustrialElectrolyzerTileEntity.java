@@ -34,6 +34,7 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
@@ -259,14 +260,31 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 					if (recipe != null) {
 						
 						if (recipe.inputs.length > 0) {
+							ItemStack[] consumed=new ItemStack[recipe.inputs.length];
+							int ix=-1;
 							outer: for (IngredientWithSize iws : recipe.inputs) {
 								for (int i = 0; i < 2; i++) {
 									if (iws.test(inventory.get(i))) {
+										consumed[++ix]=ItemHandlerHelper.copyStackWithSize(inventory.get(i),iws.getCount());
 										Utils.modifyInvStackSize(inventory, i, -iws.getCount());
 										continue outer;
 									}
 								}
 								// why not fit? fast fail.
+								ff:for(ItemStack is:consumed) {
+									for (int i = 0; i < 2; i++) {
+										if(ItemHandlerHelper.canItemStacksStack(is,inventory.get(i))) {
+											Utils.modifyInvStackSize(inventory, i,is.getCount());
+											continue ff;
+										}
+									}
+									for (int i = 0; i < 2; i++) {
+										if(inventory.get(i).isEmpty()) {
+											inventory.set(i,is);
+											break;
+										}
+									}
+								}
 								this.markContainingBlockForUpdate(null);
 								return;
 							}
