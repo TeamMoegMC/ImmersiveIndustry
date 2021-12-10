@@ -18,16 +18,6 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.google.common.collect.ImmutableSet;
-import com.teammoeg.immersiveindustry.IIConfig;
-import com.teammoeg.immersiveindustry.IIContent;
-
 import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
@@ -40,6 +30,9 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import com.google.common.collect.ImmutableSet;
+import com.teammoeg.immersiveindustry.IIConfig;
+import com.teammoeg.immersiveindustry.IIContent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
@@ -61,6 +54,11 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Set;
 
 public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<IndustrialElectrolyzerTileEntity>
 		implements IEBlockInterfaces.IBlockBounds, EnergyHelper.IIEInternalFluxHandler, IIEInventory,
@@ -117,7 +115,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(5, ItemStack.EMPTY);
 	static class ICapFluidTank implements IFluidTank{
 		final FluidTank innertank;
-		
+
 		public ICapFluidTank(FluidTank tank) {
 			this.innertank = tank;
 		}
@@ -156,7 +154,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 		public FluidStack drain(FluidStack resource, FluidAction action) {
 			return innertank.drain(resource, action);
 		}
-		
+
 	}
 	public IndustrialElectrolyzerTileEntity() {
 		super(IIContent.IIMultiblocks.IND_ELE, IIContent.IITileTypes.IND_ELE.get(), true);
@@ -226,9 +224,15 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 		if (!isDummy()) {
 			if (!world.isRemote) {
 				tryOutput();
-				if (!isRSDisabled() && energyStorage.getEnergyStored() >= energyConsume) {
+				if (!isRSDisabled() && energyStorage.getEnergyStored() >= energyConsume && hasElectrodes()) {
 					if (process > 0) {
-						process-=8;
+						int ele;
+						for (ele = 3; ele < 5; ++ele) {
+							if (this.inventory.get(ele).attemptDamageItem(1, Utils.RAND, null)) {
+								this.inventory.set(ele, ItemStack.EMPTY);
+							}
+						}
+						process -= 8;
 						energyStorage.extractEnergy(energyConsume, false);
 						this.markContainingBlockForUpdate(null);
 						return;
@@ -257,7 +261,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 					}
 					ElectrolyzerRecipe recipe = getRecipe();
 					if (recipe != null) {
-						
+
 						if (recipe.inputs.length > 0) {
 							outer: for (IngredientWithSize iws : recipe.inputs) {
 								for (int i = 0; i < 2; i++) {
@@ -348,12 +352,21 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 			}
 		}
 
-		if(update)
-		{
+		if (update) {
 			this.markDirty();
 			this.markContainingBlockForUpdate(null);
 		}
 	}
+
+	public boolean hasElectrodes() {
+		for (int i = 3; i < 5; ++i) {
+			if (this.inventory.get(i).isEmpty()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	@Nullable
 	public ElectrolyzerRecipe getRecipe() {
 		ElectrolyzerRecipe recipe = ElectrolyzerRecipe.findRecipe(inventory.get(0), inventory.get(1),
