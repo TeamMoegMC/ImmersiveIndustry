@@ -96,7 +96,7 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
 
     public static boolean isValidRecipeFluid(FluidStack input_fluid) {
         for (ElectrolyzerRecipe recipe : recipeList.values())
-            if (recipe != null && recipe.input_fluid.testIgnoringAmount(input_fluid))
+            if (recipe.input_fluid!=null && recipe.input_fluid.testIgnoringAmount(input_fluid))
                 return true;
         return false;
     }
