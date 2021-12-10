@@ -407,10 +407,13 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack) {
+		if(master()==null)return false;
+		ItemStack s0=master().inventory.get(0);
+		ItemStack s1=master().inventory.get(1);
 		if (slot == 0)
-			return !stack.isItemEqual(inventory.get(1))&&ElectrolyzerRecipe.isValidRecipeInput(stack);
+			return stack.isItemEqual(s0)||(!stack.isItemEqual(s1))&&ElectrolyzerRecipe.isValidRecipeInput(stack);
 		else if (slot == 1)
-			return !stack.isItemEqual(inventory.get(0))&&ElectrolyzerRecipe.isValidRecipeInput(stack);
+			return stack.isItemEqual(s1)||(!stack.isItemEqual(s0))&&ElectrolyzerRecipe.isValidRecipeInput(stack);
 		return false;
 	}
 
