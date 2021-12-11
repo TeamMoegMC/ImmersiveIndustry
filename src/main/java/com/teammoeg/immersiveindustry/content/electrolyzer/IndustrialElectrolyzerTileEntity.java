@@ -68,7 +68,6 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 	public int processMax = 0;
 	public ItemStack result = ItemStack.EMPTY;
 	public FluidStack resultFluid = FluidStack.EMPTY;
-	public final int energyConsume;
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
 	EnergyHelper.IEForgeEnergyWrapper wrapper = new EnergyHelper.IEForgeEnergyWrapper(this, null);
 	public FluidTank[] tank = new FluidTank[] { new FluidTank(16000, ElectrolyzerRecipe::isValidRecipeFluid),
@@ -159,7 +158,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 	}
 	public IndustrialElectrolyzerTileEntity() {
 		super(IIContent.IIMultiblocks.IND_ELE, IIContent.IITileTypes.IND_ELE.get(), true);
-		energyConsume = IIConfig.COMMON.electrolyzerConsume.get() * 6;
+		
 	}
 
 	@Nonnull
@@ -224,15 +223,27 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 		checkForNeedlessTicking();
 		if (!isDummy()) {
 			if (!world.isRemote) {
+				int energyConsume=IIConfig.COMMON.electrolyzerConsume.get() * 6;
+				double elconsume=IIConfig.COMMON.electrodeCost.get();
 				tryOutput();
 				if (!isRSDisabled() && energyStorage.getEnergyStored() >= energyConsume && hasElectrodes()) {
 					if (process > 0) {
 						int ele;
-						for (ele = 3; ele < 5; ++ele) {
-							if (this.inventory.get(ele).attemptDamageItem(1, Utils.RAND, null)) {
-								this.inventory.set(ele, ItemStack.EMPTY);
+						int duracost=0;
+						if(elconsume>0) {
+							duracost=(int)elconsume;
+							double npart=elconsume-duracost;
+							if(this.getWorld().rand.nextInt(1000)<npart*1000) {
+								duracost++;
 							}
 						}
+						
+						if(duracost>0)
+							for (ele = 3; ele < 5; ++ele) {
+								if (this.inventory.get(ele).attemptDamageItem(duracost, Utils.RAND, null)) {
+									this.inventory.set(ele, ItemStack.EMPTY);
+								}
+							}
 						process -= 8;
 						energyStorage.extractEnergy(energyConsume, false);
 						this.markContainingBlockForUpdate(null);
