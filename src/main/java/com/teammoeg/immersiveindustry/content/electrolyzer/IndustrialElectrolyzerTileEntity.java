@@ -49,6 +49,7 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -238,7 +239,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 						int duracost=0;
 						if(elconsume>0) {
 							duracost=(int)elconsume;
-							double npart=elconsume-duracost;
+							double npart=MathHelper.frac(elconsume);
 							if(this.getWorld().rand.nextInt(1000)<npart*1000) {
 								duracost++;
 							}
@@ -293,6 +294,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 								}
 								// why not fit? fast fail.
 								ff:for(ItemStack is:consumed) {
+									if(is==null)continue;
 									for (int i = 0; i < 2; i++) {
 										if(ItemHandlerHelper.canItemStacksStack(is,inventory.get(i))) {
 											Utils.modifyInvStackSize(inventory, i,is.getCount());

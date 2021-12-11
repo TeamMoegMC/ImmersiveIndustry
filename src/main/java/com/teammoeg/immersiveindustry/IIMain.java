@@ -24,9 +24,11 @@ import com.teammoeg.immersiveindustry.data.IIRecipeReloadListener;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DeferredWorkQueue;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -47,6 +49,7 @@ public class IIMain {
     public IIMain() {
         IEventBus mod = FMLJavaModLoadingContext.get().getModEventBus();
         mod.addListener(this::setup);
+        DistExecutor.safeRunWhenOn(Dist.CLIENT,()->ClientProxy::setup);
         IIConfig.register();
         IIContent.IIProps.init();
         IIContent.IIBlocks.init();

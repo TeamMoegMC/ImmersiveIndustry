@@ -53,8 +53,6 @@ public class IndustrialElectrolyzerRenderer extends TileEntityRenderer<Industria
 		IEObjState objState = new IEObjState(VisibilityList.show(renderedParts));
 
 		matrixStack.push();
-		Vector3i v3i=te.getFacing().getDirectionVec();
-		matrixStack.translate(v3i.getX()*2,v3i.getY()*2,v3i.getZ()*2);
 		List<BakedQuad> quads = ELECTRODES.getNullQuads(te.getFacing(), state, new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE));
 		RenderUtils.renderModelTESRFast(quads, bufferIn.getBuffer(RenderType.getSolid()), matrixStack, combinedLightIn, combinedOverlayIn);
 		matrixStack.pop();
