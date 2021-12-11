@@ -3,7 +3,6 @@ package com.teammoeg.immersiveindustry.content.electrolyzer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teammoeg.immersiveindustry.IIContent.IIMultiblocks;
 
@@ -28,7 +27,7 @@ public class IndustrialElectrolyzerRenderer extends TileEntityRenderer<Industria
         super(rendererDispatcherIn);
     }
     public static DynamicModel<Direction> ELECTRODES;
-    @Override
+	@Override
     public void render(IndustrialElectrolyzerTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
 		if(!te.formed||te.isDummy()||!te.getWorldNonnull().isBlockLoaded(te.getPos()))
 			return;
@@ -45,7 +44,7 @@ public class IndustrialElectrolyzerRenderer extends TileEntityRenderer<Industria
 			renderedParts.add("anode7");
 			renderedParts.add("anode8");
 		}
-		if(renderedParts==null)
+		if(renderedParts.isEmpty())
 			return;
 		BlockPos blockPos = te.getPos();
 		BlockState state = te.getWorld().getBlockState(blockPos);

@@ -18,6 +18,12 @@
 
 package com.teammoeg.immersiveindustry;
 
+import com.teammoeg.immersiveindustry.IIContent.IITileTypes;
+import com.teammoeg.immersiveindustry.content.crucible.CrucibleScreen;
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerScreen;
+import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerRenderer;
+import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerScreen;
+
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.client.manual.ManualElementMultiblock;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
@@ -26,12 +32,6 @@ import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.Tree;
-
-import com.teammoeg.immersiveindustry.IIContent.IITileTypes;
-import com.teammoeg.immersiveindustry.content.crucible.CrucibleScreen;
-import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerScreen;
-import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerRenderer;
-import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerScreen;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.screen.Screen;

@@ -18,18 +18,19 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.teammoeg.immersiveindustry.IIMain;
+
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.teammoeg.immersiveindustry.IIMain;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ElectrolyzerScreen extends IEContainerScreen<ElectrolyzerContainer> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(IIMain.MODID, "textures/gui/electrolyzer.png");

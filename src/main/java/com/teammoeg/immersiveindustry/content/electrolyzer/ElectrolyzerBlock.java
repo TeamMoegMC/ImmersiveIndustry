@@ -18,7 +18,12 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
+import java.util.function.BiFunction;
+
+import javax.annotation.Nullable;
+
 import com.teammoeg.immersiveindustry.content.IIBaseBlock;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ILiquidContainer;
@@ -39,9 +44,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.network.NetworkHooks;
-
-import javax.annotation.Nullable;
-import java.util.function.BiFunction;
 
 public class ElectrolyzerBlock extends IIBaseBlock implements ILiquidContainer {
     public ElectrolyzerBlock(String name, Properties blockProps, BiFunction<Block, Item.Properties, Item> createItemBlock) {

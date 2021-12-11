@@ -18,17 +18,36 @@
 
 package com.teammoeg.immersiveindustry;
 
-import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
-import blusunrize.immersiveengineering.common.gui.GuiHandler;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Supplier;
+
 import com.google.common.collect.ImmutableSet;
 import com.teammoeg.immersiveindustry.content.IIBaseBlock;
 import com.teammoeg.immersiveindustry.content.IIBlockItem;
-import com.teammoeg.immersiveindustry.content.crucible.*;
-import com.teammoeg.immersiveindustry.content.electrolyzer.*;
+import com.teammoeg.immersiveindustry.content.crucible.CrucibleBlock;
+import com.teammoeg.immersiveindustry.content.crucible.CrucibleContainer;
+import com.teammoeg.immersiveindustry.content.crucible.CrucibleMultiblock;
+import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
+import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipeSerializer;
+import com.teammoeg.immersiveindustry.content.crucible.CrucibleTileEntity;
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerBlock;
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerContainer;
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipe;
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipeSerializer;
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerTileEntity;
+import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerBlock;
+import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerContainer;
+import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerMultiblock;
+import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerTileEntity;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineBlock;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineMultiblock;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineTileEntity;
+
+import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
+import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -43,11 +62,6 @@ import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Supplier;
 
 public class IIContent {
     public static List<Block> registeredBlocks = new ArrayList<>();

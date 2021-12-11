@@ -18,14 +18,14 @@
 
 package com.teammoeg.immersiveindustry;
 
+import static com.teammoeg.immersiveindustry.IIContent.registeredBlocks;
+import static com.teammoeg.immersiveindustry.IIContent.registeredItems;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import static com.teammoeg.immersiveindustry.IIContent.registeredBlocks;
-import static com.teammoeg.immersiveindustry.IIContent.registeredItems;
 
 @Mod.EventBusSubscriber(modid = IIMain.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class RegistryEvents {

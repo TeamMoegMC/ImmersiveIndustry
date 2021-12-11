@@ -18,12 +18,22 @@
 
 package com.teammoeg.immersiveindustry.compat;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
+
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleCategory;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleScreen;
-import com.teammoeg.immersiveindustry.content.electrolyzer.*;
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerCategory;
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipe;
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerScreen;
+import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerCategory;
+import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerScreen;
+
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -36,10 +46,6 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.util.ResourceLocation;
-
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 @JeiPlugin
 public class JEICompat implements IModPlugin {

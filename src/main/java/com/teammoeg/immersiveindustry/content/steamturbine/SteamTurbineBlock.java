@@ -18,9 +18,10 @@
 
 package com.teammoeg.immersiveindustry.content.steamturbine;
 
+import com.teammoeg.immersiveindustry.IIMain;
+
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
-import com.teammoeg.immersiveindustry.IIMain;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.ResourceLocation;

@@ -19,6 +19,7 @@
 package com.teammoeg.immersiveindustry.content;
 
 import com.teammoeg.immersiveindustry.IIMain;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 

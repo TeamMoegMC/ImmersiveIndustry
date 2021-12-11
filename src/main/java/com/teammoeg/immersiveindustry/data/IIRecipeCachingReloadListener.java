@@ -18,11 +18,11 @@
 
 package com.teammoeg.immersiveindustry.data;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.resources.DataPackRegistries;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.IResourceManagerReloadListener;
-
-import javax.annotation.Nonnull;
 
 public class IIRecipeCachingReloadListener implements IResourceManagerReloadListener {
     private final DataPackRegistries dataPackRegistries;

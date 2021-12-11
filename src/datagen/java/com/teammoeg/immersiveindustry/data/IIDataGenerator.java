@@ -18,8 +18,9 @@
 
 package com.teammoeg.immersiveindustry.data;
 
-import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
 import com.teammoeg.immersiveindustry.IIMain;
+
+import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

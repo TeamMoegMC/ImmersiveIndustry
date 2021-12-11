@@ -18,13 +18,13 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
-
 import java.util.Arrays;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
+
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;

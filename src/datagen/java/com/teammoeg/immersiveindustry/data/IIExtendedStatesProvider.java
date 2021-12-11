@@ -18,14 +18,20 @@
 
 package com.teammoeg.immersiveindustry.data;
 
-import blusunrize.immersiveengineering.common.blocks.IEBlocks;
-import blusunrize.immersiveengineering.data.DataGenUtils;
-import blusunrize.immersiveengineering.data.models.IEOBJBuilder;
-import blusunrize.immersiveengineering.data.models.SplitModelBuilder;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.teammoeg.immersiveindustry.IIMain;
+
+import blusunrize.immersiveengineering.common.blocks.IEBlocks;
+import blusunrize.immersiveengineering.data.DataGenUtils;
+import blusunrize.immersiveengineering.data.models.IEOBJBuilder;
+import blusunrize.immersiveengineering.data.models.SplitModelBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.StairsBlock;
@@ -42,11 +48,6 @@ import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.loaders.OBJLoaderBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
-
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public abstract class IIExtendedStatesProvider extends BlockStateProvider {
     protected static final List<Vector3i> COLUMN_THREE = ImmutableList.of(BlockPos.ZERO, BlockPos.ZERO.up(), BlockPos.ZERO.up(2));

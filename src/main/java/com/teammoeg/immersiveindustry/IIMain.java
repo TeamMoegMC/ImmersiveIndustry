@@ -18,7 +18,10 @@
 
 package com.teammoeg.immersiveindustry;
 
+import javax.annotation.Nonnull;
+
 import com.teammoeg.immersiveindustry.data.IIRecipeReloadListener;
+
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -27,8 +30,6 @@ import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-
-import javax.annotation.Nonnull;
 
 
 @Mod(IIMain.MODID)

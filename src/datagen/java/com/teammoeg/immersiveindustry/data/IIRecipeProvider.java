@@ -18,15 +18,17 @@
 
 package com.teammoeg.immersiveindustry.data;
 
+import java.util.HashMap;
+import java.util.function.Consumer;
+
+import javax.annotation.Nonnull;
+
 import com.teammoeg.immersiveindustry.IIMain;
+
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.RecipeProvider;
 import net.minecraft.util.ResourceLocation;
-
-import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.function.Consumer;
 
 public class IIRecipeProvider extends RecipeProvider {
     private final HashMap<String, Integer> PATH_COUNT = new HashMap<>();

@@ -18,16 +18,17 @@
 
 package com.teammoeg.immersiveindustry.content;
 
+import java.util.function.BiFunction;
+
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
-
-import java.util.function.BiFunction;
 
 public class IIBaseBlock extends Block {
     public final String name;
