@@ -21,10 +21,21 @@ package com.teammoeg.immersiveindustry.content.electrolyzer;
 import com.teammoeg.immersiveindustry.IIMain;
 
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
+import blusunrize.immersiveengineering.common.items.IEItems;
+import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class IndustrialElectrolyzerBlock extends IEMultiblockBlock<IndustrialElectrolyzerTileEntity> {
 
@@ -32,15 +43,27 @@ public class IndustrialElectrolyzerBlock extends IEMultiblockBlock<IndustrialEle
         super(name, Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(4.0F, 40.0F).notSolid(), type);
         
     }
-
-
-
-
-
-
-
-
-
+	@Override
+	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player,
+			Hand hand, BlockRayTraceResult hit) {
+		TileEntity te=Utils.getExistingTileEntity(world, pos);
+		if(te instanceof IndustrialElectrolyzerTileEntity) {
+			IndustrialElectrolyzerTileEntity iete=(IndustrialElectrolyzerTileEntity) te;
+			if(iete.offsetToMaster.getY()==1) {
+				if(IEItems.Misc.graphiteElectrode.equals(player.getHeldItem(hand).getItem())) {
+					if(iete.getInventory()!=null)
+						for(int i=3;i<=4;i++) {
+							if(iete.getInventory().get(i).isEmpty()) {
+								iete.getInventory().set(i,ItemHandlerHelper.copyStackWithSize(player.getHeldItem(hand),1));
+								player.getHeldItem(hand).shrink(1);
+								return ActionResultType.CONSUME;
+							}
+						}
+				}
+			}
+		}
+		return super.onBlockActivated(state, world, pos, player, hand, hit);
+	}
 	@Override
     public ResourceLocation createRegistryName() {
         return new ResourceLocation(IIMain.MODID, name);
