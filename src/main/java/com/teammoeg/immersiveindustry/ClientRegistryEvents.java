@@ -20,6 +20,8 @@ package com.teammoeg.immersiveindustry;
 
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.client.manual.ManualElementMultiblock;
+import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
+import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualInstance;
@@ -49,7 +51,10 @@ public class ClientRegistryEvents {
     private static Tree.InnerNode<ResourceLocation, ManualEntry> CATEGORY;
     @SubscribeEvent
     public static void onClientSetup(final FMLClientSetupEvent event) {
-        ;
+    	IndustrialElectrolyzerRenderer.ELECTRODES = DynamicModel.createSided(
+				new ResourceLocation(IIMain.MODID, "block/multiblocks/industrial_electrode.obj.ie"),
+				"industrial_electrode", ModelType.IE_OBJ
+		);;
         registerIEScreen(new ResourceLocation(IIMain.MODID, "crucible"), CrucibleScreen::new);
         registerIEScreen(new ResourceLocation(IIMain.MODID, "electrolyzer"), ElectrolyzerScreen::new);
         registerIEScreen(new ResourceLocation(IIMain.MODID, "industrial_electrolyzer"), IndustrialElectrolyzerScreen::new);

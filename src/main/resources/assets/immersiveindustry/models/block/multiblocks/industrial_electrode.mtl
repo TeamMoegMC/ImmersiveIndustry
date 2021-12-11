@@ -1,0 +1,4 @@
+# Made in Blockbench 4.0.4
+newmtl m_3
+map_Kd immersiveindustry:block/multiblocks/molten_phase_electrolyzer_main_2
+newmtl none
