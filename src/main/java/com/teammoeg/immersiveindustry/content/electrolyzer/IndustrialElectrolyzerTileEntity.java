@@ -45,11 +45,14 @@ import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -75,6 +78,8 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 			new FluidTank(16000) };
 	private static BlockPos out1=new BlockPos(3,0,3);
 	private static BlockPos out2=new BlockPos(-1,0,3);
+
+
 	private CapabilityReference<IItemHandler> outputCap1 = CapabilityReference.forTileEntityAt(this,
 			() -> {
 				Direction fw = getFacing().rotateYCCW();
@@ -426,7 +431,16 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 		}
 		return super.getCapability(capability, facing);
 	}
-
+	@Override
+	public AxisAlignedBB getRenderBoundingBox() {
+		BlockPos bp=this.getPos();
+		return new AxisAlignedBB(bp.getX()-(getFacing().getAxis()==Axis.Z?2: 1),
+				bp.getY(),
+				bp.getZ()-(getFacing().getAxis()==Axis.X?2: 1),
+				bp.getX()+(getFacing().getAxis()==Axis.Z?1: 2),
+				bp.getY()+2,
+				bp.getZ()+(getFacing().getAxis()==Axis.X?1: 2));
+	}
 	@Nullable
 	@Override
 	public NonNullList<ItemStack> getInventory() {
