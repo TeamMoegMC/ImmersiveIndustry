@@ -81,12 +81,15 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
     	outer:
     	for (ElectrolyzerRecipe recipe : recipeList.values())
         	if(isLarge||!recipe.flag) {
-        		if(recipe.inputs.length>0&&recipe.inputs.length<=size) {
-        			for(IngredientWithSize is:recipe.inputs) {
-        				if(!is.test(input)&&!is.test(input2))
-        					continue outer;
-        			}
+        		if(recipe.inputs.length>0) {
+        			if(recipe.inputs.length<=size) {
+	        			for(IngredientWithSize is:recipe.inputs) {
+	        				if(!is.test(input)&&!is.test(input2))
+	        					continue outer;
+	        			}
+        			}else continue outer;
         		}
+
         		if(recipe.input_fluid!=null&&!recipe.input_fluid.test(input_fluid))
         			continue;
         		return recipe;
