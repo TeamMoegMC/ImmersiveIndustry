@@ -42,12 +42,12 @@ repositories {
         url = "http://server.teammoeg.com:8888/releases"
     }
 }
-sourceSets.main.resources { srcDir 'src/generated/resources' }
 sourceSets {
     main {
         resources {
             srcDirs = [
                     "$rootDir/src/main/resources",
+                    'src/generated/resources'
             ]
         }
     }
