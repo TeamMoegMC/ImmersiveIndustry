@@ -63,14 +63,13 @@ public class IIMultiblockStatesProvider extends IIExtendedStatesProvider {
     protected void registerStatesAndModels() {
         createMultiblock(IIContent.IIMultiblocks.industrial_electrolyzer, split(obj("block/multiblocks/industrial_electrolyzer.obj"), IIContent.IIMultiblocks.IND_ELE));
         createMultiblock(IIContent.IIMultiblocks.steam_turbine, split(obj("block/multiblocks/steam_turbine.obj"), IIContent.IIMultiblocks.STEAMTURBINE));
-        System.out.println("finished");
     }
 
     @Nonnull
     @Override
     public String getName()
     {
-        return "II Multiblock models/block states";
+        return "IIMBstates";
     }
 
     private ModelFile cubeTwo(String name, ResourceLocation top, ResourceLocation bottom,

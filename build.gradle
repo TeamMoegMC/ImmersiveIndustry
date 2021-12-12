@@ -111,6 +111,7 @@ minecraft {
 
             mods {
                 immersiveindustry {
+                	source sourceSets.main
                     source sourceSets.datagen
                 }
             }
