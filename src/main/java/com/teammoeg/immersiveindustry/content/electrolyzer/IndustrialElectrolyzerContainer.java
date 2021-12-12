@@ -18,15 +18,18 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
+import com.teammoeg.immersiveindustry.IIMain;
+
 import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 public class IndustrialElectrolyzerContainer extends IEBaseContainer<IndustrialElectrolyzerTileEntity> {
-
+	public static final ResourceLocation Electrode_Tag=new ResourceLocation(IIMain.MODID,"electrodes");
     public IndustrialElectrolyzerContainer(int id, PlayerInventory inventoryPlayer, IndustrialElectrolyzerTileEntity tile) {
         super(inventoryPlayer, tile, id);
 
@@ -55,7 +58,7 @@ public class IndustrialElectrolyzerContainer extends IEBaseContainer<IndustrialE
 
             @Override
             public boolean isItemValid(ItemStack itemStack) {
-                return !itemStack.isEmpty() && IEItems.Misc.graphiteElectrode.equals(itemStack.getItem());
+                return !itemStack.isEmpty() && itemStack.getItem().getTags().contains(Electrode_Tag);
             }
         });
         this.addSlot(new IESlot(this, this.inv, 4, 52, 10) {
@@ -66,7 +69,7 @@ public class IndustrialElectrolyzerContainer extends IEBaseContainer<IndustrialE
 
             @Override
             public boolean isItemValid(ItemStack itemStack) {
-                return !itemStack.isEmpty() && IEItems.Misc.graphiteElectrode.equals(itemStack.getItem());
+                return !itemStack.isEmpty() && itemStack.getItem().getTags().contains(Electrode_Tag);
             }
         });
 

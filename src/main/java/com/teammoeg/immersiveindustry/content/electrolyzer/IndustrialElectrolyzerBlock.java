@@ -50,7 +50,7 @@ public class IndustrialElectrolyzerBlock extends IEMultiblockBlock<IndustrialEle
 		if(te instanceof IndustrialElectrolyzerTileEntity) {
 			IndustrialElectrolyzerTileEntity iete=(IndustrialElectrolyzerTileEntity) te;
 			if(iete.offsetToMaster.getY()==1) {
-				if(IEItems.Misc.graphiteElectrode.equals(player.getHeldItem(hand).getItem())) {
+				if(player.getHeldItem(hand).getItem().getTags().contains(IndustrialElectrolyzerContainer.Electrode_Tag)) {
 					if(iete.getInventory()!=null)
 						for(int i=3;i<=4;i++) {
 							if(iete.getInventory().get(i).isEmpty()) {

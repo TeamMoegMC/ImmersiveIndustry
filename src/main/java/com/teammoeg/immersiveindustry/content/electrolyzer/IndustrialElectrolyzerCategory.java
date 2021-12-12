@@ -19,6 +19,8 @@
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teammoeg.immersiveindustry.IIContent;
@@ -37,6 +39,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -105,16 +108,18 @@ public class IndustrialElectrolyzerCategory implements IRecipeCategory<Electroly
         if (recipe.input_fluid != null) {
             guiFluidStacks.set(3,recipe.input_fluid.getMatchingFluidStacks());
         }
-        guiFluidStacks.init(4,false, 126,19, 16, 47, FluidAttributes.BUCKET_VOLUME, false,TANK);
+        guiFluidStacks.init(5,false, 126,19, 16, 47, FluidAttributes.BUCKET_VOLUME, false,TANK);
         if(recipe.output_fluid!=null) {
-        	guiFluidStacks.set(4,recipe.output_fluid.getMatchingFluidStacks());
+        	guiFluidStacks.set(5,recipe.output_fluid.getMatchingFluidStacks());
         }
+        List<ItemStack> electrodes=TagCollectionManager.getManager().getItemTags().get(IndustrialElectrolyzerContainer.Electrode_Tag).getAllElements().stream().map(ItemStack::new).collect(Collectors.toList());
         guiItemStacks.init(0, true, 27, 32);
         guiItemStacks.init(1, true, 45, 32);
         guiItemStacks.init(2, false, 101, 32);
-        guiItemStacks.init(3,true,28,4);
-        guiItemStacks.init(3,true,46,4);
-
+        guiItemStacks.init(3,true,27,3);
+        guiItemStacks.set(3,electrodes);
+        guiItemStacks.init(4,true,45,3);
+        guiItemStacks.set(4,electrodes);
         guiItemStacks.set(ingredients);
     }
 }
