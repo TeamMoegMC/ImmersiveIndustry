@@ -133,7 +133,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 		IndustrialElectrolyzerTileEntity master = master();
 		if(i!=0)return false;
 		if (master != null) {
-			if(side.getYOffset()==0&&this.offsetToMaster.getY()==-1&&this.offsetToMaster.getX()!=0) {
+			if(side.getYOffset()==0&&this.posInMultiblock.getY()==0&&this.posInMultiblock.getX()!=1) {
 				if(this.posInMultiblock.getZ()==1)
 					return ElectrolyzerRecipe.isValidRecipeFluid(fluidStack);
 			}
@@ -146,7 +146,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 		IndustrialElectrolyzerTileEntity master = master();
 		if(i!=1)return false;
 		if (master != null) {
-			if(side.getYOffset()==0&&this.offsetToMaster.getY()==-1&&this.offsetToMaster.getX()!=0) {
+			if(side.getYOffset()==0&&this.posInMultiblock.getY()==0&&this.posInMultiblock.getX()!=1) {
 				if(this.posInMultiblock.getZ()==3)
 					return true;
 			}
