@@ -101,68 +101,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 				Direction fw = getFacing().rotateY();
 				return new DirectionalBlockPos(this.getBlockPosForPos(out2),fw);
 			}, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
-	public IFluidTank[] iotank=new IFluidTank[] {
-			new ICapFluidTank(tank[0]) {
-				@Override
-				public FluidStack drain(int maxDrain, FluidAction action) {
-					return FluidStack.EMPTY;
-				}
-				@Override
-				public FluidStack drain(FluidStack resource, FluidAction action) {
-					return FluidStack.EMPTY;
-				}
-			},
-			new ICapFluidTank(tank[1]) {
-				@Override
-				public int fill(FluidStack resource, FluidAction action) {
-					return 0;
-				}
-			}
-	};
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(5, ItemStack.EMPTY);
-	static class ICapFluidTank implements IFluidTank{
-		final FluidTank innertank;
-
-		public ICapFluidTank(FluidTank tank) {
-			this.innertank = tank;
-		}
-
-		@Override
-		public FluidStack getFluid() {
-			return innertank.getFluid();
-		}
-
-		@Override
-		public int getFluidAmount() {
-			return innertank.getFluidAmount();
-		}
-
-		@Override
-		public int getCapacity() {
-			return innertank.getCapacity();
-		}
-
-		@Override
-		public boolean isFluidValid(FluidStack stack) {
-			return innertank.isFluidValid(stack);
-		}
-
-		@Override
-		public int fill(FluidStack resource, FluidAction action) {
-			return innertank.fill(resource, action);
-		}
-
-		@Override
-		public FluidStack drain(int maxDrain, FluidAction action) {
-			return innertank.drain(maxDrain, action);
-		}
-
-		@Override
-		public FluidStack drain(FluidStack resource, FluidAction action) {
-			return innertank.drain(resource, action);
-		}
-
-	}
 	public IndustrialElectrolyzerTileEntity() {
 		super(IIContent.IIMultiblocks.IND_ELE, IIContent.IITileTypes.IND_ELE.get(), true);
 		
@@ -179,23 +118,39 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 	protected IFluidTank[] getAccessibleFluidTanks(Direction side) {
 		IndustrialElectrolyzerTileEntity master = master();
 		if (master != null) {
-			if(side.getYOffset()==0&&this.offsetToMaster.getY()==-1&&this.offsetToMaster.getX()!=0) {
-				if(this.offsetToMaster.getZ()==-1)
-					return new IFluidTank[] { master.iotank[0] };
-				if(this.offsetToMaster.getZ()==1)
-					return new IFluidTank[] { master.iotank[1] };
+			if(side.getYOffset()==0&&this.posInMultiblock.getY()==0&&this.posInMultiblock.getX()!=1) {
+				if(this.posInMultiblock.getZ()==1)
+					return master.tank;
+				if(this.posInMultiblock.getZ()==3)
+					return master.tank;
 			}
 		}
 		return new FluidTank[0];
 	}
 
 	@Override
-	protected boolean canFillTankFrom(int i, Direction direction, FluidStack fluidStack) {
-		return ElectrolyzerRecipe.isValidRecipeFluid(fluidStack);
+	protected boolean canFillTankFrom(int i, Direction side, FluidStack fluidStack) {
+		IndustrialElectrolyzerTileEntity master = master();
+		if(i!=0)return false;
+		if (master != null) {
+			if(side.getYOffset()==0&&this.offsetToMaster.getY()==-1&&this.offsetToMaster.getX()!=0) {
+				if(this.posInMultiblock.getZ()==1)
+					return ElectrolyzerRecipe.isValidRecipeFluid(fluidStack);
+			}
+		}
+		return false;
 	}
 
 	@Override
-	protected boolean canDrainTankFrom(int i, Direction direction) {
+	protected boolean canDrainTankFrom(int i, Direction side) {
+		IndustrialElectrolyzerTileEntity master = master();
+		if(i!=1)return false;
+		if (master != null) {
+			if(side.getYOffset()==0&&this.offsetToMaster.getY()==-1&&this.offsetToMaster.getX()!=0) {
+				if(this.posInMultiblock.getZ()==3)
+					return true;
+			}
+		}
 		return false;
 	}
 
@@ -422,11 +377,11 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 	@Nonnull
 	@Override
 	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing) {
-		if(facing.getYOffset()==0&&this.offsetToMaster.getY()==-1&&this.offsetToMaster.getX()!=0) {
+		if(facing.getYOffset()==0&&this.posInMultiblock.getY()==0&&this.posInMultiblock.getX()!=1) {
 			if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-				if (this.offsetToMaster.getZ()==-1)
+				if (this.posInMultiblock.getZ()==1)
 					return inHandler.cast();
-				else if(this.offsetToMaster.getZ()==1)
+				else if(this.posInMultiblock.getZ()==3)
 					return outHandler.cast();
 				return LazyOptional.empty();
 			}
