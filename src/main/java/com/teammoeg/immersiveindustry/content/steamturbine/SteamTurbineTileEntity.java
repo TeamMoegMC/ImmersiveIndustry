@@ -89,7 +89,7 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
     protected IFluidTank[] getAccessibleFluidTanks(Direction side) {
         SteamTurbineTileEntity master = master();
         if (master != null && (posInMultiblock.getZ() == 0 && posInMultiblock.getY() == 1 && posInMultiblock.getX() == 2)
-                && (side == null || side == getFacing().getOpposite()))
+                && (side == null || side == getFacing()))
             return new FluidTank[]{master.tanks};
         return new FluidTank[0];
     }
