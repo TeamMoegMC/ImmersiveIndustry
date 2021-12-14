@@ -23,7 +23,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
@@ -58,13 +57,5 @@ public class SteamTurbineMultiblock extends IETemplateMultiblock {
         return false;
     }
 
-    @Override
-    public Direction transformDirection(Direction original) {
-        return original.getOpposite();
-    }
 
-    @Override
-    public Direction untransformDirection(Direction transformed) {
-        return transformed.getOpposite();
-    }
 }

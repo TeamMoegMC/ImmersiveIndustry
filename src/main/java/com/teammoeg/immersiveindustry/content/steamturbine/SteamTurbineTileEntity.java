@@ -18,22 +18,6 @@
 
 package com.teammoeg.immersiveindustry.content.steamturbine;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.apache.commons.lang3.tuple.Pair;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.teammoeg.immersiveindustry.IIConfig;
-import com.teammoeg.immersiveindustry.IIContent;
-
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
@@ -43,6 +27,10 @@ import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileE
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.teammoeg.immersiveindustry.IIConfig;
+import com.teammoeg.immersiveindustry.IIContent;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.FluidTags;
@@ -61,6 +49,15 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.commons.lang3.tuple.Pair;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbineTileEntity> implements
         IEBlockInterfaces.IBlockBounds, IEBlockInterfaces.ISoundTile {
@@ -97,8 +94,22 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
         return new FluidTank[0];
     }
 
+    boolean uncheckedLocation = true;
     @Override
     public void tick() {
+        if (uncheckedLocation && !world.isRemote) {
+            if (master() == null) {
+                this.setFacing(this.getFacing().getOpposite());
+                this.offsetToMaster = new BlockPos(-offsetToMaster.getX(), offsetToMaster.getY(), -offsetToMaster.getZ());
+                if (master() == null) {
+                    this.setFacing(this.getFacing().getOpposite());
+                    this.offsetToMaster = new BlockPos(-offsetToMaster.getX(), offsetToMaster.getY(), -offsetToMaster.getZ());
+                } else {
+                    this.markContainingBlockForUpdate(null);
+                }
+            }
+            uncheckedLocation = false;
+        }
         checkForNeedlessTicking();
         if (!this.isDummy()) {
             if (!world.isRemote) {
@@ -108,7 +119,7 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
                             .filter(Objects::nonNull)
                             .collect(Collectors.toList());
                     if (!presentOutputs.isEmpty()) {
-                    	int out=IIConfig.COMMON.steamTurbineGenerator.get();
+                        int out = IIConfig.COMMON.steamTurbineGenerator.get();
                     	if(!presentOutputs.isEmpty()&&tanks.getFluidAmount() >= 64&&EnergyHelper.distributeFlux(presentOutputs, out, false) < out)
     					{
                             active = true;
@@ -143,21 +154,21 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
 
     private static List<AxisAlignedBB> getShape(BlockPos posInMultiblock) {
         if (posInMultiblock.equals(new BlockPos(0, 1, 0)))
-            return ImmutableList.of(new AxisAlignedBB(0.5D, 0D, 0D, 1.0D, 1D, 1.0D));
+            return ImmutableList.of(new AxisAlignedBB(0.5D, 0D, 0D, 0D, 1D, 1.0D));
         else if (posInMultiblock.getZ() == 5 && posInMultiblock.getY() == 1) {
             if (posInMultiblock.getX() % 2 == 0)
-                return Utils.flipBoxes(false, posInMultiblock.getX() == 2, new AxisAlignedBB(0D, 0D, 0D, 0.75D, 0.5D, 1.0D));
+                return Utils.flipBoxes(false, posInMultiblock.getX() == 2, new AxisAlignedBB(1D, 0D, 0D, 0.25D, 0.5D, 1.0D));
 			return ImmutableList.of(new AxisAlignedBB(0D, 0D, 0D, 1.0D, 0.5D, 1.0D));
         } else if (posInMultiblock.getX() % 2 == 0 && posInMultiblock.getZ() != 6) {
             if (posInMultiblock.getY() == 0)
-                return ImmutableList.of(new AxisAlignedBB(0D, 0D, 0D, 1.0D, 0.5D, 1.0D), Utils.flipBox(false, posInMultiblock.getX() == 2, new AxisAlignedBB(0D, 0.5D, 0D, 0.75D, 1D, 1.0D)));
+                return ImmutableList.of(new AxisAlignedBB(0D, 0D, 0D, 1.0D, 0.5D, 1.0D), Utils.flipBox(false, posInMultiblock.getX() == 2, new AxisAlignedBB(1D, 0.5D, 0D, 0.25D, 1D, 1.0D)));
             else if (posInMultiblock.getY() == 1)
-                return Utils.flipBoxes(false, posInMultiblock.getX() == 2, new AxisAlignedBB(0D, 0D, 0D, 0.75D, 1D, 1.0D));
+                return Utils.flipBoxes(false, posInMultiblock.getX() == 2, new AxisAlignedBB(1D, 0D, 0D, 0.25D, 1D, 1.0D));
             else if (posInMultiblock.getZ() == 0)
-                return ImmutableList.of(new AxisAlignedBB(0.25D, 0D, 0.0D, 1D, 0.5D, 0.2D));
-            else return ImmutableList.of(new AxisAlignedBB(0.25D, 0D, 0D, 1D, 0.5D, 1.0D));
+                return ImmutableList.of(new AxisAlignedBB(0.75D, 0D, 0.8D, 0D, 0.5D, 1D));
+            else return ImmutableList.of(new AxisAlignedBB(0.75D, 0D, 1D, 0D, 0.5D, 0D));
         } else if (posInMultiblock.getY() == 2) {
-            return ImmutableList.of(new AxisAlignedBB(0D, 0D, 0D, 1.0D, 0.5D, 1.0D));
+            return ImmutableList.of(new AxisAlignedBB(0D, 0D, 1D, 1.0D, 0.5D, 0D));
         } else if (posInMultiblock.equals(new BlockPos(1, 0, 0)))
             return ImmutableList.of(new AxisAlignedBB(0D, 0D, 0D, 1.0D, 0.5D, 1.0D));
 
