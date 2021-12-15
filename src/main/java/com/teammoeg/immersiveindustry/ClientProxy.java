@@ -11,5 +11,6 @@ public class ClientProxy {
 				new ResourceLocation(IIMain.MODID, "block/multiblocks/industrial_electrode.obj"),
 				"industrial_electrode", ModelType.IE_OBJ
 		);
+		;
 	}
 }
