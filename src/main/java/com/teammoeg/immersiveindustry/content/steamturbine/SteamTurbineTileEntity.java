@@ -210,6 +210,6 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
 
     @Override
     public float getSoundRadiusSq() {
-        return 128;
+        return 64;
     }
 }
