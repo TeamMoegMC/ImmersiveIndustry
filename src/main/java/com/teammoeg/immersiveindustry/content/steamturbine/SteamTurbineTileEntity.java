@@ -84,6 +84,7 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
         nbt.put("tank0", tanks.writeToNBT(new CompoundNBT()));
         nbt.putBoolean("active", active);
     }
+
     @Nonnull
     @Override
     protected IFluidTank[] getAccessibleFluidTanks(Direction side) {
@@ -94,7 +95,18 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
         return new FluidTank[0];
     }
 
+    @Override
+    public void disassemble() {
+        if (formed && !world.isRemote) {
+            tempMasterTE = master();
+            BlockPos startPos = getOrigin();
+            multiblockInstance.disassemble(world, startPos, getIsMirrored(), multiblockInstance.untransformDirection(getFacing()));
+            world.destroyBlock(pos, false);
+        }
+    }
+
     boolean uncheckedLocation = true;
+
     @Override
     public void tick() {
         if (uncheckedLocation && !world.isRemote) {
