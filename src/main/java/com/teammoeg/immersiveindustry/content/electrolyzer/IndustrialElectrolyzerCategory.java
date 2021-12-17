@@ -26,6 +26,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
 
+import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -38,7 +39,9 @@ import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -112,7 +115,12 @@ public class IndustrialElectrolyzerCategory implements IRecipeCategory<Electroly
         if(recipe.output_fluid!=null) {
         	guiFluidStacks.set(5,recipe.output_fluid.getMatchingFluidStacks());
         }
-        List<ItemStack> electrodes=TagCollectionManager.getManager().getItemTags().get(IndustrialElectrolyzerContainer.Electrode_Tag).getAllElements().stream().map(ItemStack::new).collect(Collectors.toList());
+        ITag<Item> e_tag=TagCollectionManager.getManager().getItemTags().get(IndustrialElectrolyzerContainer.Electrode_Tag);
+        List<ItemStack> electrodes;
+        if(e_tag!=null)
+        	electrodes=e_tag.getAllElements().stream().map(ItemStack::new).collect(Collectors.toList());
+        else
+        	electrodes=Arrays.asList(new ItemStack(IEItems.Misc.graphiteElectrode));
         guiItemStacks.init(0, true, 27, 32);
         guiItemStacks.init(1, true, 45, 32);
         guiItemStacks.init(2, false, 101, 32);
