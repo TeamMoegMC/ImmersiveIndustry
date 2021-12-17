@@ -26,7 +26,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
 
-import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -41,8 +40,6 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -54,6 +51,7 @@ public class IndustrialElectrolyzerCategory implements IRecipeCategory<Electroly
     private IDrawable TANK;
     private IDrawableAnimated ARROW;
     public static final ResourceLocation Electrode_Tag=new ResourceLocation(IIMain.MODID,"electrodes");
+    public static List<Item> electrodes;
     public IndustrialElectrolyzerCategory(IGuiHelper guiHelper) {
         this.ICON = guiHelper.createDrawableIngredient(new ItemStack(IIContent.IIMultiblocks.industrial_electrolyzer));
         this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/industrial_electrolyzer.png"), 6,6,145, 68);
@@ -116,19 +114,16 @@ public class IndustrialElectrolyzerCategory implements IRecipeCategory<Electroly
         if(recipe.output_fluid!=null) {
         	guiFluidStacks.set(5,recipe.output_fluid.getMatchingFluidStacks());
         }
-        ITag<Item> e_tag=TagCollectionManager.getManager().getItemTags().get(Electrode_Tag);
-        List<ItemStack> electrodes;
-        if(e_tag!=null)
-        	electrodes=e_tag.getAllElements().stream().map(ItemStack::new).collect(Collectors.toList());
-        else
-        	electrodes=Arrays.asList(new ItemStack(IEItems.Misc.graphiteElectrode));
         guiItemStacks.init(0, true, 27, 32);
         guiItemStacks.init(1, true, 45, 32);
         guiItemStacks.init(2, false, 101, 32);
         guiItemStacks.init(3,true,27,3);
         guiItemStacks.init(4,true,45,3);
         guiItemStacks.set(ingredients);
-        guiItemStacks.set(4,electrodes);
-        guiItemStacks.set(3,electrodes);
+        if(electrodes!=null) {
+        	List<ItemStack> electrode=electrodes.stream().map(ItemStack::new).collect(Collectors.toList());
+        	guiItemStacks.set(4,electrode);
+        	guiItemStacks.set(3,electrode);
+        }
     }
 }
