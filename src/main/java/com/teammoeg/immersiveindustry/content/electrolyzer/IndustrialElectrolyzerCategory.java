@@ -117,9 +117,9 @@ public class IndustrialElectrolyzerCategory implements IRecipeCategory<Electroly
         guiItemStacks.init(1, true, 45, 32);
         guiItemStacks.init(2, false, 101, 32);
         guiItemStacks.init(3,true,27,3);
-        guiItemStacks.set(3,electrodes);
         guiItemStacks.init(4,true,45,3);
-        guiItemStacks.set(4,electrodes);
         guiItemStacks.set(ingredients);
+        guiItemStacks.set(4,electrodes);
+        guiItemStacks.set(3,electrodes);
     }
 }
