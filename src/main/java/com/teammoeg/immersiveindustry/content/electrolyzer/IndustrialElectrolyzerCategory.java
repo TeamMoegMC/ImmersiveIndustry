@@ -53,6 +53,7 @@ public class IndustrialElectrolyzerCategory implements IRecipeCategory<Electroly
     private IDrawable ICON;
     private IDrawable TANK;
     private IDrawableAnimated ARROW;
+    public static final ResourceLocation Electrode_Tag=new ResourceLocation(IIMain.MODID,"electrodes");
     public IndustrialElectrolyzerCategory(IGuiHelper guiHelper) {
         this.ICON = guiHelper.createDrawableIngredient(new ItemStack(IIContent.IIMultiblocks.industrial_electrolyzer));
         this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/industrial_electrolyzer.png"), 6,6,145, 68);
@@ -115,7 +116,7 @@ public class IndustrialElectrolyzerCategory implements IRecipeCategory<Electroly
         if(recipe.output_fluid!=null) {
         	guiFluidStacks.set(5,recipe.output_fluid.getMatchingFluidStacks());
         }
-        ITag<Item> e_tag=TagCollectionManager.getManager().getItemTags().get(IndustrialElectrolyzerContainer.Electrode_Tag);
+        ITag<Item> e_tag=TagCollectionManager.getManager().getItemTags().get(Electrode_Tag);
         List<ItemStack> electrodes;
         if(e_tag!=null)
         	electrodes=e_tag.getAllElements().stream().map(ItemStack::new).collect(Collectors.toList());
