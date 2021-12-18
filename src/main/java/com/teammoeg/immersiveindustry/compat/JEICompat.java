@@ -66,7 +66,7 @@ public class JEICompat implements IModPlugin {
         ClientWorld world = Minecraft.getInstance().world;
         checkNotNull(world, "minecraft world");
         RecipeManager recipeManager = world.getRecipeManager();
-
+        IndustrialElectrolyzerCategory.electrodes=world.getTags().getItemTags().get(IndustrialElectrolyzerCategory.Electrode_Tag).getAllElements();
         registration.addRecipes(new ArrayList<>(CrucibleRecipe.recipeList.values()), CrucibleCategory.UID);
         registration.addRecipes(ElectrolyzerRecipe.recipeList.values().stream().filter(r->!r.flag).filter(r->r.inputs.length<2).collect(Collectors.toList()), ElectrolyzerCategory.UID);
         registration.addRecipes(ElectrolyzerRecipe.recipeList.values().stream().filter(r->r.inputs.length<3).collect(Collectors.toList()), IndustrialElectrolyzerCategory.UID);

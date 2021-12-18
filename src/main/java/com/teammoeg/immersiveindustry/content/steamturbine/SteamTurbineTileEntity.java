@@ -35,6 +35,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ITag;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -106,21 +107,49 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
     }
 
     boolean uncheckedLocation = true;
-
+    boolean uncheckedFacing=true;
     @Override
     public void tick() {
-        if (uncheckedLocation && !world.isRemote) {
-            if (master() == null) {
-                this.setFacing(this.getFacing().getOpposite());
-                this.offsetToMaster = new BlockPos(-offsetToMaster.getX(), offsetToMaster.getY(), -offsetToMaster.getZ());
-                if (master() == null) {
-                    this.setFacing(this.getFacing().getOpposite());
-                    this.offsetToMaster = new BlockPos(-offsetToMaster.getX(), offsetToMaster.getY(), -offsetToMaster.getZ());
-                } else {
-                    this.markContainingBlockForUpdate(null);
-                }
-            }
-            uncheckedLocation = false;
+        if (!world.isRemote) {
+        	if(uncheckedLocation) {
+        		SteamTurbineTileEntity m=master();
+	            if (m == null||m.isDummy()) {
+	                this.setFacing(this.getFacing().getOpposite());
+	                this.offsetToMaster = new BlockPos(-offsetToMaster.getX(), offsetToMaster.getY(), -offsetToMaster.getZ());
+	                if (master() == null) {
+	                    this.setFacing(this.getFacing().getOpposite());
+	                    this.offsetToMaster = new BlockPos(-offsetToMaster.getX(), offsetToMaster.getY(), -offsetToMaster.getZ());
+	                } else {
+	                    this.markContainingBlockForUpdate(null);
+	                }
+	                uncheckedLocation = false;
+	            }else if(m==this) {
+	            	TileEntity side=Utils.getExistingTileEntity(this.world,this.getBlockPosForPos(this.offsetToMaster.east()));
+	            	if(side instanceof SteamTurbineTileEntity) {
+	            		SteamTurbineTileEntity ste=(SteamTurbineTileEntity) side;
+	            		if(!ste.uncheckedLocation) {
+	            			if(ste.getFacing()!=this.getFacing()) {
+	            				this.setFacing(ste.getFacing());
+	            				this.markContainingBlockForUpdate(null);
+	            			}
+	            			uncheckedLocation = false;
+	            		}
+	            	}
+	            }else uncheckedLocation = false;
+	            
+        	}
+        	if(uncheckedFacing) {
+        		if(isDummy()&&this.offsetToMaster.getX()==0&&this.offsetToMaster.getZ()==0) {
+        			SteamTurbineTileEntity m=master();
+		            if (m != null&&!m.uncheckedLocation&&!m.isDummy()) {
+		            	if(m.getFacing()!=this.getFacing()) {
+			                this.setFacing(master().getFacing());
+			                this.markContainingBlockForUpdate(null);
+		            	}
+		                uncheckedLocation = false;
+		            }else return;
+        		}else uncheckedLocation = false;
+        	}
         }
         checkForNeedlessTicking();
         if (!this.isDummy()) {
