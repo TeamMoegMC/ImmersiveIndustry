@@ -1,7 +1,19 @@
 {
   "variants": {
-    "": {
+    "facing=north": {
       "model": "immersiveindustry:block/electrolyzer"
+    },
+    "facing=south": {
+      "model": "immersiveindustry:block/electrolyzer",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "immersiveindustry:block/electrolyzer",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "immersiveindustry:block/electrolyzer",
+      "y": 270
     }
   }
 }

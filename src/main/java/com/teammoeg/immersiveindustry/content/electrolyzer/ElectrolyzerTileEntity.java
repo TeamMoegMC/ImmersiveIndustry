@@ -18,12 +18,6 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.teammoeg.immersiveindustry.IIConfig;
-import com.teammoeg.immersiveindustry.IIContent;
-
 import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
@@ -34,6 +28,8 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import com.teammoeg.immersiveindustry.IIConfig;
+import com.teammoeg.immersiveindustry.IIContent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
@@ -51,6 +47,9 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInventory, EnergyHelper.IIEInternalFluxHandler,
         ITickableTileEntity, IEBlockInterfaces.IProcessTile, IEBlockInterfaces.IStateBasedDirectional, IEBlockInterfaces.IInteractionObjectIE {
@@ -173,15 +172,22 @@ public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInven
     @Nonnull
     @Override
     public IEEnums.IOSideConfig getEnergySideConfig(@Nullable Direction facing) {
-        return IEEnums.IOSideConfig.INPUT;
+        return facing != this.getFacing().rotateY() ? IEEnums.IOSideConfig.NONE : IEEnums.IOSideConfig.INPUT;
     }
 
-    EnergyHelper.IEForgeEnergyWrapper wrapper = new EnergyHelper.IEForgeEnergyWrapper(this, null);
+    EnergyHelper.IEForgeEnergyWrapper wrapper = null;
 
     @Nullable
     @Override
     public EnergyHelper.IEForgeEnergyWrapper getCapabilityWrapper(Direction facing) {
-        return wrapper;
+        if (facing != this.getFacing().rotateY()) {
+            return null;
+        } else {
+            if (this.wrapper == null) {
+                this.wrapper = new EnergyHelper.IEForgeEnergyWrapper(this, this.getFacing().rotateY());
+            }
+            return wrapper;
+        }
     }
 
     static class FluidHandler implements IFluidHandler {

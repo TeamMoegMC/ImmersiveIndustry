@@ -18,36 +18,17 @@
 
 package com.teammoeg.immersiveindustry;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Supplier;
-
-import com.google.common.collect.ImmutableSet;
-import com.teammoeg.immersiveindustry.content.IIBaseBlock;
-import com.teammoeg.immersiveindustry.content.IIBlockItem;
-import com.teammoeg.immersiveindustry.content.crucible.CrucibleBlock;
-import com.teammoeg.immersiveindustry.content.crucible.CrucibleContainer;
-import com.teammoeg.immersiveindustry.content.crucible.CrucibleMultiblock;
-import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
-import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipeSerializer;
-import com.teammoeg.immersiveindustry.content.crucible.CrucibleTileEntity;
-import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerBlock;
-import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerContainer;
-import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipe;
-import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipeSerializer;
-import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerTileEntity;
-import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerBlock;
-import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerContainer;
-import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerMultiblock;
-import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerTileEntity;
-import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineBlock;
-import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineMultiblock;
-import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineTileEntity;
-
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
+import com.google.common.collect.ImmutableSet;
+import com.teammoeg.immersiveindustry.content.IIBaseBlock;
+import com.teammoeg.immersiveindustry.content.IIBlockItem;
+import com.teammoeg.immersiveindustry.content.crucible.*;
+import com.teammoeg.immersiveindustry.content.electrolyzer.*;
+import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineBlock;
+import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineMultiblock;
+import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineTileEntity;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -63,6 +44,11 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Supplier;
+
 public class IIContent {
     public static List<Block> registeredBlocks = new ArrayList<>();
     public static List<Item> registeredItems = new ArrayList<>();
@@ -71,7 +57,7 @@ public class IIContent {
         public static void init() {
         }
 
-        public static Block electrolyzer = new ElectrolyzerBlock("electrolyzer", IIProps.METALProps, IIBlockItem::new);
+        public static Block electrolyzer = new ElectrolyzerBlock("electrolyzer", IIProps.MACHINEProps, IIBlockItem::new);
         public static Block burning_chamber = new IIBaseBlock("burning_chamber", IIProps.METALProps, IIBlockItem::new);
     }
 
@@ -149,5 +135,12 @@ public class IIContent {
                 .setRequiresTool()
                 .harvestTool(ToolType.PICKAXE)
                 .hardnessAndResistance(2, 10);
+        public static final AbstractBlock.Properties MACHINEProps = AbstractBlock.Properties
+                .create(Material.IRON)
+                .sound(SoundType.METAL)
+                .setRequiresTool()
+                .harvestTool(ToolType.PICKAXE)
+                .hardnessAndResistance(3, 15)
+                .notSolid();
     }
 }

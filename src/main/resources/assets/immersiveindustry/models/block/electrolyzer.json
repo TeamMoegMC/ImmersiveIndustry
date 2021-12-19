@@ -1,9 +1,10 @@
 {
-  "parent": "minecraft:block/orientable_with_bottom",
+  "parent": "minecraft:block/block",
   "textures": {
-    "top": "immersiveindustry:block/electrolyzer_top",
-    "bottom": "immersiveindustry:block/electrolyzer_top",
-    "side": "immersiveindustry:block/electrolyzer_top",
-    "front": "immersiveindustry:block/electrolyzer"
-  }
+    "particle": "immersiveindustry:block/electrolyzer"
+  },
+  "loader": "forge:obj",
+  "model": "immersiveindustry:models/block/electrolyzer.obj",
+  "detectCullableFaces": false,
+  "flip-v": true
 }
