@@ -156,10 +156,12 @@ public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInven
     @Nonnull
     @Override
     public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing) {
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-            return fluidHandler.cast();
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-            return invHandler.cast();
+        if(facing.getAxis()!=this.getFacing().rotateY().getAxis()) {
+	    	if (facing!=Direction.UP&&capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+	            return fluidHandler.cast();
+	        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+	            return invHandler.cast();
+        }
         return super.getCapability(capability, facing);
     }
 
@@ -182,12 +184,11 @@ public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInven
     public EnergyHelper.IEForgeEnergyWrapper getCapabilityWrapper(Direction facing) {
         if (facing != this.getFacing().rotateY()) {
             return null;
-        } else {
-            if (this.wrapper == null) {
-                this.wrapper = new EnergyHelper.IEForgeEnergyWrapper(this, this.getFacing().rotateY());
-            }
-            return wrapper;
         }
+		if (this.wrapper == null) {
+		    this.wrapper = new EnergyHelper.IEForgeEnergyWrapper(this, this.getFacing().rotateY());
+		}
+		return wrapper;
     }
 
     static class FluidHandler implements IFluidHandler {
