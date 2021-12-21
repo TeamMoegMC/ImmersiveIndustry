@@ -88,7 +88,7 @@ public class ElectrolyzerCategory implements IRecipeCategory<ElectrolyzerRecipe>
     @Override
     public void setIngredients(ElectrolyzerRecipe recipe, IIngredients ingredients) {
     	if(recipe.input_fluid!=null)
-    		ingredients.setInputs(VanillaTypes.FLUID, recipe.input_fluid.getMatchingFluidStacks());
+    		ingredients.setInputLists(VanillaTypes.FLUID, Arrays.asList(recipe.input_fluid.getMatchingFluidStacks()));
         if(recipe.inputs.length!=0)
         	ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.inputs[0]).build());
         else

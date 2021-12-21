@@ -99,6 +99,10 @@ public class IndustrialElectrolyzerCategory implements IRecipeCategory<Electroly
         else
         	ingredients.setInputLists(VanillaTypes.ITEM,Arrays.asList(Arrays.asList(ItemStack.EMPTY)));
         ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
+        if (recipe.output_fluid != null)
+        	ingredients.setOutputLists(VanillaTypes.FLUID,Arrays.asList(recipe.output_fluid.getMatchingFluidStacks()));
+        if(recipe.input_fluid!=null)
+        	ingredients.setInputLists(VanillaTypes.FLUID, Arrays.asList(recipe.input_fluid.getMatchingFluidStacks()));
     }
 
 
@@ -106,13 +110,13 @@ public class IndustrialElectrolyzerCategory implements IRecipeCategory<Electroly
     public void setRecipe(IRecipeLayout recipeLayout, ElectrolyzerRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
         IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
-        guiFluidStacks.init(3, true, 4, 19, 16, 47, FluidAttributes.BUCKET_VOLUME, false,TANK);
+        guiFluidStacks.init(0, true, 4, 19, 16, 47, FluidAttributes.BUCKET_VOLUME, false,TANK);
         if (recipe.input_fluid != null) {
-            guiFluidStacks.set(3,recipe.input_fluid.getMatchingFluidStacks());
+            guiFluidStacks.set(0,recipe.input_fluid.getMatchingFluidStacks());
         }
-        guiFluidStacks.init(5,false, 126,19, 16, 47, FluidAttributes.BUCKET_VOLUME, false,TANK);
+        guiFluidStacks.init(1,false, 126,19, 16, 47, FluidAttributes.BUCKET_VOLUME, false,TANK);
         if(recipe.output_fluid!=null) {
-        	guiFluidStacks.set(5,recipe.output_fluid.getMatchingFluidStacks());
+        	guiFluidStacks.set(1,recipe.output_fluid.getMatchingFluidStacks());
         }
         guiItemStacks.init(0, true, 27, 32);
         guiItemStacks.init(1, true, 45, 32);
