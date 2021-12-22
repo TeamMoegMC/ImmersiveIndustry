@@ -74,6 +74,4 @@ public class CrucibleMultiblock extends IETemplateMultiblock {
     public float getManualScale() {
         return 16;
     }
-
-
 }

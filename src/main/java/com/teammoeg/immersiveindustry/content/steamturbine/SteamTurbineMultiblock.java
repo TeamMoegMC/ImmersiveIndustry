@@ -56,6 +56,4 @@ public class SteamTurbineMultiblock extends IETemplateMultiblock {
     public boolean canBeMirrored() {
         return false;
     }
-
-
 }
