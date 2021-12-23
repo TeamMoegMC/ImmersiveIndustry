@@ -172,18 +172,28 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
 
     }
 
-    LazyOptional<IItemHandler> invHandler = registerConstantCap(
-            new IEInventoryHandler(4, this, 0, new boolean[]{true, true, false, true},
-                    new boolean[]{false, false, true, false})
+    LazyOptional<IItemHandler> inputHandler = registerConstantCap(
+            new IEInventoryHandler(2, this, 0,true,false)
     );
-
+    LazyOptional<IItemHandler> outputHandler = registerConstantCap(
+            new IEInventoryHandler(1, this, 2,false,true)
+    );
+    LazyOptional<IItemHandler> fuelHandler = registerConstantCap(
+            new IEInventoryHandler(1, this, 3,true,false)
+    );
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             CrucibleTileEntity master = master();
-            if (master != null)
-                return master.invHandler.cast();
+            if (master != null) {
+            	if(this.posInMultiblock.getY()<=1)
+            		return master.fuelHandler.cast();
+            	else if(facing==Direction.UP)
+            		return master.inputHandler.cast();
+            	else
+            		return master.outputHandler.cast();
+            }
         }
         return super.getCapability(capability, facing);
     }
@@ -231,17 +241,19 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
 	            if (m == null||m.isDummy()) {
 	                this.setFacing(this.getFacing().getOpposite());
 	                this.offsetToMaster = new BlockPos(-offsetToMaster.getX(), offsetToMaster.getY(), -offsetToMaster.getZ());
-	                if (master() == null) {
+	                if (master() == null||master().isDummy()) {
 	                    this.setFacing(this.getFacing().getOpposite());
 	                    this.offsetToMaster = new BlockPos(-offsetToMaster.getX(), offsetToMaster.getY(), -offsetToMaster.getZ());
 	                } else {
 	                    this.markContainingBlockForUpdate(null);
 	                }
 	                uncheckedLocation = false;
-	            }else if(m==this) {
-	            	TileEntity side=Utils.getExistingTileEntity(this.world,this.getBlockPosForPos(this.offsetToMaster.east()));
+	            }else if(!isDummy()) {
+	            	TileEntity side=Utils.getExistingTileEntity(this.world,this.pos.east());
 	            	if(side instanceof CrucibleTileEntity) {
+	            		
 	            		CrucibleTileEntity ste=(CrucibleTileEntity) side;
+	            		System.out.println("side readed "+ste.uncheckedLocation);
 	            		if(!ste.uncheckedLocation) {
 	            			if(ste.getFacing()!=this.getFacing()) {
 	            				this.setFacing(ste.getFacing());
@@ -261,9 +273,9 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
 			                this.setFacing(master().getFacing());
 			                this.markContainingBlockForUpdate(null);
 		            	}
-		                uncheckedLocation = false;
+		            	uncheckedFacing = false;
 		            }else return;
-        		}else uncheckedLocation = false;
+        		}else uncheckedFacing = false;
         	}
         }
         checkForNeedlessTicking();

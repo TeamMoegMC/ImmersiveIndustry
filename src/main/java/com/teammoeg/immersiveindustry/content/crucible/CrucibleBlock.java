@@ -18,23 +18,36 @@
 
 package com.teammoeg.immersiveindustry.content.crucible;
 
+import java.util.function.Supplier;
+
 import com.teammoeg.immersiveindustry.IIMain;
 
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.items.ItemHandlerHelper;
 
-public class CrucibleBlock<T extends MultiblockPartTileEntity<? super T>> extends IEMultiblockBlock<T> {
-    public static final BooleanProperty LIT = BlockStateProperties.LIT;
+public class CrucibleBlock extends IEMultiblockBlock<CrucibleTileEntity> {
 
-    public CrucibleBlock(String name, RegistryObject type) {
+
+	public static final BooleanProperty LIT = BlockStateProperties.LIT;
+
+    public CrucibleBlock(String name, Supplier<TileEntityType<CrucibleTileEntity>> type) {
         super(name, Properties.create(Material.IRON).hardnessAndResistance(4.0F, 40.0F).notSolid(),type);
         this.setDefaultState(this.stateContainer.getBaseState().with(LIT, false));
     }
@@ -54,5 +67,24 @@ public class CrucibleBlock<T extends MultiblockPartTileEntity<? super T>> extend
         super.fillStateContainer(builder);
         builder.add(LIT);
     }
+
+	@Override
+	public void onEntityWalk(World worldIn, BlockPos pos, Entity entityIn) {
+		super.onEntityWalk(worldIn, pos, entityIn);
+		if(!(entityIn instanceof ItemEntity))return;
+		ItemEntity itemEntity=(ItemEntity) entityIn;
+    	TileEntity te=Utils.getExistingTileEntity(worldIn,pos);
+    	if(te instanceof CrucibleTileEntity) {
+    		CrucibleTileEntity master=((CrucibleTileEntity) te).master();
+    		ItemStack insertItem = ItemHandlerHelper.insertItem(master.inputHandler.resolve().get(), itemEntity.getItem().copy(), false);
+			if (insertItem.isEmpty()) {
+				itemEntity.remove();
+				return;
+			}
+			itemEntity.setItem(insertItem);
+    	}
+	}
+
+
 }
 

@@ -142,9 +142,9 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
 			                this.setFacing(master().getFacing());
 			                this.markContainingBlockForUpdate(null);
 		            	}
-		                uncheckedLocation = false;
+		            	uncheckedFacing = false;
 		            }else return;
-        		}else uncheckedLocation = false;
+        		}else uncheckedFacing = false;
         	}
         }
         checkForNeedlessTicking();
