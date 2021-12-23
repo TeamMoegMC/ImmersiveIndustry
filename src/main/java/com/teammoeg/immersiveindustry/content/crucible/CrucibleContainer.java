@@ -28,7 +28,7 @@ public class CrucibleContainer extends IEBaseContainer<CrucibleTileEntity> {
     public CrucibleTileEntity.CrucibleData data;
 
     public CrucibleContainer(int id, PlayerInventory inventoryPlayer, CrucibleTileEntity tile) {
-        super(inventoryPlayer, tile, id);
+        super(tile, id);
 
         // input
         this.addSlot(new IESlot(this, this.inv, 0, 30, 12) {

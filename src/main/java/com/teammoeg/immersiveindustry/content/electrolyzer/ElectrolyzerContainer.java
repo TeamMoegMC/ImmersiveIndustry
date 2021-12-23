@@ -27,7 +27,7 @@ import net.minecraft.item.ItemStack;
 public class ElectrolyzerContainer extends IEBaseContainer<ElectrolyzerTileEntity> {
 
     public ElectrolyzerContainer(int id, PlayerInventory inventoryPlayer, ElectrolyzerTileEntity tile) {
-        super(inventoryPlayer, tile, id);
+        super(tile, id);
 
         // input
         this.addSlot(new IESlot(this, this.inv, 0, 51, 34) {

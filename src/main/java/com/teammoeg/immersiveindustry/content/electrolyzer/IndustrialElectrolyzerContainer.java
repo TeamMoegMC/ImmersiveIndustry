@@ -31,7 +31,7 @@ import net.minecraft.util.ResourceLocation;
 public class IndustrialElectrolyzerContainer extends IEBaseContainer<IndustrialElectrolyzerTileEntity> {
 	public static final ResourceLocation Electrode_Tag=new ResourceLocation(IIMain.MODID,"electrodes");
     public IndustrialElectrolyzerContainer(int id, PlayerInventory inventoryPlayer, IndustrialElectrolyzerTileEntity tile) {
-        super(inventoryPlayer, tile, id);
+        super(tile, id);
 
         // input
         this.addSlot(new IESlot(this, this.inv, 0, 34, 39) {
