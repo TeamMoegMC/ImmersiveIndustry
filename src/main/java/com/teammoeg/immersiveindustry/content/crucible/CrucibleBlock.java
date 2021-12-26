@@ -75,8 +75,8 @@ public class CrucibleBlock extends IEMultiblockBlock<CrucibleTileEntity> {
 		ItemEntity itemEntity=(ItemEntity) entityIn;
     	TileEntity te=Utils.getExistingTileEntity(worldIn,pos);
     	if(te instanceof CrucibleTileEntity) {
-    		CrucibleTileEntity master=((CrucibleTileEntity) te).master();
-    		ItemStack insertItem = ItemHandlerHelper.insertItem(master.inputHandler.resolve().get(), itemEntity.getItem().copy(), false);
+    		if(((CrucibleTileEntity) te).isDummy())return;
+    		ItemStack insertItem = ItemHandlerHelper.insertItem(((CrucibleTileEntity) te).inputHandler.resolve().get(), itemEntity.getItem().copy(), false);
 			if (insertItem.isEmpty()) {
 				itemEntity.remove();
 				return;
