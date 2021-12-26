@@ -29,6 +29,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
@@ -36,6 +37,7 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -71,7 +73,11 @@ public class CrucibleBlock extends IEMultiblockBlock<CrucibleTileEntity> {
 	@Override
 	public void onEntityWalk(World worldIn, BlockPos pos, Entity entityIn) {
 		super.onEntityWalk(worldIn, pos, entityIn);
-		if(!(entityIn instanceof ItemEntity))return;
+		if(!(entityIn instanceof ItemEntity)) {
+			if(entityIn instanceof LivingEntity&&worldIn.getBlockState(pos).get(LIT))
+				entityIn.attackEntityFrom(DamageSource.HOT_FLOOR,4);
+			return;
+		}
 		ItemEntity itemEntity=(ItemEntity) entityIn;
     	TileEntity te=Utils.getExistingTileEntity(worldIn,pos);
     	if(te instanceof CrucibleTileEntity) {
