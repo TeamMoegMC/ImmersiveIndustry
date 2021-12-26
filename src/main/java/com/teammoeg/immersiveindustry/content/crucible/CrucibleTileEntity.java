@@ -253,7 +253,6 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
 	            	if(side instanceof CrucibleTileEntity) {
 	            		
 	            		CrucibleTileEntity ste=(CrucibleTileEntity) side;
-	            		System.out.println("side readed "+ste.uncheckedLocation);
 	            		if(!ste.uncheckedLocation) {
 	            			if(ste.getFacing()!=this.getFacing()) {
 	            				this.setFacing(ste.getFacing());
