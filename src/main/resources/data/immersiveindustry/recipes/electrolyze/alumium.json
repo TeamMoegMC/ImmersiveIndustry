@@ -8,8 +8,8 @@
 		"amount":1000
 	},
 	"result_fluid":{
-		"tag":"minecraft:water",
-		"amount":1000
+		"fluid": "minecraft:water",
+		"amount": 1000
 	},
 	"result":{
 		"item":"immersiveengineering:dust_aluminum",

@@ -96,8 +96,7 @@ public class IndustrialElectrolyzerCategory implements IRecipeCategory<Electroly
         	ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.inputs[0]).add(recipe.inputs[1]).build());
         else if(recipe.inputs.length==1)
         	ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.inputs[0]).build());
-        else
-        	ingredients.setInputLists(VanillaTypes.ITEM,Arrays.asList(Arrays.asList(ItemStack.EMPTY)));
+
         ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
         if (recipe.output_fluid != null)
             ingredients.setOutput(VanillaTypes.FLUID, recipe.output_fluid);
@@ -115,11 +114,13 @@ public class IndustrialElectrolyzerCategory implements IRecipeCategory<Electroly
             guiFluidStacks.set(0,recipe.input_fluid.getMatchingFluidStacks());
         }
         guiFluidStacks.init(1,false, 126,19, 16, 47, FluidAttributes.BUCKET_VOLUME, false,TANK);
-        if(recipe.output_fluid!=null) {
+        if (recipe.output_fluid != null) {
             guiFluidStacks.set(1, recipe.output_fluid);
         }
-        guiItemStacks.init(0, true, 27, 32);
-        guiItemStacks.init(1, true, 45, 32);
+        if (recipe.inputs.length > 0) {
+            guiItemStacks.init(0, true, 27, 32);
+            guiItemStacks.init(1, true, 45, 32);
+        }
         guiItemStacks.init(2, false, 101, 32);
         guiItemStacks.init(3,true,27,3);
         guiItemStacks.init(4,true,45,3);

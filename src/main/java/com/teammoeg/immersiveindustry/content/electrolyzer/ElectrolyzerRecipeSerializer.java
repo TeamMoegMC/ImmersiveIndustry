@@ -25,7 +25,6 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import com.teammoeg.immersiveindustry.IIContent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -44,7 +43,7 @@ public class ElectrolyzerRecipeSerializer extends IERecipeSerializer<Electrolyze
     @Override
     public ElectrolyzerRecipe readFromJson(ResourceLocation recipeId, JsonObject json) {
         ItemStack output = readOutput(json.get("result"));
-        IngredientWithSize[] inputs =null;
+        IngredientWithSize[] inputs;
         if(json.has("inputs")) {
         	JsonArray ja=json.get("inputs").getAsJsonArray();
         	inputs=new IngredientWithSize[ja.size()];
@@ -64,8 +63,7 @@ public class ElectrolyzerRecipeSerializer extends IERecipeSerializer<Electrolyze
         FluidStack result_fluid = null;
         if (json.has("result_fluid"))
             result_fluid = ApiUtils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "result_fluid"));
-        if (inputs.length == 0 && input_fluid == null)
-            throw new JsonSyntaxException("Must contain more than 1 input");
+
         return new ElectrolyzerRecipe(recipeId, output, inputs, input_fluid,result_fluid, time, flag);
     }
 

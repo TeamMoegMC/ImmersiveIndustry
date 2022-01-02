@@ -18,13 +18,10 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
-import java.util.Arrays;
-
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
-
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -40,6 +37,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fluids.FluidAttributes;
+
+import java.util.Arrays;
 
 public class ElectrolyzerCategory implements IRecipeCategory<ElectrolyzerRecipe> {
     public static ResourceLocation UID = new ResourceLocation(IIMain.MODID, "electrolyzer");
@@ -91,8 +90,7 @@ public class ElectrolyzerCategory implements IRecipeCategory<ElectrolyzerRecipe>
     		ingredients.setInputLists(VanillaTypes.FLUID, Arrays.asList(recipe.input_fluid.getMatchingFluidStacks()));
         if(recipe.inputs.length!=0)
         	ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.inputs[0]).build());
-        else
-        	ingredients.setInputLists(VanillaTypes.ITEM,Arrays.asList(Arrays.asList(ItemStack.EMPTY)));
+
         ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
     }
 
@@ -102,7 +100,8 @@ public class ElectrolyzerCategory implements IRecipeCategory<ElectrolyzerRecipe>
         IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
         IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
         guiFluidStacks.init(2, true, 4, 4, 16, 47, FluidAttributes.BUCKET_VOLUME / 20, false,TANK);
-        guiItemStacks.init(0, true, 33, 19);
+        if (recipe.inputs.length > 0)
+            guiItemStacks.init(0, true, 33, 19);
 
         guiItemStacks.init(1, false, 89, 19);
         guiFluidStacks.set(ingredients);
