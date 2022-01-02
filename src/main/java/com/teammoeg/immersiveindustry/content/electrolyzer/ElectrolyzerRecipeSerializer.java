@@ -18,21 +18,22 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
-import javax.annotation.Nullable;
-
+import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
+import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.teammoeg.immersiveindustry.IIContent;
-
-import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
-import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
+
+import javax.annotation.Nullable;
 
 public class ElectrolyzerRecipeSerializer extends IERecipeSerializer<ElectrolyzerRecipe> {
     @Override
@@ -59,12 +60,12 @@ public class ElectrolyzerRecipeSerializer extends IERecipeSerializer<Electrolyze
         if(json.has("fluid"))
         	input_fluid =FluidTagInput.deserialize(JSONUtils.getJsonObject(json, "fluid"));
         int time = JSONUtils.getInt(json, "time");
-        boolean flag = JSONUtils.getBoolean(json, "large_only",false);
-        FluidTagInput result_fluid =null;
-        if(json.has("result_fluid"))
-        	result_fluid=FluidTagInput.deserialize(json.get("result_fluid"));
-        if(inputs.length==0&&input_fluid==null)
-        	throw new JsonSyntaxException("Must contain more than 1 input");
+        boolean flag = JSONUtils.getBoolean(json, "large_only", false);
+        FluidStack result_fluid = null;
+        if (json.has("result_fluid"))
+            result_fluid = ApiUtils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "result_fluid"));
+        if (inputs.length == 0 && input_fluid == null)
+            throw new JsonSyntaxException("Must contain more than 1 input");
         return new ElectrolyzerRecipe(recipeId, output, inputs, input_fluid,result_fluid, time, flag);
     }
 
@@ -75,12 +76,12 @@ public class ElectrolyzerRecipeSerializer extends IERecipeSerializer<Electrolyze
         IngredientWithSize[] inputs=new IngredientWithSize[buffer.readVarInt()];
         for(int i=0;i<inputs.length;i++)
         	inputs[i]=IngredientWithSize.read(buffer);
-        FluidTagInput input_fluid =null;
-        FluidTagInput output_fluid =null;
-        if(buffer.readBoolean())
-        	input_fluid=FluidTagInput.read(buffer);
-        if(buffer.readBoolean())
-        	output_fluid=FluidTagInput.read(buffer);
+        FluidTagInput input_fluid = null;
+        FluidStack output_fluid = null;
+        if (buffer.readBoolean())
+            input_fluid = FluidTagInput.read(buffer);
+        if (buffer.readBoolean())
+            output_fluid = FluidStack.readFromPacket(buffer);
         int time = buffer.readInt();
         boolean flag = buffer.readBoolean();
         return new ElectrolyzerRecipe(recipeId, output, inputs, input_fluid,output_fluid, time, flag);
@@ -97,8 +98,8 @@ public class ElectrolyzerRecipeSerializer extends IERecipeSerializer<Electrolyze
         	recipe.input_fluid.write(buffer);
         }else buffer.writeBoolean(false);
         if(recipe.output_fluid!=null) {
-        	buffer.writeBoolean(true);
-        	recipe.output_fluid.write(buffer);
+            buffer.writeBoolean(true);
+            recipe.output_fluid.writeToPacket(buffer);
         }else buffer.writeBoolean(false);
         buffer.writeInt(recipe.time);
         buffer.writeBoolean(recipe.flag);

@@ -18,15 +18,10 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
-
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -44,14 +39,19 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fluids.FluidAttributes;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class IndustrialElectrolyzerCategory implements IRecipeCategory<ElectrolyzerRecipe> {
     public static ResourceLocation UID = new ResourceLocation(IIMain.MODID, "industrial_electrolyzer");
     private IDrawable BACKGROUND;
     private IDrawable ICON;
     private IDrawable TANK;
     private IDrawableAnimated ARROW;
-    public static final ResourceLocation Electrode_Tag=new ResourceLocation(IIMain.MODID,"electrodes");
+    public static final ResourceLocation Electrode_Tag = new ResourceLocation(IIMain.MODID, "electrodes");
     public static List<Item> electrodes;
+
     public IndustrialElectrolyzerCategory(IGuiHelper guiHelper) {
         this.ICON = guiHelper.createDrawableIngredient(new ItemStack(IIContent.IIMultiblocks.industrial_electrolyzer));
         this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/industrial_electrolyzer.png"), 6,6,145, 68);
@@ -100,9 +100,9 @@ public class IndustrialElectrolyzerCategory implements IRecipeCategory<Electroly
         	ingredients.setInputLists(VanillaTypes.ITEM,Arrays.asList(Arrays.asList(ItemStack.EMPTY)));
         ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
         if (recipe.output_fluid != null)
-        	ingredients.setOutputLists(VanillaTypes.FLUID,Arrays.asList(recipe.output_fluid.getMatchingFluidStacks()));
-        if(recipe.input_fluid!=null)
-        	ingredients.setInputLists(VanillaTypes.FLUID, Arrays.asList(recipe.input_fluid.getMatchingFluidStacks()));
+            ingredients.setOutput(VanillaTypes.FLUID, recipe.output_fluid);
+        if (recipe.input_fluid != null)
+            ingredients.setInputLists(VanillaTypes.FLUID, Arrays.asList(recipe.input_fluid.getMatchingFluidStacks()));
     }
 
 
@@ -116,7 +116,7 @@ public class IndustrialElectrolyzerCategory implements IRecipeCategory<Electroly
         }
         guiFluidStacks.init(1,false, 126,19, 16, 47, FluidAttributes.BUCKET_VOLUME, false,TANK);
         if(recipe.output_fluid!=null) {
-        	guiFluidStacks.set(1,recipe.output_fluid.getMatchingFluidStacks());
+            guiFluidStacks.set(1, recipe.output_fluid);
         }
         guiItemStacks.init(0, true, 27, 32);
         guiItemStacks.init(1, true, 45, 32);

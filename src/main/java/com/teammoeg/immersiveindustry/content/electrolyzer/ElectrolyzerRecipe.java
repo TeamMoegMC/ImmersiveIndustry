@@ -18,9 +18,6 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
-import java.util.Collections;
-import java.util.Map;
-
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
@@ -33,6 +30,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
 
+import java.util.Collections;
+import java.util.Map;
+
 public class ElectrolyzerRecipe extends IESerializableRecipe {
     public static IRecipeType<ElectrolyzerRecipe> TYPE;
     public static RegistryObject<IERecipeSerializer<ElectrolyzerRecipe>> SERIALIZER;
@@ -40,18 +40,18 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
     public final IngredientWithSize[] inputs;
     public final FluidTagInput input_fluid;
     public final ItemStack output;
-    public final FluidTagInput output_fluid;
+    public final FluidStack output_fluid;
     public final int time;
     public final boolean flag;
 
-    public ElectrolyzerRecipe(ResourceLocation id, ItemStack output, IngredientWithSize[] input, FluidTagInput input_fluid,FluidTagInput output_fluid, int time, boolean flag) {
+    public ElectrolyzerRecipe(ResourceLocation id, ItemStack output, IngredientWithSize[] input, FluidTagInput input_fluid, FluidStack output_fluid, int time, boolean flag) {
         super(output, TYPE, id);
         this.output = output;
         this.inputs = input;
         this.input_fluid = input_fluid;
         this.time = time;
         this.flag = flag;
-        this.output_fluid=output_fluid;
+        this.output_fluid = output_fluid;
     }
 
     @Override
