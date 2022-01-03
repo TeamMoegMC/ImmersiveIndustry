@@ -18,21 +18,13 @@
 
 package com.teammoeg.immersiveindustry.content.crucible;
 
-import java.util.Optional;
-import java.util.Random;
-import java.util.function.Function;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.teammoeg.immersiveindustry.IIContent;
-
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheaterTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import com.teammoeg.immersiveindustry.IIContent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
@@ -53,6 +45,12 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Optional;
+import java.util.Random;
+import java.util.function.Function;
 
 public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEntity> implements IIEInventory,
         IIBlockInterfaces.IActiveState, IEBlockInterfaces.IInteractionObjectIE, IEBlockInterfaces.IProcessTile, IEBlockInterfaces.IBlockBounds {
@@ -156,7 +154,7 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
             return CrucibleRecipe.isValidRecipeInput(stack, true);
         if (slot == 1)
             return CrucibleRecipe.isValidRecipeInput(stack, false);
-        if (slot == 3)
+        if (slot == 2)
             return stack.getItem().getTags().contains(coal_coke);
         return false;
     }
@@ -173,21 +171,22 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
     }
 
     LazyOptional<IItemHandler> inputHandler = registerConstantCap(
-            new IEInventoryHandler(2, this, 0,true,false)
-    );
-    LazyOptional<IItemHandler> outputHandler = registerConstantCap(
-            new IEInventoryHandler(1, this, 2,false,true)
+            new IEInventoryHandler(2, this, 0, true, false)
     );
     LazyOptional<IItemHandler> fuelHandler = registerConstantCap(
-            new IEInventoryHandler(1, this, 3,true,false)
+            new IEInventoryHandler(1, this, 2, true, false)
     );
+    LazyOptional<IItemHandler> outputHandler = registerConstantCap(
+            new IEInventoryHandler(1, this, 3, false, true)
+    );
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             CrucibleTileEntity master = master();
             if (master != null) {
-            	if(this.posInMultiblock.getY()<=1)
+                if (this.posInMultiblock.getY() <= 1)
             		return master.fuelHandler.cast();
             	else if(facing==Direction.UP)
             		return master.inputHandler.cast();
@@ -222,15 +221,6 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
         }
     }
 
-    public void setTemperature(int temperature) {
-        if (master() != null)
-            master().temperature = temperature;
-    }
-
-    public void setBurnTime(int burnTime) {
-        if (master() != null)
-            master().burnTime = burnTime;
-    }
     boolean uncheckedLocation=true;
     boolean uncheckedFacing=true;
     @Override
@@ -319,9 +309,9 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                 if (burnTime > 0) {
                     burnTime--;
                 } else {
-                    if (inventory.get(3).getItem().getTags().contains(coal_coke)) {
+                    if (!inventory.get(2).isEmpty() && inventory.get(2).getItem().getTags().contains(coal_coke)) {
                         burnTime = 600;
-                        inventory.get(3).shrink(1);
+                        inventory.get(2).shrink(1);
                         this.markDirty();
                     }
                 }
@@ -349,10 +339,10 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                         } else {
                             Utils.modifyInvStackSize(inventory, 0, -recipe.input.getCount());
                             Utils.modifyInvStackSize(inventory, 1, -recipe.input2.getCount());
-                            if (!inventory.get(2).isEmpty())
-                                inventory.get(2).grow(recipe.output.copy().getCount());
-                            else if (inventory.get(2).isEmpty())
-                                inventory.set(2, recipe.output.copy());
+                            if (!inventory.get(3).isEmpty())
+                                inventory.get(3).grow(recipe.output.copy().getCount());
+                            else if (inventory.get(3).isEmpty())
+                                inventory.set(3, recipe.output.copy());
                             processMax = 0;
                         }
                     }
@@ -377,8 +367,8 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
         CrucibleRecipe recipe = CrucibleRecipe.findRecipe(inventory.get(0), inventory.get(1));
         if (recipe == null)
             return null;
-        if (inventory.get(2).isEmpty() || (ItemStack.areItemsEqual(inventory.get(2), recipe.output) &&
-                inventory.get(2).getCount() + recipe.output.getCount() <= getSlotLimit(2))) {
+        if (inventory.get(3).isEmpty() || (ItemStack.areItemsEqual(inventory.get(3), recipe.output) &&
+                inventory.get(3).getCount() + recipe.output.getCount() <= getSlotLimit(3))) {
             return recipe;
         }
         return null;

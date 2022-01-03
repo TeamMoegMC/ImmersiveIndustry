@@ -43,16 +43,17 @@ public class CrucibleContainer extends IEBaseContainer<CrucibleTileEntity> {
                 return CrucibleRecipe.isValidRecipeInput(itemStack, false);
             }
         });
-        // output
-        this.addSlot(new IESlot.Output(this, this.inv, 2, 106, 12));
-        // input fuel
-        this.addSlot(new IESlot(this, this.inv, 3, 80, 51) {
+        this.addSlot(new IESlot(this, this.inv, 2, 80, 51) {
             @Override
             public boolean isItemValid(ItemStack itemStack) {
                 return itemStack.getItem().getTags().contains(CrucibleTileEntity.coal_coke);
             }
         });
-        slotCount = 4;
+        // output
+        this.addSlot(new IESlot.Output(this, this.inv, 3, 106, 12));
+        // input fuel
+
+        this.slotCount = 4;
 
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 9; j++)
