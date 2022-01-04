@@ -18,11 +18,9 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
-import com.teammoeg.immersiveindustry.IIMain;
-
 import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
-import blusunrize.immersiveengineering.common.items.IEItems;
+import com.teammoeg.immersiveindustry.IIMain;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -48,7 +46,7 @@ public class IndustrialElectrolyzerContainer extends IEBaseContainer<IndustrialE
         });
         // output
         this.addSlot(new IESlot.Output(this, this.inv, 2, 108, 39));
-        slotCount = 3;
+        this.slotCount = 3;
 
         this.addSlot(new IESlot(this, this.inv, 3, 34, 10) {
             @Override

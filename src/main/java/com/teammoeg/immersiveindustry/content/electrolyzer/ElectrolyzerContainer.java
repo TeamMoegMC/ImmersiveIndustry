@@ -39,7 +39,7 @@ public class ElectrolyzerContainer extends IEBaseContainer<ElectrolyzerTileEntit
         // output
         this.addSlot(new IESlot.Output(this, this.inv, 1, 107, 34));
         // input fuel
-        slotCount = 2;
+        this.slotCount = 2;
 
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 9; j++)
