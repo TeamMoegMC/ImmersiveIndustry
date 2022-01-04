@@ -60,11 +60,9 @@ public class IIBaseBlock extends Block {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos) {
         if (state.isOpaqueCube(worldIn, pos))
             return lightOpacity;
-        else
-            return state.propagatesSkylightDown(worldIn, pos) ? 0 : 1;
+		return state.propagatesSkylightDown(worldIn, pos) ? 0 : 1;
     }
 }

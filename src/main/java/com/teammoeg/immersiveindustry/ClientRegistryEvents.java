@@ -49,7 +49,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 @Mod.EventBusSubscriber(modid = IIMain.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientRegistryEvents {
     private static Tree.InnerNode<ResourceLocation, ManualEntry> CATEGORY;
-    @SubscribeEvent
+    @SuppressWarnings("unused")
+	@SubscribeEvent
     public static void onClientSetup(final FMLClientSetupEvent event) {
     	
         registerIEScreen(new ResourceLocation(IIMain.MODID, "crucible"), CrucibleScreen::new);

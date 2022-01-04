@@ -44,7 +44,6 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -66,7 +65,7 @@ public class JEICompat implements IModPlugin {
     public void registerRecipes(IRecipeRegistration registration) {
         ClientWorld world = Minecraft.getInstance().world;
         checkNotNull(world, "minecraft world");
-        RecipeManager recipeManager = world.getRecipeManager();
+        //RecipeManager recipeManager = world.getRecipeManager();
         IndustrialElectrolyzerCategory.electrodes=ForgeRegistries.ITEMS.getValues().stream().filter(e->e.getTags().contains(IndustrialElectrolyzerCategory.Electrode_Tag)).collect(Collectors.toList());
         registration.addRecipes(new ArrayList<>(CrucibleRecipe.recipeList.values()), CrucibleCategory.UID);
         registration.addRecipes(ElectrolyzerRecipe.recipeList.values().stream().filter(r->!r.flag).filter(r->r.inputs.length<2).collect(Collectors.toList()), ElectrolyzerCategory.UID);

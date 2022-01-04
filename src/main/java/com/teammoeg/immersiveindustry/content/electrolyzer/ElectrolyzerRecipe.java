@@ -55,7 +55,7 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
     }
 
     @Override
-    protected IERecipeSerializer getIESerializer() {
+    protected IERecipeSerializer<ElectrolyzerRecipe> getIESerializer() {
         return SERIALIZER.get();
     }
 

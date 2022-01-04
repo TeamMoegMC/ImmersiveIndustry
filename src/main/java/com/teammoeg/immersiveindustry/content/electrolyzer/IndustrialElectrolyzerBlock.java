@@ -21,7 +21,6 @@ package com.teammoeg.immersiveindustry.content.electrolyzer;
 import com.teammoeg.immersiveindustry.IIMain;
 
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
-import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;

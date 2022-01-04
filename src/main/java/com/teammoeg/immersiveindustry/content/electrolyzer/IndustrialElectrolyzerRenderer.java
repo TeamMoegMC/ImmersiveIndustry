@@ -20,7 +20,6 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
 
 public class IndustrialElectrolyzerRenderer extends TileEntityRenderer<IndustrialElectrolyzerTileEntity> {
     public IndustrialElectrolyzerRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
