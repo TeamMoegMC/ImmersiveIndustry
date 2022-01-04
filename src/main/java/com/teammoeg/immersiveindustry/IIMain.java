@@ -49,7 +49,7 @@ public class IIMain {
     public IIMain() {
         IEventBus mod = FMLJavaModLoadingContext.get().getModEventBus();
         mod.addListener(this::setup);
-        DistExecutor.safeRunWhenOn(Dist.CLIENT,()->ClientProxy::setup);
+        
         IIConfig.register();
         IIContent.IIProps.init();
         IIContent.IIBlocks.init();
@@ -57,6 +57,7 @@ public class IIMain {
         IIContent.registerContainers();
         IIContent.IITileTypes.REGISTER.register(mod);
         IIContent.IIRecipes.RECIPE_SERIALIZERS.register(mod);
+        DistExecutor.safeRunWhenOn(Dist.CLIENT,()->ClientProxy::setup);
         DeferredWorkQueue.runLater(IIContent.IIRecipes::registerRecipeTypes);
     }
 

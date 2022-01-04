@@ -18,12 +18,9 @@
 
 package com.teammoeg.immersiveindustry.content.crucible;
 
-import java.util.function.Supplier;
-
 import com.teammoeg.immersiveindustry.IIMain;
 
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
-import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -36,7 +33,6 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -49,7 +45,7 @@ public class CrucibleBlock extends IEMultiblockBlock<CrucibleTileEntity> {
 
 	public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
-    public CrucibleBlock(String name, Supplier<TileEntityType<CrucibleTileEntity>> type) {
+    public CrucibleBlock(String name, RegistryObject type) {
         super(name, Properties.create(Material.IRON).hardnessAndResistance(4.0F, 40.0F).notSolid(),type);
         this.setDefaultState(this.stateContainer.getBaseState().with(LIT, false));
     }
