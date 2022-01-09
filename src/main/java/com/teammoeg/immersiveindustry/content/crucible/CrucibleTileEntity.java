@@ -67,17 +67,6 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
     public CrucibleTileEntity() {
         super(IIContent.IIMultiblocks.CRUCIBLE, IIContent.IITileTypes.CRUCIBLE.get(), false);
     }
-    @Override
-	public void disassemble()
-	{
-		if(formed&&!world.isRemote)
-		{
-			tempMasterTE = master();
-			BlockPos startPos = getOrigin();
-			multiblockInstance.disassemble(world, startPos, getIsMirrored(), multiblockInstance.untransformDirection(getFacing()));
-			world.destroyBlock(pos, false);
-		}
-	}
 
     @Nonnull
     @Override
@@ -220,53 +209,8 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
             ItemStackHelper.saveAllItems(nbt, inventory);
         }
     }
-
-    boolean uncheckedLocation=true;
-    boolean uncheckedFacing=true;
     @Override
     public void tick() {
-        if (!world.isRemote) {
-        	if(uncheckedLocation) {
-        		CrucibleTileEntity m=master();
-	            if (m == null||m.isDummy()) {
-	                this.setFacing(this.getFacing().getOpposite());
-	                this.offsetToMaster = new BlockPos(-offsetToMaster.getX(), offsetToMaster.getY(), -offsetToMaster.getZ());
-	                if (master() == null||master().isDummy()) {
-	                    this.setFacing(this.getFacing().getOpposite());
-	                    this.offsetToMaster = new BlockPos(-offsetToMaster.getX(), offsetToMaster.getY(), -offsetToMaster.getZ());
-	                } else {
-	                    this.markContainingBlockForUpdate(null);
-	                }
-	                uncheckedLocation = false;
-	            }else if(!isDummy()) {
-	            	TileEntity side=Utils.getExistingTileEntity(this.world,this.pos.east());
-	            	if(side instanceof CrucibleTileEntity) {
-	            		
-	            		CrucibleTileEntity ste=(CrucibleTileEntity) side;
-	            		if(!ste.uncheckedLocation) {
-	            			if(ste.getFacing()!=this.getFacing()) {
-	            				this.setFacing(ste.getFacing());
-	            				this.markContainingBlockForUpdate(null);
-	            			}
-	            			uncheckedLocation = false;
-	            		}
-	            	}
-	            }else uncheckedLocation = false;
-	            
-        	}
-        	if(uncheckedFacing) {
-        		if(isDummy()&&this.offsetToMaster.getX()==0&&this.offsetToMaster.getZ()==0) {
-        			CrucibleTileEntity m=master();
-		            if (m != null&&!m.uncheckedLocation&&!m.isDummy()) {
-		            	if(m.getFacing()!=this.getFacing()) {
-			                this.setFacing(master().getFacing());
-			                this.markContainingBlockForUpdate(null);
-		            	}
-		            	uncheckedFacing = false;
-		            }else return;
-        		}else uncheckedFacing = false;
-        	}
-        }
         checkForNeedlessTicking();
         if (!isDummy()) {
             if (!world.isRemote && formed) {
