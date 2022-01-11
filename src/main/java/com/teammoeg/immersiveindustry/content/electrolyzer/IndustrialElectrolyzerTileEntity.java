@@ -399,7 +399,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 	public NonNullList<ItemStack> getInventory() {
 		if(master()!=null)
 			return master().inventory;
-		return null;
+		return this.inventory;
 	}
 
 	@Override
