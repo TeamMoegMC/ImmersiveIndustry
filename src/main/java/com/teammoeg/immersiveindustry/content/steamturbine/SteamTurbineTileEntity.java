@@ -148,6 +148,7 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
         	}
         }
         checkForNeedlessTicking();
+        boolean pactive=active;
         if (!this.isDummy()) {
             if (!world.isRemote) {
                 if (!isRSDisabled() && !tanks.isEmpty()) {
@@ -166,6 +167,10 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
                     }
                 } else if (active)
                     active = false;
+                if(pactive!=active) {
+                	this.markDirty();
+                	this.markContainingBlockForUpdate(null);
+                }
             } else if (active) {
                 ImmersiveEngineering.proxy.handleTileSound(IESounds.dieselGenerator, this, this.active, 0.15F, 1.0F);
             }
