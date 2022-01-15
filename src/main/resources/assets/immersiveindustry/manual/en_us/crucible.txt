@@ -1,3 +1,7 @@
 Crucible
-
+Even hotter topic
 <&crucible>
+Crucible is a more advanced smelting equipment than the original blast furnace, coke coal must be used for heating.
+You must also provide a <link;improved_blast_furnace;blast furnace preheater;preheater> at the only small opening.
+If everything is correct and fuel is inserted, indicator in the bottom left of UI would light up.
+Ingredients can be inserted from the top, products can be exported from side, fuel can be inserted to the burning chamber in the bottom.

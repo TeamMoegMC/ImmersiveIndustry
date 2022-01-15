@@ -164,7 +164,8 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
     						tanks.drain(64, IFluidHandler.FluidAction.EXECUTE);
     					}else
     						active = false;
-                    }
+                    }else
+						active = false;
                 } else if (active)
                     active = false;
                 if(pactive!=active) {

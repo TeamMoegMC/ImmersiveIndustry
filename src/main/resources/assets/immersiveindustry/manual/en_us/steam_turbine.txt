@@ -1,3 +1,6 @@
 Steam Turbine
-
+Not only steam engine!
 <&steam_turbine>
+Steam Turbine consume steam (64mb/t Max.) to produce power.
+Steam is to be input at the pipe opening of the turbine, whereas energy will be output to up to two connections on the top. The <config;i;immersiveindustry.steamTurbineGenerator>Flux/t the generator outputs will be split between all connected points. The generator will only run when at least one output can accept energy.
+The small terminal on the side will turn off the generator if supplied with a redstone signal.

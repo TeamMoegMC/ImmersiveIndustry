@@ -1,3 +1,7 @@
 Industrial Electrolyzer
-
+Industrial Choice
 <&industrial_electrolyzer>
+It works faster, more efficiently, and can handle more Chemistry! Besides, it can collect gas heavier than air.
+It requires <config;i;immersiveindustry.l_electrolyzerConsume>Flux/t constant input or the recipe would fail.
+The redstone interface on the side will turn off the generator if supplied with a redstone signal.
+You can also click at the electrode clamp at the top of the machine with electrodes to install electrodes. 

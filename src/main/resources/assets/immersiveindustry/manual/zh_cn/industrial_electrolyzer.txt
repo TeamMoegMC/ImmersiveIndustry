@@ -1,3 +1,7 @@
 工业电解槽
-
+工业的选择
 <&industrial_electrolyzer>
+工业电解槽比普通电解槽更快，更节能，还能生产更多配方。除此以外，它还能收集一些比空气重的气体。
+它需要<config;i;immersiveindustry.l_electrolyzerConsume>Flux/t的持续输入，中途停电会导致配方失败。
+用红石信号激活侧面的控制面板可以关闭它。
+此外，手持电极右键机器顶部安装电极的位置可以快速给它安装电极。

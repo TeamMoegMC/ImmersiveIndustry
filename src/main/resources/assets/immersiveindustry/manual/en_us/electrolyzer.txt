@@ -1,0 +1,7 @@
+Electrolyzer
+Just a pot with electrodes
+<&items>
+This electrolyzer is so simple that it cannot collect gas or making high power recipes.
+It requires <config;i;immersiveindustry.electrolyzerConsume>Flux/t constant input or the recipe would fail.
+Energy goes right at the energy interface. No interface on the left. All the rest can be fluid and item interface except up is item only.
+You may need a <link;immersiveindustry:industrial_electrolyzer;larger one> later.
