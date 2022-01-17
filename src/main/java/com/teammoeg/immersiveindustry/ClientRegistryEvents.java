@@ -27,6 +27,7 @@ import com.teammoeg.immersiveindustry.content.crucible.CrucibleScreen;
 import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerScreen;
 import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerRenderer;
 import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerScreen;
+import com.teammoeg.immersiveindustry.content.klin.RotaryKilnRenderer;
 
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.client.manual.ManualElementMultiblock;
@@ -65,7 +66,9 @@ public class ClientRegistryEvents {
         RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.steam_turbine, RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(IIContent.IIBlocks.electrolyzer, RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.industrial_electrolyzer, RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.rotary_kiln, RenderType.getCutoutMipped());
         ClientRegistry.bindTileEntityRenderer(IITileTypes.IND_ELE.get(), IndustrialElectrolyzerRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(IITileTypes.ROTARY_KILN.get(), RotaryKilnRenderer::new);
         addManual();
     }
 
@@ -99,6 +102,12 @@ public class ClientRegistryEvents {
         {
             ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
             builder.readFromFile(new ResourceLocation(IIMain.MODID, "electrolyzer"));
+            man.addEntry(CATEGORY, builder.create(), 2);
+        }
+        {
+            ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
+            builder.addSpecialElement("rotary_kiln", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.ROTARY_KILN));
+            builder.readFromFile(new ResourceLocation(IIMain.MODID, "rotary_kiln"));
             man.addEntry(CATEGORY, builder.create(), 2);
         }
         extras.put("l_electrolyzerConsume",()->IIConfig.COMMON.electrolyzerConsume.get()*6);

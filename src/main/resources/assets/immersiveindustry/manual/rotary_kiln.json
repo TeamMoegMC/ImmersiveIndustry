@@ -1,0 +1,6 @@
+{
+  "rotary_kiln": {
+    "type": "multiblock",
+    "name": "immersiveindustry:multiblocks/rotary_kiln"
+  }
+}

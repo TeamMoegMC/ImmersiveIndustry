@@ -63,6 +63,7 @@ public class IIMultiblockStatesProvider extends IIExtendedStatesProvider {
     protected void registerStatesAndModels() {
         createMultiblock(IIContent.IIMultiblocks.industrial_electrolyzer, split(obj("block/multiblocks/industrial_electrolyzer.obj"), IIContent.IIMultiblocks.IND_ELE));
         createMultiblock(IIContent.IIMultiblocks.steam_turbine, split(obj("block/multiblocks/steam_turbine.obj"), IIContent.IIMultiblocks.STEAMTURBINE));
+        createMultiblock(IIContent.IIMultiblocks.rotary_kiln, split(obj("block/multiblocks/rotary_kiln.obj"), IIContent.IIMultiblocks.ROTARY_KILN));
     }
 
     @Nonnull
@@ -72,8 +73,7 @@ public class IIMultiblockStatesProvider extends IIExtendedStatesProvider {
         return "IIMBstates";
     }
 
-    private ModelFile cubeTwo(String name, ResourceLocation top, ResourceLocation bottom,
-                              ResourceLocation side, ResourceLocation front)
+    private ModelFile cubeTwo(String name, ResourceLocation top, ResourceLocation bottom,ResourceLocation side, ResourceLocation front)
     {
         ModelFile baseModel = obj(name, rl("block/stone_multiblocks/cube_two.obj"),
                 ImmutableMap.<String, ResourceLocation>builder()

@@ -1,0 +1,23 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "immersiveindustry:block/multiblocks/rotary_kiln_split",
+      "uvlock": true
+    },
+    "facing=south": {
+      "model": "immersiveindustry:block/multiblocks/rotary_kiln_split",
+      "y": 180,
+      "uvlock": true
+    },
+    "facing=west": {
+      "model": "immersiveindustry:block/multiblocks/rotary_kiln_split",
+      "y": 270,
+      "uvlock": true
+    },
+    "facing=east": {
+      "model": "immersiveindustry:block/multiblocks/rotary_kiln_split",
+      "y": 90,
+      "uvlock": true
+    }
+  }
+}

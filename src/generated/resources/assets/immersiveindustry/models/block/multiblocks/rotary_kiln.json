@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "immersiveindustry:block/multiblocks/checkbase128"
+  },
+  "loader": "forge:obj",
+  "model": "immersiveindustry:models/block/multiblocks/rotary_kiln.obj",
+  "detectCullableFaces": false,
+  "flip-v": true
+}
