@@ -367,7 +367,7 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
     public Optional<BlastFurnacePreheaterTileEntity> getBlast() {
         BlockPos pos = getPos().add(0, -1, 0).offset(getFacing(), 2);
         TileEntity te = Utils.getExistingTileEntity(world, pos);
-        if (te instanceof BlastFurnacePreheaterTileEntity)
+        if (te instanceof BlastFurnacePreheaterTileEntity&&((BlastFurnacePreheaterTileEntity) te).getFacing().equals(this.getFacing()))
             return Optional.of((BlastFurnacePreheaterTileEntity) te);
         return Optional.empty();
     }
