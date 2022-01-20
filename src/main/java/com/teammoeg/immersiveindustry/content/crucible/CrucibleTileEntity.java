@@ -24,7 +24,10 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheater
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+
 import com.teammoeg.immersiveindustry.IIContent;
+import com.teammoeg.immersiveindustry.content.IActiveState;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
@@ -53,7 +56,7 @@ import java.util.Random;
 import java.util.function.Function;
 
 public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEntity> implements IIEInventory,
-        IIBlockInterfaces.IActiveState, IEBlockInterfaces.IInteractionObjectIE, IEBlockInterfaces.IProcessTile, IEBlockInterfaces.IBlockBounds {
+        IActiveState, IEBlockInterfaces.IInteractionObjectIE, IEBlockInterfaces.IProcessTile, IEBlockInterfaces.IBlockBounds {
 
     public CrucibleTileEntity.CrucibleData guiData = new CrucibleTileEntity.CrucibleData();
     private NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
