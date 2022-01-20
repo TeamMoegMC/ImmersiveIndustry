@@ -1,0 +1,3 @@
+0.1.6b:
+- Add Manual
+- Now crash game on loading error instead of ignore 

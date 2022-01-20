@@ -199,14 +199,38 @@ license {
     ignoreFailures = true
     include '**/*.java'
 }
-
+String getChangelogText() {
+    def changelogFile = file('changelog.txt')
+    String str = ''
+    int lineCount = 0
+    boolean done = false
+    changelogFile.eachLine {
+        if (done || it == null) {
+            return
+        }
+        if (it.size() > 1) {
+            def temp = it
+            if (lineCount == 0) {
+                temp = "ImmersiveIndustry ${version}"
+                temp = "<span style=\"font-size: 18px; color: #333399;\">ImmersiveIndustry v${mod_version}</span>&nbsp;&nbsp;<em>for Minecraft ${mc_version}</em><br/>"
+            } else if (it.startsWith('-')) {
+                temp = "&nbsp;&nbsp;&nbsp;$temp<br/>"
+            } else {
+                temp = "<h4>$temp</h4>"
+            }
+            str += temp
+            lineCount++
+        }
+    }
+    return str
+}
 curseforge {
     project {
         def envApiKey = System.getenv('CURSEFORGE_API_KEY')
         apiKey = envApiKey == null ? 'nope' : envApiKey
 
         id = '542053' // Immersive Industry
-        changelog = "Allow IE 5.0.5"
+        changelog = getChangelogText()
 
         changelogType = 'markdown'
 
