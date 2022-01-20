@@ -78,7 +78,7 @@ public class IIContent {
             MultiblockHandler.registerMultiblock(IIMultiblocks.CRUCIBLE);
             MultiblockHandler.registerMultiblock(IIMultiblocks.STEAMTURBINE);
             MultiblockHandler.registerMultiblock(IIMultiblocks.IND_ELE);
-            MultiblockHandler.registerMultiblock(IIMultiblocks.ROTARY_KILN);
+            //MultiblockHandler.registerMultiblock(IIMultiblocks.ROTARY_KILN);
         }
     }
 

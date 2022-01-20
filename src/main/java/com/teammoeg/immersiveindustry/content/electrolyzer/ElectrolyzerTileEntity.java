@@ -274,7 +274,7 @@ public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInven
 
     @Override
     public Property<Direction> getFacingProperty() {
-        return IEProperties.FACING_ALL;
+        return ElectrolyzerBlock.FACING;
     }
 
     @Override

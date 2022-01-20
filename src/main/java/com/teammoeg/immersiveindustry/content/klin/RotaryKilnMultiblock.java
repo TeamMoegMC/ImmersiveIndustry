@@ -26,9 +26,12 @@ import com.teammoeg.immersiveindustry.IIMain;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -40,7 +43,8 @@ public class RotaryKilnMultiblock extends IETemplateMultiblock {
 
     }
 
-    @Override
+
+	@Override
     @OnlyIn(Dist.CLIENT)
     public boolean canRenderFormedStructure() {
         return true;

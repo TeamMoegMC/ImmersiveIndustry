@@ -104,12 +104,12 @@ public class ClientRegistryEvents {
             builder.readFromFile(new ResourceLocation(IIMain.MODID, "electrolyzer"));
             man.addEntry(CATEGORY, builder.create(), 2);
         }
-        {
+        /*{
             ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
             builder.addSpecialElement("rotary_kiln", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.ROTARY_KILN));
             builder.readFromFile(new ResourceLocation(IIMain.MODID, "rotary_kiln"));
             man.addEntry(CATEGORY, builder.create(), 2);
-        }
+        }*/
         extras.put("l_electrolyzerConsume",()->IIConfig.COMMON.electrolyzerConsume.get()*6);
         extras.put("electrolyzerConsume",()->IIConfig.COMMON.electrolyzerConsume.get());
         extras.put("steamTurbineGenerator",()->IIConfig.COMMON.steamTurbineGenerator.get());
