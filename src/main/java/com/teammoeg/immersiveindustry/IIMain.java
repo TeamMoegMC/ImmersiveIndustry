@@ -22,10 +22,13 @@ import javax.annotation.Nonnull;
 
 import com.teammoeg.immersiveindustry.data.IIRecipeReloadListener;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent.MissingMappings;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
@@ -49,7 +52,7 @@ public class IIMain {
     public IIMain() {
         IEventBus mod = FMLJavaModLoadingContext.get().getModEventBus();
         mod.addListener(this::setup);
-        
+        MinecraftForge.EVENT_BUS.addGenericListener(Block.class,this::onMissing);
         IIConfig.register();
         IIContent.IIProps.init();
         IIContent.IIBlocks.init();
@@ -60,7 +63,13 @@ public class IIMain {
         DistExecutor.safeRunWhenOn(Dist.CLIENT,()->ClientProxy::setup);
         DeferredWorkQueue.runLater(IIContent.IIRecipes::registerRecipeTypes);
     }
-
+    public void onMissing(final MissingMappings<Block> ev) {
+    	ev.getAllMappings().forEach(e->{
+    		ResourceLocation rl=e.key;
+    		if(rl.getNamespace().equals(MODID)&&rl.getPath().equals("crucible"))
+    			throw new RuntimeException("Mod Initialize failed, Please restart.");
+    	});
+    }
     public void setup(final FMLCommonSetupEvent event) {
         MinecraftForge.EVENT_BUS.register(new IIRecipeReloadListener(null));
     }
