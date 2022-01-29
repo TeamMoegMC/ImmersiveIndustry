@@ -373,7 +373,8 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 	@Nonnull
 	@Override
 	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing) {
-		if(facing.getYOffset()==0&&this.posInMultiblock.getY()==0&&this.posInMultiblock.getX()!=1) {
+		
+		if(facing!=null&&facing.getYOffset()==0&&this.posInMultiblock.getY()==0&&this.posInMultiblock.getX()!=1) {
 			if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
 				if (this.posInMultiblock.getZ()==1)
 					return inHandler.cast();
