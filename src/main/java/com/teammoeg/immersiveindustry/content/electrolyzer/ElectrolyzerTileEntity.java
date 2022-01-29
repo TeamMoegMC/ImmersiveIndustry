@@ -156,7 +156,7 @@ public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInven
     @Nonnull
     @Override
     public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing) {
-        if(facing!=nullfacing.getAxis()!=this.getFacing().rotateY().getAxis()) {
+        if(facing!=null&&facing.getAxis()!=this.getFacing().rotateY().getAxis()) {
 	    	if (facing!=Direction.UP&&capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
 	            return fluidHandler.cast();
 	        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
