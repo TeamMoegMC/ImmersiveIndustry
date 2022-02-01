@@ -18,6 +18,7 @@
 
 package com.teammoeg.immersiveindustry.content.crucible;
 
+import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
 
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
@@ -48,6 +49,7 @@ public class CrucibleBlock extends IEMultiblockBlock<CrucibleTileEntity> {
     public CrucibleBlock(String name, RegistryObject type) {
         super(name, Properties.create(Material.IRON).hardnessAndResistance(4.0F, 40.0F).notSolid(),type);
         this.setDefaultState(this.stateContainer.getBaseState().with(LIT, false));
+        IIContent.registeredBlocks.add(this);
     }
 
     @Override
