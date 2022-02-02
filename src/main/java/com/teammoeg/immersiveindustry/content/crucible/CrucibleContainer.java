@@ -50,7 +50,7 @@ public class CrucibleContainer extends IEBaseContainer<CrucibleTileEntity> {
             }
         });
         // output
-        this.addSlot(new IESlot.Output(this, this.inv, 3, 106, 12));
+        this.addSlot(new IESlot.Output(this, this.inv, 3, 109, 12));
         // input fuel
 
         this.slotCount = 4;
