@@ -62,13 +62,20 @@ import java.util.stream.Collectors;
 
 public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbineTileEntity> implements
         IEBlockInterfaces.IBlockBounds, IEBlockInterfaces.ISoundTile {
-    public FluidTank tanks = new FluidTank(24 * FluidAttributes.BUCKET_VOLUME);
+    public FluidTank tanks;
     public boolean active = false;
     private static final CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> SHAPES = CachedShapesWithTransform.createForMultiblock(SteamTurbineTileEntity::getShape);
 
     //public static Fluid steam = Fluids.WATER;
     public SteamTurbineTileEntity() {
         super(IIContent.IIMultiblocks.STEAMTURBINE, IIContent.IITileTypes.STEAMTURBINE.get(), true);
+
+        this.tanks = new FluidTank(24 * FluidAttributes.BUCKET_VOLUME, fluidStack -> {
+            ITag<Fluid> steamTag = FluidTags.getCollection().get(new ResourceLocation("forge", "steam"));
+            if (steamTag != null)
+                return fluidStack.getFluid().isIn(steamTag);
+            return fluidStack.getFluid() == ForgeRegistries.FLUIDS.getValue(new ResourceLocation("steampowered", "steam"));
+        });
     }
 
     @Override
@@ -179,10 +186,7 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
     }
     @Override
     protected boolean canFillTankFrom(int iTank, Direction side, FluidStack fluidStack) {
-        ITag<Fluid> steamTag = FluidTags.getCollection().get(new ResourceLocation("forge", "steam"));
-        if (steamTag != null)
-            return fluidStack.getFluid().isIn(steamTag);
-		return fluidStack.getFluid() == ForgeRegistries.FLUIDS.getValue(new ResourceLocation("steampowered", "steam"));
+        return true;
     }
 
     @Override
