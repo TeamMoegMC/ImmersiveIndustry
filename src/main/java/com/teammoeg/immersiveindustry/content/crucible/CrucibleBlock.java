@@ -53,11 +53,6 @@ public class CrucibleBlock extends IEMultiblockBlock<CrucibleTileEntity> {
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Override
     public ResourceLocation createRegistryName() {
         return new ResourceLocation(IIMain.MODID, name);
     }

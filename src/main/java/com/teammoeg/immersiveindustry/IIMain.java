@@ -48,7 +48,7 @@ public class IIMain {
             return new ItemStack(IIContent.IIBlocks.burning_chamber.asItem());
         }
     };
-
+    public static boolean loadfailed=false;
     public IIMain() {
         IEventBus mod = FMLJavaModLoadingContext.get().getModEventBus();
         mod.addListener(this::setup);
@@ -66,8 +66,10 @@ public class IIMain {
     public void onMissing(final MissingMappings<Block> ev) {
     	ev.getAllMappings().forEach(e->{
     		ResourceLocation rl=e.key;
-    		if(rl.getNamespace().equals(MODID)&&rl.getPath().equals("crucible"))
+    		if(rl.getNamespace().equals(MODID)&&rl.getPath().equals("crucible")) {
+    			loadfailed=true;
     			throw new RuntimeException("Mod Initialize failed, Please restart.");
+    		}
     	});
     }
     public void setup(final FMLCommonSetupEvent event) {

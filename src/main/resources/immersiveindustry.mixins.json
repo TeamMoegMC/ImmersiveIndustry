@@ -6,6 +6,7 @@
   "mixins": [
   ],
   "client": [
+  "DatapackFailureScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

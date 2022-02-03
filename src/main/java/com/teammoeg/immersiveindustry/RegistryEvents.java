@@ -33,7 +33,7 @@ public class RegistryEvents {
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         for (Block block : registeredBlocks) {
             try {
-                event.getRegistry().register(block);
+            	event.getRegistry().register(block);
             } catch (Throwable e) {
                 throw e;
             }
