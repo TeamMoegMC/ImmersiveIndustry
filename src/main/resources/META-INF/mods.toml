@@ -28,6 +28,6 @@ Introduce more various process and energy production machines to Immersive Engin
     modId="immersiveengineering"
     mandatory=true
     versionRange="[1.16.5-5.0.0,)"
-    ordering="BEFORE"
+    ordering="AFTER"
     side="BOTH"
 
