@@ -448,7 +448,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 
 	@Override
 	public Set<BlockPos> getRedstonePos() {
-		return ImmutableSet.of(new BlockPos(1, 1, 0));
+		return ImmutableSet.of(new BlockPos(1, 1, 4));
 	}
 
 	@Nullable

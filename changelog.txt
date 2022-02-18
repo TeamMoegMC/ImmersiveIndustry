@@ -1,2 +1,3 @@
 0.1.6c:
-- Fix crucible dont work
+- Fix Industrial Electrolyzer crash when using some optimizing mods
+- Fix Industrial Electrolyzer redstone control position 
