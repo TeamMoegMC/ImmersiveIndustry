@@ -1,6 +1,6 @@
 {
   "loader": "forge:obj",
-  "model": "immersiveindustry:models/block/multiblocks/rotary_kiln.obj",
+  "model": "immersiveindustry:models/block/multiblocks/rotary_kiln_item.obj",
   "flip-v": true,
   "transform": {
     "thirdperson_righthand": {

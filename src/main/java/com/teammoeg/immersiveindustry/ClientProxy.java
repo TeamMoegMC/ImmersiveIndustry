@@ -1,5 +1,6 @@
 package com.teammoeg.immersiveindustry;
 
+import com.teammoeg.immersiveindustry.content.carklin.CarKilnRenderer;
 import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerRenderer;
 import com.teammoeg.immersiveindustry.content.klin.RotaryKilnRenderer;
 
@@ -17,7 +18,10 @@ public class ClientProxy {
 				new ResourceLocation(IIMain.MODID, "block/multiblocks/rotary_kiln_rotor.obj"),
 				"rotary_kiln_rotor", ModelType.IE_OBJ
 		);
-
+		CarKilnRenderer.PARTS= DynamicModel.createSided(
+				new ResourceLocation(IIMain.MODID, "block/multiblocks/car_kiln_anim.obj"),
+				"car_kiln_animate", ModelType.IE_OBJ
+		);
 	}
 
 }

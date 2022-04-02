@@ -1,4 +1,4 @@
-package com.teammoeg.immersiveindustry.content.klin;
+package com.teammoeg.immersiveindustry.content.carklin;
 
 import com.teammoeg.immersiveindustry.IIContent.IIMultiblocks;
 import com.teammoeg.immersiveindustry.IIContent.IITileTypes;
@@ -11,12 +11,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 
-public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTileEntity>
+public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntity>
 /*implements IEBlockInterfaces.IBlockBounds, EnergyHelper.IIEInternalFluxHandler, IIEInventory,
 IEBlockInterfaces.IInteractionObjectIE*/{
-	int angle;//angle for animation in degrees
-	public RotaryKilnTileEntity() {
-		super(IIMultiblocks.ROTARY_KILN,IITileTypes.ROTARY_KILN.get(),false);
+	int pos;//animation process from 0-51, 0=idle 51=working
+	int app=1;//test code, can delete
+	public CarKilnTileEntity() {
+		super(IIMultiblocks.CAR_KILN,IITileTypes.CAR_KILN.get(),false);
 	}
 
 	@Override
@@ -36,18 +37,20 @@ IEBlockInterfaces.IInteractionObjectIE*/{
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
 		BlockPos bp=this.getPos();
-		return new AxisAlignedBB(bp.getX()-(getFacing().getAxis()==Axis.Z?1: 3),
+		return new AxisAlignedBB(bp.getX()-(getFacing().getAxis()==Axis.Z?1: 2),
 				bp.getY(),
-				bp.getZ()-(getFacing().getAxis()==Axis.X?1: 3),
-				bp.getX()+(getFacing().getAxis()==Axis.Z?3: 1),
-				bp.getY()+2,
-				bp.getZ()+(getFacing().getAxis()==Axis.X?3: 1));
+				bp.getZ()-(getFacing().getAxis()==Axis.X?1: 2),
+				bp.getX()+(getFacing().getAxis()==Axis.Z?2: 1),
+				bp.getY()+3,
+				bp.getZ()+(getFacing().getAxis()==Axis.X?2: 1));
 	}
 	@Override
 	public void tick() {
-		angle+=10;
-		if(angle>=360)
-			angle=0;
+		pos+=app;
+		if(pos>51)
+			app=-1;
+		if(pos<0)
+			app=1;
 	}
 
 }

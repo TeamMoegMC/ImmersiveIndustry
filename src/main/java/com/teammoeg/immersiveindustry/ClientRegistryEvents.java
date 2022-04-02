@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import com.teammoeg.immersiveindustry.IIContent.IITileTypes;
+import com.teammoeg.immersiveindustry.content.carklin.CarKilnRenderer;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleScreen;
 import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerScreen;
 import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerRenderer;
@@ -67,8 +68,10 @@ public class ClientRegistryEvents {
         RenderTypeLookup.setRenderLayer(IIContent.IIBlocks.electrolyzer, RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.industrial_electrolyzer, RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.rotary_kiln, RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.car_kiln, RenderType.getCutoutMipped());
         ClientRegistry.bindTileEntityRenderer(IITileTypes.IND_ELE.get(), IndustrialElectrolyzerRenderer::new);
         ClientRegistry.bindTileEntityRenderer(IITileTypes.ROTARY_KILN.get(), RotaryKilnRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(IITileTypes.CAR_KILN.get(), CarKilnRenderer::new);
         addManual();
     }
 

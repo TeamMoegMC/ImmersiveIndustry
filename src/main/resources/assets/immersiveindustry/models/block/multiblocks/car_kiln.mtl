@@ -1,0 +1,6 @@
+# Made in Blockbench 4.1.5
+newmtl m_0
+map_Kd immersiveindustry:block/multiblocks/car_kiln_base
+newmtl m_1
+map_Kd immersiveindustry:block/multiblocks/car_kiln_shell
+newmtl none

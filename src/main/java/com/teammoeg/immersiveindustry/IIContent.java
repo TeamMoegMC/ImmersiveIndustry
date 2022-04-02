@@ -24,6 +24,9 @@ import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import com.google.common.collect.ImmutableSet;
 import com.teammoeg.immersiveindustry.content.IIBaseBlock;
 import com.teammoeg.immersiveindustry.content.IIBlockItem;
+import com.teammoeg.immersiveindustry.content.carklin.CarKilnBlock;
+import com.teammoeg.immersiveindustry.content.carklin.CarKilnMultiblock;
+import com.teammoeg.immersiveindustry.content.carklin.CarKilnTileEntity;
 import com.teammoeg.immersiveindustry.content.crucible.*;
 import com.teammoeg.immersiveindustry.content.electrolyzer.*;
 import com.teammoeg.immersiveindustry.content.klin.RotaryKilnBlock;
@@ -69,16 +72,19 @@ public class IIContent {
         public static final IETemplateMultiblock STEAMTURBINE = new SteamTurbineMultiblock();
         public static final IETemplateMultiblock IND_ELE = new IndustrialElectrolyzerMultiblock();
 		public static final IETemplateMultiblock ROTARY_KILN = new RotaryKilnMultiblock();
+		public static final IETemplateMultiblock CAR_KILN = new CarKilnMultiblock();
 
         public static Block crucible = new CrucibleBlock("crucible", IITileTypes.CRUCIBLE);
         public static Block steam_turbine = new SteamTurbineBlock("steam_turbine", IITileTypes.STEAMTURBINE);
         public static Block industrial_electrolyzer = new IndustrialElectrolyzerBlock("industrial_electrolyzer", IITileTypes.IND_ELE);
         public static Block rotary_kiln=new RotaryKilnBlock("rotary_kiln",IITileTypes.ROTARY_KILN);
+        public static Block car_kiln=new CarKilnBlock("car_kiln",IITileTypes.CAR_KILN);
         public static void init() {
             MultiblockHandler.registerMultiblock(IIMultiblocks.CRUCIBLE);
             MultiblockHandler.registerMultiblock(IIMultiblocks.STEAMTURBINE);
             MultiblockHandler.registerMultiblock(IIMultiblocks.IND_ELE);
-            //MultiblockHandler.registerMultiblock(IIMultiblocks.ROTARY_KILN);
+            MultiblockHandler.registerMultiblock(IIMultiblocks.ROTARY_KILN);
+            MultiblockHandler.registerMultiblock(IIMultiblocks.CAR_KILN);
         }
     }
 
@@ -100,6 +106,9 @@ public class IIContent {
         );
         public static final RegistryObject<TileEntityType<RotaryKilnTileEntity>> ROTARY_KILN= REGISTER.register(
                 "rotary_kiln", makeType(() -> new RotaryKilnTileEntity(), () -> IIMultiblocks.rotary_kiln)
+        );
+        public static final RegistryObject<TileEntityType<CarKilnTileEntity>> CAR_KILN= REGISTER.register(
+                "car_kiln", makeType(() -> new CarKilnTileEntity(), () -> IIMultiblocks.car_kiln)
         );
         private static <T extends TileEntity> Supplier<TileEntityType<T>> makeType(Supplier<T> create, Supplier<Block> valid) {
             return makeTypeMultipleBlocks(create, () -> ImmutableSet.of(valid.get()));

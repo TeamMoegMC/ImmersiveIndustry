@@ -33,7 +33,7 @@ public class RotaryKilnRenderer extends TileEntityRenderer<RotaryKilnTileEntity>
 			return;
 		Direction d=te.getFacing();
 		matrixStack.push();
-		matrixStack.translate(.5,-0.25,-2.375);
+		matrixStack.translate(.5,-0.1875,-2.375);
 		matrixStack.push();
 		matrixStack.rotate(new Quaternion(new Vector3f(d.getZOffset(),0,d.getXOffset()),-2,true));
 		matrixStack.translate(0,0.875,-0.5);
