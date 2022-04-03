@@ -18,26 +18,21 @@
 
 package com.teammoeg.immersiveindustry;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Supplier;
-
-import com.teammoeg.immersiveindustry.IIContent.IITileTypes;
-import com.teammoeg.immersiveindustry.content.carklin.CarKilnRenderer;
-import com.teammoeg.immersiveindustry.content.crucible.CrucibleScreen;
-import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerScreen;
-import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerRenderer;
-import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerScreen;
-import com.teammoeg.immersiveindustry.content.klin.RotaryKilnRenderer;
-
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.client.manual.ManualElementMultiblock;
-import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
-import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.Tree;
+import com.teammoeg.immersiveindustry.IIContent.IITileTypes;
+import com.teammoeg.immersiveindustry.content.carkiln.CarKilnRenderer;
+import com.teammoeg.immersiveindustry.content.carkiln.CarKilnScreen;
+import com.teammoeg.immersiveindustry.content.crucible.CrucibleScreen;
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerScreen;
+import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerRenderer;
+import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerScreen;
+import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnRenderer;
+import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnScreen;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.screen.Screen;
@@ -47,22 +42,28 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.ForgeConfigSpec.ValueSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
+
 @Mod.EventBusSubscriber(modid = IIMain.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientRegistryEvents {
     private static Tree.InnerNode<ResourceLocation, ManualEntry> CATEGORY;
+
     @SuppressWarnings("unused")
-	@SubscribeEvent
+    @SubscribeEvent
     public static void onClientSetup(final FMLClientSetupEvent event) {
-    	
+
         registerIEScreen(new ResourceLocation(IIMain.MODID, "crucible"), CrucibleScreen::new);
         registerIEScreen(new ResourceLocation(IIMain.MODID, "electrolyzer"), ElectrolyzerScreen::new);
         registerIEScreen(new ResourceLocation(IIMain.MODID, "industrial_electrolyzer"), IndustrialElectrolyzerScreen::new);
+        registerIEScreen(new ResourceLocation(IIMain.MODID, "car_kiln"), CarKilnScreen::new);
+        registerIEScreen(new ResourceLocation(IIMain.MODID, "rotary_kiln"), RotaryKilnScreen::new);
         RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.crucible, RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.steam_turbine, RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(IIContent.IIBlocks.electrolyzer, RenderType.getTranslucent());
@@ -105,19 +106,25 @@ public class ClientRegistryEvents {
         {
             ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
             builder.readFromFile(new ResourceLocation(IIMain.MODID, "electrolyzer"));
-            man.addEntry(CATEGORY, builder.create(), 2);
+            man.addEntry(CATEGORY, builder.create(), 3);
         }
-        /*{
+        {
+            ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
+            builder.addSpecialElement("car_kiln", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.CAR_KILN));
+            builder.readFromFile(new ResourceLocation(IIMain.MODID, "car_kiln"));
+            man.addEntry(CATEGORY, builder.create(), 4);
+        }
+        {
             ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
             builder.addSpecialElement("rotary_kiln", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.ROTARY_KILN));
             builder.readFromFile(new ResourceLocation(IIMain.MODID, "rotary_kiln"));
-            man.addEntry(CATEGORY, builder.create(), 2);
-        }*/
-        extras.put("l_electrolyzerConsume",()->IIConfig.COMMON.electrolyzerConsume.get()*6);
-        extras.put("electrolyzerConsume",()->IIConfig.COMMON.electrolyzerConsume.get());
-        extras.put("steamTurbineGenerator",()->IIConfig.COMMON.steamTurbineGenerator.get());
-        extras.put("electrodeCost",()->IIConfig.COMMON.electrodeCost.get());
-		ManualHelper.ADD_CONFIG_GETTER.getValue().accept((s)->{
+            man.addEntry(CATEGORY, builder.create(), 5);
+        }
+        extras.put("l_electrolyzerConsume", () -> IIConfig.COMMON.electrolyzerConsume.get() * 6);
+        extras.put("electrolyzerConsume", () -> IIConfig.COMMON.electrolyzerConsume.get());
+        extras.put("steamTurbineGenerator", () -> IIConfig.COMMON.steamTurbineGenerator.get());
+        extras.put("electrodeCost", () -> IIConfig.COMMON.electrodeCost.get());
+        ManualHelper.ADD_CONFIG_GETTER.getValue().accept((s) -> {
 			if(s.startsWith(IIMain.MODID)) {
 				String path=s.substring(s.indexOf(".")+1);
 				if(extras.containsKey(path))

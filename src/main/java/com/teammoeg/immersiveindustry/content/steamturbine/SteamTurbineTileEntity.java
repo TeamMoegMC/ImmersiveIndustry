@@ -66,7 +66,6 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
     public boolean active = false;
     private static final CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> SHAPES = CachedShapesWithTransform.createForMultiblock(SteamTurbineTileEntity::getShape);
 
-    //public static Fluid steam = Fluids.WATER;
     public SteamTurbineTileEntity() {
         super(IIContent.IIMultiblocks.STEAMTURBINE, IIContent.IITileTypes.STEAMTURBINE.get(), true);
 

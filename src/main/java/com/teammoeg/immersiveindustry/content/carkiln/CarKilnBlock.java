@@ -16,17 +16,14 @@
  * along with Immersive Industry. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.teammoeg.immersiveindustry.content.klin;
-
-import com.teammoeg.immersiveindustry.IIMain;
+package com.teammoeg.immersiveindustry.content.carkiln;
 
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
-import blusunrize.immersiveengineering.common.util.Utils;
+import com.teammoeg.immersiveindustry.IIMain;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -34,19 +31,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.items.ItemHandlerHelper;
 
-public class RotaryKilnBlock extends IEMultiblockBlock<RotaryKilnTileEntity> {
+public class CarKilnBlock extends IEMultiblockBlock<CarKilnTileEntity> {
 
-    public RotaryKilnBlock(String name, RegistryObject type) {
+    public CarKilnBlock(String name, RegistryObject type) {
         super(name, Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(4.0F, 40.0F).notSolid(), type);
         
     }
 	@Override
 	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player,
 			Hand hand, BlockRayTraceResult hit) {
-		if(world.isRemote)
-			((RotaryKilnTileEntity)Utils.getExistingTileEntity(world, pos)).master().angle+=90;
 		return super.onBlockActivated(state, world, pos, player, hand, hit);
 	}
 	@Override

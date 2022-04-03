@@ -111,9 +111,9 @@ public class IndustrialElectrolyzerCategory implements IRecipeCategory<Electroly
         IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
         guiFluidStacks.init(0, true, 4, 19, 16, 47, FluidAttributes.BUCKET_VOLUME, false,TANK);
         if (recipe.input_fluid != null) {
-            guiFluidStacks.set(0,recipe.input_fluid.getMatchingFluidStacks());
+            guiFluidStacks.set(0, recipe.input_fluid.getMatchingFluidStacks());
         }
-        guiFluidStacks.init(1,false, 126,19, 16, 47, FluidAttributes.BUCKET_VOLUME, false,TANK);
+        guiFluidStacks.init(1, false, 126, 19, 16, 47, FluidAttributes.BUCKET_VOLUME, false, TANK);
         if (recipe.output_fluid != null) {
             guiFluidStacks.set(1, recipe.output_fluid);
         }
@@ -121,14 +121,14 @@ public class IndustrialElectrolyzerCategory implements IRecipeCategory<Electroly
             guiItemStacks.init(0, true, 27, 32);
             guiItemStacks.init(1, true, 45, 32);
         }
-        guiItemStacks.init(2, false, 101, 32);
-        guiItemStacks.init(3,true,27,3);
-        guiItemStacks.init(4,true,45,3);
+        guiItemStacks.init(2, true, 27, 3);
+        guiItemStacks.init(3, true, 45, 3);
+        guiItemStacks.init(4, false, 101, 32);
         guiItemStacks.set(ingredients);
-        if(electrodes!=null) {
-        	List<ItemStack> electrode=electrodes.stream().map(ItemStack::new).collect(Collectors.toList());
-        	guiItemStacks.set(4,electrode);
-        	guiItemStacks.set(3,electrode);
+        if (electrodes != null) {
+            List<ItemStack> electrode = electrodes.stream().map(ItemStack::new).collect(Collectors.toList());
+            guiItemStacks.set(2, electrode);
+            guiItemStacks.set(3, electrode);
         }
     }
 }

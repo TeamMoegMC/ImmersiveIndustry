@@ -18,10 +18,9 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
-import com.teammoeg.immersiveindustry.IIMain;
-
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.teammoeg.immersiveindustry.IIMain;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -50,10 +49,10 @@ public class IndustrialElectrolyzerBlock extends IEMultiblockBlock<IndustrialEle
 			IndustrialElectrolyzerTileEntity iete=(IndustrialElectrolyzerTileEntity) te;
 			if(iete.offsetToMaster.getY()==1) {
 				if(player.getHeldItem(hand).getItem().getTags().contains(IndustrialElectrolyzerContainer.Electrode_Tag)) {
-					if(iete.getInventory()!=null)
-						for(int i=3;i<=4;i++) {
-							if(iete.getInventory().get(i).isEmpty()) {
-								iete.getInventory().set(i,ItemHandlerHelper.copyStackWithSize(player.getHeldItem(hand),1));
+					if (iete.getInventory() != null)
+						for (int i = 2; i <= 3; i++) {
+							if (iete.getInventory().get(i).isEmpty()) {
+								iete.getInventory().set(i, ItemHandlerHelper.copyStackWithSize(player.getHeldItem(hand), 1));
 								player.getHeldItem(hand).shrink(1);
 								return ActionResultType.CONSUME;
 							}

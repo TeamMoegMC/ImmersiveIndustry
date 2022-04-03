@@ -24,14 +24,16 @@ import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import com.google.common.collect.ImmutableSet;
 import com.teammoeg.immersiveindustry.content.IIBaseBlock;
 import com.teammoeg.immersiveindustry.content.IIBlockItem;
-import com.teammoeg.immersiveindustry.content.carklin.CarKilnBlock;
-import com.teammoeg.immersiveindustry.content.carklin.CarKilnMultiblock;
-import com.teammoeg.immersiveindustry.content.carklin.CarKilnTileEntity;
+import com.teammoeg.immersiveindustry.content.carkiln.CarKilnBlock;
+import com.teammoeg.immersiveindustry.content.carkiln.CarKilnContainer;
+import com.teammoeg.immersiveindustry.content.carkiln.CarKilnMultiblock;
+import com.teammoeg.immersiveindustry.content.carkiln.CarKilnTileEntity;
 import com.teammoeg.immersiveindustry.content.crucible.*;
 import com.teammoeg.immersiveindustry.content.electrolyzer.*;
-import com.teammoeg.immersiveindustry.content.klin.RotaryKilnBlock;
-import com.teammoeg.immersiveindustry.content.klin.RotaryKilnMultiblock;
-import com.teammoeg.immersiveindustry.content.klin.RotaryKilnTileEntity;
+import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnBlock;
+import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnContainer;
+import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnMultiblock;
+import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnTileEntity;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineBlock;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineMultiblock;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineTileEntity;
@@ -140,6 +142,8 @@ public class IIContent {
         GuiHandler.register(CrucibleTileEntity.class, new ResourceLocation(IIMain.MODID, "crucible"), CrucibleContainer::new);
         GuiHandler.register(ElectrolyzerTileEntity.class, new ResourceLocation(IIMain.MODID, "electrolyzer"), ElectrolyzerContainer::new);
         GuiHandler.register(IndustrialElectrolyzerTileEntity.class, new ResourceLocation(IIMain.MODID, "industrial_electrolyzer"), IndustrialElectrolyzerContainer::new);
+        GuiHandler.register(CarKilnTileEntity.class, new ResourceLocation(IIMain.MODID, "car_kiln"), CarKilnContainer::new);
+        GuiHandler.register(RotaryKilnTileEntity.class, new ResourceLocation(IIMain.MODID, "rotary_kiln"), RotaryKilnContainer::new);
     }
 
     public static class IIProps {

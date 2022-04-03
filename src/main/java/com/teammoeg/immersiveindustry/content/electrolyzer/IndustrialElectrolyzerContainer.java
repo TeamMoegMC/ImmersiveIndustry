@@ -44,32 +44,34 @@ public class IndustrialElectrolyzerContainer extends IEBaseContainer<IndustrialE
                 return ElectrolyzerRecipe.isValidRecipeInput(itemStack);
             }
         });
+
+        this.addSlot(new IESlot(this, this.inv, 2, 34, 10) {
+            @Override
+            public int getSlotStackLimit() {
+                return 1;
+            }
+
+            @Override
+            public boolean isItemValid(ItemStack itemStack) {
+                return !itemStack.isEmpty() && itemStack.getItem().getTags().contains(Electrode_Tag);
+            }
+        });
+        this.addSlot(new IESlot(this, this.inv, 3, 52, 10) {
+            @Override
+            public int getSlotStackLimit() {
+                return 1;
+            }
+
+            @Override
+            public boolean isItemValid(ItemStack itemStack) {
+                return !itemStack.isEmpty() && itemStack.getItem().getTags().contains(Electrode_Tag);
+            }
+        });
+
+        this.slotCount = 4;
         // output
-        this.addSlot(new IESlot.Output(this, this.inv, 2, 108, 39));
-        this.slotCount = 3;
+        this.addSlot(new IESlot.Output(this, this.inv, 4, 108, 39));
 
-        this.addSlot(new IESlot(this, this.inv, 3, 34, 10) {
-            @Override
-            public int getSlotStackLimit() {
-                return 1;
-            }
-
-            @Override
-            public boolean isItemValid(ItemStack itemStack) {
-                return !itemStack.isEmpty() && itemStack.getItem().getTags().contains(Electrode_Tag);
-            }
-        });
-        this.addSlot(new IESlot(this, this.inv, 4, 52, 10) {
-            @Override
-            public int getSlotStackLimit() {
-                return 1;
-            }
-
-            @Override
-            public boolean isItemValid(ItemStack itemStack) {
-                return !itemStack.isEmpty() && itemStack.getItem().getTags().contains(Electrode_Tag);
-            }
-        });
 
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 9; j++)

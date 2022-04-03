@@ -1,12 +1,9 @@
-package com.teammoeg.immersiveindustry.content.klin;
-
-import java.util.List;
-
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.teammoeg.immersiveindustry.IIContent.IIMultiblocks;
+package com.teammoeg.immersiveindustry.content.rotarykiln;
 
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.teammoeg.immersiveindustry.IIContent.IIMultiblocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -18,14 +15,18 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
 
+import java.util.List;
+
 public class RotaryKilnRenderer extends TileEntityRenderer<RotaryKilnTileEntity> {
-    public RotaryKilnRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
-    }
-    public static DynamicModel<Direction> ROLL;
+	public RotaryKilnRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
+		super(rendererDispatcherIn);
+	}
+
+	public static DynamicModel<Direction> ROLL;
+
 	@Override
-    public void render(RotaryKilnTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
-		if(!te.formed||te.isDummy()||!te.getWorldNonnull().isBlockLoaded(te.getPos()))
+	public void render(RotaryKilnTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+		if (!te.formed || te.isDummy() || !te.getWorldNonnull().isBlockLoaded(te.getPos()))
 			return;
 		BlockPos blockPos = te.getPos();
 		BlockState state = te.getWorld().getBlockState(blockPos);

@@ -196,30 +196,30 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 							}
 						}
 						
-						if(duracost>0)
-							for (ele = 3; ele < 5; ++ele) {
-								if (this.inventory.get(ele).attemptDamageItem(duracost, Utils.RAND, null)) {
-									this.inventory.set(ele, ItemStack.EMPTY);
-								}
-							}
+						if (duracost > 0)
+                            for (ele = 2; ele < 4; ++ele) {
+                                if (this.inventory.get(ele).attemptDamageItem(duracost, Utils.RAND, null)) {
+                                    this.inventory.set(ele, ItemStack.EMPTY);
+                                }
+                            }
 						process -= 8;
 						energyStorage.extractEnergy(energyConsume, false);
 						this.markContainingBlockForUpdate(null);
 						return;
 					}
 					if (!result.isEmpty()) {
-						if (inventory.get(2).isEmpty()) {
-							inventory.set(2, result);
-							result = ItemStack.EMPTY;
-							process = processMax = 0;
-							this.markContainingBlockForUpdate(null);
-						} else if (inventory.get(2).isItemEqual(result)) {
-							inventory.get(2).grow(result.getCount());
-							result = ItemStack.EMPTY;
-							process = processMax = 0;
-							this.markContainingBlockForUpdate(null);
-						} else
-							return;
+                        if (inventory.get(4).isEmpty()) {
+                            inventory.set(4, result);
+                            result = ItemStack.EMPTY;
+                            process = processMax = 0;
+                            this.markContainingBlockForUpdate(null);
+                        } else if (inventory.get(4).isItemEqual(result)) {
+                            inventory.get(4).grow(result.getCount());
+                            result = ItemStack.EMPTY;
+                            process = processMax = 0;
+                            this.markContainingBlockForUpdate(null);
+                        } else
+                            return;
 					}
 					if (!resultFluid.isEmpty()) {
 						int filled = tank[1].fill(resultFluid, FluidAction.EXECUTE);
@@ -303,41 +303,35 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 				IFluidHandler output=outputfCap2.getNullable();
 				int accepted = output.fill(out, FluidAction.SIMULATE);
 
-				if(accepted > 0)
-				{
-					int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false), FluidAction.EXECUTE);
-					this.tank[1].drain(drained, FluidAction.EXECUTE);
-					out.shrink(accepted);
-					update |=true;
-				}
-			}
-		}
-		if(!inventory.get(2).isEmpty()&&world.getGameTime()%8==0)
-		{
-			boolean succeed=false;
-			if(outputCap1.isPresent())
-			{
-				ItemStack stack = ItemHandlerHelper.copyStackWithSize(inventory.get(2), 1);
-				stack = Utils.insertStackIntoInventory(outputCap1, stack, false);
-				if(stack.isEmpty())
-				{
-					this.inventory.get(2).shrink(1);
-					succeed=true;
-					if(this.inventory.get(2).getCount() <= 0)
-						this.inventory.set(2, ItemStack.EMPTY);
-				}
-			}
-			if(!succeed&&outputCap2.isPresent())
-			{
-				ItemStack stack = ItemHandlerHelper.copyStackWithSize(inventory.get(2), 1);
-				stack = Utils.insertStackIntoInventory(outputCap2, stack, false);
-				if(stack.isEmpty())
-				{
-					this.inventory.get(2).shrink(1);
-					if(this.inventory.get(2).getCount() <= 0)
-						this.inventory.set(2, ItemStack.EMPTY);
-				}
-			}
+                if (accepted > 0) {
+                    int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false), FluidAction.EXECUTE);
+                    this.tank[1].drain(drained, FluidAction.EXECUTE);
+                    out.shrink(accepted);
+                    update |= true;
+                }
+            }
+        }
+        if (!inventory.get(4).isEmpty() && world.getGameTime() % 8 == 0) {
+            boolean succeed = false;
+            if (outputCap1.isPresent()) {
+                ItemStack stack = ItemHandlerHelper.copyStackWithSize(inventory.get(4), 1);
+                stack = Utils.insertStackIntoInventory(outputCap1, stack, false);
+                if (stack.isEmpty()) {
+                    this.inventory.get(4).shrink(1);
+                    succeed = true;
+                    if (this.inventory.get(4).getCount() <= 0)
+                        this.inventory.set(4, ItemStack.EMPTY);
+                }
+            }
+			if(!succeed&&outputCap2.isPresent()) {
+                ItemStack stack = ItemHandlerHelper.copyStackWithSize(inventory.get(4), 1);
+                stack = Utils.insertStackIntoInventory(outputCap2, stack, false);
+                if (stack.isEmpty()) {
+                    this.inventory.get(4).shrink(1);
+                    if (this.inventory.get(4).getCount() <= 0)
+                        this.inventory.set(4, ItemStack.EMPTY);
+                }
+            }
 		}
 
 		if (update) {
@@ -347,39 +341,40 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 	}
 
 	public boolean hasElectrodes() {
-		for (int i = 3; i < 5; ++i) {
-			if (this.inventory.get(i).isEmpty()) {
-				return false;
-			}
-		}
-		return true;
-	}
+        for (int i = 2; i < 4; ++i) {
+            if (this.inventory.get(i).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 	@Nullable
 	public ElectrolyzerRecipe getRecipe() {
-		ElectrolyzerRecipe recipe = ElectrolyzerRecipe.findRecipe(inventory.get(0), inventory.get(1),
-				tank[0].getFluid(), true);
-		if (recipe == null)
-			return null;
-		if (inventory.get(2).isEmpty() || (ItemStack.areItemsEqual(inventory.get(2), recipe.output)
-				&& inventory.get(2).getCount() + recipe.output.getCount() <= getSlotLimit(2))) {
-			return recipe;
-		}
-		return null;
-	}
+        ElectrolyzerRecipe recipe = ElectrolyzerRecipe.findRecipe(inventory.get(0), inventory.get(1),
+                tank[0].getFluid(), true);
+        if (recipe == null)
+            return null;
+        if (inventory.get(4).isEmpty() || (ItemStack.areItemsEqual(inventory.get(4), recipe.output)
+                && inventory.get(4).getCount() + recipe.output.getCount() <= getSlotLimit(4))) {
+            return recipe;
+        }
+        return null;
+    }
 
-	LazyOptional<IItemHandler> inHandler = registerConstantCap(new IEInventoryHandler(2, this , 0, true , false));
-	LazyOptional<IItemHandler> outHandler = registerConstantCap(new IEInventoryHandler(1, this , 2, false, true));
-	@Nonnull
-	@Override
-	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing) {
-		
-		if(facing!=null&&facing.getYOffset()==0&&this.posInMultiblock.getY()==0&&this.posInMultiblock.getX()!=1) {
-			if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-				if (this.posInMultiblock.getZ()==1)
-					return inHandler.cast();
-				else if(this.posInMultiblock.getZ()==3)
-					return outHandler.cast();
+    LazyOptional<IItemHandler> inHandler = registerConstantCap(new IEInventoryHandler(2, this, 0, true, false));
+    LazyOptional<IItemHandler> outHandler = registerConstantCap(new IEInventoryHandler(1, this, 4, false, true));
+
+    @Nonnull
+    @Override
+    public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing) {
+
+        if (facing != null && facing.getYOffset() == 0 && this.posInMultiblock.getY() == 0 && this.posInMultiblock.getX() != 1) {
+            if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+                if (this.posInMultiblock.getZ() == 1)
+                    return inHandler.cast();
+                else if (this.posInMultiblock.getZ() == 3)
+                    return outHandler.cast();
 				return LazyOptional.empty();
 			}
 		}

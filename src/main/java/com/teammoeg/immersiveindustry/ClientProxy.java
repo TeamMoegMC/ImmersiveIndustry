@@ -1,11 +1,10 @@
 package com.teammoeg.immersiveindustry;
 
-import com.teammoeg.immersiveindustry.content.carklin.CarKilnRenderer;
-import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerRenderer;
-import com.teammoeg.immersiveindustry.content.klin.RotaryKilnRenderer;
-
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
+import com.teammoeg.immersiveindustry.content.carkiln.CarKilnRenderer;
+import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerRenderer;
+import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnRenderer;
 import net.minecraft.util.ResourceLocation;
 
 public class ClientProxy {

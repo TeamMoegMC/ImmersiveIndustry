@@ -16,7 +16,7 @@
  * along with Immersive Industry. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.teammoeg.immersiveindustry.content.klin;
+package com.teammoeg.immersiveindustry.content.carkiln;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
@@ -26,20 +26,17 @@ import com.teammoeg.immersiveindustry.IIMain;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class RotaryKilnMultiblock extends IETemplateMultiblock {
-    public RotaryKilnMultiblock() {
-        super(new ResourceLocation(IIMain.MODID, "multiblocks/rotary_kiln"),
-                new BlockPos(1, 1, 3), new BlockPos(1, 1, 6), new BlockPos(3, 3, 7),
-                () -> IIContent.IIMultiblocks.rotary_kiln.getDefaultState());
+public class CarKilnMultiblock extends IETemplateMultiblock {
+    public CarKilnMultiblock() {
+        super(new ResourceLocation(IIMain.MODID, "multiblocks/car_kiln"),
+                new BlockPos(1, 1, 2), new BlockPos(1, 1, 3), new BlockPos(3, 5, 5),
+                () -> IIContent.IIMultiblocks.car_kiln.getDefaultState());
 
     }
 
@@ -57,8 +54,8 @@ public class RotaryKilnMultiblock extends IETemplateMultiblock {
     @OnlyIn(Dist.CLIENT)
     public void renderFormedStructure(MatrixStack transform, IRenderTypeBuffer buffer) {
         if (renderStack == null)
-            renderStack = new ItemStack(IIContent.IIMultiblocks.rotary_kiln);
-        transform.translate(1.5D, 1.5D, 2.5D);
+            renderStack = new ItemStack(IIContent.IIMultiblocks.car_kiln);
+        transform.translate(1.5D, 1.5D, 0.5D);
         ClientUtils.mc().getItemRenderer().renderItem(
                 renderStack,
                 ItemCameraTransforms.TransformType.NONE,
