@@ -30,7 +30,7 @@ import java.util.Set;
 public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntity>
 		implements IEBlockInterfaces.IBlockBounds, EnergyHelper.IIEInternalFluxHandler, IIEInventory,
 		IEBlockInterfaces.IInteractionObjectIE {
-	int pos;//animation process from 0-51, 0=idle 51=working
+	int pos;//animation process from 0-52, 0=idle 52=working
 	int app = 1;//test code, can delete
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
@@ -68,7 +68,7 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 	@Override
 	public void tick() {
 		pos += app;
-		if (pos > 51)
+		if (pos > 52)
 			app = -1;
 		if (pos < 0)
 			app = 1;

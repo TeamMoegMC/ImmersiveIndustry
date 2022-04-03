@@ -25,13 +25,8 @@ public class CarKilnRenderer extends TileEntityRenderer<CarKilnTileEntity> {
 	}
 
 	public static DynamicModel<Direction> PARTS;
-	private static IEObjState gate;
-	private static IEObjState trolley;
-
-	static {
-		gate = new IEObjState(VisibilityList.show("inletBoard"));
-    	trolley=new IEObjState(VisibilityList.show("trolleyFloor1","trolleyFloor2"));
-    }
+	private static final IEObjState gate= new IEObjState(VisibilityList.show("inletBoard"));
+	private static final IEObjState trolley=new IEObjState(VisibilityList.show("trolleyFloor1","trolleyFloor2"));
 	@Override
     public void render(CarKilnTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
 		if(!te.formed||te.isDummy()||!te.getWorldNonnull().isBlockLoaded(te.getPos()))
@@ -43,19 +38,18 @@ public class CarKilnRenderer extends TileEntityRenderer<CarKilnTileEntity> {
 		Direction d=te.getFacing();
 		matrixStack.push();
 		List<BakedQuad> quads = PARTS.getNullQuads(d, state, new SinglePropertyModelData<>(gate, Model.IE_OBJ_STATE));
-		if(te.pos<23) {
+		if(te.pos<24) {
 			matrixStack.translate(0,1.75, 0);
 		}else {
-			matrixStack.translate(0,1.75-(te.pos-23)/16D,0);
+			matrixStack.translate(0,1.75-(te.pos-24)/16D,0);
 		}
 		RenderUtils.renderModelTESRFast(quads, bufferIn.getBuffer(RenderType.getSolid()), matrixStack, combinedLightIn, combinedOverlayIn);
 		matrixStack.pop();
 		matrixStack.push();
 		List<BakedQuad> quads2 = PARTS.getNullQuads(d, state, new SinglePropertyModelData<>(trolley, Model.IE_OBJ_STATE));
-		if(te.pos>23) {
-			matrixStack.translate(0, 0, 0);
-		}else {
-			matrixStack.translate(0,0,1.4375-te.pos/16D);
+		if(te.pos<=24){
+			double delta=te.pos/16D-1.5;
+			matrixStack.translate(delta*d.getXOffset(),0,delta*d.getZOffset());
 		}
 		RenderUtils.renderModelTESRFast(quads2, bufferIn.getBuffer(RenderType.getSolid()), matrixStack, combinedLightIn, combinedOverlayIn);
 		matrixStack.pop();

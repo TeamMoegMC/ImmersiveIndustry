@@ -34,15 +34,24 @@ public class RotaryKilnRenderer extends TileEntityRenderer<RotaryKilnTileEntity>
 			return;
 		Direction d=te.getFacing();
 		matrixStack.push();
-		matrixStack.translate(.5,-0.1875,-2.375);
+		int deg=0,dx=0,dz=0;
+		switch(d) {
+		case NORTH:deg=180;dx=-1;dz=-1;break;
+		case EAST:deg=90;dx=-1;break;
+		case WEST:deg=-90;dz=-1;break;
+		}
+		matrixStack.rotate(new Quaternion(0,deg,0,true));
 		matrixStack.push();
-		matrixStack.rotate(new Quaternion(new Vector3f(d.getZOffset(),0,d.getXOffset()),-2,true));
+		matrixStack.translate(.5+dx,-0.1875,-2.375+dz);
+		matrixStack.push();
+		matrixStack.rotate(new Quaternion(new Vector3f(1,0,0),-2,true));
 		matrixStack.translate(0,0.875,-0.5);
 		matrixStack.push();
-		matrixStack.rotate(new Quaternion(new Vector3f(d.getXOffset(),0,d.getZOffset()),te.angle,true));
+		matrixStack.rotate(new Quaternion(new Vector3f(0,0,1),te.angle,true));
 		matrixStack.translate(-1,-0.0625,0);
-		List<BakedQuad> quads = ROLL.getNullQuads(te.getFacing(), state);
+		List<BakedQuad> quads = ROLL.getNullQuads(Direction.SOUTH, state);
 		RenderUtils.renderModelTESRFast(quads, bufferIn.getBuffer(RenderType.getSolid()), matrixStack, combinedLightIn, combinedOverlayIn);
+		matrixStack.pop();
 		matrixStack.pop();
 		matrixStack.pop();
 		matrixStack.pop();
