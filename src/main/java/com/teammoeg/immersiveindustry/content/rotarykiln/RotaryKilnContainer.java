@@ -41,7 +41,7 @@ public class RotaryKilnContainer extends IEBaseContainer<RotaryKilnTileEntity> {
             }
         });
 
-        this.slotCount = 1;
+        this.slotCount = 2;
 
         this.addSlot(new RotarySlot(this, this.inv, 1, 38, 40));
         this.addSlot(new RotarySlot(this, this.inv, 2, 64, 40));

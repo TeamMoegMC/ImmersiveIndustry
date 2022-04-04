@@ -18,21 +18,20 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.teammoeg.immersiveindustry.IIMain;
-
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.teammoeg.immersiveindustry.IIMain;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class IndustrialElectrolyzerScreen extends IEContainerScreen<IndustrialElectrolyzerContainer> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(IIMain.MODID, "textures/gui/industrial_electrolyzer.png");
@@ -52,8 +51,8 @@ public class IndustrialElectrolyzerScreen extends IEContainerScreen<IndustrialEl
     public void render(MatrixStack transform, int mouseX, int mouseY, float partial) {
         super.render(transform, mouseX, mouseY, partial);
         List<ITextComponent> tooltip = new ArrayList<>();
-        GuiHelper.handleGuiTank(transform, tile.tank[0], guiLeft + 10, guiTop + 25, 16, 47, 195, 0, 20, 51, mouseX, mouseY, TEXTURE, tooltip);
-        GuiHelper.handleGuiTank(transform, tile.tank[1], guiLeft + 132, guiTop + 25, 16, 47, 195,0, 20, 51,mouseX, mouseY, TEXTURE, tooltip);
+        GuiHelper.handleGuiTank(transform, tile.tank[0], guiLeft + 10, guiTop + 25, 16, 47, 196, 0, 20, 51, mouseX, mouseY, TEXTURE, tooltip);
+        GuiHelper.handleGuiTank(transform, tile.tank[1], guiLeft + 132, guiTop + 25, 16, 47, 196, 0, 20, 51, mouseX, mouseY, TEXTURE, tooltip);
         if (mouseX >= this.guiLeft + 156 && mouseX < this.guiLeft + 162 && mouseY > this.guiTop + 25 && mouseY < this.guiTop + 70) {
             tooltip.add(new StringTextComponent(this.tile.getEnergyStored((Direction) null) + "/" + this.tile.getMaxEnergyStored((Direction) null) + " IF"));
         }
@@ -66,8 +65,8 @@ public class IndustrialElectrolyzerScreen extends IEContainerScreen<IndustrialEl
     protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float partial, int x, int y) {
         ClientUtils.bindTexture(TEXTURE);
         this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
-        GuiHelper.handleGuiTank(transform, tile.tank[0], guiLeft + 10, guiTop + 25, 16, 47, 195,0, 20, 51, x, y, TEXTURE, null);
-        GuiHelper.handleGuiTank(transform, tile.tank[1], guiLeft + 132, guiTop + 25, 16, 47, 195,0, 20, 51, x, y, TEXTURE, null);
+        GuiHelper.handleGuiTank(transform, tile.tank[0], guiLeft + 10, guiTop + 25, 16, 47, 196, 0, 20, 51, x, y, TEXTURE, null);
+        GuiHelper.handleGuiTank(transform, tile.tank[1], guiLeft + 132, guiTop + 25, 16, 47, 196, 0, 20, 51, x, y, TEXTURE, null);
         if (tile.processMax > 0 && tile.process > 0) {
             int h = (int) (21 * (tile.process / (float) tile.processMax));
             this.blit(transform, guiLeft + 77, guiTop + 40, 178, 57, 21 - h, 15);

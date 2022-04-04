@@ -20,11 +20,14 @@ package com.teammoeg.immersiveindustry.content.rotarykiln;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teammoeg.immersiveindustry.IIMain;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
@@ -50,6 +53,10 @@ public class RotaryKilnScreen extends IEContainerScreen<RotaryKilnContainer> {
         super.render(transform, mouseX, mouseY, partial);
         List<ITextComponent> tooltip = new ArrayList<>();
 
+        GuiHelper.handleGuiTank(transform, tile.tankout[0], guiLeft + 133, guiTop + 26, 16, 47, 196, 0, 20, 51, mouseX, mouseY, TEXTURE, tooltip);
+        if (mouseX >= this.guiLeft + 157 && mouseX < this.guiLeft + 163 && mouseY > this.guiTop + 26 && mouseY < this.guiTop + 71) {
+            tooltip.add(new StringTextComponent(this.tile.getEnergyStored((Direction) null) + "/" + this.tile.getMaxEnergyStored((Direction) null) + " IF"));
+        }
         if (!tooltip.isEmpty()) {
             GuiUtils.drawHoveringText(transform, tooltip, mouseX, mouseY, width, height, -1, font);
         }
@@ -59,6 +66,10 @@ public class RotaryKilnScreen extends IEContainerScreen<RotaryKilnContainer> {
     protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float partial, int x, int y) {
         ClientUtils.bindTexture(TEXTURE);
         this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
+
+        GuiHelper.handleGuiTank(transform, tile.tankout[0], guiLeft + 133, guiTop + 26, 16, 47, 196, 0, 20, 51, x, y, TEXTURE, null);
+        int stored = (int) (46.0F * ((float) this.tile.getEnergyStored(null) / (float) this.tile.getMaxEnergyStored(null)));
+        this.fillGradient(transform, this.guiLeft + 157, this.guiTop + 26 + (46 - stored), this.guiLeft + 164, this.guiTop + 72, -4909824, -10482944);
 
     }
 

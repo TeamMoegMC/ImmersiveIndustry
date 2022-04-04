@@ -18,10 +18,7 @@
 
 package com.teammoeg.immersiveindustry;
 
-import javax.annotation.Nonnull;
-
 import com.teammoeg.immersiveindustry.data.IIRecipeReloadListener;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -36,6 +33,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
+import javax.annotation.Nonnull;
+
 
 @Mod(IIMain.MODID)
 public class IIMain {
@@ -45,7 +44,7 @@ public class IIMain {
         @Override
         @Nonnull
         public ItemStack createIcon() {
-            return new ItemStack(IIContent.IIBlocks.burning_chamber.asItem());
+            return new ItemStack(IIContent.IIBlocks.electrolyzer.asItem());
         }
     };
     public static boolean loadfailed=false;

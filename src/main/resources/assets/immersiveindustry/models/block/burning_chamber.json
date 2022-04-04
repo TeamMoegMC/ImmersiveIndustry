@@ -1,6 +1,7 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/cube_column",
   "textures": {
-    "all": "immersiveindustry:block/burning_chamber"
+    "end": "immersiveindustry:block/burning_chamber_up",
+    "side": "immersiveindustry:block/burning_chamber"
   }
 }

@@ -44,7 +44,7 @@ public class CarKilnContainer extends IEBaseContainer<CarKilnTileEntity> {
             this.addSlot(new IESlot.Output(this, this.inv, 4 + i, 96 + i % 3 * 18, 50 + i / 3 * 18));
         }
 
-        this.slotCount = 4;
+        this.slotCount = 5;
 
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 9; j++)

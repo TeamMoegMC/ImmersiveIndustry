@@ -68,7 +68,7 @@ public class IndustrialElectrolyzerContainer extends IEBaseContainer<IndustrialE
             }
         });
 
-        this.slotCount = 4;
+        this.slotCount = 5;
         // output
         this.addSlot(new IESlot.Output(this, this.inv, 4, 108, 39));
 

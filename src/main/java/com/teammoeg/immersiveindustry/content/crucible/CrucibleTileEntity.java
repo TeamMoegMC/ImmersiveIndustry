@@ -24,10 +24,8 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheater
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.content.IActiveState;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
@@ -223,14 +221,14 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                     final boolean activeBeforeTick = getIsActive();
                     if (temperature > 0) {
                         updatetick = 0;
-                        this.markContainingBlockForUpdate(null);
+                        master().markContainingBlockForUpdate(null);
                         if (!activeBeforeTick)
                             setActive(true);
                     } else if (activeBeforeTick)
                         setActive(false);
                     final boolean activeAfterTick = getIsActive();
                     if (activeBeforeTick != activeAfterTick) {
-                        this.markDirty();
+                        master().markDirty();
                         // scan 3x4x3
                         for (int x = 0; x < 3; ++x)
                             for (int y = 0; y < 4; ++y)
@@ -259,7 +257,7 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                     if (!inventory.get(2).isEmpty() && inventory.get(2).getItem().getTags().contains(coal_coke)) {
                         burnTime = 600;
                         inventory.get(2).shrink(1);
-                        this.markDirty();
+                        master().markDirty();
                     }
                 }
                 if (temperature > 1400) {
@@ -278,7 +276,7 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                                 getFromPreheater(BlastFurnacePreheaterTileEntity::doSpeedup, 0);
                             }
                         }
-                        this.markContainingBlockForUpdate(null);
+                        master().markContainingBlockForUpdate(null);
                     } else if (recipe != null) {
                         if (processMax == 0) {
                             this.process = recipe.time;

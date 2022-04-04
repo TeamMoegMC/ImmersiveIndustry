@@ -452,11 +452,11 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 		return this.formed && this.isEnergyPos() ? this.wrapper : null;
 	}
 
+	@Override
 	public void postEnergyTransferUpdate(int energy, boolean simulate) {
 		if (!simulate) {
 			this.updateMasterBlock(null, energy != 0);
 		}
-
 	}
 
 	@Nullable
