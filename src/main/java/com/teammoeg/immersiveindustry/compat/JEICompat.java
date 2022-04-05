@@ -18,22 +18,15 @@
 
 package com.teammoeg.immersiveindustry.compat;
 
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nullable;
-
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleCategory;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleScreen;
-import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerCategory;
-import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipe;
-import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerScreen;
-import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerCategory;
-import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerScreen;
-
+import com.teammoeg.immersiveindustry.content.electrolyzer.*;
+import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnCategory;
+import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnRecipe;
+import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnScreen;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -47,6 +40,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 @JeiPlugin
 public class JEICompat implements IModPlugin {
     @Override
@@ -59,6 +56,7 @@ public class JEICompat implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(IIContent.IIBlocks.burning_chamber), CrucibleCategory.UID);
         registration.addRecipeCatalyst(new ItemStack(IIContent.IIBlocks.electrolyzer), ElectrolyzerCategory.UID);
         registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.industrial_electrolyzer), IndustrialElectrolyzerCategory.UID);
+        registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.rotary_kiln), RotaryKilnCategory.UID);
     }
 
     @Override
@@ -69,7 +67,8 @@ public class JEICompat implements IModPlugin {
         IndustrialElectrolyzerCategory.electrodes=ForgeRegistries.ITEMS.getValues().stream().filter(e->e.getTags().contains(IndustrialElectrolyzerCategory.Electrode_Tag)).collect(Collectors.toList());
         registration.addRecipes(new ArrayList<>(CrucibleRecipe.recipeList.values()), CrucibleCategory.UID);
         registration.addRecipes(ElectrolyzerRecipe.recipeList.values().stream().filter(r->!r.flag).filter(r->r.inputs.length<2).collect(Collectors.toList()), ElectrolyzerCategory.UID);
-        registration.addRecipes(ElectrolyzerRecipe.recipeList.values().stream().filter(r->r.inputs.length<3).collect(Collectors.toList()), IndustrialElectrolyzerCategory.UID);
+        registration.addRecipes(ElectrolyzerRecipe.recipeList.values().stream().filter(r -> r.inputs.length < 3).collect(Collectors.toList()), IndustrialElectrolyzerCategory.UID);
+        registration.addRecipes(new ArrayList<>(RotaryKilnRecipe.recipeList.values()), RotaryKilnCategory.UID);
     }
 
     @Override
@@ -78,7 +77,8 @@ public class JEICompat implements IModPlugin {
         registration.addRecipeCategories(
                 new CrucibleCategory(guiHelper),
                 new ElectrolyzerCategory(guiHelper),
-                new IndustrialElectrolyzerCategory(guiHelper)
+                new IndustrialElectrolyzerCategory(guiHelper),
+                new RotaryKilnCategory(guiHelper)
         );
     }
 
@@ -87,6 +87,7 @@ public class JEICompat implements IModPlugin {
         registry.addRecipeClickArea(ElectrolyzerScreen.class, 76, 35, 21, 25, ElectrolyzerCategory.UID);
         registry.addRecipeClickArea(IndustrialElectrolyzerScreen.class, 76, 35,21, 25, IndustrialElectrolyzerCategory.UID);
         registry.addRecipeClickArea(CrucibleScreen.class, 76, 14, 19, 25, CrucibleCategory.UID);
+        registry.addRecipeClickArea(RotaryKilnScreen.class, 92, 41, 35, 18, RotaryKilnCategory.UID);
     }
 
     public static <T> void checkNotNull(@Nullable T object, String name) {

@@ -18,19 +18,12 @@
 
 package com.teammoeg.immersiveindustry.data;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-
-import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
-import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipe;
-
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
+import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipe;
+import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
@@ -49,6 +42,12 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class IIRecipeReloadListener implements IResourceManagerReloadListener {
     private final DataPackRegistries dataPackRegistries;
@@ -93,6 +92,7 @@ public class IIRecipeReloadListener implements IResourceManagerReloadListener {
             return;
         CrucibleRecipe.recipeList = filterRecipes(recipes, CrucibleRecipe.class, CrucibleRecipe.TYPE);
         ElectrolyzerRecipe.recipeList = filterRecipes(recipes, ElectrolyzerRecipe.class, ElectrolyzerRecipe.TYPE);
+        RotaryKilnRecipe.recipeList = filterRecipes(recipes, RotaryKilnRecipe.class, RotaryKilnRecipe.TYPE);
     }
 
     static <R extends IRecipe<?>> Map<ResourceLocation, R> filterRecipes(Collection<IRecipe<?>> recipes, Class<R> recipeClass, IRecipeType<R> recipeType) {

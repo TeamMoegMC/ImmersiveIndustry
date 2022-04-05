@@ -18,17 +18,16 @@
 
 package com.teammoeg.immersiveindustry.content.crucible;
 
-import java.util.function.Function;
-
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.teammoeg.immersiveindustry.IIMain;
-
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
 import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheaterTileEntity;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.teammoeg.immersiveindustry.IIMain;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+
+import java.util.function.Function;
 
 public class CrucibleScreen extends IEContainerScreen<CrucibleContainer> {
     private static final Function<BlastFurnacePreheaterTileEntity, Boolean> PREHEATER_ACTIVE = (tile) -> tile.active;
@@ -69,7 +68,7 @@ public class CrucibleScreen extends IEContainerScreen<CrucibleContainer> {
             int h = (int) (21 * (tile.process / (float) tile.processMax));
             this.blit(transform, guiLeft + 76, guiTop + 14, 204, 15, 21 - h, 15);
         }
-        if ((Boolean) tile.getFromPreheater(PREHEATER_ACTIVE, false)) {
+        if (tile.getFromPreheater(PREHEATER_ACTIVE, false)) {
             this.blit(transform, this.guiLeft + 28, this.guiTop + 54, 199, 32, 12, 11);
         }
     }

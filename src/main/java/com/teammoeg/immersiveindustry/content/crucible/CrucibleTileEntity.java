@@ -221,7 +221,7 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                     final boolean activeBeforeTick = getIsActive();
                     if (temperature > 0) {
                         updatetick = 0;
-                        master().markContainingBlockForUpdate(null);
+                        this.markContainingBlockForUpdate(null);
                         if (!activeBeforeTick)
                             setActive(true);
                     } else if (activeBeforeTick)
@@ -276,7 +276,7 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                                 getFromPreheater(BlastFurnacePreheaterTileEntity::doSpeedup, 0);
                             }
                         }
-                        master().markContainingBlockForUpdate(null);
+                        this.markContainingBlockForUpdate(null);
                     } else if (recipe != null) {
                         if (processMax == 0) {
                             this.process = recipe.time;

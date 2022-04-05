@@ -161,50 +161,50 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 		return this.inventory;
 	}
 
-	LazyOptional<IItemHandler> inHandler = registerConstantCap(new IEInventoryHandler(1, this, 0, true, false));
-	LazyOptional<IItemHandler> outHandler = registerConstantCap(new IEInventoryHandler(1, this, 4, false, true));
-
-	@Nonnull
-	@Override
-	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing) {
-
-		if (facing != null && facing.getYOffset() == 0 && this.posInMultiblock.getY() == 2 && this.posInMultiblock.getX() == 1) {
-			if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-				if (this.posInMultiblock.getZ() == 1)
-					return inHandler.cast();
-				else if (this.posInMultiblock.getZ() == 3)
-					return outHandler.cast();
-				return LazyOptional.empty();
-			}
-		}
-		return super.getCapability(capability, facing);
-	}
-
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket) {
 		super.readCustomNBT(nbt, descPacket);
 		energyStorage.readFromNBT(nbt);
 		tankinput[0].readFromNBT(nbt.getCompound("tankinput"));
 		ItemStackHelper.loadAllItems(nbt, inventory);
-	}
+    }
 
-	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket) {
-		super.writeCustomNBT(nbt, descPacket);
-		energyStorage.writeToNBT(nbt);
-		nbt.put("tankinput", tankinput[0].writeToNBT(new CompoundNBT()));
-		ItemStackHelper.saveAllItems(nbt, inventory);
-	}
+    @Override
+    public void writeCustomNBT(CompoundNBT nbt, boolean descPacket) {
+        super.writeCustomNBT(nbt, descPacket);
+        energyStorage.writeToNBT(nbt);
+        nbt.put("tankinput", tankinput[0].writeToNBT(new CompoundNBT()));
+        ItemStackHelper.saveAllItems(nbt, inventory);
+    }
 
-	@Override
-	public boolean isStackValid(int i, ItemStack itemStack) {
-		return true;
-	}
+    LazyOptional<IItemHandler> inHandler = registerConstantCap(new IEInventoryHandler(1, this, 0, true, false));
+    LazyOptional<IItemHandler> outHandler = registerConstantCap(new IEInventoryHandler(1, this, 4, false, true));
 
-	@Override
-	public int getSlotLimit(int i) {
-		return 64;
-	}
+    @Nonnull
+    @Override
+    public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing) {
+
+        if (facing != null && facing.getYOffset() == 0 && this.posInMultiblock.getZ() == 4) {
+            if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+                if (this.posInMultiblock.getY() == 1)
+                    return inHandler.cast();
+                else if (this.posInMultiblock.getX() == 1)
+                    return outHandler.cast();
+                return LazyOptional.empty();
+            }
+        }
+        return super.getCapability(capability, facing);
+    }
+
+    @Override
+    public boolean isStackValid(int i, ItemStack itemStack) {
+        return true;
+    }
+
+    @Override
+    public int getSlotLimit(int i) {
+        return 64;
+    }
 
 	@Override
 	public void doGraphicalUpdates() {

@@ -31,13 +31,18 @@ public class IIConfig {
 
     public static class Common {
         public final ForgeConfigSpec.IntValue electrolyzerConsume;
+        public final ForgeConfigSpec.IntValue rotaryKilnConsume;
+        public final ForgeConfigSpec.IntValue carKilnConsume;
         public final ForgeConfigSpec.IntValue steamTurbineGenerator;
         public final ForgeConfigSpec.DoubleValue electrodeCost;
+
         Common(ForgeConfigSpec.Builder builder) {
             electrolyzerConsume = builder.defineInRange("electrolyzerConsume", 24, 0, 4096);
+            rotaryKilnConsume = builder.defineInRange("rotaryKilnConsume", 24, 0, 4096);
+            carKilnConsume = builder.defineInRange("carKilnConsume", 24, 0, 4096);
             steamTurbineGenerator = builder.defineInRange("steamTurbineGenerator", 128, 0, 4096);
-            electrodeCost= builder.defineInRange("electrodeCost",0.25,0,96000);
-            
+            electrodeCost = builder.defineInRange("electrodeCost", 0.25, 0, 96000);
+
         }
     }
 

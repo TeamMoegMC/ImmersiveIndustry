@@ -20,7 +20,6 @@ package com.teammoeg.immersiveindustry.content.rotarykiln;
 
 import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
-import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipe;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
@@ -37,7 +36,7 @@ public class RotaryKilnContainer extends IEBaseContainer<RotaryKilnTileEntity> {
         this.addSlot(new IESlot(this, this.inv, 0, 12, 40) {
             @Override
             public boolean isItemValid(ItemStack itemStack) {
-                return ElectrolyzerRecipe.isValidRecipeInput(itemStack);
+                return RotaryKilnRecipe.isValidRecipeInput(itemStack);
             }
         });
 

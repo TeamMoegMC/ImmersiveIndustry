@@ -67,6 +67,10 @@ public class RotaryKilnScreen extends IEContainerScreen<RotaryKilnContainer> {
         ClientUtils.bindTexture(TEXTURE);
         this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
+        if (tile.process > 0) {
+            int w = (int) (38 * (tile.process / (float) 300));
+            this.blit(transform, guiLeft + 88, guiTop + 44, 178, 59, 38 - w, 16);
+        }
         GuiHelper.handleGuiTank(transform, tile.tankout[0], guiLeft + 133, guiTop + 26, 16, 47, 196, 0, 20, 51, x, y, TEXTURE, null);
         int stored = (int) (46.0F * ((float) this.tile.getEnergyStored(null) / (float) this.tile.getMaxEnergyStored(null)));
         this.fillGradient(transform, this.guiLeft + 157, this.guiTop + 26 + (46 - stored), this.guiLeft + 164, this.guiTop + 72, -4909824, -10482944);

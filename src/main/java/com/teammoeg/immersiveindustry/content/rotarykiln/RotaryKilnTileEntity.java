@@ -8,8 +8,10 @@ import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableSet;
+import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent.IIMultiblocks;
 import com.teammoeg.immersiveindustry.IIContent.IITileTypes;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,6 +26,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -39,11 +43,13 @@ import java.util.Set;
 public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTileEntity>
 		implements IEBlockInterfaces.IBlockBounds, EnergyHelper.IIEInternalFluxHandler, IIEInventory,
 		IEBlockInterfaces.IInteractionObjectIE {
-	int angle;//angle for animation in degrees
+	public int process = 0;
+	boolean active;
+	public int angle;//angle for animation in degrees
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
 	EnergyHelper.IEForgeEnergyWrapper wrapper = new EnergyHelper.IEForgeEnergyWrapper(this, null);
-	public FluidTank[] tankout = new FluidTank[]{new FluidTank(16000)};
+	public FluidTank[] tankout = new FluidTank[]{new FluidTank(32000)};
 	private static BlockPos itmeout = new BlockPos(1, 0, 7);
 	private static BlockPos fluidout = new BlockPos(1, 3, 4);
 
@@ -67,9 +73,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 	protected boolean canDrainTankFrom(int i, Direction side) {
 		RotaryKilnTileEntity master = master();
 		if (master != null) {
-			if (side == null || side == Direction.DOWN) {
-				return true;
-			}
+			return true;
 		}
 		return false;
 	}
@@ -84,7 +88,8 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 	protected IFluidTank[] getAccessibleFluidTanks(Direction side) {
 		RotaryKilnTileEntity master = master();
 		if (master != null) {
-			if (fluidout.down().equals(this.posInMultiblock)) {
+			if (this.posInMultiblock.getZ() == 4 && this.posInMultiblock.getY() == 2 &&
+					this.posInMultiblock.getX() == 1) {
 				return master.tankout;
 			}
 		}
@@ -105,11 +110,58 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 	@Override
 	public void tick() {
 		checkForNeedlessTicking();
-		angle += 10;
-		if (angle >= 360)
-			angle = 0;
-	}
+		if (!isDummy()) {
+			if (!world.isRemote) {
+				int energyConsume = IIConfig.COMMON.rotaryKilnConsume.get();
+				if (!isRSDisabled() && energyStorage.getEnergyStored() >= energyConsume) {
+					if (process > 0) {
+						process--;
+						energyStorage.extractEnergy(energyConsume, false);
+						if (!active)
+							active = true;
 
+						this.markContainingBlockForUpdate(null);
+						return;
+					}
+					if (!inventory.get(2).isEmpty()) {
+						RotaryKilnRecipe recipe = getRecipe(2);
+						if (recipe != null) {
+							int count = inventory.get(2).getCount() / recipe.input.getCount();
+							ItemStack result = recipe.output.copy();
+							result.setCount(count);
+							if (inventory.get(3).isEmpty()) {
+								inventory.set(3, result);
+								inventory.set(2, ItemStack.EMPTY);
+								this.markContainingBlockForUpdate(null);
+							} else if (inventory.get(3).isItemEqual(recipe.output)
+									&& inventory.get(3).getCount() + result.getCount() <= getSlotLimit(3)) {
+								inventory.get(3).grow(result.getCount());
+								inventory.set(2, ItemStack.EMPTY);
+								this.markContainingBlockForUpdate(null);
+							} else return;
+							if (!recipe.output_fluid.isEmpty()) {
+								FluidStack fluidStack = recipe.output_fluid.copy();
+								fluidStack.setAmount(fluidStack.getAmount() * count);
+								tankout[0].fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
+							}
+						}
+					}
+					if (!inventory.get(0).isEmpty() || !inventory.get(1).isEmpty()) {
+						inventory.set(2, inventory.get(1));
+						inventory.set(1, inventory.get(0).split(16));
+						process = 300;
+					}
+				} else if (active) {
+					active = false;
+				}
+			} else {
+				if (active)
+					angle += 10;
+				if (angle >= 360)
+					angle = 0;
+			}
+		}
+	}
 	@Nonnull
 	@Override
 	public VoxelShape getBlockBounds(@Nullable ISelectionContext iSelectionContext) {
@@ -150,7 +202,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 
 	@Override
 	public Set<BlockPos> getRedstonePos() {
-		return ImmutableSet.of(new BlockPos(5, 1, 1));
+		return ImmutableSet.of(new BlockPos(0, 1, 5));
 	}
 
 	@Nonnull
@@ -179,6 +231,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket) {
 		super.readCustomNBT(nbt, descPacket);
 		energyStorage.readFromNBT(nbt);
+		process = nbt.getInt("process");
 		tankout[0].readFromNBT(nbt.getCompound("tankout"));
 		ItemStackHelper.loadAllItems(nbt, inventory);
 	}
@@ -188,12 +241,42 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 		super.writeCustomNBT(nbt, descPacket);
 		energyStorage.writeToNBT(nbt);
 		nbt.put("tankout", tankout[0].writeToNBT(new CompoundNBT()));
+		nbt.putInt("process", process);
 		ItemStackHelper.saveAllItems(nbt, inventory);
+	}
+
+	LazyOptional<IItemHandler> inHandler = registerConstantCap(new IEInventoryHandler(2, this, 0, true, false));
+	LazyOptional<IItemHandler> outHandler = registerConstantCap(new IEInventoryHandler(1, this, 3, false, true));
+
+	@Nonnull
+	@Override
+	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing) {
+
+		if (facing != null && this.posInMultiblock.getX() == 1) {
+			if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+				if (this.posInMultiblock.getZ() == 0 && this.posInMultiblock.getY() == 2)
+					return inHandler.cast();
+				else if (this.posInMultiblock.getZ() == 6 && this.posInMultiblock.getY() == 0)
+					return outHandler.cast();
+				return LazyOptional.empty();
+			}
+		}
+		return super.getCapability(capability, facing);
+	}
+
+	@Nullable
+	public RotaryKilnRecipe getRecipe(int slot) {
+		RotaryKilnRecipe recipe = RotaryKilnRecipe.findRecipe(inventory.get(slot));
+		if (recipe == null)
+			return null;
+		return recipe;
 	}
 
 	@Override
 	public boolean isStackValid(int i, ItemStack itemStack) {
-		return true;
+		if (i == 0)
+			return true;
+		return false;
 	}
 
 	@Override

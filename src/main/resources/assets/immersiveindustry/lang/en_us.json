@@ -5,9 +5,13 @@
   "block.immersiveindustry.crucible": "Steel Mill Crucible",
   "block.immersiveindustry.steam_turbine": "Industrial Steam Turbine",
   "block.immersiveindustry.industrial_electrolyzer": "Industrial Electrolyzer",
+  "block.immersiveindustry.rotary_kiln": "Rotary Kiln",
+  "block.immersiveindustry.car_kiln": "Car Kiln",
   "gui.jei.category.immersiveindustry.crucible": "Steel Mill Crucible",
   "gui.jei.category.immersiveindustry.electrolyzer": "Simple Electrolyzer",
   "gui.jei.category.immersiveindustry.industrial_electrolyzer": "Industrial Electrolyzer",
+  "gui.jei.category.immersiveindustry.rotary_kiln": "Rotary Kiln",
+  "gui.jei.category.immersiveindustry.car_kiln": "Car Kiln",
   "manual.immersiveindustry.main": "Immersive Industry",
-  "gui.immersiveindustry.failed_datapack":"\n\nImmersive Industry: We are aware of this error, restarting the game would fix it. Report ONLY if this error persists."
+  "gui.immersiveindustry.failed_datapack": "\n\nImmersive Industry: We are aware of this error, restarting the game would fix it. Report ONLY if this error persists."
 }

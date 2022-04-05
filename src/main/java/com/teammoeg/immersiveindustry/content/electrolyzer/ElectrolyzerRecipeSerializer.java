@@ -37,7 +37,7 @@ import javax.annotation.Nullable;
 public class ElectrolyzerRecipeSerializer extends IERecipeSerializer<ElectrolyzerRecipe> {
     @Override
     public ItemStack getIcon() {
-        return new ItemStack(IIContent.IIMultiblocks.crucible);
+        return new ItemStack(IIContent.IIBlocks.electrolyzer);
     }
 
     @Override

@@ -274,7 +274,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 						}
 						this.markContainingBlockForUpdate(null);
 					}
-				} else if (process > 0) {
+				} else if (process != processMax) {
 					process = processMax;
 					this.markContainingBlockForUpdate(null);
 				}

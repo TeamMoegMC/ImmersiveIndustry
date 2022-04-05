@@ -30,10 +30,7 @@ import com.teammoeg.immersiveindustry.content.carkiln.CarKilnMultiblock;
 import com.teammoeg.immersiveindustry.content.carkiln.CarKilnTileEntity;
 import com.teammoeg.immersiveindustry.content.crucible.*;
 import com.teammoeg.immersiveindustry.content.electrolyzer.*;
-import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnBlock;
-import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnContainer;
-import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnMultiblock;
-import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnTileEntity;
+import com.teammoeg.immersiveindustry.content.rotarykiln.*;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineBlock;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineMultiblock;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineTileEntity;
@@ -130,11 +127,13 @@ public class IIContent {
         static {
             CrucibleRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("crucible", CrucibleRecipeSerializer::new);
             ElectrolyzerRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("electrolyzer", ElectrolyzerRecipeSerializer::new);
+            RotaryKilnRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("rotary_kiln", RotaryKilnRecipeSerializer::new);
         }
 
         public static void registerRecipeTypes() {
             CrucibleRecipe.TYPE = IRecipeType.register(IIMain.MODID + ":crucible");
             ElectrolyzerRecipe.TYPE = IRecipeType.register(IIMain.MODID + ":electrolyzer");
+            RotaryKilnRecipe.TYPE = IRecipeType.register(IIMain.MODID + ":rotary_kiln");
         }
     }
 
