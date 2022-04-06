@@ -154,9 +154,8 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 				} else if (active) {
 					active = false;
 				}
-			} else {
-				if (active)
-					angle += 10;
+			} else if (active) {
+				angle += 10;
 				if (angle >= 360)
 					angle = 0;
 			}
@@ -233,6 +232,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 		energyStorage.readFromNBT(nbt);
 		process = nbt.getInt("process");
 		tankout[0].readFromNBT(nbt.getCompound("tankout"));
+		active = nbt.getBoolean("active");
 		ItemStackHelper.loadAllItems(nbt, inventory);
 	}
 
@@ -242,6 +242,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 		energyStorage.writeToNBT(nbt);
 		nbt.put("tankout", tankout[0].writeToNBT(new CompoundNBT()));
 		nbt.putInt("process", process);
+		nbt.putBoolean("active", active);
 		ItemStackHelper.saveAllItems(nbt, inventory);
 	}
 
