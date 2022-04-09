@@ -19,7 +19,6 @@
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
 import blusunrize.immersiveengineering.api.IEEnums;
-import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
@@ -61,6 +60,7 @@ public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInven
     public FluidTank tank = new FluidTank(8 * FluidAttributes.BUCKET_VOLUME, ElectrolyzerRecipe::isValidRecipeFluid);
     private NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 
+
     public ElectrolyzerTileEntity() {
         super(IIContent.IITileTypes.ELECTROLYZER.get());
         energyConsume = IIConfig.COMMON.electrolyzerConsume.get();
@@ -72,8 +72,10 @@ public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInven
         tank.readFromNBT(nbt.getCompound("tank"));
         process = nbt.getInt("process");
         processMax = nbt.getInt("processMax");
-        result=ItemStack.read(nbt.getCompound("result"));
-        ItemStackHelper.loadAllItems(nbt, inventory);
+        if (!descPacket) {
+            result = ItemStack.read(nbt.getCompound("result"));
+            ItemStackHelper.loadAllItems(nbt, inventory);
+        }
     }
 
     @Override
@@ -82,8 +84,10 @@ public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInven
         nbt.put("tank", tank.writeToNBT(new CompoundNBT()));
         nbt.putInt("process", process);
         nbt.putInt("processMax", processMax);
-        nbt.put("result",result.serializeNBT());
-        ItemStackHelper.saveAllItems(nbt, inventory);
+        if (!descPacket) {
+            nbt.put("result", result.serializeNBT());
+            ItemStackHelper.saveAllItems(nbt, inventory);
+        }
     }
 
     @Override

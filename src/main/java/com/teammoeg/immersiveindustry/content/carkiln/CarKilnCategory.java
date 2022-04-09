@@ -18,6 +18,7 @@
 
 package com.teammoeg.immersiveindustry.content.carkiln;
 
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
@@ -83,7 +84,7 @@ public class CarKilnCategory implements IRecipeCategory<CarKilnRecipe> {
 
     @Override
     public void setIngredients(CarKilnRecipe recipe, IIngredients ingredients) {
-        ingredients.setInput(VanillaTypes.ITEM, recipe.input.getMatchingStacks()[0]);
+        ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.inputs).build());
 
         ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
         ingredients.setOutput(VanillaTypes.FLUID, recipe.output_fluid);

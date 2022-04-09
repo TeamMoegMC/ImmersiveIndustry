@@ -51,7 +51,6 @@ public class CarKilnContainer extends IEBaseContainer<CarKilnTileEntity> {
                 addSlot(new Slot(inventoryPlayer, j + i * 9 + 9, 8 + j * 18, 96 + i * 18));
         for (int i = 0; i < 9; i++)
             addSlot(new Slot(inventoryPlayer, i, 8 + i * 18, 154));
-
     }
 }
 

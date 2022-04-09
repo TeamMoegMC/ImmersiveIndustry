@@ -140,10 +140,8 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
     public boolean isStackValid(int slot, ItemStack stack) {
         if (stack.isEmpty())
             return false;
-        if (slot == 0)
-            return CrucibleRecipe.isValidRecipeInput(stack, true);
-        if (slot == 1)
-            return CrucibleRecipe.isValidRecipeInput(stack, false);
+        if (slot == 0 || slot == 1)
+            return CrucibleRecipe.isValidInput(stack);
         if (slot == 2)
             return stack.getItem().getTags().contains(coal_coke);
         return false;
@@ -282,8 +280,8 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                             this.process = recipe.time;
                             this.processMax = process;
                         } else {
-                            Utils.modifyInvStackSize(inventory, 0, -recipe.input.getCount());
-                            Utils.modifyInvStackSize(inventory, 1, -recipe.input2.getCount());
+                            Utils.modifyInvStackSize(inventory, 0, -recipe.inputs[0].getCount());
+                            Utils.modifyInvStackSize(inventory, 1, -recipe.inputs[1].getCount());
                             if (!inventory.get(3).isEmpty())
                                 inventory.get(3).grow(recipe.output.copy().getCount());
                             else if (inventory.get(3).isEmpty())

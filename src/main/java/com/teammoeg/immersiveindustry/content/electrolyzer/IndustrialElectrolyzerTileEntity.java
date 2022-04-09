@@ -64,18 +64,17 @@ import java.util.Set;
 
 public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<IndustrialElectrolyzerTileEntity>
 		implements IEBlockInterfaces.IBlockBounds, EnergyHelper.IIEInternalFluxHandler, IIEInventory,
-		IEBlockInterfaces.IInteractionObjectIE {
+		IEBlockInterfaces.IInteractionObjectIE, IEBlockInterfaces.IProcessTile {
 	public int process = 0;
 	public int processMax = 0;
 	public ItemStack result = ItemStack.EMPTY;
 	public FluidStack resultFluid = FluidStack.EMPTY;
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
 	EnergyHelper.IEForgeEnergyWrapper wrapper = new EnergyHelper.IEForgeEnergyWrapper(this, null);
-	public FluidTank[] tank = new FluidTank[] { new FluidTank(16000, ElectrolyzerRecipe::isValidRecipeFluid),
-			new FluidTank(16000) };
-	private static BlockPos out1=new BlockPos(3,0,3);
-	private static BlockPos out2=new BlockPos(-1,0,3);
-
+	public FluidTank[] tank = new FluidTank[]{new FluidTank(16000, ElectrolyzerRecipe::isValidRecipeFluid),
+			new FluidTank(16000)};
+	private static BlockPos out1 = new BlockPos(3, 0, 3);
+	private static BlockPos out2 = new BlockPos(-1, 0, 3);
 
 	private CapabilityReference<IItemHandler> outputCap1 = CapabilityReference.forTileEntityAt(this,
 			() -> {
@@ -158,9 +157,11 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 		tank[1].readFromNBT(nbt.getCompound("tank1"));
 		process = nbt.getInt("process");
 		processMax = nbt.getInt("processMax");
-		result = ItemStack.read(nbt.getCompound("result"));
-		resultFluid = FluidStack.loadFluidStackFromNBT(nbt.getCompound("result_fluid"));
-		ItemStackHelper.loadAllItems(nbt, inventory);
+		if (!descPacket) {
+			result = ItemStack.read(nbt.getCompound("result"));
+			resultFluid = FluidStack.loadFluidStackFromNBT(nbt.getCompound("result_fluid"));
+			ItemStackHelper.loadAllItems(nbt, inventory);
+		}
 	}
 
 	@Override
@@ -171,9 +172,11 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 		nbt.put("tank1", tank[1].writeToNBT(new CompoundNBT()));
 		nbt.putInt("process", process);
 		nbt.putInt("processMax", processMax);
-		nbt.put("result", result.serializeNBT());
-		nbt.put("result_fluid", resultFluid.writeToNBT(new CompoundNBT()));
-		ItemStackHelper.saveAllItems(nbt, inventory);
+		if (!descPacket) {
+			nbt.put("result", result.serializeNBT());
+			nbt.put("result_fluid", resultFluid.writeToNBT(new CompoundNBT()));
+			ItemStackHelper.saveAllItems(nbt, inventory);
+		}
 	}
 
 	@Override
@@ -410,15 +413,6 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 		return false;
 	}
 
-	@Override
-	public int getSlotLimit(int slot) {
-		return 64;
-	}
-
-	@Override
-	public void doGraphicalUpdates() {
-
-	}
 
 	@Nonnull
 	@Override
@@ -468,5 +462,31 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 	@Override
 	public boolean canUseGui(PlayerEntity player) {
 		return formed;
+	}
+
+	@Override
+	public int getSlotLimit(int slot) {
+		return 64;
+	}
+
+	@Override
+	public void doGraphicalUpdates() {
+
+	}
+
+	@Override
+	public int[] getCurrentProcessesStep() {
+		IndustrialElectrolyzerTileEntity master = master();
+		if (master != this && master != null)
+			return master.getCurrentProcessesStep();
+		return new int[]{processMax - process};
+	}
+
+	@Override
+	public int[] getCurrentProcessesMax() {
+		IndustrialElectrolyzerTileEntity master = master();
+		if (master != this && master != null)
+			return master.getCurrentProcessesMax();
+		return new int[]{processMax};
 	}
 }

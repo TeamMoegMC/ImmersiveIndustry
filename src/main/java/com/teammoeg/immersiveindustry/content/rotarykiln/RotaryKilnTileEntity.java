@@ -8,6 +8,7 @@ import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableSet;
@@ -35,6 +36,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -42,7 +44,8 @@ import java.util.Set;
 
 public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTileEntity>
 		implements IEBlockInterfaces.IBlockBounds, EnergyHelper.IIEInternalFluxHandler, IIEInventory,
-		IEBlockInterfaces.IInteractionObjectIE {
+		IEBlockInterfaces.IInteractionObjectIE, IEBlockInterfaces.IProcessTile {
+	public int processMax;
 	public int process = 0;
 	boolean active;
 	public int angle;//angle for animation in degrees
@@ -67,6 +70,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 
 	public RotaryKilnTileEntity() {
 		super(IIMultiblocks.ROTARY_KILN, IITileTypes.ROTARY_KILN.get(), false);
+		processMax = IIConfig.COMMON.rotaryKilnHandleTime.get();
 	}
 
 	@Override
@@ -113,6 +117,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 		if (!isDummy()) {
 			if (!world.isRemote) {
 				int energyConsume = IIConfig.COMMON.rotaryKilnConsume.get();
+				tryOutput();
 				if (!isRSDisabled() && energyStorage.getEnergyStored() >= energyConsume) {
 					if (process > 0) {
 						process--;
@@ -129,6 +134,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 							int count = inventory.get(2).getCount() / recipe.input.getCount();
 							ItemStack result = recipe.output.copy();
 							result.setCount(count);
+							active = false;
 							if (inventory.get(3).isEmpty()) {
 								inventory.set(3, result);
 								inventory.set(2, ItemStack.EMPTY);
@@ -149,10 +155,11 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 					if (!inventory.get(0).isEmpty() || !inventory.get(1).isEmpty()) {
 						inventory.set(2, inventory.get(1));
 						inventory.set(1, inventory.get(0).split(16));
-						process = 300;
+						process = processMax;
 					}
 				} else if (active) {
 					active = false;
+					this.markContainingBlockForUpdate(null);
 				}
 			} else if (active) {
 				angle += 10;
@@ -161,6 +168,25 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 			}
 		}
 	}
+
+	public void tryOutput() {
+		if (this.world.getGameTime() % 8L == 0L) {
+			if (this.outputItemCap.isPresent()) {
+
+				if (!this.inventory.get(3).isEmpty()) {
+					ItemStack stack = ItemHandlerHelper.copyStackWithSize(this.inventory.get(3), 1);
+					stack = Utils.insertStackIntoInventory(this.outputItemCap, stack, false);
+					if (stack.isEmpty()) {
+						this.inventory.get(3).shrink(1);
+						if (this.inventory.get(3).getCount() <= 0) {
+							this.inventory.set(3, ItemStack.EMPTY);
+						}
+					}
+				}
+			}
+		}
+	}
+
 	@Nonnull
 	@Override
 	public VoxelShape getBlockBounds(@Nullable ISelectionContext iSelectionContext) {
@@ -230,10 +256,11 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket) {
 		super.readCustomNBT(nbt, descPacket);
 		energyStorage.readFromNBT(nbt);
-		process = nbt.getInt("process");
 		tankout[0].readFromNBT(nbt.getCompound("tankout"));
 		active = nbt.getBoolean("active");
-		ItemStackHelper.loadAllItems(nbt, inventory);
+		process = nbt.getInt("process");
+		if (!descPacket)
+			ItemStackHelper.loadAllItems(nbt, inventory);
 	}
 
 	@Override
@@ -241,9 +268,10 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 		super.writeCustomNBT(nbt, descPacket);
 		energyStorage.writeToNBT(nbt);
 		nbt.put("tankout", tankout[0].writeToNBT(new CompoundNBT()));
-		nbt.putInt("process", process);
 		nbt.putBoolean("active", active);
-		ItemStackHelper.saveAllItems(nbt, inventory);
+		nbt.putInt("process", process);
+		if (!descPacket)
+			ItemStackHelper.saveAllItems(nbt, inventory);
 	}
 
 	LazyOptional<IItemHandler> inHandler = registerConstantCap(new IEInventoryHandler(2, this, 0, true, false));
@@ -271,6 +299,22 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 		if (recipe == null)
 			return null;
 		return recipe;
+	}
+
+	@Override
+	public int[] getCurrentProcessesStep() {
+		RotaryKilnTileEntity master = master();
+		if (master != this && master != null)
+			return master.getCurrentProcessesStep();
+		return new int[]{processMax - process};
+	}
+
+	@Override
+	public int[] getCurrentProcessesMax() {
+		RotaryKilnTileEntity master = master();
+		if (master != this && master != null)
+			return master.getCurrentProcessesMax();
+		return new int[]{processMax};
 	}
 
 	@Override

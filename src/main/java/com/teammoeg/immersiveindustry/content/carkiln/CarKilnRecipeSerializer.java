@@ -21,6 +21,8 @@ package com.teammoeg.immersiveindustry.content.carkiln;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.teammoeg.immersiveindustry.IIContent;
 import net.minecraft.item.ItemStack;
@@ -40,29 +42,41 @@ public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
     @Override
     public CarKilnRecipe readFromJson(ResourceLocation recipeId, JsonObject json) {
         ItemStack output = readOutput(json.get("result"));
-        IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
+        IngredientWithSize[] inputs;
+        if (json.has("inputs")) {
+            JsonArray ja = json.get("inputs").getAsJsonArray();
+            inputs = new IngredientWithSize[ja.size()];
+            int i = -1;
+            for (JsonElement je : ja) {
+                inputs[++i] = IngredientWithSize.deserialize(je);
+            }
+        } else inputs = new IngredientWithSize[0];
         FluidStack result_fluid = null;
         if (json.has("result_fluid"))
             result_fluid = ApiUtils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "result_fluid"));
 
-        return new CarKilnRecipe(recipeId, output, input, result_fluid);
+        return new CarKilnRecipe(recipeId, output, inputs, result_fluid);
     }
 
     @Nullable
     @Override
     public CarKilnRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
         ItemStack output = buffer.readItemStack();
-        IngredientWithSize input = IngredientWithSize.read(buffer);
+        IngredientWithSize[] inputs = new IngredientWithSize[buffer.readVarInt()];
+        for (int i = 0; i < inputs.length; i++)
+            inputs[i] = IngredientWithSize.read(buffer);
         FluidStack output_fluid = null;
         if (buffer.readBoolean())
             output_fluid = FluidStack.readFromPacket(buffer);
-        return new CarKilnRecipe(recipeId, output, input, output_fluid);
+        return new CarKilnRecipe(recipeId, output, inputs, output_fluid);
     }
 
     @Override
     public void write(PacketBuffer buffer, CarKilnRecipe recipe) {
         buffer.writeItemStack(recipe.output);
-        recipe.input.write(buffer);
+        buffer.writeVarInt(recipe.inputs.length);
+        for (IngredientWithSize input : recipe.inputs)
+            input.write(buffer);
         if (recipe.output_fluid != null) {
             buffer.writeBoolean(true);
             recipe.output_fluid.writeToPacket(buffer);

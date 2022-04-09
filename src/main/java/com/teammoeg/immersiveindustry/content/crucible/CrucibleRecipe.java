@@ -18,9 +18,6 @@
 
 package com.teammoeg.immersiveindustry.content.crucible;
 
-import java.util.Collections;
-import java.util.Map;
-
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
@@ -31,20 +28,21 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
+import java.util.Collections;
+import java.util.Map;
+
 public class CrucibleRecipe extends IESerializableRecipe {
     public static IRecipeType<CrucibleRecipe> TYPE;
     public static RegistryObject<IERecipeSerializer<CrucibleRecipe>> SERIALIZER;
 
-    public final IngredientWithSize input;
-    public final IngredientWithSize input2;
+    public final IngredientWithSize inputs[];
     public final ItemStack output;
     public final int time;
 
-    public CrucibleRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input, IngredientWithSize input2, int time) {
+    public CrucibleRecipe(ResourceLocation id, ItemStack output, IngredientWithSize[] input, int time) {
         super(output, TYPE, id);
         this.output = output;
-        this.input = input;
-        this.input2 = input2;
+        this.inputs = input;
         this.time = time;
     }
 
@@ -61,38 +59,39 @@ public class CrucibleRecipe extends IESerializableRecipe {
     // Initialized by reload listener
     public static Map<ResourceLocation, CrucibleRecipe> recipeList = Collections.emptyMap();
 
-    public boolean matches(ItemStack input, ItemStack input2) {
-        if (this.input != null && this.input.test(input) && this.input2 != null && this.input2.test(input2))
-            return true;
-        return false;
-    }
 
-    public boolean isValidInput(ItemStack stack, boolean one) {
-        if (one && this.input != null && this.input.test(stack))
-            return true;
-        else
-            return !one && this.input2 != null && this.input2.test(stack);
+    public static boolean isValidInput(ItemStack stack) {
+        for (CrucibleRecipe recipe : recipeList.values())
+            for (IngredientWithSize is : recipe.inputs) {
+                if (is.testIgnoringSize(stack))
+                    return true;
+            }
+        return false;
     }
 
     public static CrucibleRecipe findRecipe(ItemStack input, ItemStack input2) {
-        for (CrucibleRecipe recipe : recipeList.values())
-            if (recipe != null && recipe.matches(input, input2))
-                return recipe;
+        int size = (input.isEmpty() ? 0 : 1) + (input2.isEmpty() ? 0 : 1);
+        outer:
+        for (CrucibleRecipe recipe : recipeList.values()) {
+            if (recipe.inputs.length > 0) {
+                if (recipe.inputs.length <= size) {
+                    for (IngredientWithSize is : recipe.inputs) {
+                        if (!is.test(input) && !is.test(input2))
+                            continue outer;
+                    }
+                } else continue outer;
+            }
+            return recipe;
+        }
         return null;
     }
 
-    public static boolean isValidRecipeInput(ItemStack stack, boolean one) {
-        for (CrucibleRecipe recipe : recipeList.values())
-            if (recipe != null && recipe.isValidInput(stack, one))
-                return true;
-        return false;
-    }
 
     @Override
     public NonNullList<Ingredient> getIngredients() {
         NonNullList<Ingredient> nonnulllist = NonNullList.create();
-        nonnulllist.add(this.input.getBaseIngredient());
-        nonnulllist.add(this.input2.getBaseIngredient());
+        for (IngredientWithSize is : this.inputs)
+            nonnulllist.add(is.getBaseIngredient());
         return nonnulllist;
     }
 }

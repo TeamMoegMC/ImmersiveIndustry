@@ -36,14 +36,14 @@ public class CarKilnRecipe extends IESerializableRecipe {
     public static IRecipeType<CarKilnRecipe> TYPE;
     public static RegistryObject<IERecipeSerializer<CarKilnRecipe>> SERIALIZER;
 
-    public final IngredientWithSize input;
+    public final IngredientWithSize[] inputs;
     public final ItemStack output;
     public final FluidStack output_fluid;
 
-    public CarKilnRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input, FluidStack output_fluid) {
+    public CarKilnRecipe(ResourceLocation id, ItemStack output, IngredientWithSize[] inputs, FluidStack output_fluid) {
         super(output, TYPE, id);
         this.output = output;
-        this.input = input;
+        this.inputs = inputs;
         this.output_fluid = output_fluid;
     }
 
@@ -60,16 +60,21 @@ public class CarKilnRecipe extends IESerializableRecipe {
     // Initialized by reload listener
     public static Map<ResourceLocation, CarKilnRecipe> recipeList = Collections.emptyMap();
 
-    public boolean matches(ItemStack input, ItemStack input2) {
-        if (this.input != null && this.input.test(input))
-            return true;
+    public static boolean isValidInput(ItemStack stack) {
+        for (CarKilnRecipe recipe : recipeList.values())
+            for (IngredientWithSize is : recipe.inputs) {
+                if (is.testIgnoringSize(stack))
+                    return true;
+            }
         return false;
     }
 
-    public static CarKilnRecipe findRecipe(ItemStack input, ItemStack input2) {
-        for (CarKilnRecipe recipe : recipeList.values())
-            if (recipe != null && recipe.matches(input, input2))
-                return recipe;
+    public static CarKilnRecipe findRecipe(ItemStack[] input) {
+        outer:
+        for (CarKilnRecipe recipe : recipeList.values()) {
+
+            return recipe;
+        }
         return null;
     }
 
@@ -77,7 +82,8 @@ public class CarKilnRecipe extends IESerializableRecipe {
     @Override
     public NonNullList<Ingredient> getIngredients() {
         NonNullList<Ingredient> nonnulllist = NonNullList.create();
-        nonnulllist.add(this.input.getBaseIngredient());
+        for (IngredientWithSize is : this.inputs)
+            nonnulllist.add(is.getBaseIngredient());
         return nonnulllist;
     }
 }

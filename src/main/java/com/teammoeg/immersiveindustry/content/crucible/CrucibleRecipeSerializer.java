@@ -18,17 +18,18 @@
 
 package com.teammoeg.immersiveindustry.content.crucible;
 
-import javax.annotation.Nullable;
-
-import com.google.gson.JsonObject;
-import com.teammoeg.immersiveindustry.IIContent;
-
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.teammoeg.immersiveindustry.IIContent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
+
+import javax.annotation.Nullable;
 
 public class CrucibleRecipeSerializer extends IERecipeSerializer<CrucibleRecipe> {
     @Override
@@ -39,27 +40,36 @@ public class CrucibleRecipeSerializer extends IERecipeSerializer<CrucibleRecipe>
     @Override
     public CrucibleRecipe readFromJson(ResourceLocation recipeId, JsonObject json) {
         ItemStack output = readOutput(json.get("result"));
-        IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
-        IngredientWithSize input2 = IngredientWithSize.deserialize(json.get("input2"));
+        IngredientWithSize[] inputs;
+        if (json.has("inputs")) {
+            JsonArray ja = json.get("inputs").getAsJsonArray();
+            inputs = new IngredientWithSize[ja.size()];
+            int i = -1;
+            for (JsonElement je : ja) {
+                inputs[++i] = IngredientWithSize.deserialize(je);
+            }
+        } else inputs = new IngredientWithSize[0];
         int time = JSONUtils.getInt(json, "time");
-        return new CrucibleRecipe(recipeId, output, input, input2, time);
+        return new CrucibleRecipe(recipeId, output, inputs, time);
     }
 
     @Nullable
     @Override
     public CrucibleRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
         ItemStack output = buffer.readItemStack();
-        IngredientWithSize input = IngredientWithSize.read(buffer);
-        IngredientWithSize input2 = IngredientWithSize.read(buffer);
+        IngredientWithSize[] inputs = new IngredientWithSize[buffer.readVarInt()];
+        for (int i = 0; i < inputs.length; i++)
+            inputs[i] = IngredientWithSize.read(buffer);
         int time = buffer.readInt();
-        return new CrucibleRecipe(recipeId, output, input, input2, time);
+        return new CrucibleRecipe(recipeId, output, inputs, time);
     }
 
     @Override
     public void write(PacketBuffer buffer, CrucibleRecipe recipe) {
         buffer.writeItemStack(recipe.output);
-        recipe.input.write(buffer);
-        recipe.input2.write(buffer);
+        buffer.writeVarInt(recipe.inputs.length);
+        for (IngredientWithSize input : recipe.inputs)
+            input.write(buffer);
         buffer.writeInt(recipe.time);
     }
 }
