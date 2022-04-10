@@ -39,12 +39,13 @@ public class RotaryKilnRecipe extends IESerializableRecipe {
     public final IngredientWithSize input;
     public final ItemStack output;
     public final FluidStack output_fluid;
-
-    public RotaryKilnRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input, FluidStack output_fluid) {
+    public final int time;
+    public RotaryKilnRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input, FluidStack output_fluid,int time) {
         super(output, TYPE, id);
         this.output = output;
         this.input = input;
         this.output_fluid = output_fluid;
+        this.time=time;
     }
 
     @Override

@@ -68,7 +68,7 @@ public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
         for (int i = 0; i < inputs.length; i++)
             inputs[i] = IngredientWithSize.read(buffer);
         FluidStack output_fluid = FluidStack.readFromPacket(buffer);
-        int time=buffer.readInt();
+        int time=buffer.readVarInt();
         return new CarKilnRecipe(recipeId, output, inputs, output_fluid,time);
     }
 
@@ -79,6 +79,6 @@ public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
         for (IngredientWithSize input : recipe.inputs)
             input.write(buffer);
         recipe.input_fluid.writeToPacket(buffer);
-        buffer.writeInt(recipe.time);
+        buffer.writeVarInt(recipe.time);
     }
 }

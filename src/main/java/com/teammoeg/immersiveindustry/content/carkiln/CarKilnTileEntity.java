@@ -49,13 +49,12 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 	public int process = 0;
 	int pos;//animation process from 0-52, 0=idle 52=working
 	boolean active;
-	private static BlockPos itmeout = new BlockPos(1, 0, 5);
+	private static BlockPos itemout = new BlockPos(1, 0, 5);
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
 	private IEInventoryHandler handlerresult=new IEInventoryHandler(4, this, 5, true, false);
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
 	EnergyHelper.IEForgeEnergyWrapper wrapper = new EnergyHelper.IEForgeEnergyWrapper(this, null);
 	private ItemStack result=ItemStack.EMPTY;
-	private FluidStack fresult=FluidStack.EMPTY;
 
 	public FluidTank[] tankinput = new FluidTank[]{new FluidTank(16000)};
 
@@ -66,14 +65,13 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 	private CapabilityReference<IItemHandler> outputItemCap = CapabilityReference.forTileEntityAt(this,
 			() -> {
 				Direction fw = getFacing().rotateY();
-				return new DirectionalBlockPos(this.getBlockPosForPos(itmeout), fw);
+				return new DirectionalBlockPos(this.getBlockPosForPos(itemout), fw);
 			}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
 		BlockPos bp = this.getPos();
 		if (!isDummy()) {
-			bp.offset(getFacing(), 3);
 			return new AxisAlignedBB(
 					bp.getX() - (getFacing().getAxis() == Axis.Z ? 1 : 3),
 					bp.getY(),
@@ -87,7 +85,6 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 
 	@Override
 	public void tick() {
-		checkForNeedlessTicking();
 		checkForNeedlessTicking();
 		if (!isDummy()) {
 			if (!world.isRemote) {
@@ -109,6 +106,7 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 					}
 					if(!result.isEmpty())
 						return;
+					process=processMax=0;
 					//check has recipe
 					CarKilnRecipe recipe = CarKilnRecipe.findRecipe(inventory,tankinput[0].getFluid(),0, 4);
 					if (recipe != null) {
@@ -155,6 +153,9 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 				} else if (active) {
 					active = false;
 					this.markContainingBlockForUpdate(null);
+				} else {
+					if(process>0)
+						process=Math.max(process+1,processMax-53);
 				}
 			} else {
 				int ptm=processMax-process;
@@ -284,8 +285,11 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 		energyStorage.readFromNBT(nbt);
 		tankinput[0].readFromNBT(nbt.getCompound("tankinput"));
 		active = nbt.getBoolean("active");
-		if (!descPacket)
-			ItemStackHelper.loadAllItems(nbt, inventory);
+		ItemStackHelper.loadAllItems(nbt, inventory);
+		if (!descPacket) {
+			
+			result=ItemStack.read(nbt.getCompound("result"));
+		}
 	}
 
     @Override
@@ -294,8 +298,11 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 		energyStorage.writeToNBT(nbt);
 		nbt.put("tankinput", tankinput[0].writeToNBT(new CompoundNBT()));
 		nbt.putBoolean("active", active);
-		if (!descPacket)
-			ItemStackHelper.saveAllItems(nbt, inventory);
+		ItemStackHelper.saveAllItems(nbt, inventory);
+		if (!descPacket) {
+			
+			nbt.put("result",result.serializeNBT());
+		}
 	}
 
     LazyOptional<IItemHandler> inHandler = registerConstantCap(new IEInventoryHandler(1, this, 4, true, false));

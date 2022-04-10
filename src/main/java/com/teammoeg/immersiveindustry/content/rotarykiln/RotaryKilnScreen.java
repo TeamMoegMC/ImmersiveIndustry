@@ -67,7 +67,7 @@ public class RotaryKilnScreen extends IEContainerScreen<RotaryKilnContainer> {
         ClientUtils.bindTexture(TEXTURE);
         this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
-        if (tile.process > 0) {
+        if (tile.processMax > 0) {
             int w = (int) (38 * (tile.process / (float) tile.processMax));
             this.blit(transform, guiLeft + 88, guiTop + 44, 178, 59, 38 - w, 16);
         }
