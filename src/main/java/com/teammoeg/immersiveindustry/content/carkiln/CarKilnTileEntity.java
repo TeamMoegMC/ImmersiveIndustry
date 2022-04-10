@@ -1,6 +1,7 @@
 package com.teammoeg.immersiveindustry.content.carkiln;
 
 import blusunrize.immersiveengineering.api.IEEnums;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
@@ -31,6 +32,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -49,8 +51,11 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 	boolean active;
 	private static BlockPos itmeout = new BlockPos(1, 0, 5);
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
+	private IEInventoryHandler handlerresult=new IEInventoryHandler(4, this, 5, true, false);
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
 	EnergyHelper.IEForgeEnergyWrapper wrapper = new EnergyHelper.IEForgeEnergyWrapper(this, null);
+	private ItemStack result=ItemStack.EMPTY;
+	private FluidStack fresult=FluidStack.EMPTY;
 
 	public FluidTank[] tankinput = new FluidTank[]{new FluidTank(16000)};
 
@@ -97,44 +102,68 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 						this.markContainingBlockForUpdate(null);
 						return;
 					}
-//					if (!inventory.get(2).isEmpty()) {
-//						RotaryKilnRecipe recipe = getRecipe(2);
-//						if (recipe != null) {
-//							int count = inventory.get(2).getCount() / recipe.input.getCount();
-//							ItemStack result = recipe.output.copy();
-//							result.setCount(count);
-//							active = false;
-//							if (inventory.get(3).isEmpty()) {
-//								inventory.set(3, result);
-//								inventory.set(2, ItemStack.EMPTY);
-//								this.markContainingBlockForUpdate(null);
-//							} else if (inventory.get(3).isItemEqual(recipe.output)
-//									&& inventory.get(3).getCount() + result.getCount() <= getSlotLimit(3)) {
-//								inventory.get(3).grow(result.getCount());
-//								inventory.set(2, ItemStack.EMPTY);
-//								this.markContainingBlockForUpdate(null);
-//							} else return;
-//							if (!recipe.output_fluid.isEmpty()) {
-//								FluidStack fluidStack = recipe.output_fluid.copy();
-//								fluidStack.setAmount(fluidStack.getAmount() * count);
-//								tankinput[0].fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-//							}
-//						}
-//					}
-//					if (!inventory.get(0).isEmpty() || !inventory.get(1).isEmpty()) {
-//						inventory.set(2, inventory.get(1));
-//						inventory.set(1, inventory.get(0).split(16));
-//						process = 300;
-//					}
+					if(!result.isEmpty()) {
+						for(int i=0;i<handlerresult.getSlots();i++)
+							result=handlerresult.insertItem(0,result,false);
+						this.markContainingBlockForUpdate(null);
+					}
+					if(!result.isEmpty())
+						return;
+					//check has recipe
+					CarKilnRecipe recipe = CarKilnRecipe.findRecipe(inventory,tankinput[0].getFluid(),0, 4);
+					if (recipe != null) {
+						float[] maxprocs=new float[recipe.inputs.length];
+						int j=0;
+						for(IngredientWithSize iws:recipe.inputs) {
+							for(int i=0;i<4;i++) {
+								if(iws.testIgnoringSize(inventory.get(i))) {
+									maxprocs[j]+=inventory.get(i).getCount()/(float)iws.getCount();
+								}
+							}
+							j++;
+						}
+						//check max process this time,let's say it 16
+						int procnum=16;
+						for(int i=0;i<maxprocs.length;i++) {
+							procnum=Math.min(procnum,(int)maxprocs[i]);
+						}
+						//take items;
+						for(IngredientWithSize iws:recipe.inputs) {
+							int required=iws.getCount()*procnum;
+							for(int i=0;i<4;i++) {
+								ItemStack cr=inventory.get(i);
+								if(iws.testIgnoringSize(cr)) {
+									if(required>=cr.getCount()) {
+										required-=cr.getCount();
+										inventory.set(i,ItemStack.EMPTY);
+									}else {
+										cr.shrink(required);
+										required=0;
+									}
+									if(required==0)
+										break;
+								}
+							}
+						}
+						tankinput[0].drain(recipe.input_fluid,FluidAction.EXECUTE);
+						result=recipe.output.copy();
+						if(!result.isEmpty())
+							result.setCount(result.getCount()*procnum);
+						process=processMax=recipe.time+104;
+						this.markContainingBlockForUpdate(null);
+					}
 				} else if (active) {
 					active = false;
 					this.markContainingBlockForUpdate(null);
 				}
 			} else {
-				if (active && pos < 53)
-					pos++;
-				else if (pos > 0)
-					pos--;
+				int ptm=processMax-process;
+				if (ptm < 53)
+					pos=ptm;
+				else if (process<53)
+					pos=process;
+				else
+					pos=52;
 			}
 		}
 	}
@@ -269,8 +298,8 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 			ItemStackHelper.saveAllItems(nbt, inventory);
 	}
 
-    LazyOptional<IItemHandler> inHandler = registerConstantCap(new IEInventoryHandler(1, this, 0, true, false));
-    LazyOptional<IItemHandler> outHandler = registerConstantCap(new IEInventoryHandler(1, this, 4, false, true));
+    LazyOptional<IItemHandler> inHandler = registerConstantCap(new IEInventoryHandler(1, this, 4, true, false));
+    LazyOptional<IItemHandler> outHandler = registerConstantCap(new IEInventoryHandler(4, this, 5, false, true));
 
     @Nonnull
     @Override

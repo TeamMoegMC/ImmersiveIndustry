@@ -29,8 +29,15 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.StreamSupport;
+
+import com.mojang.datafixers.util.Pair;
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipe;
 
 public class CarKilnRecipe extends IESerializableRecipe {
     public static IRecipeType<CarKilnRecipe> TYPE;
@@ -38,13 +45,15 @@ public class CarKilnRecipe extends IESerializableRecipe {
 
     public final IngredientWithSize[] inputs;
     public final ItemStack output;
-    public final FluidStack output_fluid;
+    public final FluidStack input_fluid;
+    public final int time;
 
-    public CarKilnRecipe(ResourceLocation id, ItemStack output, IngredientWithSize[] inputs, FluidStack output_fluid) {
+    public CarKilnRecipe(ResourceLocation id, ItemStack output, IngredientWithSize[] inputs, FluidStack input_fluid,int time) {
         super(output, TYPE, id);
         this.output = output;
         this.inputs = inputs;
-        this.output_fluid = output_fluid;
+        this.input_fluid = input_fluid;
+        this.time=time;
     }
 
     @Override
@@ -58,23 +67,36 @@ public class CarKilnRecipe extends IESerializableRecipe {
     }
 
     // Initialized by reload listener
-    public static Map<ResourceLocation, CarKilnRecipe> recipeList = Collections.emptyMap();
+    public static List<CarKilnRecipe> recipeList = Collections.emptyList();
 
     public static boolean isValidInput(ItemStack stack) {
-        for (CarKilnRecipe recipe : recipeList.values())
+        for (CarKilnRecipe recipe : recipeList)
             for (IngredientWithSize is : recipe.inputs) {
                 if (is.testIgnoringSize(stack))
                     return true;
             }
         return false;
     }
-
-    public static CarKilnRecipe findRecipe(ItemStack[] input) {
-        outer:
-        for (CarKilnRecipe recipe : recipeList.values()) {
-
-            return recipe;
-        }
+    //returns recipe
+    public static CarKilnRecipe findRecipe(List<ItemStack> input,FluidStack f,int startIndex,int endIndex) {
+    	int size=0;
+    	for(ItemStack is:input) {
+    		if(!is.isEmpty())
+    			size++;
+    	}
+    	if(size<=0)return null;
+    	for (CarKilnRecipe recipe : recipeList)
+        	if(recipe.inputs.length<=size) {
+        		if(!f.containsFluid(recipe.input_fluid))continue;
+        		outer:
+        		for(IngredientWithSize iws:recipe.inputs) {
+        			for(int i=startIndex;i<endIndex;i++)
+        				if(iws.test(input.get(i)))
+        					continue outer;
+        			break;
+        		}
+        		return recipe;
+        	}
         return null;
     }
 

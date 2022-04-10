@@ -51,11 +51,13 @@ public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
                 inputs[++i] = IngredientWithSize.deserialize(je);
             }
         } else inputs = new IngredientWithSize[0];
-        FluidStack result_fluid = null;
-        if (json.has("result_fluid"))
-            result_fluid = ApiUtils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "result_fluid"));
-
-        return new CarKilnRecipe(recipeId, output, inputs, result_fluid);
+        FluidStack input_fluid = FluidStack.EMPTY;
+        if (json.has("input_fluid"))
+            input_fluid = ApiUtils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "input_fluid"));
+        int time=200;
+        if(json.has("time"))
+        	time=json.get("time").getAsInt();
+        return new CarKilnRecipe(recipeId, output, inputs, input_fluid, time);
     }
 
     @Nullable
@@ -65,10 +67,9 @@ public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
         IngredientWithSize[] inputs = new IngredientWithSize[buffer.readVarInt()];
         for (int i = 0; i < inputs.length; i++)
             inputs[i] = IngredientWithSize.read(buffer);
-        FluidStack output_fluid = null;
-        if (buffer.readBoolean())
-            output_fluid = FluidStack.readFromPacket(buffer);
-        return new CarKilnRecipe(recipeId, output, inputs, output_fluid);
+        FluidStack output_fluid = FluidStack.readFromPacket(buffer);
+        int time=buffer.readInt();
+        return new CarKilnRecipe(recipeId, output, inputs, output_fluid,time);
     }
 
     @Override
@@ -77,9 +78,7 @@ public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
         buffer.writeVarInt(recipe.inputs.length);
         for (IngredientWithSize input : recipe.inputs)
             input.write(buffer);
-        if (recipe.output_fluid != null) {
-            buffer.writeBoolean(true);
-            recipe.output_fluid.writeToPacket(buffer);
-        } else buffer.writeBoolean(false);
+        recipe.input_fluid.writeToPacket(buffer);
+        buffer.writeInt(recipe.time);
     }
 }

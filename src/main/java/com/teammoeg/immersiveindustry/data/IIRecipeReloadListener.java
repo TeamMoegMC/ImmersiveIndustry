@@ -21,6 +21,8 @@ package com.teammoeg.immersiveindustry.data;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
+
+import com.teammoeg.immersiveindustry.content.carkiln.CarKilnRecipe;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
 import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipe;
 import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnRecipe;
@@ -45,6 +47,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -93,6 +96,9 @@ public class IIRecipeReloadListener implements IResourceManagerReloadListener {
         CrucibleRecipe.recipeList = filterRecipes(recipes, CrucibleRecipe.class, CrucibleRecipe.TYPE);
         ElectrolyzerRecipe.recipeList = filterRecipes(recipes, ElectrolyzerRecipe.class, ElectrolyzerRecipe.TYPE);
         RotaryKilnRecipe.recipeList = filterRecipes(recipes, RotaryKilnRecipe.class, RotaryKilnRecipe.TYPE);
+        CarKilnRecipe.recipeList=filterRecipes(recipes,CarKilnRecipe.class,CarKilnRecipe.TYPE).values().stream().sorted(Comparator.comparingInt(e->e.inputs.length)).collect(Collectors.toList());
+        for(CarKilnRecipe r:CarKilnRecipe.recipeList)
+        	System.out.println(r.inputs.length);
     }
 
     static <R extends IRecipe<?>> Map<ResourceLocation, R> filterRecipes(Collection<IRecipe<?>> recipes, Class<R> recipeClass, IRecipeType<R> recipeType) {
