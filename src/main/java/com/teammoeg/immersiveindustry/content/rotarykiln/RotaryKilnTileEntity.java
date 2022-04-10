@@ -103,12 +103,17 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
 		BlockPos bp = this.getPos();
-		return new AxisAlignedBB(bp.getX() - (getFacing().getAxis() == Axis.Z ? 1 : 3),
-				bp.getY(),
-				bp.getZ() - (getFacing().getAxis() == Axis.X ? 1 : 3),
-				bp.getX() + (getFacing().getAxis() == Axis.Z ? 3 : 1),
-				bp.getY() + 2,
-				bp.getZ() + (getFacing().getAxis() == Axis.X ? 3 : 1));
+		if (!isDummy()) {
+			bp.offset(getFacing(), 3);
+			return new AxisAlignedBB(
+					bp.getX() - (getFacing().getAxis() == Axis.Z ? 1 : 3),
+					bp.getY(),
+					bp.getZ() - (getFacing().getAxis() == Axis.X ? 1 : 3),
+					bp.getX() + (getFacing().getAxis() == Axis.Z ? 3 : 1),
+					bp.getY() + 2,
+					bp.getZ() + (getFacing().getAxis() == Axis.X ? 3 : 1));
+		}
+		return new AxisAlignedBB(bp);
 	}
 
 	@Override

@@ -163,23 +163,26 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
     }
 
     private static List<AxisAlignedBB> getShape(BlockPos posInMultiblock) {
-        if (posInMultiblock.equals(new BlockPos(0, 1, 0)))
-            return ImmutableList.of(new AxisAlignedBB(0.5D, 0D, 0D, 0D, 1D, 1.0D));
-        else if (posInMultiblock.getZ() == 5 && posInMultiblock.getY() == 1) {
+        if (posInMultiblock.getZ() == 0 && posInMultiblock.getX() == 0) {
+            return posInMultiblock.getY() == 0 ? ImmutableList.of(new AxisAlignedBB(0D, 0D, 0D, 1.0D, 0.5D, 1.0D),
+                    new AxisAlignedBB(0.5D, 0.5D, 0D, 0D, 1D, 1.0D)) : ImmutableList.of(new AxisAlignedBB(0D, 0D, 0D, 0.5D, 1D, 1.0D));
+        } else if (posInMultiblock.getZ() == 5 && posInMultiblock.getY() == 1) {
             if (posInMultiblock.getX() % 2 == 0)
                 return Utils.flipBoxes(false, posInMultiblock.getX() == 2, new AxisAlignedBB(1D, 0D, 0D, 0.25D, 0.5D, 1.0D));
-			return ImmutableList.of(new AxisAlignedBB(0D, 0D, 0D, 1.0D, 0.5D, 1.0D));
+            return ImmutableList.of(new AxisAlignedBB(0D, 0D, 0D, 1.0D, 0.5D, 1.0D));
         } else if (posInMultiblock.getX() % 2 == 0 && posInMultiblock.getZ() != 6) {
             if (posInMultiblock.getY() == 0)
                 return ImmutableList.of(new AxisAlignedBB(0D, 0D, 0D, 1.0D, 0.5D, 1.0D), Utils.flipBox(false, posInMultiblock.getX() == 2, new AxisAlignedBB(1D, 0.5D, 0D, 0.25D, 1D, 1.0D)));
-            else if (posInMultiblock.getY() == 1)
+            else if (posInMultiblock.getZ() == 0) {
+                if (posInMultiblock.getY() == 2)
+                    return ImmutableList.of(new AxisAlignedBB(0.25D, 0D, 0.8D, 0.75D, 0.7D, 1D));
+                return ImmutableList.of(new AxisAlignedBB(0.25D, 0.25D, 0.125D, 0.75D, 0.75D, 1D), new AxisAlignedBB(0.125D, 0.125D, 0D, 0.875D, 0.875D, 0.125D));
+            } else if (posInMultiblock.getY() == 1)
                 return Utils.flipBoxes(false, posInMultiblock.getX() == 2, new AxisAlignedBB(1D, 0D, 0D, 0.25D, 1D, 1.0D));
-            else if (posInMultiblock.getZ() == 0)
-                return ImmutableList.of(new AxisAlignedBB(0.75D, 0D, 0.8D, 0D, 0.5D, 1D));
-            else return ImmutableList.of(new AxisAlignedBB(0.75D, 0D, 1D, 0D, 0.5D, 0D));
-        } else if (posInMultiblock.getY() == 2) {
+            else return ImmutableList.of(new AxisAlignedBB(0.25D, 0D, 1D, 0.75D, 0.7D, 0D));
+        } else if (posInMultiblock.getY() == 2)
             return ImmutableList.of(new AxisAlignedBB(0D, 0D, 1D, 1.0D, 0.5D, 0D));
-        } else if (posInMultiblock.equals(new BlockPos(1, 0, 0)))
+        else if (posInMultiblock.equals(new BlockPos(1, 0, 0)))
             return ImmutableList.of(new AxisAlignedBB(0D, 0D, 0D, 1.0D, 0.5D, 1.0D));
 
         else return ImmutableList.of(new AxisAlignedBB(0, 0, 0, 1.0D, 1.0D, 1.0D));
