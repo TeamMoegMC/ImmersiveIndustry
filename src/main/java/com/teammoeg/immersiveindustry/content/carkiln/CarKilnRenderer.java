@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -51,6 +52,8 @@ public class CarKilnRenderer extends TileEntityRenderer<CarKilnTileEntity> {
 			double delta=te.pos/16D-1.5;
 			matrixStack.translate(delta*d.getXOffset(),0,delta*d.getZOffset());
 		}
+		/*ClientUtils.mc().getItemRenderer().renderStatic(te.in.get(0), TransformType.FIXED, combinedLightIn, combinedOverlayIn,
+				matrixStack, bufferIn);*/
 		RenderUtils.renderModelTESRFast(quads2, bufferIn.getBuffer(RenderType.getSolid()), matrixStack, combinedLightIn, combinedOverlayIn);
 		matrixStack.pop();
     }

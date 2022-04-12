@@ -34,51 +34,55 @@ import net.minecraftforge.fluids.FluidStack;
 import javax.annotation.Nullable;
 
 public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
-    @Override
-    public ItemStack getIcon() {
-        return new ItemStack(IIContent.IIMultiblocks.rotary_kiln);
-    }
+	@Override
+	public ItemStack getIcon() {
+		return new ItemStack(IIContent.IIMultiblocks.car_kiln);
+	}
 
-    @Override
-    public CarKilnRecipe readFromJson(ResourceLocation recipeId, JsonObject json) {
-        ItemStack output = readOutput(json.get("result"));
-        IngredientWithSize[] inputs;
-        if (json.has("inputs")) {
-            JsonArray ja = json.get("inputs").getAsJsonArray();
-            inputs = new IngredientWithSize[ja.size()];
-            int i = -1;
-            for (JsonElement je : ja) {
-                inputs[++i] = IngredientWithSize.deserialize(je);
-            }
-        } else inputs = new IngredientWithSize[0];
-        FluidStack input_fluid = FluidStack.EMPTY;
-        if (json.has("input_fluid"))
-            input_fluid = ApiUtils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "input_fluid"));
-        int time=200;
-        if(json.has("time"))
-        	time=json.get("time").getAsInt();
-        return new CarKilnRecipe(recipeId, output, inputs, input_fluid, time);
-    }
+	@Override
+	public CarKilnRecipe readFromJson(ResourceLocation recipeId, JsonObject json) {
+		ItemStack output = readOutput(json.get("result"));
+		IngredientWithSize[] inputs;
+		if (json.has("inputs")) {
+			JsonArray ja = json.get("inputs").getAsJsonArray();
+			inputs = new IngredientWithSize[ja.size()];
+			int i = -1;
+			for (JsonElement je : ja) {
+				inputs[++i] = IngredientWithSize.deserialize(je);
+			}
+		} else if (json.has("input")) {
+			inputs = new IngredientWithSize[1];
+			inputs[0] = IngredientWithSize.deserialize(json.get("input"));
+		} else
+			inputs = new IngredientWithSize[0];
+		FluidStack input_fluid = FluidStack.EMPTY;
+		if (json.has("input_fluid"))
+			input_fluid = ApiUtils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "input_fluid"));
+		int time = 200;
+		if (json.has("time"))
+			time = json.get("time").getAsInt();
+		return new CarKilnRecipe(recipeId, output, inputs, input_fluid, time);
+	}
 
-    @Nullable
-    @Override
-    public CarKilnRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
-        ItemStack output = buffer.readItemStack();
-        IngredientWithSize[] inputs = new IngredientWithSize[buffer.readVarInt()];
-        for (int i = 0; i < inputs.length; i++)
-            inputs[i] = IngredientWithSize.read(buffer);
-        FluidStack output_fluid = FluidStack.readFromPacket(buffer);
-        int time=buffer.readVarInt();
-        return new CarKilnRecipe(recipeId, output, inputs, output_fluid,time);
-    }
+	@Nullable
+	@Override
+	public CarKilnRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
+		ItemStack output = buffer.readItemStack();
+		IngredientWithSize[] inputs = new IngredientWithSize[buffer.readVarInt()];
+		for (int i = 0; i < inputs.length; i++)
+			inputs[i] = IngredientWithSize.read(buffer);
+		FluidStack output_fluid = FluidStack.readFromPacket(buffer);
+		int time = buffer.readVarInt();
+		return new CarKilnRecipe(recipeId, output, inputs, output_fluid, time);
+	}
 
-    @Override
-    public void write(PacketBuffer buffer, CarKilnRecipe recipe) {
-        buffer.writeItemStack(recipe.output);
-        buffer.writeVarInt(recipe.inputs.length);
-        for (IngredientWithSize input : recipe.inputs)
-            input.write(buffer);
-        recipe.input_fluid.writeToPacket(buffer);
-        buffer.writeVarInt(recipe.time);
-    }
+	@Override
+	public void write(PacketBuffer buffer, CarKilnRecipe recipe) {
+		buffer.writeItemStack(recipe.output);
+		buffer.writeVarInt(recipe.inputs.length);
+		for (IngredientWithSize input : recipe.inputs)
+			input.write(buffer);
+		recipe.input_fluid.writeToPacket(buffer);
+		buffer.writeVarInt(recipe.time);
+	}
 }

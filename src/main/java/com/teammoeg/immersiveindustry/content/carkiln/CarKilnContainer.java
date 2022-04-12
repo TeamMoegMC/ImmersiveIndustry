@@ -35,7 +35,7 @@ public class CarKilnContainer extends IEBaseContainer<CarKilnTileEntity> {
             this.addSlot(new IESlot(this, this.inv, i, 35 + i % 2 * 18, 15 + i / 2 * 18) {
                 @Override
                 public boolean isItemValid(ItemStack itemStack) {
-                    return ElectrolyzerRecipe.isValidRecipeInput(itemStack);
+                    return CarKilnRecipe.isValidInput(itemStack);
                 }
             });
         }

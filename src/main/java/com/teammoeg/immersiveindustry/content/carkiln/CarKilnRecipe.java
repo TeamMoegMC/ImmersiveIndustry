@@ -80,11 +80,12 @@ public class CarKilnRecipe extends IESerializableRecipe {
     //returns recipe
     public static CarKilnRecipe findRecipe(List<ItemStack> input,FluidStack f,int startIndex,int endIndex) {
     	int size=0;
-    	for(ItemStack is:input) {
-    		if(!is.isEmpty())
+    	for(int i=startIndex;i<endIndex;i++) {
+    		if(!input.get(i).isEmpty())
     			size++;
     	}
     	if(size<=0)return null;
+    	exter:
     	for (CarKilnRecipe recipe : recipeList)
         	if(recipe.inputs.length<=size) {
         		if(!f.containsFluid(recipe.input_fluid))continue;
@@ -93,7 +94,7 @@ public class CarKilnRecipe extends IESerializableRecipe {
         			for(int i=startIndex;i<endIndex;i++)
         				if(iws.test(input.get(i)))
         					continue outer;
-        			break;
+        			continue exter;
         		}
         		return recipe;
         	}

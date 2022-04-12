@@ -51,11 +51,10 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 	boolean active;
 	private static BlockPos itemout = new BlockPos(1, 0, 5);
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
-	private IEInventoryHandler handlerresult=new IEInventoryHandler(4, this, 5, true, false);
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
 	EnergyHelper.IEForgeEnergyWrapper wrapper = new EnergyHelper.IEForgeEnergyWrapper(this, null);
-	private ItemStack result=ItemStack.EMPTY;
-
+	ItemStack result=ItemStack.EMPTY;
+	ItemStack render=ItemStack.EMPTY;
 	public FluidTank[] tankinput = new FluidTank[]{new FluidTank(16000)};
 
 	public CarKilnTileEntity() {
@@ -91,6 +90,54 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 				int energyConsume = IIConfig.COMMON.carKilnConsume.get();
 				if (!isRSDisabled() && energyStorage.getEnergyStored() >= energyConsume) {
 					if (process > 0) {
+						if(process>52&&process<processMax-23&&result.isEmpty()) {
+							CarKilnRecipe recipe = CarKilnRecipe.findRecipe(inventory,tankinput[0].getFluid(),0, 4);
+							if(recipe==null) {
+								process=processMax-process;
+								processMax=0;
+								return;
+							}
+							float[] maxprocs=new float[recipe.inputs.length];
+							int j=0;
+							for(IngredientWithSize iws:recipe.inputs) {
+								for(int i=0;i<4;i++) {
+									if(iws.testIgnoringSize(inventory.get(i))) {
+										maxprocs[j]+=inventory.get(i).getCount()/(float)iws.getCount();
+									}
+								}
+								j++;
+							}
+							//check max process this time,let's say it 32
+							int procnum=32;
+							for(int i=0;i<maxprocs.length;i++) {
+								procnum=Math.min(procnum,(int)maxprocs[i]);
+							}
+							//take items;
+							for(IngredientWithSize iws:recipe.inputs) {
+								int required=iws.getCount()*procnum;
+								for(int i=0;i<4;i++) {
+									ItemStack cr=inventory.get(i);
+									if(iws.testIgnoringSize(cr)) {
+										if(required>=cr.getCount()) {
+											required-=cr.getCount();
+											inventory.set(i,ItemStack.EMPTY);
+										}else {
+											cr.shrink(required);
+											required=0;
+										}
+										if(required==0)
+											break;
+									}
+								}
+							}
+							tankinput[0].drain(recipe.input_fluid,FluidAction.EXECUTE);
+							int wked=processMax-process;
+							processMax=recipe.time+104;
+							process=processMax-wked;
+							result=recipe.output.copy();
+							if(!result.isEmpty())
+								result.setCount(result.getCount()*procnum);
+						}
 						process--;
 						energyStorage.extractEnergy(energyConsume, false);
 						if (!active)
@@ -99,54 +146,39 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 						this.markContainingBlockForUpdate(null);
 						return;
 					}
+					process=processMax=0;
 					if(!result.isEmpty()) {
-						for(int i=0;i<handlerresult.getSlots();i++)
-							result=handlerresult.insertItem(0,result,false);
+						for(int i=4;i<9;i++){
+							ItemStack is=inventory.get(i);
+							if(is.isEmpty()) {
+								inventory.set(i,result.split(result.getMaxStackSize()));
+							}else if(ItemHandlerHelper.canItemStacksStack(is,result)){
+								int fill=is.getMaxStackSize()-is.getCount();
+								if(fill>=result.getCount()) {
+									is.grow(result.getCount());
+									result=ItemStack.EMPTY;
+								}else {
+									is.grow(fill);
+									result.shrink(fill);
+								}
+							}
+							if(result.isEmpty())break;
+						}
 						this.markContainingBlockForUpdate(null);
 					}
 					if(!result.isEmpty())
 						return;
-					process=processMax=0;
+					
 					//check has recipe
 					CarKilnRecipe recipe = CarKilnRecipe.findRecipe(inventory,tankinput[0].getFluid(),0, 4);
 					if (recipe != null) {
-						float[] maxprocs=new float[recipe.inputs.length];
-						int j=0;
-						for(IngredientWithSize iws:recipe.inputs) {
-							for(int i=0;i<4;i++) {
-								if(iws.testIgnoringSize(inventory.get(i))) {
-									maxprocs[j]+=inventory.get(i).getCount()/(float)iws.getCount();
-								}
-							}
-							j++;
-						}
-						//check max process this time,let's say it 16
-						int procnum=16;
-						for(int i=0;i<maxprocs.length;i++) {
-							procnum=Math.min(procnum,(int)maxprocs[i]);
-						}
-						//take items;
-						for(IngredientWithSize iws:recipe.inputs) {
-							int required=iws.getCount()*procnum;
-							for(int i=0;i<4;i++) {
-								ItemStack cr=inventory.get(i);
-								if(iws.testIgnoringSize(cr)) {
-									if(required>=cr.getCount()) {
-										required-=cr.getCount();
-										inventory.set(i,ItemStack.EMPTY);
-									}else {
-										cr.shrink(required);
-										required=0;
-									}
-									if(required==0)
-										break;
-								}
-							}
-						}
-						tankinput[0].drain(recipe.input_fluid,FluidAction.EXECUTE);
-						result=recipe.output.copy();
-						if(!result.isEmpty())
-							result.setCount(result.getCount()*procnum);
+						IngredientWithSize iws=recipe.inputs[0];
+	        			for(int i=0;i<4;i++)
+	        				if(iws.test(inventory.get(i))) {
+	        					render=inventory.get(i);
+	        					break;
+	        				}
+						
 						process=processMax=recipe.time+104;
 						this.markContainingBlockForUpdate(null);
 					}
@@ -159,10 +191,10 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 				}
 			} else {
 				int ptm=processMax-process;
-				if (ptm < 53)
-					pos=ptm;
-				else if (process<53)
+				if (process<53)
 					pos=process;
+				else if (ptm < 53)
+					pos=ptm;
 				else
 					pos=52;
 			}
@@ -285,7 +317,11 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 		energyStorage.readFromNBT(nbt);
 		tankinput[0].readFromNBT(nbt.getCompound("tankinput"));
 		active = nbt.getBoolean("active");
+		process=nbt.getInt("process");
+		processMax=nbt.getInt("processMax");
 		ItemStackHelper.loadAllItems(nbt, inventory);
+		render=ItemStack.read(nbt.getCompound("render"));
+		
 		if (!descPacket) {
 			
 			result=ItemStack.read(nbt.getCompound("result"));
@@ -298,7 +334,10 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 		energyStorage.writeToNBT(nbt);
 		nbt.put("tankinput", tankinput[0].writeToNBT(new CompoundNBT()));
 		nbt.putBoolean("active", active);
+		nbt.putInt("process",process);
+		nbt.putInt("processMax",processMax);
 		ItemStackHelper.saveAllItems(nbt, inventory);
+		nbt.put("render",render.serializeNBT());
 		if (!descPacket) {
 			
 			nbt.put("result",result.serializeNBT());
@@ -326,7 +365,8 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 
     @Override
     public boolean isStackValid(int i, ItemStack itemStack) {
-        return true;
+    	if(i>4)return false;
+        return CarKilnRecipe.isValidInput(itemStack);
 	}
 
 	@Override
