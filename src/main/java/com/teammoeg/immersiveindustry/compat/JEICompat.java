@@ -94,7 +94,7 @@ public class JEICompat implements IModPlugin {
         registry.addRecipeClickArea(IndustrialElectrolyzerScreen.class, 76, 35,21, 25, IndustrialElectrolyzerCategory.UID);
         registry.addRecipeClickArea(CrucibleScreen.class, 76, 14, 19, 25, CrucibleCategory.UID);
         registry.addRecipeClickArea(RotaryKilnScreen.class, 92, 41, 35, 18, RotaryKilnCategory.UID);
-        registry.addRecipeClickArea(CarKilnScreen.class, 82, 25, 37, 18, CarKilnCategory.UID);
+        registry.addRecipeClickArea(CarKilnScreen.class, 82, 25, 40, 18, CarKilnCategory.UID);
     }
 
     public static <T> void checkNotNull(@Nullable T object, String name) {

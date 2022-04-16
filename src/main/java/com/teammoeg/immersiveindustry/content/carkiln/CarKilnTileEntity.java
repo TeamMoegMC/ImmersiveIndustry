@@ -69,15 +69,17 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
 		BlockPos bp = this.getPos();
-		return new AxisAlignedBB(
-				bp.getX() - (getFacing().getAxis() == Axis.Z ? 1 : 3),
-				bp.getY() - 1,
-				bp.getZ() - (getFacing().getAxis() == Axis.X ? 1 : 3),
-				bp.getX() + (getFacing().getAxis() == Axis.Z ? 2 : 4),
-				bp.getY() + 5,
-				bp.getZ() + (getFacing().getAxis() == Axis.X ? 2 : 4));
+		if (!isDummy()) {
+			return new AxisAlignedBB(
+					bp.getX() - (getFacing().getAxis() == Axis.Z ? 1 : 3),
+					bp.getY() - 1,
+					bp.getZ() - (getFacing().getAxis() == Axis.X ? 1 : 3),
+					bp.getX() + (getFacing().getAxis() == Axis.Z ? 2 : 4),
+					bp.getY() + 5,
+					bp.getZ() + (getFacing().getAxis() == Axis.X ? 2 : 4));
+		}
+		return new AxisAlignedBB(bp);
 	}
-
 	@Override
 	public void tick() {
 		checkForNeedlessTicking();
@@ -178,7 +180,7 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 						this.markContainingBlockForUpdate(null);
 					}
 				} else if (process > 0) {
-					process = Math.max(process + 1, processMax - 53);
+					process = Math.min(process + 1, processMax - 24);
 					this.markContainingBlockForUpdate(null);
 				}
 			} else {

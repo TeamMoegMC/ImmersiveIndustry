@@ -49,7 +49,7 @@ import java.util.Set;
 public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTileEntity>
 		implements IEBlockInterfaces.IBlockBounds, EnergyHelper.IIEInternalFluxHandler, IIEInventory,
 		IEBlockInterfaces.IInteractionObjectIE, IEBlockInterfaces.IProcessTile {
-	public int processMax;
+	public int processMax = 0;
 	public int process = 0;
 	public int cd = 0;
 	boolean active;
@@ -58,7 +58,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 	private List<Process> processes = new ArrayList<>();
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
 	EnergyHelper.IEForgeEnergyWrapper wrapper = new EnergyHelper.IEForgeEnergyWrapper(this, null);
-	public FluidTank[] tankout = new FluidTank[] { new FluidTank(32000) };
+	public FluidTank[] tankout = new FluidTank[]{new FluidTank(32000)};
 	private static BlockPos itemout = new BlockPos(1, 0, 7);
 	private static BlockPos fluidout = new BlockPos(1, 3, 4);
 
@@ -73,7 +73,6 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 
 	public RotaryKilnTileEntity() {
 		super(IIMultiblocks.ROTARY_KILN, IITileTypes.ROTARY_KILN.get(), false);
-		processMax = IIConfig.COMMON.rotaryKilnHandleTime.get();
 	}
 
 	@Override
@@ -107,10 +106,13 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
 		BlockPos bp = this.getPos();
-		return new AxisAlignedBB(bp.getX() - (getFacing().getAxis() == Axis.Z ? 1 : 3), bp.getY()-1,
-				bp.getZ() - (getFacing().getAxis() == Axis.X ? 1 : 3),
-				bp.getX() + (getFacing().getAxis() == Axis.Z ? 2 : 4), bp.getY() + 3,
-				bp.getZ() + (getFacing().getAxis() == Axis.X ? 2 : 4));
+		if (!isDummy()) {
+			return new AxisAlignedBB(bp.getX() - (getFacing().getAxis() == Axis.Z ? 1 : 3), bp.getY() - 1,
+					bp.getZ() - (getFacing().getAxis() == Axis.X ? 1 : 3),
+					bp.getX() + (getFacing().getAxis() == Axis.Z ? 2 : 4), bp.getY() + 3,
+					bp.getZ() + (getFacing().getAxis() == Axis.X ? 2 : 4));
+		}
+		return new AxisAlignedBB(bp);
 	}
 
 	@Override
