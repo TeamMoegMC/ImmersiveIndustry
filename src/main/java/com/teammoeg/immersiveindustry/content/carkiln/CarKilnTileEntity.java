@@ -319,12 +319,10 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 		active = nbt.getBoolean("active");
 		process=nbt.getInt("process");
 		processMax=nbt.getInt("processMax");
-		ItemStackHelper.loadAllItems(nbt, inventory);
 		render=ItemStack.read(nbt.getCompound("render"));
-		
 		if (!descPacket) {
-			
-			result=ItemStack.read(nbt.getCompound("result"));
+			result = ItemStack.read(nbt.getCompound("result"));
+			ItemStackHelper.loadAllItems(nbt, inventory);
 		}
 	}
 
@@ -336,11 +334,10 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 		nbt.putBoolean("active", active);
 		nbt.putInt("process",process);
 		nbt.putInt("processMax",processMax);
-		ItemStackHelper.saveAllItems(nbt, inventory);
 		nbt.put("render",render.serializeNBT());
 		if (!descPacket) {
-			
-			nbt.put("result",result.serializeNBT());
+			nbt.put("result", result.serializeNBT());
+			ItemStackHelper.saveAllItems(nbt, inventory);
 		}
 	}
 

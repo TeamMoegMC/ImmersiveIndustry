@@ -66,6 +66,10 @@ public class CarKilnScreen extends IEContainerScreen<CarKilnContainer> {
         ClientUtils.bindTexture(TEXTURE);
         this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
+        if (tile.processMax > 0) {
+            int w = (int) (37 * (tile.process / (float) tile.processMax));
+            this.blit(transform, guiLeft + 83, guiTop + 29, 177, 57, 37 - w, 17);
+        }
         GuiHelper.handleGuiTank(transform, tile.tankinput[0], guiLeft + 10, guiTop + 26, 16, 47, 196, 0, 20, 51, x, y, TEXTURE, null);
         int stored = (int) (46.0F * ((float) this.tile.getEnergyStored(null) / (float) this.tile.getMaxEnergyStored(null)));
         this.fillGradient(transform, this.guiLeft + 157, this.guiTop + 26 + (46 - stored), this.guiLeft + 164, this.guiTop + 72, -4909824, -10482944);

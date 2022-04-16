@@ -41,7 +41,7 @@ public class IIConfig {
             electrolyzerConsume = builder.defineInRange("electrolyzerConsume", 24, 0, 4096);
             rotaryKilnConsume = builder.defineInRange("rotaryKilnConsume", 24, 0, 4096);
             carKilnConsume = builder.defineInRange("carKilnConsume", 24, 0, 4096);
-            steamTurbineGenerator = builder.defineInRange("steamTurbineGenerator", 128, 0, 4096);
+            steamTurbineGenerator = builder.defineInRange("steamTurbineGenerator", 512, 0, 4096);
             electrodeCost = builder.defineInRange("electrodeCost", 0.25, 0, 96000);
             rotaryKilnHandleTime = builder.defineInRange("rotaryKilnHandleTime", 300, 0, 96000);
         }

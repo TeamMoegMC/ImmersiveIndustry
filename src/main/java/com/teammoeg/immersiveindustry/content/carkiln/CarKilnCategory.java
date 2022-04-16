@@ -46,15 +46,15 @@ public class CarKilnCategory implements IRecipeCategory<CarKilnRecipe> {
 
     public CarKilnCategory(IGuiHelper guiHelper) {
         this.ICON = guiHelper.createDrawableIngredient(new ItemStack(IIContent.IIMultiblocks.car_kiln));
-        this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/car_kiln.png"), 6, 10, 143, 75);
+        this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/car_kiln.png"), 6, 16, 143, 71);
         this.TANK = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/car_kiln.png"), 197, 1, 18, 48);
-        IDrawableStatic arrow = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/car_kiln.png"), 178, 59, 38, 15);
+        IDrawableStatic arrow = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/car_kiln.png"), 177, 57, 37, 17);
         ARROW = guiHelper.createAnimatedDrawable(arrow, 40, StartDirection.LEFT, false);
     }
 
     @Override
     public void draw(CarKilnRecipe recipe, MatrixStack transform, double mouseX, double mouseY) {
-        ARROW.draw(transform, 78, 20);
+        ARROW.draw(transform, 77, 13);
     }
 
     @Override
@@ -95,11 +95,14 @@ public class CarKilnCategory implements IRecipeCategory<CarKilnRecipe> {
     public void setRecipe(IRecipeLayout recipeLayout, CarKilnRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
         IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
-        guiItemStacks.init(0, true, 2, 17);
-        guiFluidStacks.init(1, true, 4, 16, 16, 47, 3200, false, TANK);
-
-        guiItemStacks.init(2, false, 90, 40);
-        guiFluidStacks.set(ingredients);
+        for (int i = 0; i < recipe.inputs.length; ++i) {
+            guiItemStacks.init(i, true, 28 + i % 2 * 18, 4 + i / 2 * 18);
+        }
+        guiFluidStacks.init(0, true, 4, 10, 16, 47, 3200, false, TANK);
+        if (!recipe.input_fluid.isEmpty()) {
+            guiFluidStacks.set(0, recipe.input_fluid);
+        }
+        guiItemStacks.init(4, false, 89, 33);
         guiItemStacks.set(ingredients);
     }
 }

@@ -20,6 +20,9 @@ package com.teammoeg.immersiveindustry.compat;
 
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
+import com.teammoeg.immersiveindustry.content.carkiln.CarKilnCategory;
+import com.teammoeg.immersiveindustry.content.carkiln.CarKilnRecipe;
+import com.teammoeg.immersiveindustry.content.carkiln.CarKilnScreen;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleCategory;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleScreen;
@@ -57,6 +60,7 @@ public class JEICompat implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(IIContent.IIBlocks.electrolyzer), ElectrolyzerCategory.UID);
         registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.industrial_electrolyzer), IndustrialElectrolyzerCategory.UID);
         registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.rotary_kiln), RotaryKilnCategory.UID);
+        registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.car_kiln), CarKilnCategory.UID);
     }
 
     @Override
@@ -69,6 +73,7 @@ public class JEICompat implements IModPlugin {
         registration.addRecipes(ElectrolyzerRecipe.recipeList.values().stream().filter(r->!r.flag).filter(r->r.inputs.length<2).collect(Collectors.toList()), ElectrolyzerCategory.UID);
         registration.addRecipes(ElectrolyzerRecipe.recipeList.values().stream().filter(r -> r.inputs.length < 3).collect(Collectors.toList()), IndustrialElectrolyzerCategory.UID);
         registration.addRecipes(new ArrayList<>(RotaryKilnRecipe.recipeList.values()), RotaryKilnCategory.UID);
+        registration.addRecipes(CarKilnRecipe.recipeList, CarKilnCategory.UID);
     }
 
     @Override
@@ -78,7 +83,8 @@ public class JEICompat implements IModPlugin {
                 new CrucibleCategory(guiHelper),
                 new ElectrolyzerCategory(guiHelper),
                 new IndustrialElectrolyzerCategory(guiHelper),
-                new RotaryKilnCategory(guiHelper)
+                new RotaryKilnCategory(guiHelper),
+                new CarKilnCategory(guiHelper)
         );
     }
 
@@ -88,6 +94,7 @@ public class JEICompat implements IModPlugin {
         registry.addRecipeClickArea(IndustrialElectrolyzerScreen.class, 76, 35,21, 25, IndustrialElectrolyzerCategory.UID);
         registry.addRecipeClickArea(CrucibleScreen.class, 76, 14, 19, 25, CrucibleCategory.UID);
         registry.addRecipeClickArea(RotaryKilnScreen.class, 92, 41, 35, 18, RotaryKilnCategory.UID);
+        registry.addRecipeClickArea(CarKilnScreen.class, 82, 25, 37, 18, CarKilnCategory.UID);
     }
 
     public static <T> void checkNotNull(@Nullable T object, String name) {

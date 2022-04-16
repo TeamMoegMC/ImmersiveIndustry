@@ -18,9 +18,8 @@
 
 package com.teammoeg.immersiveindustry.content.steamturbine;
 
-import com.teammoeg.immersiveindustry.IIMain;
-
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
+import com.teammoeg.immersiveindustry.IIMain;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.ResourceLocation;
@@ -30,6 +29,7 @@ public class SteamTurbineBlock extends IEMultiblockBlock<SteamTurbineTileEntity>
 
     public SteamTurbineBlock(String name, RegistryObject type) {
         super(name, Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(4.0F, 40.0F).notSolid(), type);
+        this.lightOpacity = 0;
     }
 
     @Override

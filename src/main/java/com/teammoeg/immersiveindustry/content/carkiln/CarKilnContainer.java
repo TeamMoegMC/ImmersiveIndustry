@@ -20,7 +20,6 @@ package com.teammoeg.immersiveindustry.content.carkiln;
 
 import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
-import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipe;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -32,7 +31,7 @@ public class CarKilnContainer extends IEBaseContainer<CarKilnTileEntity> {
 
         // input
         for (int i = 0; i < 4; ++i) {
-            this.addSlot(new IESlot(this, this.inv, i, 35 + i % 2 * 18, 15 + i / 2 * 18) {
+            this.addSlot(new IESlot(this, this.inv, i, 35 + i % 2 * 18, 21 + i / 2 * 18) {
                 @Override
                 public boolean isItemValid(ItemStack itemStack) {
                     return CarKilnRecipe.isValidInput(itemStack);

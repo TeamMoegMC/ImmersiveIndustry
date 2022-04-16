@@ -104,17 +104,6 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
     }
 
     @Override
-    public void disassemble() {
-        if (formed && !world.isRemote) {
-            tempMasterTE = master();
-            BlockPos startPos = getOrigin();
-            multiblockInstance.disassemble(world, startPos, getIsMirrored(), multiblockInstance.untransformDirection(getFacing()));
-            world.destroyBlock(pos, false);
-        }
-    }
-
-
-    @Override
     public void tick() {
         checkForNeedlessTicking();
         boolean pactive=active;

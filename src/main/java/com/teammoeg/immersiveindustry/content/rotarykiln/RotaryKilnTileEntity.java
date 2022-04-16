@@ -42,7 +42,6 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -140,7 +139,8 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 									p.result.shrink(amount);
 									out.grow(amount);
 								}
-								p.fresult.shrink(tankout[0].fill(p.fresult, FluidAction.EXECUTE));
+								if (!p.fresult.isEmpty())
+									p.fresult.shrink(tankout[0].fill(p.fresult, FluidAction.EXECUTE));
 							}
 							float pp = p.process / (float) p.processMax;
 							if (pp < cp) {
@@ -306,12 +306,12 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 		active = nbt.getBoolean("active");
 		process = nbt.getInt("process");
 		processMax = nbt.getInt("processMax");
-		ItemStackHelper.loadAllItems(nbt, inventory);
 		if (!descPacket) {
 			cd = nbt.getInt("next");
 			ListNBT r = nbt.getList("queue", 10);
 			processes.clear();
 			r.stream().map(e -> (CompoundNBT) e).map(Process::new).forEach(processes::add);
+			ItemStackHelper.loadAllItems(nbt, inventory);
 		}
 	}
 
@@ -323,14 +323,13 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 		nbt.putBoolean("active", active);
 		nbt.putInt("process", process);
 		nbt.putInt("processMax", processMax);
-		ItemStackHelper.saveAllItems(nbt, inventory);
 		if (!descPacket) {
 			nbt.putInt("next", cd);
 			ListNBT nl = new ListNBT();
 			for (Process p : processes)
 				nl.add(p.serialize());
 			nbt.put("queue", nl);
-
+			ItemStackHelper.saveAllItems(nbt, inventory);
 		}
 
 	}

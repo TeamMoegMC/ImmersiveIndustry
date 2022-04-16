@@ -18,6 +18,7 @@
 
 package com.teammoeg.immersiveindustry.content.rotarykiln;
 
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
@@ -83,7 +84,7 @@ public class RotaryKilnCategory implements IRecipeCategory<RotaryKilnRecipe> {
 
     @Override
     public void setIngredients(RotaryKilnRecipe recipe, IIngredients ingredients) {
-        ingredients.setInput(VanillaTypes.ITEM, recipe.input.getMatchingStacks()[0]);
+        ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).build());
 
         ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
         ingredients.setOutput(VanillaTypes.FLUID, recipe.output_fluid);
@@ -97,9 +98,10 @@ public class RotaryKilnCategory implements IRecipeCategory<RotaryKilnRecipe> {
         guiItemStacks.init(0, true, 2, 17);
 
         guiItemStacks.init(1, false, 94, 40);
-        guiFluidStacks.init(2, false, 124, 4, 16, 47, 3200, false, TANK);
-
-        guiFluidStacks.set(ingredients);
+        guiFluidStacks.init(0, false, 124, 4, 16, 47, 3200, false, TANK);
+        if (!recipe.output_fluid.isEmpty()) {
+            guiFluidStacks.set(0, recipe.output_fluid);
+        }
         guiItemStacks.set(ingredients);
     }
 }
