@@ -69,16 +69,13 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
 		BlockPos bp = this.getPos();
-		if (!isDummy()) {
-			return new AxisAlignedBB(
-					bp.getX() - (getFacing().getAxis() == Axis.Z ? 1 : 3),
-					bp.getY(),
-					bp.getZ() - (getFacing().getAxis() == Axis.X ? 1 : 3),
-					bp.getX() + (getFacing().getAxis() == Axis.Z ? 3 : 1),
-					bp.getY() + 2,
-					bp.getZ() + (getFacing().getAxis() == Axis.X ? 3 : 1));
-		}
-		return new AxisAlignedBB(bp);
+		return new AxisAlignedBB(
+				bp.getX() - (getFacing().getAxis() == Axis.Z ? 1 : 3),
+				bp.getY() - 1,
+				bp.getZ() - (getFacing().getAxis() == Axis.X ? 1 : 3),
+				bp.getX() + (getFacing().getAxis() == Axis.Z ? 2 : 4),
+				bp.getY() + 5,
+				bp.getZ() + (getFacing().getAxis() == Axis.X ? 2 : 4));
 	}
 
 	@Override

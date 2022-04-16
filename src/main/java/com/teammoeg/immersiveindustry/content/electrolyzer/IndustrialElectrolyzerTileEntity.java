@@ -387,11 +387,11 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 	public AxisAlignedBB getRenderBoundingBox() {
 		BlockPos bp=this.getPos();
 		return new AxisAlignedBB(bp.getX()-(getFacing().getAxis()==Axis.Z?2: 1),
-				bp.getY(),
+				bp.getY()-1,
 				bp.getZ()-(getFacing().getAxis()==Axis.X?2: 1),
-				bp.getX()+(getFacing().getAxis()==Axis.Z?1: 2),
+				bp.getX()+(getFacing().getAxis()==Axis.Z?3: 2),
 				bp.getY()+2,
-				bp.getZ()+(getFacing().getAxis()==Axis.X?1: 2));
+				bp.getZ()+(getFacing().getAxis()==Axis.X?3: 2));
 	}
 	@Nullable
 	@Override
