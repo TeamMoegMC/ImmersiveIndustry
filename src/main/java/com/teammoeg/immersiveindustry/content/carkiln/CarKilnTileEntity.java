@@ -48,7 +48,6 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 	public int processMax = 0;
 	public int process = 0;
 	int pos;//animation process from 0-52, 0=idle 52=working
-	boolean active;
 	private static BlockPos itemout = new BlockPos(1, 0, 5);
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
@@ -88,16 +87,17 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 		if (!isDummy()) {
 			if (!world.isRemote) {
 				int energyConsume = IIConfig.COMMON.carKilnConsume.get();
+				tryOutput();
 				if (!isRSDisabled() && energyStorage.getEnergyStored() >= energyConsume) {
 					if (process > 0) {
-						if(process>52&&process<processMax-23&&result.isEmpty()) {
-							CarKilnRecipe recipe = CarKilnRecipe.findRecipe(inventory,tankinput[0].getFluid(),0, 4);
-							if(recipe==null) {
-								process=processMax-process;
-								processMax=0;
+						if (process > 52 && process < processMax - 23 && result.isEmpty()) {
+							CarKilnRecipe recipe = CarKilnRecipe.findRecipe(inventory, tankinput[0].getFluid(), 0, 4);
+							if (recipe == null) {
+								process = processMax - process;
+								processMax = 0;
 								return;
 							}
-							float[] maxprocs=new float[recipe.inputs.length];
+							float[] maxprocs = new float[recipe.inputs.length];
 							int j=0;
 							for(IngredientWithSize iws:recipe.inputs) {
 								for(int i=0;i<4;i++) {
@@ -140,8 +140,6 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 						}
 						process--;
 						energyStorage.extractEnergy(energyConsume, false);
-						if (!active)
-							active = true;
 
 						this.markContainingBlockForUpdate(null);
 						return;
@@ -172,22 +170,19 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 					//check has recipe
 					CarKilnRecipe recipe = CarKilnRecipe.findRecipe(inventory,tankinput[0].getFluid(),0, 4);
 					if (recipe != null) {
-						IngredientWithSize iws=recipe.inputs[0];
-	        			for(int i=0;i<4;i++)
-	        				if(iws.test(inventory.get(i))) {
-	        					render=inventory.get(i);
-	        					break;
-	        				}
-						
-						process=processMax=recipe.time+104;
+						IngredientWithSize iws = recipe.inputs[0];
+						for (int i = 0; i < 4; i++)
+							if (iws.test(inventory.get(i))) {
+								render = inventory.get(i);
+								break;
+							}
+
+						process = processMax = recipe.time + 104;
 						this.markContainingBlockForUpdate(null);
 					}
-				} else if (active) {
-					active = false;
+				} else if (process > 0) {
+					process = Math.max(process + 1, processMax - 53);
 					this.markContainingBlockForUpdate(null);
-				} else {
-					if(process>0)
-						process=Math.max(process+1,processMax-53);
 				}
 			} else {
 				int ptm=processMax-process;
@@ -202,6 +197,7 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 	}
 
 	public void tryOutput() {
+		boolean update = false;
 		if (this.world.getGameTime() % 8L == 0L) {
 			if (this.outputItemCap.isPresent()) {
 
@@ -214,10 +210,15 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 							if (this.inventory.get(slot).getCount() <= 0) {
 								this.inventory.set(slot, ItemStack.EMPTY);
 							}
+							update |= true;
 						}
 					}
 				}
 			}
+		}
+		if (update) {
+			this.markDirty();
+			this.markContainingBlockForUpdate(null);
 		}
 	}
 	@Override
@@ -316,7 +317,6 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 		super.readCustomNBT(nbt, descPacket);
 		energyStorage.readFromNBT(nbt);
 		tankinput[0].readFromNBT(nbt.getCompound("tankinput"));
-		active = nbt.getBoolean("active");
 		process=nbt.getInt("process");
 		processMax=nbt.getInt("processMax");
 		render=ItemStack.read(nbt.getCompound("render"));
@@ -331,7 +331,6 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 		super.writeCustomNBT(nbt, descPacket);
 		energyStorage.writeToNBT(nbt);
 		nbt.put("tankinput", tankinput[0].writeToNBT(new CompoundNBT()));
-		nbt.putBoolean("active", active);
 		nbt.putInt("process",process);
 		nbt.putInt("processMax",processMax);
 		nbt.put("render",render.serializeNBT());
