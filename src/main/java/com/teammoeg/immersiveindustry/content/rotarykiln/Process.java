@@ -9,16 +9,19 @@ public class Process {
 	FluidStack fresult;
 	int process;
 	int processMax;
-	public Process(ItemStack is,FluidStack fs,int time) {
+	boolean heated;
+	public Process(ItemStack is,FluidStack fs,int time,boolean h) {
 		result=is;
 		fresult=fs;
 		process=processMax=time;
+		heated=h;
 	}
 	public Process(CompoundNBT nc) {
 		result=ItemStack.read(nc.getCompound("result"));
 		fresult=FluidStack.loadFluidStackFromNBT(nc.getCompound("fluid"));
 		process=nc.getInt("process");
 		processMax=nc.getInt("processMax");
+		heated=nc.getBoolean("heated");
 	}
 	public CompoundNBT serialize() {
 		CompoundNBT cn=new CompoundNBT();
@@ -26,16 +29,19 @@ public class Process {
 		cn.put("fluid",fresult.writeToNBT(new CompoundNBT()));
 		cn.putInt("process",process);
 		cn.putInt("processMax",processMax);
+		cn.putBoolean("heated",heated);
 		return cn;
 	}
-	public boolean tick() {
-		if(process>0)
+	public int tick(int lp) {
+		if(process>lp&&process>0)
 			process--;
-		else
-			return true;
-		return false;
+		return process;
 	}
 	public boolean removable() {
 		return result.isEmpty()&&fresult.isEmpty()&&process<=0;
+	}
+	public boolean finished() {
+		return process<=0;
+			
 	}
 }

@@ -120,14 +120,28 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 		checkForNeedlessTicking();
 		if (!isDummy()) {
 			if (!world.isRemote) {
-				int energyConsume = IIConfig.COMMON.rotaryKilnConsume.get();
+				int energyConsume = IIConfig.COMMON.rotaryKilnRotor.get();
 				tryOutput();
+				for (Process p : processes) {
+					if(p.heated) {
+						energyConsume+=IIConfig.COMMON.rotaryKilnHeater.get();
+						break;
+					}
+				}
 				if (!isRSDisabled() && energyStorage.getEnergyStored() >= energyConsume) {
 					process = processMax = 0;
 					if (!processes.isEmpty()) {
-						float cp = 1;
+						int lp=0;
+						int lpm=0;
 						for (Process p : processes) {
-							if (p.tick()) {
+							lp=p.tick(lp+lpm/16-2);
+							lpm=p.processMax;
+						}
+						if(!processes.isEmpty()) {
+							Process p=processes.get(0);
+							processMax=p.processMax;
+							process=p.process;
+							if(p.finished()) {
 								ItemStack out = inventory.get(3);
 								if (out.isEmpty()) {
 									inventory.set(3, p.result);
@@ -140,12 +154,6 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 								}
 								if (!p.fresult.isEmpty())
 									p.fresult.shrink(tankout[0].fill(p.fresult, FluidAction.EXECUTE));
-							}
-							float pp = p.process / (float) p.processMax;
-							if (pp < cp) {
-								cp = pp;
-								process = p.process;
-								processMax = p.processMax;
 							}
 						}
 						energyStorage.extractEnergy(energyConsume, false);
@@ -171,7 +179,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 							if (recipe != null) {
 								inventory.get(2).shrink(recipe.input.getCount());
 								processes.add(
-										new Process(recipe.output.copy(), recipe.output_fluid.copy(), recipe.time));
+										new Process(recipe.output.copy(), recipe.output_fluid.copy(), recipe.time,recipe.heat));
 								cd = recipe.time / 16;
 							}
 						}

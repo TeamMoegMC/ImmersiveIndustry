@@ -48,7 +48,6 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 	public int processMax = 0;
 	public int process = 0;
 	int pos;//animation process from 0-52, 0=idle 52=working
-	private static BlockPos itemout = new BlockPos(1, 0, 5);
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
 	EnergyHelper.IEForgeEnergyWrapper wrapper = new EnergyHelper.IEForgeEnergyWrapper(this, null);
@@ -60,11 +59,22 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 		super(IIMultiblocks.CAR_KILN, IITileTypes.CAR_KILN.get(), false);
 	}
 
-	private CapabilityReference<IItemHandler> outputItemCap = CapabilityReference.forTileEntityAt(this,
+	@SuppressWarnings("unchecked")
+	private CapabilityReference<IItemHandler>[] outputItemCaps = new CapabilityReference[]{CapabilityReference.forTileEntityAt(this,
 			() -> {
 				Direction fw = getFacing().rotateY();
-				return new DirectionalBlockPos(this.getBlockPosForPos(itemout), fw);
-			}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+				return new DirectionalBlockPos(this.getBlockPosForPos(new BlockPos(0, 0, 5)), fw);
+			}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY),
+		CapabilityReference.forTileEntityAt(this,
+				() -> {
+					Direction fw = getFacing().rotateY();
+					return new DirectionalBlockPos(this.getBlockPosForPos(new BlockPos(1, 0, 5)), fw);
+				}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY),
+		CapabilityReference.forTileEntityAt(this,
+				() -> {
+					Direction fw = getFacing().rotateY();
+					return new DirectionalBlockPos(this.getBlockPosForPos(new BlockPos(2, 0, 5)), fw);
+				}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)} ;
 
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
@@ -198,18 +208,19 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 	public void tryOutput() {
 		boolean update = false;
 		if (this.world.getGameTime() % 8L == 0L) {
-			if (this.outputItemCap.isPresent()) {
-
+			for(CapabilityReference<IItemHandler> i:outputItemCaps)
+			if (i.isPresent()) {
 				for (int slot = 4; slot < 9; ++slot) {
 					if (!this.inventory.get(slot).isEmpty()) {
 						ItemStack stack = ItemHandlerHelper.copyStackWithSize(this.inventory.get(slot), 1);
-						stack = Utils.insertStackIntoInventory(this.outputItemCap, stack, false);
+						stack = Utils.insertStackIntoInventory(i, stack, false);
 						if (stack.isEmpty()) {
 							this.inventory.get(slot).shrink(1);
 							if (this.inventory.get(slot).getCount() <= 0) {
 								this.inventory.set(slot, ItemStack.EMPTY);
 							}
 							update |= true;
+							break;
 						}
 					}
 				}
@@ -339,22 +350,22 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 		}
 	}
 
-    LazyOptional<IItemHandler> inHandler = registerConstantCap(new IEInventoryHandler(1, this, 4, true, false));
-    LazyOptional<IItemHandler> outHandler = registerConstantCap(new IEInventoryHandler(4, this, 5, false, true));
+    LazyOptional<IItemHandler> inHandler = registerConstantCap(new IEInventoryHandler(4, this, 0, true, false));
+    LazyOptional<IItemHandler> outHandler = registerConstantCap(new IEInventoryHandler(5, this, 4, false, true));
 
     @Nonnull
     @Override
     public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing) {
-
-        if (facing != null && facing.getYOffset() == 0 && this.posInMultiblock.getZ() == 4) {
-            if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-                if (this.posInMultiblock.getY() == 1)
-                    return inHandler.cast();
-                else if (this.posInMultiblock.getX() == 1)
-                    return outHandler.cast();
-                return LazyOptional.empty();
-            }
-        }
+    	if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+	        if (facing != null && facing.getYOffset() == 0&&this.posInMultiblock.getZ() == 4) {
+	        	
+	                if (this.posInMultiblock.getY() == 1 &&this.posInMultiblock.getX()!=1&&facing.getAxis()!=this.getFacing().getAxis())
+	                    return inHandler.cast();
+	                else if (this.posInMultiblock.getY() == 0&&facing.getAxis()==this.getFacing().getAxis())
+	                    return outHandler.cast();
+	                return LazyOptional.empty();
+	        }
+    	}
         return super.getCapability(capability, facing);
     }
 
