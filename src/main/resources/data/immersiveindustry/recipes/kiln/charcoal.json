@@ -9,5 +9,6 @@
   "result_fluid": {
     "fluid": "immersiveengineering:creosote",
     "amount": 250
-  }
+  },
+  "time": 200
 }
