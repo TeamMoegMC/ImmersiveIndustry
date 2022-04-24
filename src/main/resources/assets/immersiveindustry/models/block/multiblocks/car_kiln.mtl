@@ -3,4 +3,6 @@ newmtl m_0
 map_Kd immersiveindustry:block/multiblocks/car_kiln_base
 newmtl m_1
 map_Kd immersiveindustry:block/multiblocks/car_kiln_shell
+newmtl m_2
+map_Kd immersiveindustry:block/multiblocks/carbide_kiln_shelf
 newmtl none

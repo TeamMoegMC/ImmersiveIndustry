@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "immersiveindustry:block/car_kiln_brick",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "immersiveindustry:block/car_kiln_brick",
+      "y": 180,
+      "x": 90
+    },
+    "facing=east": {
+      "model": "immersiveindustry:block/car_kiln_brick",
+      "y": 90,
+      "x": 90
+    },
+    "facing=west": {
+      "model": "immersiveindustry:block/car_kiln_brick",
+      "y": 270,
+      "x": 90
+    },
+    "facing=up": {
+      "model": "immersiveindustry:block/car_kiln_brick"
+    },
+    "facing=down": {
+      "model": "immersiveindustry:block/car_kiln_brick",
+	  "x":180
+    }
+  }
+}

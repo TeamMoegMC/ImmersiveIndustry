@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import com.google.common.collect.ImmutableSet;
 import com.teammoeg.immersiveindustry.content.IIBaseBlock;
 import com.teammoeg.immersiveindustry.content.IIBlockItem;
+import com.teammoeg.immersiveindustry.content.IIDirectionalBlock;
 import com.teammoeg.immersiveindustry.content.carkiln.CarKilnBlock;
 import com.teammoeg.immersiveindustry.content.carkiln.CarKilnContainer;
 import com.teammoeg.immersiveindustry.content.carkiln.CarKilnMultiblock;
@@ -66,6 +67,7 @@ public class IIContent {
 
         public static Block electrolyzer = new ElectrolyzerBlock("electrolyzer", IIProps.MACHINEProps, IIBlockItem::new);
         public static Block burning_chamber = new IIBaseBlock("burning_chamber", IIProps.METALProps, IIBlockItem::new);
+        public static Block car_kiln_brick=new IIDirectionalBlock("car_kiln_brick", IIProps.MACHINEProps, IIBlockItem::new);
     }
 
     public static class IIMultiblocks {

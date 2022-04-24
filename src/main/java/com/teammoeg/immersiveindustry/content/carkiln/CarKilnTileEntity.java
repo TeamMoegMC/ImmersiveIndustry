@@ -52,7 +52,6 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
 	EnergyHelper.IEForgeEnergyWrapper wrapper = new EnergyHelper.IEForgeEnergyWrapper(this, null);
 	ItemStack result=ItemStack.EMPTY;
-	ItemStack render=ItemStack.EMPTY;
 	public FluidTank[] tankinput = new FluidTank[]{new FluidTank(16000)};
 
 	public CarKilnTileEntity() {
@@ -179,13 +178,6 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 					//check has recipe
 					CarKilnRecipe recipe = CarKilnRecipe.findRecipe(inventory,tankinput[0].getFluid(),0, 4);
 					if (recipe != null) {
-						IngredientWithSize iws = recipe.inputs[0];
-						for (int i = 0; i < 4; i++)
-							if (iws.test(inventory.get(i))) {
-								render = inventory.get(i);
-								break;
-							}
-
 						process = processMax = recipe.time + 104;
 						this.markContainingBlockForUpdate(null);
 					}
@@ -326,12 +318,12 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket) {
 		super.readCustomNBT(nbt, descPacket);
 		energyStorage.readFromNBT(nbt);
-		tankinput[0].readFromNBT(nbt.getCompound("tankinput"));
+		
 		process=nbt.getInt("process");
 		processMax=nbt.getInt("processMax");
-		render=ItemStack.read(nbt.getCompound("render"));
+		result = ItemStack.read(nbt.getCompound("result"));
 		if (!descPacket) {
-			result = ItemStack.read(nbt.getCompound("result"));
+			tankinput[0].readFromNBT(nbt.getCompound("tankinput"));
 			ItemStackHelper.loadAllItems(nbt, inventory);
 		}
 	}
@@ -340,12 +332,12 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
     public void writeCustomNBT(CompoundNBT nbt, boolean descPacket) {
 		super.writeCustomNBT(nbt, descPacket);
 		energyStorage.writeToNBT(nbt);
-		nbt.put("tankinput", tankinput[0].writeToNBT(new CompoundNBT()));
+		
 		nbt.putInt("process",process);
 		nbt.putInt("processMax",processMax);
-		nbt.put("render",render.serializeNBT());
+		nbt.put("result", result.serializeNBT());
 		if (!descPacket) {
-			nbt.put("result", result.serializeNBT());
+			nbt.put("tankinput", tankinput[0].writeToNBT(new CompoundNBT()));
 			ItemStackHelper.saveAllItems(nbt, inventory);
 		}
 	}

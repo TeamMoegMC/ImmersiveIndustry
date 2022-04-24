@@ -28,6 +28,9 @@ public class CarKilnRenderer extends TileEntityRenderer<CarKilnTileEntity> {
 	public static DynamicModel<Direction> PARTS;
 	private static final IEObjState gate= new IEObjState(VisibilityList.show("inletBoard"));
 	private static final IEObjState trolley=new IEObjState(VisibilityList.show("trolleyFloor1","trolleyFloor2"));
+	private static final IEObjState s1=new IEObjState(VisibilityList.show("shelf2"));
+	private static final IEObjState s2=new IEObjState(VisibilityList.show("shelf1","shelf2"));
+	
 	@Override
     public void render(CarKilnTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
 		if(!te.formed||te.isDummy()||!te.getWorldNonnull().isBlockLoaded(te.getPos()))
@@ -38,23 +41,30 @@ public class CarKilnRenderer extends TileEntityRenderer<CarKilnTileEntity> {
 			return;
 		Direction d=te.getFacing();
 		matrixStack.push();
-		List<BakedQuad> quads = PARTS.getNullQuads(d, state, new SinglePropertyModelData<>(gate, Model.IE_OBJ_STATE));
 		if(te.pos<24) {
 			matrixStack.translate(0,1.75, 0);
 		}else {
 			matrixStack.translate(0,1.75-(te.pos-24)/16D,0);
 		}
-		RenderUtils.renderModelTESRFast(quads, bufferIn.getBuffer(RenderType.getSolid()), matrixStack, combinedLightIn, combinedOverlayIn);
+		RenderUtils.renderModelTESRFast(PARTS.getNullQuads(d, state, new SinglePropertyModelData<>(gate, Model.IE_OBJ_STATE)), bufferIn.getBuffer(RenderType.getSolid()), matrixStack, combinedLightIn, combinedOverlayIn);
 		matrixStack.pop();
 		matrixStack.push();
-		List<BakedQuad> quads2 = PARTS.getNullQuads(d, state, new SinglePropertyModelData<>(trolley, Model.IE_OBJ_STATE));
 		if(te.pos<=24){
 			double delta=te.pos/16D-1.5;
 			matrixStack.translate(delta*d.getXOffset(),0,delta*d.getZOffset());
 		}
-		/*ClientUtils.mc().getItemRenderer().renderStatic(te.in.get(0), TransformType.FIXED, combinedLightIn, combinedOverlayIn,
-				matrixStack, bufferIn);*/
-		RenderUtils.renderModelTESRFast(quads2, bufferIn.getBuffer(RenderType.getSolid()), matrixStack, combinedLightIn, combinedOverlayIn);
+		int titem=0;
+		if(!te.result.isEmpty()) {
+			titem=te.result.getCount();
+		}else for(int i=0;i<4;i++)
+			titem+=te.getInventory().get(i).getCount();
+		if(titem>0) {
+			if(titem>16)
+				RenderUtils.renderModelTESRFast(PARTS.getNullQuads(d, state, new SinglePropertyModelData<>(s2, Model.IE_OBJ_STATE)), bufferIn.getBuffer(RenderType.getSolid()), matrixStack, combinedLightIn, combinedOverlayIn);
+			else
+				RenderUtils.renderModelTESRFast(PARTS.getNullQuads(d, state, new SinglePropertyModelData<>(s1, Model.IE_OBJ_STATE)), bufferIn.getBuffer(RenderType.getSolid()), matrixStack, combinedLightIn, combinedOverlayIn);
+		}
+		RenderUtils.renderModelTESRFast(PARTS.getNullQuads(d, state, new SinglePropertyModelData<>(trolley, Model.IE_OBJ_STATE)), bufferIn.getBuffer(RenderType.getSolid()), matrixStack, combinedLightIn, combinedOverlayIn);
 		matrixStack.pop();
     }
 }
