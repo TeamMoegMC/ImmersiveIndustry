@@ -7,6 +7,8 @@
   "block.immersiveindustry.industrial_electrolyzer": "工业电解槽",
   "block.immersiveindustry.rotary_kiln": "旋转窑",
   "block.immersiveindustry.car_kiln": "车窑",
+  "block.immersiveindustry.rotary_kiln_cylinder": "复合窑壁",
+  "block.immersiveindustry.car_kiln_brick": "加热窑壁",
   "gui.jei.category.immersiveindustry.crucible": "炼钢坩埚",
   "gui.jei.category.immersiveindustry.electrolyzer": "简易电解槽",
   "gui.jei.category.immersiveindustry.industrial_electrolyzer": "工业电解槽",

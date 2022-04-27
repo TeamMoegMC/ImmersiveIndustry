@@ -7,6 +7,8 @@
   "block.immersiveindustry.industrial_electrolyzer": "Industrial Electrolyzer",
   "block.immersiveindustry.rotary_kiln": "Rotary Kiln",
   "block.immersiveindustry.car_kiln": "Car Kiln",
+  "block.immersiveindustry.rotary_kiln_cylinder": "Compound Kiln Wall",
+  "block.immersiveindustry.car_kiln_brick": "Heating Kiln Wall",
   "gui.jei.category.immersiveindustry.crucible": "Steel Mill Crucible",
   "gui.jei.category.immersiveindustry.electrolyzer": "Simple Electrolyzer",
   "gui.jei.category.immersiveindustry.industrial_electrolyzer": "Industrial Electrolyzer",

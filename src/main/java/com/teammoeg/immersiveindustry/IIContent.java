@@ -68,6 +68,7 @@ public class IIContent {
         public static Block electrolyzer = new ElectrolyzerBlock("electrolyzer", IIProps.MACHINEProps, IIBlockItem::new);
         public static Block burning_chamber = new IIBaseBlock("burning_chamber", IIProps.METALProps, IIBlockItem::new);
         public static Block car_kiln_brick=new IIDirectionalBlock("car_kiln_brick", IIProps.MACHINEProps, IIBlockItem::new);
+        public static Block rotary_kiln_cylinder=new IIDirectionalBlock("rotary_kiln_cylinder", IIProps.MACHINEProps, IIBlockItem::new);
     }
 
     public static class IIMultiblocks {

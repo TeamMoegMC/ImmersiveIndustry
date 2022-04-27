@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "immersiveindustry:block/rotary_kiln_cylinder",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "immersiveindustry:block/rotary_kiln_cylinder",
+      "y": 180,
+      "x": 90
+    },
+    "facing=east": {
+      "model": "immersiveindustry:block/rotary_kiln_cylinder",
+      "y": 90,
+      "x": 90
+    },
+    "facing=west": {
+      "model": "immersiveindustry:block/rotary_kiln_cylinder",
+      "y": 270,
+      "x": 90
+    },
+    "facing=up": {
+      "model": "immersiveindustry:block/rotary_kiln_cylinder"
+    },
+    "facing=down": {
+      "model": "immersiveindustry:block/rotary_kiln_cylinder",
+	  "x":180
+    }
+  }
+}

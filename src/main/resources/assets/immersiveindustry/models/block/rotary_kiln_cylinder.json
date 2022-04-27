@@ -1,0 +1,13 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "immersiveindustry:block/rotary_kiln_cylinder_back",
+    "down": "immersiveindustry:block/rotary_kiln_cylinder_front",
+    "up": "immersiveindustry:block/rotary_kiln_cylinder_back",
+    "west": "immersiveindustry:block/rotary_kiln_cylinder_lr",
+    "east": "immersiveindustry:block/rotary_kiln_cylinder_lr",
+    "north": "immersiveindustry:block/rotary_kiln_cylinder_tb",
+    "south": "immersiveindustry:block/rotary_kiln_cylinder_tb"
+    
+  }
+}
