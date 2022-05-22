@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "immersiveindustry:item/refractory_kiln_brick"
+  }
+}

@@ -18,18 +18,11 @@
 
 package com.teammoeg.immersiveindustry.content;
 
-import com.teammoeg.immersiveindustry.IIMain;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 
 public class IIBlockItem extends BlockItem {
     public IIBlockItem(Block block, Properties props) {
         super(block, props);
-    }
-
-    public IIBlockItem(Block block) {
-        this(block, new Properties().group(IIMain.itemGroup));
-        setRegistryName(block.getRegistryName());
     }
 }

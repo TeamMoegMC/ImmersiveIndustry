@@ -23,16 +23,13 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMulti
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import com.google.common.collect.ImmutableSet;
 import com.teammoeg.immersiveindustry.content.IIBaseBlock;
+import com.teammoeg.immersiveindustry.content.IIBaseItem;
 import com.teammoeg.immersiveindustry.content.IIBlockItem;
-import com.teammoeg.immersiveindustry.content.IIDirectionalBlock;
-import com.teammoeg.immersiveindustry.content.carkiln.CarKilnBlock;
-import com.teammoeg.immersiveindustry.content.carkiln.CarKilnContainer;
-import com.teammoeg.immersiveindustry.content.carkiln.CarKilnMultiblock;
-import com.teammoeg.immersiveindustry.content.carkiln.CarKilnRecipe;
-import com.teammoeg.immersiveindustry.content.carkiln.CarKilnRecipeSerializer;
-import com.teammoeg.immersiveindustry.content.carkiln.CarKilnTileEntity;
+import com.teammoeg.immersiveindustry.content.carkiln.*;
 import com.teammoeg.immersiveindustry.content.crucible.*;
 import com.teammoeg.immersiveindustry.content.electrolyzer.*;
+import com.teammoeg.immersiveindustry.content.misc.IIDirectionalBlock;
+import com.teammoeg.immersiveindustry.content.misc.IIHorizontalBlock;
 import com.teammoeg.immersiveindustry.content.rotarykiln.*;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineBlock;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineMultiblock;
@@ -65,18 +62,30 @@ public class IIContent {
         public static void init() {
         }
 
+
         public static Block electrolyzer = new ElectrolyzerBlock("electrolyzer", IIProps.MACHINEProps, IIBlockItem::new);
         public static Block burning_chamber = new IIBaseBlock("burning_chamber", IIProps.METALProps, IIBlockItem::new);
-        public static Block car_kiln_brick=new IIDirectionalBlock("car_kiln_brick", IIProps.MACHINEProps, IIBlockItem::new);
-        public static Block rotary_kiln_cylinder=new IIDirectionalBlock("rotary_kiln_cylinder", IIProps.MACHINEProps, IIBlockItem::new);
+        public static Block car_kiln_brick = new IIHorizontalBlock("car_kiln_brick", IIProps.MACHINEProps, IIBlockItem::new);
+        public static Block rotary_kiln_cylinder = new IIDirectionalBlock("rotary_kiln_cylinder", IIProps.MACHINEProps, IIBlockItem::new);
+    }
+
+    public static class IItems {
+        public static void init() {
+        }
+
+        static Item.Properties createProps() {
+            return new Item.Properties().group(IIMain.itemGroup);
+        }
+
+        public static Item refractory_kiln_brick = new IIBaseItem("refractory_kiln_brick", createProps());
     }
 
     public static class IIMultiblocks {
         public static final IETemplateMultiblock CRUCIBLE = new CrucibleMultiblock();
         public static final IETemplateMultiblock STEAMTURBINE = new SteamTurbineMultiblock();
         public static final IETemplateMultiblock IND_ELE = new IndustrialElectrolyzerMultiblock();
-		public static final IETemplateMultiblock ROTARY_KILN = new RotaryKilnMultiblock();
-		public static final IETemplateMultiblock CAR_KILN = new CarKilnMultiblock();
+        public static final IETemplateMultiblock ROTARY_KILN = new RotaryKilnMultiblock();
+        public static final IETemplateMultiblock CAR_KILN = new CarKilnMultiblock();
 
         public static Block crucible = new CrucibleBlock("crucible", IITileTypes.CRUCIBLE);
         public static Block steam_turbine = new SteamTurbineBlock("steam_turbine", IITileTypes.STEAMTURBINE);

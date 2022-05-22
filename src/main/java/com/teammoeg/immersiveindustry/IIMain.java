@@ -55,6 +55,7 @@ public class IIMain {
         IIConfig.register();
         IIContent.IIProps.init();
         IIContent.IIBlocks.init();
+        IIContent.IItems.init();
         IIContent.IIMultiblocks.init();
         IIContent.registerContainers();
         IIContent.IITileTypes.REGISTER.register(mod);

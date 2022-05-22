@@ -18,13 +18,6 @@
       "model": "immersiveindustry:block/car_kiln_brick",
       "y": 270,
       "x": 90
-    },
-    "facing=up": {
-      "model": "immersiveindustry:block/car_kiln_brick"
-    },
-    "facing=down": {
-      "model": "immersiveindustry:block/car_kiln_brick",
-	  "x":180
     }
   }
 }
