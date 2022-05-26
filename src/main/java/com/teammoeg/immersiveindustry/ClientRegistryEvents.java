@@ -93,8 +93,7 @@ public class ClientRegistryEvents {
         }
         {
             ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
-            builder.addSpecialElement("steam_turbine", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.STEAMTURBINE));
-            builder.readFromFile(new ResourceLocation(IIMain.MODID, "steam_turbine"));
+            builder.readFromFile(new ResourceLocation(IIMain.MODID, "electrolyzer"));
             man.addEntry(CATEGORY, builder.create(), 1);
         }
         {
@@ -105,19 +104,20 @@ public class ClientRegistryEvents {
         }
         {
             ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
-            builder.readFromFile(new ResourceLocation(IIMain.MODID, "electrolyzer"));
-            man.addEntry(CATEGORY, builder.create(), 3);
-        }
-        {
-            ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
             builder.addSpecialElement("car_kiln", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.CAR_KILN));
             builder.readFromFile(new ResourceLocation(IIMain.MODID, "car_kiln"));
-            man.addEntry(CATEGORY, builder.create(), 4);
+            man.addEntry(CATEGORY, builder.create(), 3);
         }
         {
             ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
             builder.addSpecialElement("rotary_kiln", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.ROTARY_KILN));
             builder.readFromFile(new ResourceLocation(IIMain.MODID, "rotary_kiln"));
+            man.addEntry(CATEGORY, builder.create(), 4);
+        }
+        {
+            ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
+            builder.addSpecialElement("steam_turbine", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.STEAMTURBINE));
+            builder.readFromFile(new ResourceLocation(IIMain.MODID, "steam_turbine"));
             man.addEntry(CATEGORY, builder.create(), 5);
         }
         extras.put("l_electrolyzerConsume", () -> IIConfig.COMMON.electrolyzerConsume.get() * 6);
@@ -125,11 +125,11 @@ public class ClientRegistryEvents {
         extras.put("steamTurbineGenerator", () -> IIConfig.COMMON.steamTurbineGenerator.get());
         extras.put("electrodeCost", () -> IIConfig.COMMON.electrodeCost.get());
         ManualHelper.ADD_CONFIG_GETTER.getValue().accept((s) -> {
-			if(s.startsWith(IIMain.MODID)) {
-				String path=s.substring(s.indexOf(".")+1);
-				if(extras.containsKey(path))
-					return extras.get(path).get();
-			}
+            if (s.startsWith(IIMain.MODID)) {
+                String path = s.substring(s.indexOf(".") + 1);
+                if (extras.containsKey(path))
+                    return extras.get(path).get();
+            }
 			return null;
 		});
     }
