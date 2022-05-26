@@ -1,7 +1,7 @@
 {
   "type": "immersiveindustry:car_kiln",
   "input": {
-    "tag": "forge:clay_balls"
+    "item": "minecraft:clay_ball"
   },
   "result": {
     "item": "minecraft:brick"

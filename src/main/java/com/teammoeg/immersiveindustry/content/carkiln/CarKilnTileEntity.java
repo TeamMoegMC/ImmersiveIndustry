@@ -318,12 +318,12 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket) {
 		super.readCustomNBT(nbt, descPacket);
 		energyStorage.readFromNBT(nbt);
-		
-		process=nbt.getInt("process");
-		processMax=nbt.getInt("processMax");
+
+		process = nbt.getInt("process");
+		processMax = nbt.getInt("processMax");
 		result = ItemStack.read(nbt.getCompound("result"));
+		tankinput[0].readFromNBT(nbt.getCompound("tankinput"));
 		if (!descPacket) {
-			tankinput[0].readFromNBT(nbt.getCompound("tankinput"));
 			ItemStackHelper.loadAllItems(nbt, inventory);
 		}
 	}
@@ -332,12 +332,12 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
     public void writeCustomNBT(CompoundNBT nbt, boolean descPacket) {
 		super.writeCustomNBT(nbt, descPacket);
 		energyStorage.writeToNBT(nbt);
-		
-		nbt.putInt("process",process);
-		nbt.putInt("processMax",processMax);
+
+		nbt.putInt("process", process);
+		nbt.putInt("processMax", processMax);
 		nbt.put("result", result.serializeNBT());
+		nbt.put("tankinput", tankinput[0].writeToNBT(new CompoundNBT()));
 		if (!descPacket) {
-			nbt.put("tankinput", tankinput[0].writeToNBT(new CompoundNBT()));
 			ItemStackHelper.saveAllItems(nbt, inventory);
 		}
 	}
