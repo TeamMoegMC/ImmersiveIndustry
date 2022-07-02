@@ -1,14 +1,15 @@
 {
   "type": "immersiveindustry:rotary_kiln",
   "input": {
-    "tag": "minecraft:logs"
+    "item": "minecraft:coal"
   },
   "result": {
-    "item": "minecraft:charcoal"
+    "tag": "forge:coal_coke"
   },
   "result_fluid": {
     "fluid": "immersiveengineering:creosote",
-    "amount": 250
+    "amount": 500
   },
-  "time": 600
+  "heated ": true,
+  "time": 900
 }
