@@ -2,6 +2,6 @@
 只是一个水缸加俩电极
 <&items>
 这台电解机很简陋，无法收集产生的气体，也无法生产一些大功率的配方。
-它需要<config;i;immersiveindustry.electrolyzerConsume>Flux/t的持续输入，中途停电会导致配方失败。
+它需要Flux的持续输入，中途停电会导致配方失败。
 除顶面和左右外，都可以输入流体；除左右外都可以输入/输出物品；从右侧的能量接口处输入能量。
 你以后可能需要一个<link;immersiveindustry:industrial_electrolyzer;更大的家伙>……

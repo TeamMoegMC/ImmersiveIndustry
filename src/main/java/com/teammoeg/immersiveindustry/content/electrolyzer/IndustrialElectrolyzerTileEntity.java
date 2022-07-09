@@ -67,6 +67,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 		IEBlockInterfaces.IInteractionObjectIE, IEBlockInterfaces.IProcessTile {
 	public int process = 0;
 	public int processMax = 0;
+	public int tickEnergy = 0;
 	public ItemStack result = ItemStack.EMPTY;
 	public FluidStack resultFluid = FluidStack.EMPTY;
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
@@ -160,6 +161,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 		if (!descPacket) {
 			result = ItemStack.read(nbt.getCompound("result"));
 			resultFluid = FluidStack.loadFluidStackFromNBT(nbt.getCompound("result_fluid"));
+			tickEnergy = nbt.getInt("tickEnergy");
 			ItemStackHelper.loadAllItems(nbt, inventory);
 		}
 	}
@@ -175,6 +177,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 		if (!descPacket) {
 			nbt.put("result", result.serializeNBT());
 			nbt.put("result_fluid", resultFluid.writeToNBT(new CompoundNBT()));
+			nbt.putInt("tickEnergy", tickEnergy);
 			ItemStackHelper.saveAllItems(nbt, inventory);
 		}
 	}
@@ -184,17 +187,17 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 		checkForNeedlessTicking();
 		if (!isDummy()) {
 			if (!world.isRemote) {
-				int energyConsume=IIConfig.COMMON.electrolyzerConsume.get() * 6;
-				double elconsume=IIConfig.COMMON.electrodeCost.get();
+				int energyConsume = this.tickEnergy * 6;
+				double elconsume = IIConfig.COMMON.electrodeCost.get();
 				tryOutput();
 				if (!isRSDisabled() && energyStorage.getEnergyStored() >= energyConsume && hasElectrodes()) {
 					if (process > 0) {
 						int ele;
-						int duracost=0;
-						if(elconsume>0) {
-							duracost=(int)elconsume;
-							double npart=MathHelper.frac(elconsume);
-							if(this.getWorld().rand.nextInt(1000)<npart*1000) {
+						int duracost = 0;
+						if (elconsume > 0) {
+							duracost = (int) elconsume;
+							double npart = MathHelper.frac(elconsume);
+							if (this.getWorld().rand.nextInt(1000) < npart * 1000) {
 								duracost++;
 							}
 						}
@@ -214,14 +217,16 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
                         if (inventory.get(4).isEmpty()) {
                             inventory.set(4, result);
                             result = ItemStack.EMPTY;
-                            process = processMax = 0;
-                            this.markContainingBlockForUpdate(null);
+							process = processMax = 0;
+							tickEnergy = 0;
+							this.markContainingBlockForUpdate(null);
                         } else if (inventory.get(4).isItemEqual(result)) {
-                            inventory.get(4).grow(result.getCount());
-                            result = ItemStack.EMPTY;
-                            process = processMax = 0;
-                            this.markContainingBlockForUpdate(null);
-                        } else
+							inventory.get(4).grow(result.getCount());
+							result = ItemStack.EMPTY;
+							process = processMax = 0;
+							tickEnergy = 0;
+							this.markContainingBlockForUpdate(null);
+						} else
                             return;
 					}
 					if (!resultFluid.isEmpty()) {
@@ -257,7 +262,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 									}
 									for (int i = 0; i < 2; i++) {
 										if(inventory.get(i).isEmpty()) {
-											inventory.set(i,is);
+											inventory.set(i, is);
 											break;
 										}
 									}
@@ -267,6 +272,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 							}
 						}
 						this.processMax = this.process = recipe.time;
+						this.tickEnergy = recipe.tickEnergy;
 						if (recipe.input_fluid != null)
 							tank[0].drain(recipe.input_fluid.getAmount(), IFluidHandler.FluidAction.EXECUTE);
 						result = recipe.output.copy();

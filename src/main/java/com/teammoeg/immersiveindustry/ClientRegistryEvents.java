@@ -120,8 +120,6 @@ public class ClientRegistryEvents {
             builder.readFromFile(new ResourceLocation(IIMain.MODID, "steam_turbine"));
             man.addEntry(CATEGORY, builder.create(), 5);
         }
-        extras.put("l_electrolyzerConsume", () -> IIConfig.COMMON.electrolyzerConsume.get() * 6);
-        extras.put("electrolyzerConsume", () -> IIConfig.COMMON.electrolyzerConsume.get());
         extras.put("steamTurbineGenerator", () -> IIConfig.COMMON.steamTurbineGenerator.get());
         extras.put("electrodeCost", () -> IIConfig.COMMON.electrodeCost.get());
         ManualHelper.ADD_CONFIG_GETTER.getValue().accept((s) -> {

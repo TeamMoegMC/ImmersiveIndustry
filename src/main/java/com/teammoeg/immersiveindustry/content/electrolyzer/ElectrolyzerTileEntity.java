@@ -27,7 +27,6 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ItemStackHelper;
@@ -54,8 +53,8 @@ public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInven
         ITickableTileEntity, IEBlockInterfaces.IProcessTile, IEBlockInterfaces.IStateBasedDirectional, IEBlockInterfaces.IInteractionObjectIE {
     public int process = 0;
     public int processMax = 0;
-    public ItemStack result=ItemStack.EMPTY;
-    public final int energyConsume;
+    public int tickEnergy = 0;
+    public ItemStack result = ItemStack.EMPTY;
     public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(20000);
     public FluidTank tank = new FluidTank(8 * FluidAttributes.BUCKET_VOLUME, ElectrolyzerRecipe::isValidRecipeFluid);
     private NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
@@ -63,7 +62,6 @@ public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInven
 
     public ElectrolyzerTileEntity() {
         super(IIContent.IITileTypes.ELECTROLYZER.get());
-        energyConsume = IIConfig.COMMON.electrolyzerConsume.get();
     }
 
     @Override
@@ -74,6 +72,7 @@ public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInven
         processMax = nbt.getInt("processMax");
         if (!descPacket) {
             result = ItemStack.read(nbt.getCompound("result"));
+            tickEnergy = nbt.getInt("tickEnergy");
             ItemStackHelper.loadAllItems(nbt, inventory);
         }
     }
@@ -86,6 +85,7 @@ public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInven
         nbt.putInt("processMax", processMax);
         if (!descPacket) {
             nbt.put("result", result.serializeNBT());
+            nbt.putInt("tickEnergy", tickEnergy);
             ItemStackHelper.saveAllItems(nbt, inventory);
         }
     }
@@ -93,33 +93,36 @@ public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInven
     @Override
     public void tick() {
         if (!world.isRemote) {
-            if (energyStorage.getEnergyStored() >= energyConsume) {
+            if (energyStorage.getEnergyStored() >= tickEnergy) {
                 if (process > 0) {
                     process--;
-                    energyStorage.extractEnergy(energyConsume, false);
+                    energyStorage.extractEnergy(tickEnergy, false);
                     this.markContainingBlockForUpdate(null);
                     return;
                 }
-                if(!result.isEmpty()) {
-                	if (inventory.get(1).isEmpty()) {
+                if (!result.isEmpty()) {
+                    if (inventory.get(1).isEmpty()) {
                         inventory.set(1, result);
-                        result=ItemStack.EMPTY;
+                        result = ItemStack.EMPTY;
                         process = processMax = 0;
+                        tickEnergy = 0;
                 	} else if (inventory.get(1).isItemEqual(result)) {
                     	inventory.get(1).grow(result.getCount());
                     	result=ItemStack.EMPTY;
-                    	process = processMax = 0;
+                        process = processMax = 0;
+                        tickEnergy = 0;
                 	}else return;
                 }
                 ElectrolyzerRecipe recipe=getRecipe();
                 if (recipe != null) {
-                	this.processMax = this.process = recipe.time;
-                	if(recipe.inputs.length>0) {
-                		Utils.modifyInvStackSize(inventory, 0, -recipe.inputs[0].getCount());
-                	}
-                	if(recipe.input_fluid!=null)
-                		tank.drain(recipe.input_fluid.getAmount(), IFluidHandler.FluidAction.EXECUTE);
-                	result=recipe.output.copy();
+                    this.processMax = this.process = recipe.time;
+                    this.tickEnergy = recipe.tickEnergy;
+                    if (recipe.inputs.length > 0) {
+                        Utils.modifyInvStackSize(inventory, 0, -recipe.inputs[0].getCount());
+                    }
+                    if (recipe.input_fluid != null)
+                        tank.drain(recipe.input_fluid.getAmount(), IFluidHandler.FluidAction.EXECUTE);
+                    result = recipe.output.copy();
                 }
             } else if (process > 0) {
                 process = processMax;

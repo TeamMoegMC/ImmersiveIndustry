@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableSet;
-import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent.IIMultiblocks;
 import com.teammoeg.immersiveindustry.IIContent.IITileTypes;
 import net.minecraft.entity.player.PlayerEntity;
@@ -52,6 +51,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 	public int processMax = 0;
 	public int process = 0;
 	public int cd = 0;
+	public int tickEnergy = 0;
 	boolean active;
 	public int angle;// angle for animation in degrees
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
@@ -120,22 +120,17 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 		checkForNeedlessTicking();
 		if (!isDummy()) {
 			if (!world.isRemote) {
-				int energyConsume = IIConfig.COMMON.rotaryKilnRotor.get();
+				int energyConsume = this.tickEnergy;
 				tryOutput();
-				for (Process p : processes) {
-					if(p.heated) {
-						energyConsume+=IIConfig.COMMON.rotaryKilnHeater.get();
-						break;
-					}
-				}
+
 				if (!isRSDisabled() && energyStorage.getEnergyStored() >= energyConsume) {
 					process = processMax = 0;
 					if (!processes.isEmpty()) {
-						int lp=0;
-						int lpm=0;
+						int lp = 0;
+						int lpm = 0;
 						for (Process p : processes) {
-							lp=p.tick(lp+lpm/16-2);
-							lpm=p.processMax;
+							lp = p.tick(lp + lpm / 16 - 2);
+							lpm = p.processMax;
 						}
 						if(!processes.isEmpty()) {
 							Process p=processes.get(0);
@@ -165,6 +160,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 						boolean flag = false;
 						if (active) {
 							active = false;
+							this.tickEnergy = 0;
 							flag = true;
 						}
 						if (flag)
@@ -179,8 +175,9 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 							if (recipe != null) {
 								inventory.get(2).shrink(recipe.input.getCount());
 								processes.add(
-										new Process(recipe.output.copy(), recipe.output_fluid.copy(), recipe.time,recipe.heat));
+										new Process(recipe.output.copy(), recipe.output_fluid.copy(), recipe.time));
 								cd = recipe.time / 16;
+								this.tickEnergy = Math.max(tickEnergy, recipe.tickEnergy);
 							}
 						}
 					} else if (!inventory.get(0).isEmpty() || !inventory.get(1).isEmpty()) {
@@ -315,6 +312,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 		processMax = nbt.getInt("processMax");
 		if (!descPacket) {
 			cd = nbt.getInt("next");
+			tickEnergy = nbt.getInt("tickEnergy");
 			ListNBT r = nbt.getList("queue", 10);
 			processes.clear();
 			r.stream().map(e -> (CompoundNBT) e).map(Process::new).forEach(processes::add);
@@ -332,6 +330,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 		nbt.putInt("processMax", processMax);
 		if (!descPacket) {
 			nbt.putInt("next", cd);
+			nbt.putInt("tickEnergy", tickEnergy);
 			ListNBT nl = new ListNBT();
 			for (Process p : processes)
 				nl.add(p.serialize());

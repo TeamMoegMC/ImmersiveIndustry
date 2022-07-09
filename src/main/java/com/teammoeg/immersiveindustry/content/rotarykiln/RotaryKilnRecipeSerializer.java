@@ -44,13 +44,15 @@ public class RotaryKilnRecipeSerializer extends IERecipeSerializer<RotaryKilnRec
         FluidStack result_fluid = null;
         if (json.has("result_fluid"))
             result_fluid = ApiUtils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "result_fluid"));
-        int time=200;
-        if(json.has("time"))
-        	time=json.get("time").getAsInt();
-        boolean heated=false;
-        if(json.has("heated"))
-        	heated=json.get("heated").getAsBoolean();
-        return new RotaryKilnRecipe(recipeId, output, input, result_fluid,time,heated);
+
+        int time = 200;
+        if (json.has("time"))
+            time = json.get("time").getAsInt();
+        int tickEnergy = 32;
+        if (json.has("tickEnergy"))
+            tickEnergy = json.get("tickEnergy").getAsInt();
+
+        return new RotaryKilnRecipe(recipeId, output, input, result_fluid, time, tickEnergy);
     }
 
     @Nullable
@@ -61,7 +63,9 @@ public class RotaryKilnRecipeSerializer extends IERecipeSerializer<RotaryKilnRec
         FluidStack output_fluid = null;
         if (buffer.readBoolean())
             output_fluid = FluidStack.readFromPacket(buffer);
-        return new RotaryKilnRecipe(recipeId, output, input, output_fluid,buffer.readVarInt(),buffer.readBoolean());
+        int time = buffer.readVarInt();
+        int tickEnergy = buffer.readVarInt();
+        return new RotaryKilnRecipe(recipeId, output, input, output_fluid, time, tickEnergy);
     }
 
     @Override
@@ -73,6 +77,6 @@ public class RotaryKilnRecipeSerializer extends IERecipeSerializer<RotaryKilnRec
             recipe.output_fluid.writeToPacket(buffer);
         } else buffer.writeBoolean(false);
         buffer.writeVarInt(recipe.time);
-        buffer.writeBoolean(recipe.heat);
+        buffer.writeVarInt(recipe.tickEnergy);
     }
 }

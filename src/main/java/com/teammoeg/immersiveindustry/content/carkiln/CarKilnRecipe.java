@@ -29,15 +29,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.StreamSupport;
-
-import com.mojang.datafixers.util.Pair;
-import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipe;
 
 public class CarKilnRecipe extends IESerializableRecipe {
     public static IRecipeType<CarKilnRecipe> TYPE;
@@ -47,13 +40,15 @@ public class CarKilnRecipe extends IESerializableRecipe {
     public final ItemStack output;
     public final FluidStack input_fluid;
     public final int time;
+    public final int tickEnergy;
 
-    public CarKilnRecipe(ResourceLocation id, ItemStack output, IngredientWithSize[] inputs, FluidStack input_fluid,int time) {
+    public CarKilnRecipe(ResourceLocation id, ItemStack output, IngredientWithSize[] inputs, FluidStack input_fluid, int time, int tickEnergy) {
         super(output, TYPE, id);
         this.output = output;
         this.inputs = inputs;
         this.input_fluid = input_fluid;
-        this.time=time;
+        this.time = time;
+        this.tickEnergy = tickEnergy;
     }
 
     @Override

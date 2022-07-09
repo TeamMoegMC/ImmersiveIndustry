@@ -6,5 +6,6 @@
   "result": {
     "item": "minecraft:brick"
   },
-  "time": 200
+  "time": 200,
+  "tickEnergy": 32
 }
