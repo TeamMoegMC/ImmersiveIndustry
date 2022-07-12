@@ -87,7 +87,8 @@ public class CarKilnCategory implements IRecipeCategory<CarKilnRecipe> {
         ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.inputs).build());
 
         ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
-        ingredients.setInput(VanillaTypes.FLUID, recipe.input_fluid);
+        if (!recipe.input_fluid.isEmpty())
+            ingredients.setInput(VanillaTypes.FLUID, recipe.input_fluid);
     }
 
 

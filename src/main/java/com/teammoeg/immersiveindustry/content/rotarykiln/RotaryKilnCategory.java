@@ -87,7 +87,8 @@ public class RotaryKilnCategory implements IRecipeCategory<RotaryKilnRecipe> {
         ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).build());
 
         ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
-        ingredients.setOutput(VanillaTypes.FLUID, recipe.output_fluid);
+        if (!recipe.output_fluid.isEmpty())
+            ingredients.setOutput(VanillaTypes.FLUID, recipe.output_fluid);
     }
 
 
