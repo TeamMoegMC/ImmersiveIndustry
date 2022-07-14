@@ -128,21 +128,22 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 									if(iws.testIgnoringSize(cr)) {
 										if(required>=cr.getCount()) {
 											required-=cr.getCount();
-											inventory.set(i,ItemStack.EMPTY);
-										}else {
+											inventory.set(i, ItemStack.EMPTY);
+										} else {
 											cr.shrink(required);
-											required=0;
+											required = 0;
 										}
-										if(required==0)
+										if (required == 0)
 											break;
 									}
 								}
 							}
-							tankinput[0].drain(recipe.input_fluid,FluidAction.EXECUTE);
-							int wked=processMax-process;
-							processMax=recipe.time+104;
-							process=processMax-wked;
-							result=recipe.output.copy();
+							if (!recipe.input_fluid.isEmpty())
+								tankinput[0].drain(recipe.input_fluid, FluidAction.EXECUTE);
+							int wked = processMax - process;
+							processMax = recipe.time + 104;
+							process = processMax - wked;
+							result = recipe.output.copy();
 							if (!result.isEmpty())
 								result.setCount(result.getCount() * procnum);
 						}
