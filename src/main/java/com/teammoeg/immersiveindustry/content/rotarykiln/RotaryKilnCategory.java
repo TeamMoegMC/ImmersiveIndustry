@@ -46,7 +46,7 @@ public class RotaryKilnCategory implements IRecipeCategory<RotaryKilnRecipe> {
 
     public RotaryKilnCategory(IGuiHelper guiHelper) {
         this.ICON = guiHelper.createDrawableIngredient(new ItemStack(IIContent.IIMultiblocks.rotary_kiln));
-        this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/rotary_kiln.png"), 9, 22, 143, 58);
+        this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/rotary_kiln.png"), 9, 22, 143, 59);
         this.TANK = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/rotary_kiln.png"), 197, 1, 18, 48);
         IDrawableStatic arrow = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/rotary_kiln.png"), 178, 59, 38, 16);
         ARROW = guiHelper.createAnimatedDrawable(arrow, 40, StartDirection.LEFT, false);

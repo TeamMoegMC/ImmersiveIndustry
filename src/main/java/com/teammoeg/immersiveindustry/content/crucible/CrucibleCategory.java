@@ -78,9 +78,9 @@ public class CrucibleCategory implements IRecipeCategory<CrucibleRecipe> {
     public void setRecipe(IRecipeLayout recipeLayout, CrucibleRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 
-        guiItemStacks.init(0, true, 10, 10);
-        guiItemStacks.init(1, true, 31, 10);
-        guiItemStacks.init(2, false, 86, 10);
+        guiItemStacks.init(0, true, 10, 11);
+        guiItemStacks.init(1, true, 31, 11);
+        guiItemStacks.init(2, false, 89, 11);
 
         guiItemStacks.set(ingredients);
     }
