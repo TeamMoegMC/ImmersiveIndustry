@@ -7,6 +7,8 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
 
 import java.util.function.BiFunction;
 
@@ -19,7 +21,7 @@ public class IIDirectionalBlock extends IIBaseBlock {
 
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		return this.getDefaultState().with(BlockStateProperties.FACING,context.getNearestLookingDirection());
+		return this.getDefaultState().with(BlockStateProperties.FACING, context.getNearestLookingDirection());
 	}
 
 	@Override
@@ -28,4 +30,13 @@ public class IIDirectionalBlock extends IIBaseBlock {
 		builder.add(BlockStateProperties.FACING);
 	}
 
+	@Override
+	public BlockState rotate(BlockState state, Rotation rot) {
+		return state.with(BlockStateProperties.FACING, rot.rotate(state.get(BlockStateProperties.FACING)));
+	}
+
+	@Override
+	public BlockState mirror(BlockState state, Mirror mirrorIn) {
+		return state.with(BlockStateProperties.FACING, mirrorIn.mirror(state.get(BlockStateProperties.FACING)));
+	}
 }
