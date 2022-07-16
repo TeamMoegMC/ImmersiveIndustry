@@ -62,7 +62,7 @@ public class ElectrolyzerRecipeSerializer extends IERecipeSerializer<Electrolyze
         int time = 200;
         if (json.has("time"))
             time = json.get("time").getAsInt();
-        int tickEnergy = 32;
+        int tickEnergy = 24;
         if (json.has("tickEnergy"))
             tickEnergy = json.get("tickEnergy").getAsInt();
 
