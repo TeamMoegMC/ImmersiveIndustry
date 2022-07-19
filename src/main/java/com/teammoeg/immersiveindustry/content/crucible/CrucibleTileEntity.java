@@ -280,8 +280,9 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                             this.process = recipe.time;
                             this.processMax = process;
                         } else {
-                            Utils.modifyInvStackSize(inventory, 0, -recipe.inputs[0].getCount());
-                            Utils.modifyInvStackSize(inventory, 1, -recipe.inputs[1].getCount());
+                            for (int i = 0; i < recipe.inputs.length; i++) {
+                                Utils.modifyInvStackSize(inventory, i, -recipe.inputs[i].getCount());
+                            }
                             if (!inventory.get(3).isEmpty())
                                 inventory.get(3).grow(recipe.output.copy().getCount());
                             else if (inventory.get(3).isEmpty())
