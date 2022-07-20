@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -62,7 +63,7 @@ public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
 		int time = 200;
 		if (json.has("time"))
 			time = json.get("time").getAsInt();
-		int tickEnergy = 32;
+		int tickEnergy = IIConfig.COMMON.carKilnBase.get();
 		if (json.has("tickEnergy"))
 			tickEnergy = json.get("tickEnergy").getAsInt();
 

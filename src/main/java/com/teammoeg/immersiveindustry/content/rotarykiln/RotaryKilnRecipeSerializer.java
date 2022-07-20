@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import com.google.gson.JsonObject;
+import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -48,7 +49,7 @@ public class RotaryKilnRecipeSerializer extends IERecipeSerializer<RotaryKilnRec
         int time = 200;
         if (json.has("time"))
             time = json.get("time").getAsInt();
-        int tickEnergy = 32;
+        int tickEnergy = IIConfig.COMMON.rotaryKilnBase.get();
         if (json.has("tickEnergy"))
             tickEnergy = json.get("tickEnergy").getAsInt();
 

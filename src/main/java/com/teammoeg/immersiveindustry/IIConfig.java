@@ -30,12 +30,18 @@ public class IIConfig {
 
 
     public static class Common {
+        public final ForgeConfigSpec.IntValue electrolyzerBase;
+        public final ForgeConfigSpec.IntValue rotaryKilnBase;
+        public final ForgeConfigSpec.IntValue carKilnBase;
         public final ForgeConfigSpec.IntValue steamTurbineGenerator;
         public final ForgeConfigSpec.DoubleValue electrodeCost;
 
         Common(ForgeConfigSpec.Builder builder) {
-            steamTurbineGenerator = builder.defineInRange("steamTurbineGenerator", 1024, 0, 4096);
-            electrodeCost = builder.defineInRange("electrodeCost", 0.25, 0, 96000);
+            electrolyzerBase = builder.defineInRange("ElectrolyzerBaseTickEnergy", 32, 0, 4096);
+            rotaryKilnBase = builder.defineInRange("RotaryKilnBaseTickEnergy", 64, 0, 4096);
+            carKilnBase = builder.defineInRange("CarKilnBaseTickEnergy", 64, 0, 4096);
+            steamTurbineGenerator = builder.defineInRange("SteamTurbineGenerator", 1024, 0, 4096);
+            electrodeCost = builder.defineInRange("ElectrodeCost", 0.25, 0, 96000);
         }
     }
 
