@@ -50,6 +50,8 @@ public class CrucibleRecipeSerializer extends IERecipeSerializer<CrucibleRecipe>
             }
         } else inputs = new IngredientWithSize[0];
         int time = JSONUtils.getInt(json, "time");
+        if(inputs==null||inputs.length==0)
+        	throw new RuntimeException("Error loading crucible recipe "+recipeId);
         return new CrucibleRecipe(recipeId, output, inputs, time);
     }
 
