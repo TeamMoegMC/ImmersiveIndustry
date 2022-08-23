@@ -1,3 +1,2 @@
-0.1.6c:
-- Fix Industrial Electrolyzer crash when using some optimizing mods
-- Fix Industrial Electrolyzer redstone control position 
+0.1.7d:
+- Fix Car kiln inproperly animated
