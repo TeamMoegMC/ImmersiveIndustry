@@ -47,6 +47,7 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 	public int processMax = 0;
 	public int process = 0;
 	public int tickEnergy = 0;
+	public short modelState;
 	int pos;//animation process from 0-52, 0=idle 52=working
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
@@ -120,6 +121,7 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 							for(int i=0;i<maxprocs.length;i++) {
 								procnum=Math.min(procnum,(int)maxprocs[i]);
 							}
+							modelState=(short) procnum;
 							//take items;
 							for(IngredientWithSize iws:recipe.inputs) {
 								int required=iws.getCount()*procnum;
@@ -153,6 +155,7 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 						this.markContainingBlockForUpdate(null);
 						return;
 					}
+					modelState=0;
 					process = processMax = 0;
 					this.tickEnergy = 0;
 					if (!result.isEmpty()) {
@@ -181,6 +184,10 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 					CarKilnRecipe recipe = CarKilnRecipe.findRecipe(inventory,tankinput[0].getFluid(),0, 4);
 					if (recipe != null) {
 						process = processMax = recipe.time + 104;
+						modelState=0;
+						for(int i=0;i<4;i++)
+							modelState+=inventory.get(i).getCount();
+						for(int i=0;i<4;i++) {}
 						this.tickEnergy = recipe.tickEnergy;
 						this.markContainingBlockForUpdate(null);
 					}
@@ -324,9 +331,11 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 
 		process = nbt.getInt("process");
 		processMax = nbt.getInt("processMax");
-		tankinput[0].readFromNBT(nbt.getCompound("tankinput"));
+		modelState=nbt.getShort("modelNum");
+		
 		if (!descPacket) {
 			result = ItemStack.read(nbt.getCompound("result"));
+			tankinput[0].readFromNBT(nbt.getCompound("tankinput"));
 			tickEnergy = nbt.getInt("tickEnergy");
 			ItemStackHelper.loadAllItems(nbt, inventory);
 		}
@@ -339,9 +348,11 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 
 		nbt.putInt("process", process);
 		nbt.putInt("processMax", processMax);
-		nbt.put("tankinput", tankinput[0].writeToNBT(new CompoundNBT()));
+		nbt.putShort("modelNum",modelState);
+		
 		if (!descPacket) {
 			nbt.put("result", result.serializeNBT());
+			nbt.put("tankinput", tankinput[0].writeToNBT(new CompoundNBT()));
 			nbt.putInt("tickEnergy", tickEnergy);
 			ItemStackHelper.saveAllItems(nbt, inventory);
 		}

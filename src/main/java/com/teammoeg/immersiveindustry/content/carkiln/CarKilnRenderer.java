@@ -53,11 +53,7 @@ public class CarKilnRenderer extends TileEntityRenderer<CarKilnTileEntity> {
 			double delta=te.pos/16D-1.5;
 			matrixStack.translate(delta*d.getXOffset(),0,delta*d.getZOffset());
 		}
-		int titem=0;
-		if(!te.result.isEmpty()) {
-			titem=te.result.getCount();
-		}else for(int i=0;i<4;i++)
-			titem+=te.getInventory().get(i).getCount();
+		int titem=te.modelState;
 		if(titem>0) {
 			if(titem>16)
 				RenderUtils.renderModelTESRFast(PARTS.getNullQuads(d, state, new SinglePropertyModelData<>(s2, Model.IE_OBJ_STATE)), bufferIn.getBuffer(RenderType.getSolid()), matrixStack, combinedLightIn, combinedOverlayIn);
