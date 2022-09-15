@@ -1,2 +1,3 @@
-0.1.7d:
-- Fix Car kiln inproperly animated
+0.1.7e:
+- More custom car kiln recipe
+- Fix car kiln liquid slot not shown

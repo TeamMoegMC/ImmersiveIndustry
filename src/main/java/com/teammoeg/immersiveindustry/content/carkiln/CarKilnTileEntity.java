@@ -121,6 +121,7 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 							for(int i=0;i<maxprocs.length;i++) {
 								procnum=Math.min(procnum,(int)maxprocs[i]);
 							}
+							procnum=Math.min(procnum,(tankinput[0].getFluidAmount()-recipe.start_fluid_cost)/recipe.input_fluid.getAmount());
 							modelState=(short) procnum;
 							//take items;
 							for(IngredientWithSize iws:recipe.inputs) {
@@ -140,8 +141,11 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 									}
 								}
 							}
-							if (!recipe.input_fluid.isEmpty())
-								tankinput[0].drain(recipe.input_fluid, FluidAction.EXECUTE);
+							if (!recipe.input_fluid.isEmpty()) {
+								int tcost=recipe.input_fluid.getAmount()*procnum+recipe.start_fluid_cost;
+								
+								tankinput[0].drain(tcost,FluidAction.EXECUTE);
+							}
 							int wked = processMax - process;
 							processMax = recipe.time + 104;
 							process = processMax - wked;
@@ -332,10 +336,10 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 		process = nbt.getInt("process");
 		processMax = nbt.getInt("processMax");
 		modelState=nbt.getShort("modelNum");
-		
+		tankinput[0].readFromNBT(nbt.getCompound("tankinput"));
 		if (!descPacket) {
 			result = ItemStack.read(nbt.getCompound("result"));
-			tankinput[0].readFromNBT(nbt.getCompound("tankinput"));
+			
 			tickEnergy = nbt.getInt("tickEnergy");
 			ItemStackHelper.loadAllItems(nbt, inventory);
 		}
@@ -349,10 +353,10 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 		nbt.putInt("process", process);
 		nbt.putInt("processMax", processMax);
 		nbt.putShort("modelNum",modelState);
-		
+		nbt.put("tankinput", tankinput[0].writeToNBT(new CompoundNBT()));
 		if (!descPacket) {
 			nbt.put("result", result.serializeNBT());
-			nbt.put("tankinput", tankinput[0].writeToNBT(new CompoundNBT()));
+			
 			nbt.putInt("tickEnergy", tickEnergy);
 			ItemStackHelper.saveAllItems(nbt, inventory);
 		}

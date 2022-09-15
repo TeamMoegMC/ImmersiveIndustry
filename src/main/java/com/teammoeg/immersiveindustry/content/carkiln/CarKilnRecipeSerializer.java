@@ -66,8 +66,10 @@ public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
 		int tickEnergy = IIConfig.COMMON.carKilnBase.get();
 		if (json.has("tickEnergy"))
 			tickEnergy = json.get("tickEnergy").getAsInt();
-
-		return new CarKilnRecipe(recipeId, output, inputs, input_fluid, time, tickEnergy);
+		int start_fluid_cost=0;
+		if(json.has("start_fluid_cost"))
+			start_fluid_cost=json.get("start_fluid_cost").getAsInt();
+		return new CarKilnRecipe(recipeId, output, inputs, input_fluid, time, tickEnergy,start_fluid_cost);
 	}
 
 	@Nullable
@@ -77,10 +79,7 @@ public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
 		IngredientWithSize[] inputs = new IngredientWithSize[buffer.readVarInt()];
 		for (int i = 0; i < inputs.length; i++)
 			inputs[i] = IngredientWithSize.read(buffer);
-		FluidStack output_fluid = FluidStack.readFromPacket(buffer);
-		int time = buffer.readVarInt();
-		int tickEnergy = buffer.readVarInt();
-		return new CarKilnRecipe(recipeId, output, inputs, output_fluid, time, tickEnergy);
+		return new CarKilnRecipe(recipeId, output, inputs, FluidStack.readFromPacket(buffer),buffer.readVarInt(),buffer.readVarInt(),buffer.readVarInt());
 	}
 
 	@Override
@@ -92,5 +91,6 @@ public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
 		recipe.input_fluid.writeToPacket(buffer);
 		buffer.writeVarInt(recipe.time);
 		buffer.writeVarInt(recipe.tickEnergy);
+		buffer.writeVarInt(recipe.start_fluid_cost);
 	}
 }

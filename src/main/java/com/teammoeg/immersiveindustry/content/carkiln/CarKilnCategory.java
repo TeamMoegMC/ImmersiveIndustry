@@ -102,6 +102,8 @@ public class CarKilnCategory implements IRecipeCategory<CarKilnRecipe> {
         guiFluidStacks.init(0, true, 4, 10, 16, 47, 3200, false, TANK);
         if (!recipe.input_fluid.isEmpty()) {
             guiFluidStacks.set(0, recipe.input_fluid);
+            if(recipe.start_fluid_cost!=0)
+            guiFluidStacks.addTooltipCallback((s,b,i,t)->t.add(new TranslationTextComponent("gui.jei.tooltip.immersiveindustry.start_cost",recipe.start_fluid_cost)));
         }
         guiItemStacks.init(4, false, 89, 33);
         guiItemStacks.set(ingredients);

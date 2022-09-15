@@ -41,14 +41,16 @@ public class CarKilnRecipe extends IESerializableRecipe {
     public final FluidStack input_fluid;
     public final int time;
     public final int tickEnergy;
+    public final int start_fluid_cost;
 
-    public CarKilnRecipe(ResourceLocation id, ItemStack output, IngredientWithSize[] inputs, FluidStack input_fluid, int time, int tickEnergy) {
+    public CarKilnRecipe(ResourceLocation id, ItemStack output, IngredientWithSize[] inputs, FluidStack input_fluid, int time, int tickEnergy,int start_fluid_cost) {
         super(output, TYPE, id);
         this.output = output;
         this.inputs = inputs;
         this.input_fluid = input_fluid;
         this.time = time;
         this.tickEnergy = tickEnergy;
+        this.start_fluid_cost=start_fluid_cost;
     }
 
     @Override
@@ -83,7 +85,7 @@ public class CarKilnRecipe extends IESerializableRecipe {
     	exter:
     	for (CarKilnRecipe recipe : recipeList)
         	if(recipe.inputs.length<=size) {
-        		if(!f.containsFluid(recipe.input_fluid))continue;
+        		if(!f.isFluidEqual(recipe.input_fluid)||(f.getAmount()<recipe.input_fluid.getAmount()+recipe.start_fluid_cost))continue;
         		outer:
         		for(IngredientWithSize iws:recipe.inputs) {
         			for(int i=startIndex;i<endIndex;i++)
