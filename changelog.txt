@@ -1,3 +1,2 @@
-0.1.7e:
-- More custom car kiln recipe
-- Fix car kiln liquid slot not shown
+0.1.7f:
+- Fix car kiln crash
