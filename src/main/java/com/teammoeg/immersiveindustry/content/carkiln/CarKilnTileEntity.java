@@ -121,6 +121,7 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 							for(int i=0;i<maxprocs.length;i++) {
 								procnum=Math.min(procnum,(int)maxprocs[i]);
 							}
+							if(recipe.input_fluid.getAmount()>0)
 							procnum=Math.min(procnum,(tankinput[0].getFluidAmount()-recipe.start_fluid_cost)/recipe.input_fluid.getAmount());
 							modelState=(short) procnum;
 							//take items;
