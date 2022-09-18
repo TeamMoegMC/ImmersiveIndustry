@@ -85,6 +85,7 @@ public class CarKilnRecipe extends IESerializableRecipe {
     	exter:
     	for (CarKilnRecipe recipe : recipeList)
         	if(recipe.inputs.length<=size) {
+        		if(!recipe.input_fluid.isEmpty())
         		if(!f.isFluidEqual(recipe.input_fluid)||(f.getAmount()<recipe.input_fluid.getAmount()+recipe.start_fluid_cost))continue;
         		outer:
         		for(IngredientWithSize iws:recipe.inputs) {
