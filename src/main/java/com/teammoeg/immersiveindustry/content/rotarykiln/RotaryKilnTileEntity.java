@@ -122,7 +122,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 			if (!world.isRemote) {
 				int energyConsume = this.tickEnergy;
 				tryOutput();
-
+				boolean flag = false;
 				if (!isRSDisabled() && energyStorage.getEnergyStored() >= energyConsume) {
 					process = processMax = 0;
 					if (!processes.isEmpty()) {
@@ -157,15 +157,12 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 						processes.removeIf(Process::removable);
 						this.markContainingBlockForUpdate(null);
 					} else {
-						boolean flag = false;
+						
 						if (active) {
 							active = false;
 							this.tickEnergy = 0;
 							flag = true;
 						}
-						if (flag)
-							this.markContainingBlockForUpdate(null);
-
 					}
 					if (cd > 0)
 						cd--;
@@ -184,7 +181,8 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 						inventory.set(2, inventory.get(1));
 						inventory.set(1, inventory.get(0).split(16));
 					}
-					this.markContainingBlockForUpdate(null);
+					if (flag)
+						this.markContainingBlockForUpdate(null);
 				} else if (active) {
 					active = false;
 					this.markContainingBlockForUpdate(null);

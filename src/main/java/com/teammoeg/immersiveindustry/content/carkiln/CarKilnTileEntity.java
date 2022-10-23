@@ -180,7 +180,6 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 							}
 							if(result.isEmpty())break;
 						}
-						this.markContainingBlockForUpdate(null);
 					}
 					if(!result.isEmpty())
 						return;
