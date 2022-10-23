@@ -1,3 +1,6 @@
 Car Kiln
-
+An Extra large furnace
 <&car_kiln>
+Car kilns are used to heat up a batch of materials. Inputs on the side are item inputs. Input on the back are liquid input. And the bottom trolley at the front is item export.
+Car kiln may require some liquid to run the process. They may also need some extra liquids to start a process.
+Car kiln can do 32 process at once. However, it cost more energy to startup. So better make batches as large as you can.

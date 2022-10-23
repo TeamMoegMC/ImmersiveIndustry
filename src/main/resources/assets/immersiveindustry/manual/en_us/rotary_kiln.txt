@@ -1,3 +1,6 @@
 Rotary Kiln
-
+Larger Coke oven
 <&rotary_kiln>
+Rotary kiln are used to heat up dusts or do coke process. Input at the top front is item input. Output at the top is fluid export. Output at the back is Item output.
+Rotary kiln can produce liquid during the process.
+Rotary kiln have 16 seperate process slot. They process at the same time and have no extra energy cost. So you may need to provide enough ingredients for better efficiency.

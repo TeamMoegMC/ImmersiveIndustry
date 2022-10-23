@@ -62,7 +62,13 @@ public class CarKilnRecipe extends IESerializableRecipe {
     public ItemStack getRecipeOutput() {
         return this.output;
     }
-
+    public int getInputAmount() {
+    	int total=0;
+    	for(IngredientWithSize iws:inputs) {
+    		total+=iws.getCount();
+    	}
+    	return total;
+    }
     // Initialized by reload listener
     public static List<CarKilnRecipe> recipeList = Collections.emptyList();
 
@@ -74,6 +80,7 @@ public class CarKilnRecipe extends IESerializableRecipe {
             }
         return false;
     }
+    
     //returns recipe
     public static CarKilnRecipe findRecipe(List<ItemStack> input,FluidStack f,int startIndex,int endIndex) {
     	int size=0;

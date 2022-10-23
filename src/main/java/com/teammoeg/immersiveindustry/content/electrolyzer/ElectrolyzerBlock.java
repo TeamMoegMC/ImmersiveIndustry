@@ -48,10 +48,11 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class ElectrolyzerBlock extends IIBaseBlock implements ILiquidContainer {
+public class ElectrolyzerBlock extends IIBaseBlock{
     public ElectrolyzerBlock(String name, Properties blockProps, BiFunction<Block, Item.Properties, Item> createItemBlock) {
         super(name, blockProps, createItemBlock);
     }
@@ -84,35 +85,13 @@ public class ElectrolyzerBlock extends IIBaseBlock implements ILiquidContainer {
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (!world.isRemote) {
+    	if (FluidUtil.interactWithFluidHandler(player, handIn,world, pos,hit.getFace()))
+			return ActionResultType.SUCCESS;
+    	if (!world.isRemote) {
             TileEntity tile = world.getTileEntity(pos);
             NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tile, tile.getPos());
         }
         return ActionResultType.SUCCESS;
     }
 
-    @Override
-    public boolean canContainFluid(IBlockReader w, BlockPos p, BlockState s, Fluid f) {
-        TileEntity te = w.getTileEntity(p);
-        if (te instanceof ElectrolyzerTileEntity) {
-            ElectrolyzerTileEntity ele = (ElectrolyzerTileEntity) te;
-            if (ele.tank.fill(new FluidStack(f, 1000), IFluidHandler.FluidAction.SIMULATE) == 1000)
-                return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean receiveFluid(IWorld w, BlockPos p, BlockState s,
-                                FluidState f) {
-        TileEntity te = w.getTileEntity(p);
-        if (te instanceof ElectrolyzerTileEntity) {
-            ElectrolyzerTileEntity ele = (ElectrolyzerTileEntity) te;
-            if (ele.tank.fill(new FluidStack(f.getFluid(), 1000), IFluidHandler.FluidAction.SIMULATE) == 1000) {
-                ele.tank.fill(new FluidStack(f.getFluid(), 1000), IFluidHandler.FluidAction.EXECUTE);
-                return true;
-            }
-        }
-        return false;
-    }
 }

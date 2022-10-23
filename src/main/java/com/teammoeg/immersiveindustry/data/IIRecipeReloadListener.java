@@ -95,7 +95,7 @@ public class IIRecipeReloadListener implements IResourceManagerReloadListener {
         CrucibleRecipe.recipeList = filterRecipes(recipes, CrucibleRecipe.class, CrucibleRecipe.TYPE);
         ElectrolyzerRecipe.recipeList = filterRecipes(recipes, ElectrolyzerRecipe.class, ElectrolyzerRecipe.TYPE);
         RotaryKilnRecipe.recipeList = filterRecipes(recipes, RotaryKilnRecipe.class, RotaryKilnRecipe.TYPE);
-        CarKilnRecipe.recipeList = filterRecipes(recipes, CarKilnRecipe.class, CarKilnRecipe.TYPE).values().stream().sorted(Comparator.comparingInt(e -> e.inputs.length)).collect(Collectors.toList());
+        CarKilnRecipe.recipeList = filterRecipes(recipes, CarKilnRecipe.class, CarKilnRecipe.TYPE).values().stream().sorted(Comparator.<CarKilnRecipe>comparingInt(e -> e.inputs.length).reversed().thenComparing(Comparator.<CarKilnRecipe>comparingInt(e->e.getInputAmount()).reversed())).collect(Collectors.toList());
 //        for(CarKilnRecipe r:CarKilnRecipe.recipeList)
 //        	System.out.println(r.inputs.length);
     }

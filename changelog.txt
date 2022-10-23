@@ -1,2 +1,2 @@
-0.1.7f:
-- Fix car kiln crash
+0.1.8b:
+- Electrolyzer can insert water from containers
