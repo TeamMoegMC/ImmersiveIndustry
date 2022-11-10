@@ -38,20 +38,28 @@ public class RotaryKilnRecipe extends IESerializableRecipe {
 
     public final IngredientWithSize input;
     public final ItemStack output;
+    public final ItemStack secoutput;
+    public final float secoutputchance;
     public final FluidStack output_fluid;
     public final int time;
     public final int tickEnergy;
 
-    public RotaryKilnRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input, FluidStack output_fluid, int time, int tickEnergy) {
-        super(output, TYPE, id);
-        this.output = output;
-        this.input = input;
-        this.output_fluid = output_fluid;
-        this.time = time;
-        this.tickEnergy = tickEnergy;
-    }
 
-    @Override
+
+    public RotaryKilnRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input,
+			FluidStack output_fluid, int time,
+			int tickEnergy, ItemStack secoutput, float secoutputchance) {
+		super(output, TYPE, id);
+		this.input = input;
+		this.output = output;
+		this.secoutput = secoutput;
+		this.secoutputchance = secoutputchance;
+		this.output_fluid = output_fluid;
+		this.time = time;
+		this.tickEnergy = tickEnergy;
+	}
+
+	@Override
     protected IERecipeSerializer getIESerializer() {
         return SERIALIZER.get();
     }

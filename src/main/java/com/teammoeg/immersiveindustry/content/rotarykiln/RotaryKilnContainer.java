@@ -46,8 +46,8 @@ public class RotaryKilnContainer extends IEBaseContainer<RotaryKilnTileEntity> {
         this.addSlot(new RotarySlot(this, this.inv, 2, 64, 40));
 
         // output
-        this.addSlot(new IESlot.Output(this, this.inv, 3, 104, 63));
-
+        this.addSlot(new IESlot.Output(this, this.inv, 3, 93, 63));
+        this.addSlot(new IESlot.Output(this, this.inv, 4, 111, 63));
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 9; j++)
                 addSlot(new Slot(inventoryPlayer, j + i * 9 + 9, 8 + j * 18, 96 + i * 18));

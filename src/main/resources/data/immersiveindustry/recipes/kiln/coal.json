@@ -6,6 +6,10 @@
   "result": {
     "tag": "forge:coal_coke"
   },
+  "byproduct": {
+    "tag": "forge:coal_coke"
+  },
+  "chance":0.25,
   "result_fluid": {
     "fluid": "immersiveengineering:creosote",
     "amount": 500

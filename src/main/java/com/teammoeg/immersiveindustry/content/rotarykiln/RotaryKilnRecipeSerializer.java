@@ -52,19 +52,25 @@ public class RotaryKilnRecipeSerializer extends IERecipeSerializer<RotaryKilnRec
         int tickEnergy = IIConfig.COMMON.rotaryKilnBase.get();
         if (json.has("tickEnergy"))
             tickEnergy = json.get("tickEnergy").getAsInt();
+        ItemStack byout=ItemStack.EMPTY;
+        float chance=0;
+        if(json.has("byproduct")) {
+        	byout=readOutput(json.get("byproduct"));
+	        chance=1;
+	        if(json.has("chance"))
+	        	chance=json.get("chance").getAsFloat();
+        }
+        	
 
-        return new RotaryKilnRecipe(recipeId, output, input, result_fluid, time, tickEnergy);
+        return new RotaryKilnRecipe(recipeId, output, input, result_fluid, time, tickEnergy,byout,chance);
     }
 
     @Nullable
     @Override
     public RotaryKilnRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
-        ItemStack output = buffer.readItemStack();
-        IngredientWithSize input = IngredientWithSize.read(buffer);
-        FluidStack output_fluid = FluidStack.readFromPacket(buffer);
-        int time = buffer.readVarInt();
-        int tickEnergy = buffer.readVarInt();
-        return new RotaryKilnRecipe(recipeId, output, input, output_fluid, time, tickEnergy);
+  
+       
+        return new RotaryKilnRecipe(recipeId,buffer.readItemStack(), IngredientWithSize.read(buffer),FluidStack.readFromPacket(buffer),buffer.readVarInt(),buffer.readVarInt(),buffer.readItemStack(),buffer.readFloat());
     }
 
     @Override
@@ -74,5 +80,7 @@ public class RotaryKilnRecipeSerializer extends IERecipeSerializer<RotaryKilnRec
         recipe.output_fluid.writeToPacket(buffer);
         buffer.writeVarInt(recipe.time);
         buffer.writeVarInt(recipe.tickEnergy);
+        buffer.writeItemStack(recipe.secoutput);
+        buffer.writeFloat(recipe.secoutputchance);
     }
 }

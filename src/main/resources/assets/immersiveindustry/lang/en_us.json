@@ -14,6 +14,7 @@
   "gui.jei.category.immersiveindustry.electrolyzer": "Simple Electrolyzer",
   "gui.jei.category.immersiveindustry.industrial_electrolyzer": "Industrial Electrolyzer",
   "gui.jei.category.immersiveindustry.rotary_kiln": "Rotary Kiln",
+  "gui.jei.category.immersiveindustry.rotary_kiln.chance": "Chance: %s%%",
   "gui.jei.category.immersiveindustry.car_kiln": "Car Kiln",
   "gui.jei.tooltip.immersiveindustry.start_cost": "Starting Klin costs extra %s mb",
   "manual.immersiveindustry.main": "Immersive Industry",

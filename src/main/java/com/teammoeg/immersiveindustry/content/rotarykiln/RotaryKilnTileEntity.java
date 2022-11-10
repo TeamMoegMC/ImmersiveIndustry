@@ -54,8 +54,8 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 	public int tickEnergy = 0;
 	boolean active;
 	public int angle;// angle for animation in degrees
-	private NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
-	private List<Process> processes = new ArrayList<>();
+	private NonNullList<ItemStack> inventory = NonNullList.withSize(5, ItemStack.EMPTY);
+	private List<RotaryKilnProcess> processes = new ArrayList<>();
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
 	EnergyHelper.IEForgeEnergyWrapper wrapper = new EnergyHelper.IEForgeEnergyWrapper(this, null);
 	public FluidTank[] tankout = new FluidTank[]{new FluidTank(32000)};
@@ -114,7 +114,20 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 		}
 		return new AxisAlignedBB(bp);
 	}
-
+	private ItemStack fillInSlot(int slot,ItemStack tofill) {
+		ItemStack out = inventory.get(slot);
+		
+		if (out.isEmpty()) {
+			inventory.set(slot, tofill);
+			return ItemStack.EMPTY;
+		} else if (out.getCount() < out.getMaxStackSize()
+				&& ItemHandlerHelper.canItemStacksStack(out, tofill)) {
+			int amount = Math.min(out.getMaxStackSize() - out.getCount(), tofill.getCount());
+			tofill.shrink(amount);
+			out.grow(amount);
+		}
+		return tofill;
+	}
 	@Override
 	public void tick() {
 		checkForNeedlessTicking();
@@ -128,25 +141,17 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 					if (!processes.isEmpty()) {
 						int lp = 0;
 						int lpm = 0;
-						for (Process p : processes) {
+						for (RotaryKilnProcess p : processes) {
 							lp = p.tick(lp + lpm / 16 - 2);
 							lpm = p.processMax;
 						}
 						if(!processes.isEmpty()) {
-							Process p=processes.get(0);
+							RotaryKilnProcess p=processes.get(0);
 							processMax=p.processMax;
 							process=p.process;
 							if(p.finished()) {
-								ItemStack out = inventory.get(3);
-								if (out.isEmpty()) {
-									inventory.set(3, p.result);
-									p.result = ItemStack.EMPTY;
-								} else if (out.getCount() < out.getMaxStackSize()
-										&& ItemHandlerHelper.canItemStacksStack(out, p.result)) {
-									int amount = Math.min(out.getMaxStackSize() - out.getCount(), p.result.getCount());
-									p.result.shrink(amount);
-									out.grow(amount);
-								}
+								p.result=fillInSlot(3,p.result);
+								p.sresult=fillInSlot(4,p.sresult);
 								if (!p.fresult.isEmpty())
 									p.fresult.shrink(tankout[0].fill(p.fresult, FluidAction.EXECUTE));
 							}
@@ -154,7 +159,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 						energyStorage.extractEnergy(energyConsume, false);
 						if (!active)
 							active = true;
-						processes.removeIf(Process::removable);
+						processes.removeIf(RotaryKilnProcess::removable);
 						this.markContainingBlockForUpdate(null);
 					} else {
 						
@@ -172,7 +177,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 							if (recipe != null) {
 								inventory.get(2).shrink(recipe.input.getCount());
 								processes.add(
-										new Process(recipe.output.copy(), recipe.output_fluid.copy(), recipe.time));
+										new RotaryKilnProcess(recipe.output.copy(), recipe.output_fluid.copy(), recipe.time,recipe.secoutput,recipe.secoutputchance));
 								cd = recipe.time / 16;
 								this.tickEnergy = Math.max(tickEnergy, recipe.tickEnergy);
 							}
@@ -224,6 +229,18 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 					this.inventory.get(3).shrink(1);
 					if (this.inventory.get(3).getCount() <= 0) {
 						this.inventory.set(3, ItemStack.EMPTY);
+					}
+					update |= true;
+				}
+				
+			}
+			if (!this.inventory.get(4).isEmpty()) {
+				ItemStack stack = ItemHandlerHelper.copyStackWithSize(this.inventory.get(4), 1);
+				stack = Utils.insertStackIntoInventory(this.outputItemCap, stack, false);
+				if (stack.isEmpty()) {
+					this.inventory.get(4).shrink(1);
+					if (this.inventory.get(4).getCount() <= 0) {
+						this.inventory.set(4, ItemStack.EMPTY);
 					}
 					update |= true;
 				}
@@ -313,7 +330,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 			tickEnergy = nbt.getInt("tickEnergy");
 			ListNBT r = nbt.getList("queue", 10);
 			processes.clear();
-			r.stream().map(e -> (CompoundNBT) e).map(Process::new).forEach(processes::add);
+			r.stream().map(e -> (CompoundNBT) e).map(RotaryKilnProcess::new).forEach(processes::add);
 			ItemStackHelper.loadAllItems(nbt, inventory);
 		}
 	}
@@ -330,7 +347,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 			nbt.putInt("next", cd);
 			nbt.putInt("tickEnergy", tickEnergy);
 			ListNBT nl = new ListNBT();
-			for (Process p : processes)
+			for (RotaryKilnProcess p : processes)
 				nl.add(p.serialize());
 			nbt.put("queue", nl);
 			ItemStackHelper.saveAllItems(nbt, inventory);
@@ -339,7 +356,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 	}
 
 	LazyOptional<IItemHandler> inHandler = registerConstantCap(new IEInventoryHandler(1, this, 0, true, false));
-	LazyOptional<IItemHandler> outHandler = registerConstantCap(new IEInventoryHandler(1, this, 3, false, true));
+	LazyOptional<IItemHandler> outHandler = registerConstantCap(new IEInventoryHandler(2, this, 3, false, true));
 
 	@Nonnull
 	@Override

@@ -19,6 +19,9 @@
 package com.teammoeg.immersiveindustry.content.rotarykiln;
 
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
+
+import java.util.Arrays;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
@@ -35,6 +38,7 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 
 public class RotaryKilnCategory implements IRecipeCategory<RotaryKilnRecipe> {
@@ -85,8 +89,10 @@ public class RotaryKilnCategory implements IRecipeCategory<RotaryKilnRecipe> {
     @Override
     public void setIngredients(RotaryKilnRecipe recipe, IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).build());
-
-        ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
+        if(recipe.secoutput.isEmpty())
+        	ingredients.setOutput(VanillaTypes.ITEM, recipe.output);
+        else
+        	ingredients.setOutputLists(VanillaTypes.ITEM, Arrays.asList(Arrays.asList(recipe.output),Arrays.asList(recipe.secoutput)));
         if (!recipe.output_fluid.isEmpty())
             ingredients.setOutput(VanillaTypes.FLUID, recipe.output_fluid);
     }
@@ -98,7 +104,12 @@ public class RotaryKilnCategory implements IRecipeCategory<RotaryKilnRecipe> {
         IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
         guiItemStacks.init(0, true, 2, 17);
 
-        guiItemStacks.init(1, false, 94, 40);
+        guiItemStacks.init(1, false, 83, 40);
+        guiItemStacks.init(2, false, 101, 40);
+        guiItemStacks.addTooltipCallback((s,b,i,t)->{
+        	if(s==2)
+        		t.add(new TranslationTextComponent("gui.jei.category." + IIMain.MODID + ".rotary_kiln.chance",((int)(recipe.secoutputchance*10000))/100).mergeStyle(TextFormatting.BLUE));
+        });
         guiFluidStacks.init(0, false, 124, 4, 16, 47, 3200, false, TANK);
         if (!recipe.output_fluid.isEmpty()) {
             guiFluidStacks.set(0, recipe.output_fluid);
