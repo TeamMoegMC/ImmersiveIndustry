@@ -38,7 +38,7 @@ public class IIConfig {
 
         Common(ForgeConfigSpec.Builder builder) {
             electrolyzerBase = builder.defineInRange("ElectrolyzerBaseTickEnergy", 32, 0, 4096);
-            rotaryKilnBase = builder.defineInRange("RotaryKilnBaseTickEnergy", 48, 0, 4096);
+            rotaryKilnBase = builder.defineInRange("RotaryKilnBaseTickEnergy", 32, 0, 4096);
             carKilnBase = builder.defineInRange("CarKilnBaseTickEnergy", 64, 0, 4096);
             steamTurbineGenerator = builder.defineInRange("SteamTurbineGenerator", 1024, 0, 4096);
             electrodeCost = builder.defineInRange("ElectrodeCost", 0.25, 0, 96000);
