@@ -104,8 +104,8 @@ public class RotaryKilnCategory implements IRecipeCategory<RotaryKilnRecipe> {
         IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
         guiItemStacks.init(0, true, 2, 17);
 
-        guiItemStacks.init(1, false, 83, 40);
-        guiItemStacks.init(2, false, 101, 40);
+        guiItemStacks.init(1, false, 84, 40);
+        guiItemStacks.init(2, false, 102, 40);
         guiItemStacks.addTooltipCallback((s,b,i,t)->{
         	if(s==2)
         		t.add(new TranslationTextComponent("gui.jei.category." + IIMain.MODID + ".rotary_kiln.chance",((int)(recipe.secoutputchance*10000))/100).mergeStyle(TextFormatting.BLUE));
