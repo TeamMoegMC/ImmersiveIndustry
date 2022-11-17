@@ -37,14 +37,14 @@ public class CarKilnRecipe extends IESerializableRecipe {
     public static RegistryObject<IERecipeSerializer<CarKilnRecipe>> SERIALIZER;
 
     public final IngredientWithSize[] inputs;
-    public final ItemStack output;
+    public final ItemStack[] output;
     public final FluidStack input_fluid;
     public final int time;
     public final int tickEnergy;
     public final int start_fluid_cost;
 
-    public CarKilnRecipe(ResourceLocation id, ItemStack output, IngredientWithSize[] inputs, FluidStack input_fluid, int time, int tickEnergy,int start_fluid_cost) {
-        super(output, TYPE, id);
+    public CarKilnRecipe(ResourceLocation id, ItemStack[] output, IngredientWithSize[] inputs, FluidStack input_fluid, int time, int tickEnergy,int start_fluid_cost) {
+        super(output[0], TYPE, id);
         this.output = output;
         this.inputs = inputs;
         this.input_fluid = input_fluid;
@@ -60,7 +60,7 @@ public class CarKilnRecipe extends IESerializableRecipe {
 
     @Override
     public ItemStack getRecipeOutput() {
-        return this.output;
+        return this.output[0];
     }
     public int getInputAmount() {
     	int total=0;

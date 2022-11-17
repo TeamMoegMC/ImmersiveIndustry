@@ -52,7 +52,8 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
 	EnergyHelper.IEForgeEnergyWrapper wrapper = new EnergyHelper.IEForgeEnergyWrapper(this, null);
-	ItemStack result = ItemStack.EMPTY;
+	boolean resultsempty=true;
+	NonNullList<ItemStack> results = NonNullList.withSize(9, ItemStack.EMPTY);
 	public FluidTank[] tankinput = new FluidTank[]{new FluidTank(16000)};
 
 	public CarKilnTileEntity() {
@@ -99,7 +100,7 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 				tryOutput();
 				if (!isRSDisabled() && energyStorage.getEnergyStored() >= energyConsume) {
 					if (process > 0) {
-						if (process > 52 && process < processMax - 23 && result.isEmpty()) {
+						if (process > 52 && process < processMax - 23 && resultsempty) {
 							CarKilnRecipe recipe = CarKilnRecipe.findRecipe(inventory, tankinput[0].getFluid(), 0, 4);
 							if (recipe == null) {
 								process = processMax - process;
@@ -150,9 +151,11 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 							int wked = processMax - process;
 							processMax = recipe.time + 104;
 							process = processMax - wked;
-							result = recipe.output.copy();
-							if (!result.isEmpty())
-								result.setCount(result.getCount() * procnum);
+							int i=0;
+							for(ItemStack is:recipe.output) {
+								results.set(i++,ItemHandlerHelper.copyStackWithSize(is,is.getCount() * procnum));
+							}
+							checkResultEmpty();
 						}
 						process--;
 						energyStorage.extractEnergy(energyConsume, false);
@@ -161,27 +164,33 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 						return;
 					}
 					modelState=0;
-					process = processMax = 0;
+					if(processMax!=0) {
+						process = processMax = 0;
+						this.markContainingBlockForUpdate(null);
+					}
 					this.tickEnergy = 0;
-					if (!result.isEmpty()) {
-						for (int i = 4; i < 9; i++) {
-							ItemStack is = inventory.get(i);
-							if (is.isEmpty()) {
-								inventory.set(i, result.split(result.getMaxStackSize()));
-							} else if (ItemHandlerHelper.canItemStacksStack(is, result)) {
-								int fill = is.getMaxStackSize() - is.getCount();
-								if (fill >= result.getCount()) {
-									is.grow(result.getCount());
-									result = ItemStack.EMPTY;
-								}else {
+					if (!resultsempty) {
+						results.replaceAll(result->{
+							if(result.isEmpty())return result;
+							for (int i = 4; i < 9; i++) {
+								ItemStack is = inventory.get(i);
+								if (is.isEmpty()) {
+									inventory.set(i, result.split(result.getMaxStackSize()));
+								} else if (ItemHandlerHelper.canItemStacksStack(is, result)) {
+									int fill = is.getMaxStackSize() - is.getCount();
+									if (fill >= result.getCount()) {
+										is.grow(result.getCount());
+										return ItemStack.EMPTY;
+									}
 									is.grow(fill);
 									result.shrink(fill);
 								}
 							}
-							if(result.isEmpty())break;
-						}
+							return result;
+						});
+						checkResultEmpty();
 					}
-					if(!result.isEmpty())
+					if(!resultsempty)
 						return;
 					
 					//check has recipe
@@ -327,7 +336,12 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 			return master().inventory;
 		return this.inventory;
 	}
-
+	public void checkResultEmpty() {
+		resultsempty=true;
+		for(ItemStack is:results)
+			if(!is.isEmpty())
+				resultsempty=false;
+	}
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket) {
 		super.readCustomNBT(nbt, descPacket);
@@ -338,8 +352,11 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 		modelState=nbt.getShort("modelNum");
 		tankinput[0].readFromNBT(nbt.getCompound("tankinput"));
 		if (!descPacket) {
-			result = ItemStack.read(nbt.getCompound("result"));
-			
+			if(nbt.contains("result"))
+				results.set(0,ItemStack.read(nbt.getCompound("result")));
+			else if(nbt.contains("results"))
+				ItemStackHelper.loadAllItems(nbt.getCompound("results"),results);
+			checkResultEmpty();
 			tickEnergy = nbt.getInt("tickEnergy");
 			ItemStackHelper.loadAllItems(nbt, inventory);
 		}
@@ -355,7 +372,7 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 		nbt.putShort("modelNum",modelState);
 		nbt.put("tankinput", tankinput[0].writeToNBT(new CompoundNBT()));
 		if (!descPacket) {
-			nbt.put("result", result.serializeNBT());
+			nbt.put("results", ItemStackHelper.saveAllItems(new CompoundNBT(),results));
 			
 			nbt.putInt("tickEnergy", tickEnergy);
 			ItemStackHelper.saveAllItems(nbt, inventory);

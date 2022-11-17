@@ -19,6 +19,9 @@
 package com.teammoeg.immersiveindustry.content.carkiln;
 
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
+
+import java.util.Arrays;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
@@ -85,8 +88,8 @@ public class CarKilnCategory implements IRecipeCategory<CarKilnRecipe> {
     @Override
     public void setIngredients(CarKilnRecipe recipe, IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.inputs).build());
-
-        ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
+    
+        ingredients.setOutputs(VanillaTypes.ITEM,Arrays.asList(recipe.output));
         if (!recipe.input_fluid.isEmpty())
             ingredients.setInput(VanillaTypes.FLUID, recipe.input_fluid);
     }
@@ -99,13 +102,16 @@ public class CarKilnCategory implements IRecipeCategory<CarKilnRecipe> {
         for (int i = 0; i < recipe.inputs.length; ++i) {
             guiItemStacks.init(i, true, 28 + i % 2 * 18, 4 + i / 2 * 18);
         }
+        for (int i = 0; i < recipe.output.length; ++i) {
+            guiItemStacks.init(i+4,false, 89 + i % 3 * 18, 33 + i / 3 * 18);
+        }
         guiFluidStacks.init(0, true, 4, 10, 16, 47, 3200, false, TANK);
         if (!recipe.input_fluid.isEmpty()) {
             guiFluidStacks.set(0, recipe.input_fluid);
             if(recipe.start_fluid_cost!=0)
             guiFluidStacks.addTooltipCallback((s,b,i,t)->t.add(new TranslationTextComponent("gui.jei.tooltip.immersiveindustry.start_cost",recipe.start_fluid_cost)));
         }
-        guiItemStacks.init(4, false, 89, 33);
+        //guiItemStacks.init(4, false, 89, 33);
         guiItemStacks.set(ingredients);
     }
 }

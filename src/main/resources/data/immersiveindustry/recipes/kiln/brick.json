@@ -3,9 +3,12 @@
   "input": {
     "item": "minecraft:clay_ball"
   },
-  "result": {
+  "results": [{
     "item": "minecraft:brick"
   },
+  {
+    "item": "minecraft:dirt"
+  }],
   "time": 200,
   "tickEnergy": 32
 }
