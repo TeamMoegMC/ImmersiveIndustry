@@ -32,6 +32,8 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.ArrayList;
+
 import javax.annotation.Nullable;
 
 public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
@@ -42,7 +44,17 @@ public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
 
 	@Override
 	public CarKilnRecipe readFromJson(ResourceLocation recipeId, JsonObject json) {
-		ItemStack output = readOutput(json.get("result"));
+		ItemStack[] output;
+		if(json.has("results")) {
+			JsonArray ja=json.get("results").getAsJsonArray();
+			ArrayList<ItemStack> ops=new ArrayList<>();
+			for(JsonElement je:ja) {
+				ops.add(readOutput(je));
+			}
+			output=ops.toArray(new ItemStack[0]);
+				
+		}else
+			output= new ItemStack[]{readOutput(json.get("result"))};
 		IngredientWithSize[] inputs;
 		if (json.has("inputs")) {
 			JsonArray ja = json.get("inputs").getAsJsonArray();
@@ -75,7 +87,10 @@ public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
 	@Nullable
 	@Override
 	public CarKilnRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
-		ItemStack output = buffer.readItemStack();
+		int outs=buffer.readVarInt();
+		ItemStack[] output=new ItemStack[outs] ;
+		for(int i=0;i<outs;i++)
+			output[i]= buffer.readItemStack();
 		IngredientWithSize[] inputs = new IngredientWithSize[buffer.readVarInt()];
 		for (int i = 0; i < inputs.length; i++)
 			inputs[i] = IngredientWithSize.read(buffer);
@@ -84,7 +99,9 @@ public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
 
 	@Override
 	public void write(PacketBuffer buffer, CarKilnRecipe recipe) {
-		buffer.writeItemStack(recipe.output);
+		buffer.writeVarInt(recipe.output.length);
+		for(int i=0;i<recipe.output.length;i++)
+			buffer.writeItemStack(recipe.output[i]);
 		buffer.writeVarInt(recipe.inputs.length);
 		for (IngredientWithSize input : recipe.inputs)
 			input.write(buffer);
