@@ -21,7 +21,7 @@ public class IIDirectionalBlock extends IIBaseBlock {
 
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		return this.getDefaultState().with(BlockStateProperties.FACING, context.getNearestLookingDirection());
+		return this.getDefaultState().with(BlockStateProperties.FACING, context.getNearestLookingDirection().getOpposite());
 	}
 
 	@Override
