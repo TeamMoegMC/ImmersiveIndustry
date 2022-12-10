@@ -18,5 +18,9 @@
   "gui.jei.category.immersiveindustry.car_kiln": "Car Kiln",
   "gui.jei.tooltip.immersiveindustry.start_cost": "Starting Klin costs extra %s mb",
   "manual.immersiveindustry.main": "Immersive Industry",
-  "gui.immersiveindustry.failed_datapack": "\n\nImmersive Industry: We are aware of this error, restarting the game would fix it. Report ONLY if this error persists."
+  "gui.immersiveindustry.failed_datapack": "\n\nImmersive Industry: We are aware of this error, restarting the game would fix it. Report ONLY if this error persists.",
+  "desc.immersiveengineering.info.multiblock.IE:CarKiln": "Car Kiln",
+  "desc.immersiveengineering.info.multiblock.IE:RotaryKiln": "Rotary Kiln",
+  "desc.immersiveengineering.info.multiblock.IE:Crucible": "Crucible",
+  "desc.immersiveengineering.info.multiblock.IE:IndustrialElectrolyzer": "Industrial Electrolyzer"
 }
