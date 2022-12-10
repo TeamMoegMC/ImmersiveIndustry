@@ -253,7 +253,7 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                     burnTime--;
                 } else {
                     if (!inventory.get(2).isEmpty() && inventory.get(2).getItem().getTags().contains(coal_coke)) {
-                        burnTime = 600;
+                        burnTime = 800;
                         inventory.get(2).shrink(1);
                         master().markDirty();
                     }
