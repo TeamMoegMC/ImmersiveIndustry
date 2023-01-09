@@ -1,2 +1,3 @@
-0.1.8b:
-- Improve gui
+0.1.8f:
+- Added crucible fuel value config
+- Rotary kiln can now have air output

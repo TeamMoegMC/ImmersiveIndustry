@@ -24,6 +24,8 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheater
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+
+import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.content.IActiveState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -253,7 +255,7 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                     burnTime--;
                 } else {
                     if (!inventory.get(2).isEmpty() && inventory.get(2).getItem().getTags().contains(coal_coke)) {
-                        burnTime = 800;
+                        burnTime = IIConfig.COMMON.coke.get();
                         inventory.get(2).shrink(1);
                         master().markDirty();
                     }
