@@ -63,11 +63,12 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
         IEBlockInterfaces.IBlockBounds, IEBlockInterfaces.ISoundTile {
     public FluidTank tanks;
     public boolean active = false;
+    public final int steam;
     private static final CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> SHAPES = CachedShapesWithTransform.createForMultiblock(SteamTurbineTileEntity::getShape);
 
     public SteamTurbineTileEntity() {
         super(IIContent.IIMultiblocks.STEAMTURBINE, IIContent.IITileTypes.STEAMTURBINE.get(), true);
-
+        steam=IIConfig.COMMON.steamTurbineSteam.get();
         this.tanks = new FluidTank(24 * FluidAttributes.BUCKET_VOLUME, fluidStack -> {
             ITag<Fluid> steamTag = FluidTags.getCollection().get(new ResourceLocation("forge", "steam"));
             if (steamTag != null)
@@ -116,10 +117,10 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
                             .collect(Collectors.toList());
                     if (!presentOutputs.isEmpty()) {
                         int out = IIConfig.COMMON.steamTurbineGenerator.get();
-                    	if(!presentOutputs.isEmpty()&&tanks.getFluidAmount() >= 64&&EnergyHelper.distributeFlux(presentOutputs, out, false) < out)
+                    	if(!presentOutputs.isEmpty()&&tanks.getFluidAmount() >= steam&&EnergyHelper.distributeFlux(presentOutputs, out, false) < out)
     					{
                             active = true;
-    						tanks.drain(64, IFluidHandler.FluidAction.EXECUTE);
+    						tanks.drain(steam, IFluidHandler.FluidAction.EXECUTE);
     					}else
     						active = false;
                     }else

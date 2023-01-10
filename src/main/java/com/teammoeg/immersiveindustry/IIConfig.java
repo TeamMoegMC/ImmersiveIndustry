@@ -34,15 +34,17 @@ public class IIConfig {
         public final ForgeConfigSpec.IntValue rotaryKilnBase;
         public final ForgeConfigSpec.IntValue carKilnBase;
         public final ForgeConfigSpec.IntValue steamTurbineGenerator;
+        public final ForgeConfigSpec.IntValue steamTurbineSteam;
         public final ForgeConfigSpec.IntValue coke;
         public final ForgeConfigSpec.DoubleValue electrodeCost;
 
         Common(ForgeConfigSpec.Builder builder) {
-            electrolyzerBase = builder.defineInRange("ElectrolyzerBaseTickEnergy", 32, 0, 4096);
-            rotaryKilnBase = builder.defineInRange("RotaryKilnBaseTickEnergy", 32, 0, 4096);
+            electrolyzerBase = builder.defineInRange("ElectrolyzerBaseTickEnergy", 32, 0, Integer.MAX_VALUE);
+            rotaryKilnBase = builder.defineInRange("RotaryKilnBaseTickEnergy", 32, 0, Integer.MAX_VALUE);
             coke=builder.defineInRange("CrucibleBurntime",800,0,Integer.MAX_VALUE);
-            carKilnBase = builder.defineInRange("CarKilnBaseTickEnergy", 64, 0, 4096);
-            steamTurbineGenerator = builder.defineInRange("SteamTurbineGenerator", 1024, 0, 4096);
+            carKilnBase = builder.defineInRange("CarKilnBaseTickEnergy", 64, 0, Integer.MAX_VALUE);
+            steamTurbineGenerator = builder.defineInRange("SteamTurbineGenerator", 1024, 0, Integer.MAX_VALUE);
+            steamTurbineSteam = builder.defineInRange("SteamTurbineSteam", 64, 1, Integer.MAX_VALUE);
             electrodeCost = builder.defineInRange("ElectrodeCost", 0.25, 0, 96000);
         }
     }
