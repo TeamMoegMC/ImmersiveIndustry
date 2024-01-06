@@ -37,10 +37,6 @@ repositories {
         name = "DVS1 Maven FS"
         url = "https://dvs1.progwml6.com/files/maven"
     }
-	maven {
-        name = "teammoeg maven"
-        url = "http://server.teammoeg.com:8888/releases"
-    }
 }
 sourceSets {
     main {
