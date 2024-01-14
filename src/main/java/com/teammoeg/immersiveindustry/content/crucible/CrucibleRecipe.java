@@ -18,6 +18,7 @@
 
 package com.teammoeg.immersiveindustry.content.crucible;
 
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
@@ -26,6 +27,7 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
 
 import java.util.Collections;
@@ -37,14 +39,20 @@ public class CrucibleRecipe extends IESerializableRecipe {
 
     public final IngredientWithSize inputs[];
     public final ItemStack output;
+    public final FluidStack output_fluid;
     public final int time;
+    public final int temperature ;
 
-    public CrucibleRecipe(ResourceLocation id, ItemStack output, IngredientWithSize[] input, int time) {
+    public CrucibleRecipe(ResourceLocation id, ItemStack output, FluidStack output_fluid, IngredientWithSize[] input, int time, int temperature) {
         super(output, TYPE, id);
         this.output = output;
+        this.output_fluid = output_fluid;
         this.inputs = input;
         this.time = time;
+        this.temperature = temperature;
     }
+
+
 
     @Override
     protected IERecipeSerializer getIESerializer() {
@@ -68,15 +76,18 @@ public class CrucibleRecipe extends IESerializableRecipe {
             }
         return false;
     }
+    public static int getFuelTime(ItemStack stack) {
+        return BlastFurnaceFuel.getBlastFuelTime(stack);//stack.getItem().getTags().contains("coal_coke");
+    }
 
-    public static CrucibleRecipe findRecipe(ItemStack input, ItemStack input2) {
-        int size = (input.isEmpty() ? 0 : 1) + (input2.isEmpty() ? 0 : 1);
+    public static CrucibleRecipe findRecipe(ItemStack input, ItemStack input2, ItemStack input3, ItemStack input4) {
+        int size = (input.isEmpty() ? 0 : 1) + (input2.isEmpty() ? 0 : 1) + (input3.isEmpty() ? 0 : 1) + (input4.isEmpty() ? 0 : 1);
         outer:
         for (CrucibleRecipe recipe : recipeList.values()) {
             if (recipe.inputs.length > 0) {
                 if (recipe.inputs.length <= size) {
                     for (IngredientWithSize is : recipe.inputs) {
-                        if (!is.test(input) && !is.test(input2))
+                        if (!is.test(input) && !is.test(input2) && !is.test(input3) && !is.test(input4))
                             continue outer;
                     }
                 } else continue outer;

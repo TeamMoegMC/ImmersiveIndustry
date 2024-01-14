@@ -20,13 +20,18 @@ package com.teammoeg.immersiveindustry.content.crucible;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheaterTileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teammoeg.immersiveindustry.IIMain;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 public class CrucibleScreen extends IEContainerScreen<CrucibleContainer> {
@@ -48,13 +53,23 @@ public class CrucibleScreen extends IEContainerScreen<CrucibleContainer> {
     @Override
     public void render(MatrixStack transform, int mouseX, int mouseY, float partial) {
         super.render(transform, mouseX, mouseY, partial);
-
+        List<ITextComponent> tooltip = new ArrayList<>();
+        GuiHelper.handleGuiTank(transform, tile.tank[0], guiLeft + 145, guiTop + 12, 16, 47, 236, 32, 20, 51, mouseX, mouseY, TEXTURE, tooltip);
+        if (mouseX >= this.guiLeft + 10 && mouseX < this.guiLeft + 19 && mouseY > this.guiTop + 10 && mouseY < this.guiTop + 67) {
+            //Temperature in kelvins
+            int k = this.tile.temperature - this.tile.temperature % 100 + 300;
+            tooltip.add(new TranslationTextComponent("gui.immersiveindustry.crucible.tooltip.temperature_in_kelvin", k));
+        }
+        if (!tooltip.isEmpty()) {
+            GuiUtils.drawHoveringText(transform, tooltip, mouseX, mouseY, width, height, -1, font);
+        }
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float partial, int x, int y) {
         ClientUtils.bindTexture(TEXTURE);
         this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
+        GuiHelper.handleGuiTank(transform, tile.tank[0], guiLeft + 145, guiTop + 12, 16, 47, 236, 32, 20, 51, x, y, TEXTURE, null);
         if (tile.temperature > 0) {
             int temp = tile.temperature;
             int bar = temp / 30;

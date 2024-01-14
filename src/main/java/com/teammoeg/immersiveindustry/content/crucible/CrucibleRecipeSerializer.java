@@ -18,6 +18,7 @@
 
 package com.teammoeg.immersiveindustry.content.crucible;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import com.google.gson.JsonArray;
@@ -28,6 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
 
@@ -49,10 +51,14 @@ public class CrucibleRecipeSerializer extends IERecipeSerializer<CrucibleRecipe>
                 inputs[++i] = IngredientWithSize.deserialize(je);
             }
         } else inputs = new IngredientWithSize[0];
+        FluidStack result_fluid = FluidStack.EMPTY;
+        if (json.has("result_fluid"))
+            result_fluid = ApiUtils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "result_fluid"));
         int time = JSONUtils.getInt(json, "time");
+        int temperature = JSONUtils.getInt(json, "temperature");
         if(inputs==null||inputs.length==0)
         	throw new RuntimeException("Error loading crucible recipe "+recipeId);
-        return new CrucibleRecipe(recipeId, output, inputs, time);
+        return new CrucibleRecipe(recipeId, output, result_fluid, inputs, time, temperature);
     }
 
     @Nullable
@@ -62,8 +68,12 @@ public class CrucibleRecipeSerializer extends IERecipeSerializer<CrucibleRecipe>
         IngredientWithSize[] inputs = new IngredientWithSize[buffer.readVarInt()];
         for (int i = 0; i < inputs.length; i++)
             inputs[i] = IngredientWithSize.read(buffer);
+        FluidStack output_fluid = null;
+        if (buffer.readBoolean())
+            output_fluid = FluidStack.readFromPacket(buffer);
         int time = buffer.readInt();
-        return new CrucibleRecipe(recipeId, output, inputs, time);
+        int temperature = buffer.readInt();
+        return new CrucibleRecipe(recipeId, output, output_fluid, inputs, time, temperature);
     }
 
     @Override
@@ -72,6 +82,11 @@ public class CrucibleRecipeSerializer extends IERecipeSerializer<CrucibleRecipe>
         buffer.writeVarInt(recipe.inputs.length);
         for (IngredientWithSize input : recipe.inputs)
             input.write(buffer);
+        if (recipe.output_fluid != null) {
+            buffer.writeBoolean(true);
+            recipe.output_fluid.writeToPacket(buffer);
+        } else buffer.writeBoolean(false);
         buffer.writeInt(recipe.time);
+        buffer.writeInt(recipe.temperature);
     }
 }
