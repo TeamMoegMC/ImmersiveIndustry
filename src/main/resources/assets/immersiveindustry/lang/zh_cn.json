@@ -18,6 +18,7 @@
   "gui.jei.category.immersiveindustry.car_kiln": "车窑",
   "gui.jei.tooltip.immersiveindustry.start_cost": "启动窑炉额外需要 %s mb",
   "gui.immersiveindustry.failed_datapack": "\n\n沉浸工程：我们知道偶尔会出现这个错误，重启游戏即可解决，只有多次重启后依然出现这个错误才需要寻求帮助。",
+  "gui.immersiveindustry.crucible.tooltip.temperature_in_kelvin": "%s 开尔文",
   "manual.immersiveindustry.main": "沉浸工业",
   "desc.immersiveengineering.info.multiblock.IE:CarKiln": "车窑",
   "desc.immersiveengineering.info.multiblock.IE:RotaryKiln": "旋转窑",
