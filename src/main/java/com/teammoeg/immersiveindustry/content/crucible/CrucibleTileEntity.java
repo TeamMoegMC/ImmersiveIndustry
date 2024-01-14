@@ -18,13 +18,15 @@
 
 package com.teammoeg.immersiveindustry.content.crucible;
 
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheaterTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-
 import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.content.IActiveState;
@@ -46,6 +48,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -59,13 +64,17 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
         IActiveState, IEBlockInterfaces.IInteractionObjectIE, IEBlockInterfaces.IProcessTile, IEBlockInterfaces.IBlockBounds {
 
     public CrucibleTileEntity.CrucibleData guiData = new CrucibleTileEntity.CrucibleData();
-    private NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
+    private NonNullList<ItemStack> inventory = NonNullList.withSize(6, ItemStack.EMPTY);
     public int temperature;
     public int burnTime;
     public int process = 0;
     public int processMax = 0;
     public int updatetick = 0;
+    public FluidStack resultFluid = FluidStack.EMPTY;
+    public FluidTank[] tank = new FluidTank[]{new FluidTank(14400)};
     public static ResourceLocation coal_coke = new ResourceLocation("forge:coal_coke");
+
+    private static BlockPos fluidout = new BlockPos(2, 2, 2);
 
     public CrucibleTileEntity() {
         super(IIContent.IIMultiblocks.CRUCIBLE, IIContent.IITileTypes.CRUCIBLE.get(), false);
@@ -74,7 +83,14 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
     @Nonnull
     @Override
     public IFluidTank[] getAccessibleFluidTanks(Direction side) {
-        return new IFluidTank[0];
+        CrucibleTileEntity master = master();
+        if (master != null) {
+            if (this.posInMultiblock.getY() == 2 && (this.posInMultiblock.getZ() == 2 ||
+                    this.posInMultiblock.getX() == 2)) {
+                return master.tank;
+            }
+        }
+        return new FluidTank[0];
     }
 
     @Override
@@ -84,6 +100,10 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
 
     @Override
     public boolean canDrainTankFrom(int iTank, Direction side) {
+        CrucibleTileEntity master = master();
+        if (master != null) {
+            return true;
+        }
         return false;
     }
 
@@ -142,10 +162,10 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
     public boolean isStackValid(int slot, ItemStack stack) {
         if (stack.isEmpty())
             return false;
-        if (slot == 0 || slot == 1)
+        if (slot == 0 || slot == 1 || slot == 2 || slot == 3)
             return CrucibleRecipe.isValidInput(stack);
-        if (slot == 2)
-            return stack.getItem().getTags().contains(coal_coke);
+        if (slot == 4)
+            return CrucibleRecipe.getFuelTime(stack) > 0;
         return false;
     }
 
@@ -161,7 +181,7 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
     }
 
     LazyOptional<IItemHandler> inputHandler = registerConstantCap(
-            new IEInventoryHandler(2, this, 0, true, false)
+            new IEInventoryHandler(4, this, 0, true, false)
     );
     LazyOptional<IItemHandler> fuelHandler = registerConstantCap(
             new IEInventoryHandler(1, this, 2, true, false)
@@ -169,6 +189,10 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
     LazyOptional<IItemHandler> outputHandler = registerConstantCap(
             new IEInventoryHandler(1, this, 3, false, true)
     );
+    private CapabilityReference<IFluidHandler> fluidHandler = CapabilityReference.forTileEntityAt(this, () -> {
+        return new DirectionalBlockPos(this.getBlockPosForPos(fluidout),Direction.DOWN);
+    }, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+
 
     @Nonnull
     @Override
@@ -190,23 +214,27 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
     @Override
     public void readCustomNBT(CompoundNBT nbt, boolean descPacket) {
         super.readCustomNBT(nbt, descPacket);
+        tank[0].readFromNBT(nbt.getCompound("tank"));
         temperature=nbt.getInt("temperature");
         burnTime=nbt.getInt("burntime");
         if (!descPacket) {
-            ItemStackHelper.loadAllItems(nbt, inventory);
             process = nbt.getInt("process");
             processMax = nbt.getInt("processMax");
+            resultFluid = FluidStack.loadFluidStackFromNBT(nbt.getCompound("result_fluid"));
+            ItemStackHelper.loadAllItems(nbt, inventory);
         }
     }
 
     @Override
     public void writeCustomNBT(CompoundNBT nbt, boolean descPacket) {
         super.writeCustomNBT(nbt, descPacket);
+        nbt.put("tank", tank[0].writeToNBT(new CompoundNBT()));
         nbt.putInt("temperature", temperature);
         nbt.putInt("burntime", burnTime);
         if (!descPacket) {
             nbt.putInt("process", process);
             nbt.putInt("processMax", processMax);
+            nbt.put("result_fluid", resultFluid.writeToNBT(new CompoundNBT()));
             ItemStackHelper.saveAllItems(nbt, inventory);
         }
     }
@@ -216,6 +244,7 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
         if (!isDummy()) {
             if (!world.isRemote && formed) {
                 CrucibleRecipe recipe = getRecipe();
+                tryOutput();
                 updatetick++;
                 if (updatetick > 10) {
                     final boolean activeBeforeTick = getIsActive();
@@ -240,6 +269,7 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                                 }
                     }
                 }
+                /*
                 if (burnTime > 0){
                     if (getFromPreheater(BlastFurnacePreheaterTileEntity::doSpeedup, 0) > 0) {
                     	if(temperature < 1680)
@@ -250,25 +280,51 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                     	temperature--;//without preheater, reduce
                 } else if (temperature > 0) {
                     temperature--;
+                }*/
+                //new heating mechanism
+                if (burnTime > 0){
+                    double coefficient = getFanSpeed() < 64 ? 0 : Math.sqrt(getFanSpeed()) / 8 ;
+                    if (coefficient == 0){//Speed < 64, no boost
+                        if(temperature > 1000){
+                            temperature--;
+                        }else{
+                            temperature++;
+                        }
+                    }else{//Speed >= 64, higher temperature and faster speed up
+                        if(temperature < 1700){
+                            temperature++;
+                            if(Math.random() + Math.random() < coefficient){
+                                temperature++;
+                            }
+                            if(Math.random() + Math.random() + Math.random() < coefficient){
+                                temperature++;
+                            }
+                        }
+                    }
+                }else if (temperature > 0){
+                    temperature--;
                 }
                 if (burnTime > 0) {
                     burnTime--;
                 } else {
-                    if (!inventory.get(2).isEmpty() && inventory.get(2).getItem().getTags().contains(coal_coke)) {
-                        burnTime = IIConfig.COMMON.coke.get();
-                        inventory.get(2).shrink(1);
+                    if (!inventory.get(4).isEmpty() && CrucibleRecipe.getFuelTime(inventory.get(4)) > 0/*inventory.get(4).getItem().getTags().contains(coal_coke)*/) {
+                        //burnTime = IIConfig.COMMON.coke.get();
+                        burnTime = CrucibleRecipe.getFuelTime(inventory.get(4)) / 2;
+                        inventory.get(4).shrink(1);
                         master().markDirty();
                     }
                 }
-                if (temperature > 1400) {
+                if(recipe == null){
+                    process = 0;
+                    processMax = 0;
+                } else if (temperature >= recipe.temperature) {
                     if (process > 0) {
-                        if (inventory.get(0).isEmpty()) {
-                            process = 0;
-                            processMax = 0;
+                        if (burnTime == 0) {
+                            process--;
                         }
                         // during process
                         else {
-                            if (recipe == null || recipe.time != processMax) {
+                            if (recipe.time != processMax) {
                                 process = 0;
                                 processMax = 0;
                             } else {
@@ -277,22 +333,42 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                             }
                         }
                         this.markContainingBlockForUpdate(null);
-                    } else if (recipe != null) {
+                    } else {
                         if (processMax == 0) {
                             this.process = recipe.time;
                             this.processMax = process;
                         } else {
-                        	if(recipe.inputs.length>0)
-	                            for (int i = 0; i < recipe.inputs.length; i++) {
-	                                Utils.modifyInvStackSize(inventory, i, -recipe.inputs[i].getCount());
-	                            }
-                            if (!inventory.get(3).isEmpty())
-                                inventory.get(3).grow(recipe.output.copy().getCount());
-                            else if (inventory.get(3).isEmpty())
-                                inventory.set(3, recipe.output.copy());
+                            for (IngredientWithSize is : recipe.inputs) {
+                                for (int i = 0; i < 4; i++) {
+                                    if (is.test(inventory.get(i))) {
+                                        Utils.modifyInvStackSize(inventory, i, -is.getCount());
+                                        break;
+                                    }
+                                }
+                            }
+                            if (recipe.output_fluid != null) {
+                                FluidStack matching = recipe.output_fluid;
+                                if (!matching.isEmpty())
+                                    resultFluid = matching.copy();
+                            }
+                            if (!resultFluid.isEmpty()) {
+                                int filled = tank[0].fill(resultFluid, IFluidHandler.FluidAction.EXECUTE);
+                                if (filled < resultFluid.getAmount()) {
+                                    resultFluid.shrink(filled);
+                                    //return;
+                                }
+                                resultFluid = FluidStack.EMPTY;
+                            }
+                            if (!inventory.get(5).isEmpty())
+                                inventory.get(5).grow(recipe.output.copy().getCount());
+                            else if (inventory.get(5).isEmpty())
+                                inventory.set(5, recipe.output.copy());
                             processMax = 0;
                         }
                     }
+                }else{
+                    process = 0;
+                    processMax = 0;
                 }
             }
             if (world != null && formed && getIsActive()) {
@@ -307,18 +383,44 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
         }
     }
 
+
     @Nullable
     public CrucibleRecipe getRecipe() {
-        if (inventory.get(0).isEmpty())
-            return null;
-        CrucibleRecipe recipe = CrucibleRecipe.findRecipe(inventory.get(0), inventory.get(1));
+        /*if (inventory.get(0).isEmpty())
+            return null;*/
+        CrucibleRecipe recipe = CrucibleRecipe.findRecipe(inventory.get(0), inventory.get(1), inventory.get(2), inventory.get(3));
         if (recipe == null)
             return null;
-        if (inventory.get(3).isEmpty() || (ItemStack.areItemsEqual(inventory.get(3), recipe.output) &&
-                inventory.get(3).getCount() + recipe.output.getCount() <= getSlotLimit(3))) {
+        if (inventory.get(5).isEmpty() || (ItemStack.areItemsEqual(inventory.get(5), recipe.output) &&
+                inventory.get(5).getCount() + recipe.output.getCount() <= getSlotLimit(5))) {
             return recipe;
         }
         return null;
+    }
+
+    public void tryOutput() {
+        boolean update = false;
+        if (this.tank[0].getFluidAmount() > 0) {
+            FluidStack out = Utils.copyFluidStackWithAmount(this.tank[0].getFluid(),
+                    Math.min(this.tank[0].getFluidAmount(), 80), false);
+            if (fluidHandler.isPresent()) {
+                IFluidHandler output = fluidHandler.getNullable();
+                int accepted = output.fill(out, IFluidHandler.FluidAction.SIMULATE);
+
+                if (accepted > 0) {
+                    int drained = output.fill(
+                            Utils.copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false),
+                            IFluidHandler.FluidAction.EXECUTE);
+                    this.tank[0].drain(drained, IFluidHandler.FluidAction.EXECUTE);
+                    out.shrink(accepted);
+                    update |= true;
+                }
+            }
+        }
+        if (update) {
+            this.markDirty();
+            this.markContainingBlockForUpdate(null);
+        }
     }
 
     public class CrucibleData implements IIntArray {
@@ -373,5 +475,9 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
         if (te instanceof BlastFurnacePreheaterTileEntity&&((BlastFurnacePreheaterTileEntity) te).getFacing().equals(this.getFacing().getOpposite()))
             return Optional.of((BlastFurnacePreheaterTileEntity) te);
         return Optional.empty();
+    }
+
+    public int getFanSpeed(){
+        return 128;
     }
 }
