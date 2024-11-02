@@ -41,7 +41,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class CrucibleBlock extends IEMultiblockBlock<CrucibleTileEntity> {
+public class CrucibleBlock extends IEMultiblockBlock<CrucibleBlockEntity> {
 
 
 	public static final BooleanProperty LIT = BlockStateProperties.LIT;
@@ -73,9 +73,9 @@ public class CrucibleBlock extends IEMultiblockBlock<CrucibleTileEntity> {
 		}
 		ItemEntity itemEntity=(ItemEntity) entityIn;
     	TileEntity te=Utils.getExistingTileEntity(worldIn,pos);
-    	if(te instanceof CrucibleTileEntity) {
-    		if(((CrucibleTileEntity) te).isDummy())return;
-    		ItemStack insertItem = ItemHandlerHelper.insertItem(((CrucibleTileEntity) te).inputHandler.resolve().get(), itemEntity.getItem().copy(), false);
+    	if(te instanceof CrucibleBlockEntity) {
+    		if(((CrucibleBlockEntity) te).isDummy())return;
+    		ItemStack insertItem = ItemHandlerHelper.insertItem(((CrucibleBlockEntity) te).inputHandler.resolve().get(), itemEntity.getItem().copy(), false);
 			if (insertItem.isEmpty()) {
 				itemEntity.remove();
 				return;

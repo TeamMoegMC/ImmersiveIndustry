@@ -18,15 +18,15 @@
 
 package com.teammoeg.immersiveindustry.content.carkiln;
 
-import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
+import blusunrize.immersiveengineering.common.gui.IEBaseContainerOld;
 import blusunrize.immersiveengineering.common.gui.IESlot;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Inventory;
 
-public class CarKilnContainer extends IEBaseContainer<CarKilnTileEntity> {
+public class CarKilnContainer extends IEBaseContainerOld<CarKilnBlockEntity> {
 
-    public CarKilnContainer(int id, PlayerInventory inventoryPlayer, CarKilnTileEntity tile) {
+    public CarKilnContainer(int id, Inventory inventoryPlayer, CarKilnBlockEntity tile) {
         super(tile, id);
 
         // input

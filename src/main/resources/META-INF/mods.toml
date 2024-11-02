@@ -20,14 +20,14 @@ Introduce more various process and energy production machines to Immersive Engin
 [[dependencies.immersiveindustry]]
     modId = "minecraft"
     mandatory = true
-    versionRange = "[1.16.5,1.17)"
+    versionRange = "[1.20.1,1.21)"
     ordering = "NONE"
     side = "BOTH"
 
 [[dependencies.immersiveindustry]]
     modId="immersiveengineering"
     mandatory=true
-    versionRange="[1.16.5-5.0.0,)"
+    versionRange="[1.20.1-5.0.0,)"
     ordering="AFTER"
     side="BOTH"
 

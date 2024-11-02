@@ -62,7 +62,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Set;
 
-public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<IndustrialElectrolyzerTileEntity>
+public class IndustrialElectrolyzerBlockEntity extends MultiblockPartTileEntity<IndustrialElectrolyzerBlockEntity>
 		implements IEBlockInterfaces.IBlockBounds, EnergyHelper.IIEInternalFluxHandler, IIEInventory,
 		IEBlockInterfaces.IInteractionObjectIE, IEBlockInterfaces.IProcessTile {
 	public int process = 0;
@@ -98,7 +98,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 				return new DirectionalBlockPos(this.getBlockPosForPos(out2),fw);
 			}, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(5, ItemStack.EMPTY);
-	public IndustrialElectrolyzerTileEntity() {
+	public IndustrialElectrolyzerBlockEntity() {
 		super(IIContent.IIMultiblocks.IND_ELE, IIContent.IITileTypes.IND_ELE.get(), true);
 		
 	}
@@ -112,7 +112,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 	@Nonnull
 	@Override
 	protected IFluidTank[] getAccessibleFluidTanks(Direction side) {
-		IndustrialElectrolyzerTileEntity master = master();
+		IndustrialElectrolyzerBlockEntity master = master();
 		if (master != null) {
 			if(side.getYOffset()==0&&this.posInMultiblock.getY()==0&&this.posInMultiblock.getX()!=1) {
 				if(this.posInMultiblock.getZ()==1)
@@ -126,7 +126,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 
 	@Override
 	protected boolean canFillTankFrom(int i, Direction side, FluidStack fluidStack) {
-		IndustrialElectrolyzerTileEntity master = master();
+		IndustrialElectrolyzerBlockEntity master = master();
 		if(i!=0)return false;
 		if (master != null) {
 			if(side.getYOffset()==0&&this.posInMultiblock.getY()==0&&this.posInMultiblock.getX()!=1) {
@@ -139,7 +139,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 
 	@Override
 	protected boolean canDrainTankFrom(int i, Direction side) {
-		IndustrialElectrolyzerTileEntity master = master();
+		IndustrialElectrolyzerBlockEntity master = master();
 		if(i!=1)return false;
 		if (master != null) {
 			if(side.getYOffset()==0&&this.posInMultiblock.getY()==0&&this.posInMultiblock.getX()!=1) {
@@ -432,7 +432,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 	@Nonnull
 	@Override
 	public FluxStorage getFluxStorage() {
-		IndustrialElectrolyzerTileEntity master = this.master();
+		IndustrialElectrolyzerBlockEntity master = this.master();
 		return master != null ? master.energyStorage : this.energyStorage;
 	}
 
@@ -485,7 +485,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 
 	@Override
 	public int[] getCurrentProcessesStep() {
-		IndustrialElectrolyzerTileEntity master = master();
+		IndustrialElectrolyzerBlockEntity master = master();
 		if (master != this && master != null)
 			return master.getCurrentProcessesStep();
 		return new int[]{processMax - process};
@@ -493,7 +493,7 @@ public class IndustrialElectrolyzerTileEntity extends MultiblockPartTileEntity<I
 
 	@Override
 	public int[] getCurrentProcessesMax() {
-		IndustrialElectrolyzerTileEntity master = master();
+		IndustrialElectrolyzerBlockEntity master = master();
 		if (master != this && master != null)
 			return master.getCurrentProcessesMax();
 		return new int[]{processMax};

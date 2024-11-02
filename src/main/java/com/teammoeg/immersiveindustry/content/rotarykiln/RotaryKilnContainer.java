@@ -27,9 +27,9 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
-public class RotaryKilnContainer extends IEBaseContainer<RotaryKilnTileEntity> {
+public class RotaryKilnContainer extends IEBaseContainer<RotaryKilnBlockEntity> {
 
-    public RotaryKilnContainer(int id, PlayerInventory inventoryPlayer, RotaryKilnTileEntity tile) {
+    public RotaryKilnContainer(int id, PlayerInventory inventoryPlayer, RotaryKilnBlockEntity tile) {
         super(tile, id);
 
         // input

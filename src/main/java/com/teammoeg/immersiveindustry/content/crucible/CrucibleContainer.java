@@ -24,10 +24,10 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
-public class CrucibleContainer extends IEBaseContainer<CrucibleTileEntity> {
-    public CrucibleTileEntity.CrucibleData data;
+public class CrucibleContainer extends IEBaseContainer<CrucibleBlockEntity> {
+    public CrucibleBlockEntity.CrucibleData data;
 
-    public CrucibleContainer(int id, PlayerInventory inventoryPlayer, CrucibleTileEntity tile) {
+    public CrucibleContainer(int id, PlayerInventory inventoryPlayer, CrucibleBlockEntity tile) {
         super(tile, id);
 
         // input

@@ -25,10 +25,17 @@ import com.teammoeg.immersiveindustry.IIMain;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.item.Item;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.property.Properties;
 
 public class IIBaseBlock extends Block {
     public final String name;
@@ -59,10 +66,9 @@ public class IIBaseBlock extends Block {
         return this;
     }
 
-    @Override
-    public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos) {
-        if (state.isOpaqueCube(worldIn, pos))
+    public int getOpacity(BlockState state, BlockGetter worldIn, BlockPos pos) {
+        if (state.isSolidRender(worldIn,pos))
             return lightOpacity;
-		return state.propagatesSkylightDown(worldIn, pos) ? 0 : 1;
+        return state.propagatesSkylightDown(worldIn, pos) ? 0 : 1;
     }
 }

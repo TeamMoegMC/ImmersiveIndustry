@@ -18,26 +18,20 @@
 
 package com.teammoeg.immersiveindustry;
 
-import com.teammoeg.immersiveindustry.data.IIRecipeCachingReloadListener;
-import com.teammoeg.immersiveindustry.data.IIRecipeReloadListener;
-
-import net.minecraft.resources.DataPackRegistries;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = IIMain.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents {
-
-    @SubscribeEvent
-    public static void addReloadListeners(AddReloadListenerEvent event) {
-        DataPackRegistries dataPackRegistries = event.getDataPackRegistries();
-        event.addListener(new IIRecipeReloadListener(dataPackRegistries));
-    }
-
-    @SubscribeEvent
-    public static void addReloadListenersLowest(AddReloadListenerEvent event) {
-        DataPackRegistries dataPackRegistries = event.getDataPackRegistries();
-        event.addListener(new IIRecipeCachingReloadListener(dataPackRegistries));
-    }
+//
+//    @SubscribeEvent
+//    public static void addReloadListeners(AddReloadListenerEvent event) {
+//        DataPackRegistries dataPackRegistries = event.getDataPackRegistries();
+//        event.addListener(new IIRecipeReloadListener(dataPackRegistries));
+//    }
+//
+//    @SubscribeEvent
+//    public static void addReloadListenersLowest(AddReloadListenerEvent event) {
+//        DataPackRegistries dataPackRegistries = event.getDataPackRegistries();
+//        event.addListener(new IIRecipeCachingReloadListener(dataPackRegistries));
+//    }
 }

@@ -35,7 +35,7 @@ import java.util.List;
 
 public class CarKilnScreen extends IEContainerScreen<CarKilnContainer> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(IIMain.MODID, "textures/gui/car_kiln.png");
-    private CarKilnTileEntity tile;
+    private CarKilnBlockEntity tile;
 
     public CarKilnScreen(CarKilnContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);

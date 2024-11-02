@@ -18,40 +18,27 @@
 
 package com.teammoeg.immersiveindustry;
 
+import com.teammoeg.immersiveindustry.content.IICreativeTab;
 import com.teammoeg.immersiveindustry.data.IIRecipeReloadListener;
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent.MissingMappings;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-
-import javax.annotation.Nonnull;
 
 
 @Mod(IIMain.MODID)
 public class IIMain {
     public static final String MODID = "immersiveindustry";
     public static final String MODNAME = "Immersive Industry";
-    public static final ItemGroup itemGroup = new ItemGroup(MODID) {
-        @Override
-        @Nonnull
-        public ItemStack createIcon() {
-            return new ItemStack(IIContent.IIBlocks.electrolyzer.asItem());
-        }
-    };
     public static boolean loadfailed=false;
     public IIMain() {
         IEventBus mod = FMLJavaModLoadingContext.get().getModEventBus();
         mod.addListener(this::setup);
-        MinecraftForge.EVENT_BUS.addGenericListener(Block.class,this::onMissing);
+//        MinecraftForge.EVENT_BUS.addGenericListener(Block.class,this::onMissing);
+        IICreativeTab.register(mod);
         IIConfig.register();
         IIContent.IIProps.init();
         IIContent.IIBlocks.init();
@@ -61,17 +48,18 @@ public class IIMain {
         IIContent.IITileTypes.REGISTER.register(mod);
         IIContent.IIRecipes.RECIPE_SERIALIZERS.register(mod);
         DistExecutor.safeRunWhenOn(Dist.CLIENT,()->ClientProxy::setup);
-        DeferredWorkQueue.runLater(IIContent.IIRecipes::registerRecipeTypes);
+        IIContent.IIRecipes.registerRecipeTypes();
+//        DeferredWorkQueue.runLater(IIContent.IIRecipes::registerRecipeTypes);
     }
-    public void onMissing(final MissingMappings<Block> ev) {
-    	ev.getAllMappings().forEach(e->{
-    		ResourceLocation rl=e.key;
-    		if(rl.getNamespace().equals(MODID)&&rl.getPath().equals("crucible")) {
-    			loadfailed=true;
-    			throw new RuntimeException("Mod Initialize failed, Please restart.");
-    		}
-    	});
-    }
+//    public void onMissing(final MissingMappings<Block> ev) {
+//    	ev.getAllMappings().forEach(e->{
+//    		ResourceLocation rl=e.key;
+//    		if(rl.getNamespace().equals(MODID)&&rl.getPath().equals("crucible")) {
+//    			loadfailed=true;
+//    			throw new RuntimeException("Mod Initialize failed, Please restart.");
+//    		}
+//    	});
+//    }
     public void setup(final FMLCommonSetupEvent event) {
         MinecraftForge.EVENT_BUS.register(new IIRecipeReloadListener(null));
     }

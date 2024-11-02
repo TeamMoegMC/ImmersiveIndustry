@@ -34,7 +34,7 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 
 public class ElectrolyzerScreen extends IEContainerScreen<ElectrolyzerContainer> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(IIMain.MODID, "textures/gui/electrolyzer.png");
-    private ElectrolyzerTileEntity tile;
+    private ElectrolyzerBlockEntity tile;
 
     public ElectrolyzerScreen(ElectrolyzerContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);

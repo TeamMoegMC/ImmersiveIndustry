@@ -25,7 +25,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
-public class SteamTurbineBlock extends IEMultiblockBlock<SteamTurbineTileEntity> {
+public class SteamTurbineBlock extends IEMultiblockBlock<SteamTurbineBlockEntity> {
 
     public SteamTurbineBlock(String name, RegistryObject type) {
         super(name, Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(4.0F, 40.0F).notSolid(), type);

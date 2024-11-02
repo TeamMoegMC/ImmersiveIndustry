@@ -37,8 +37,10 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.item.ItemStack;
 
 public class CarKilnCategory implements IRecipeCategory<CarKilnRecipe> {
     public static ResourceLocation UID = new ResourceLocation(IIMain.MODID, "car_kiln");

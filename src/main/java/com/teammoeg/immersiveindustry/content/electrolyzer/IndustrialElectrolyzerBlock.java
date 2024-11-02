@@ -35,7 +35,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class IndustrialElectrolyzerBlock extends IEMultiblockBlock<IndustrialElectrolyzerTileEntity> {
+public class IndustrialElectrolyzerBlock extends IEMultiblockBlock<IndustrialElectrolyzerBlockEntity> {
 
     public IndustrialElectrolyzerBlock(String name, RegistryObject type) {
         super(name, Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(4.0F, 40.0F).notSolid(), type);
@@ -45,8 +45,8 @@ public class IndustrialElectrolyzerBlock extends IEMultiblockBlock<IndustrialEle
 	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player,
 			Hand hand, BlockRayTraceResult hit) {
 		TileEntity te=Utils.getExistingTileEntity(world, pos);
-		if(te instanceof IndustrialElectrolyzerTileEntity) {
-			IndustrialElectrolyzerTileEntity iete=(IndustrialElectrolyzerTileEntity) te;
+		if(te instanceof IndustrialElectrolyzerBlockEntity) {
+			IndustrialElectrolyzerBlockEntity iete=(IndustrialElectrolyzerBlockEntity) te;
 			if(iete.offsetToMaster.getY()==1) {
 				if(player.getHeldItem(hand).getItem().getTags().contains(IndustrialElectrolyzerContainer.Electrode_Tag)) {
 					if (iete.getInventory() != null)

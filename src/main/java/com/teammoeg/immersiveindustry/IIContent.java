@@ -18,9 +18,10 @@
 
 package com.teammoeg.immersiveindustry;
 
+import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
-import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import com.google.common.collect.ImmutableSet;
 import com.teammoeg.immersiveindustry.content.IIBaseBlock;
 import com.teammoeg.immersiveindustry.content.IIBaseItem;
@@ -33,19 +34,15 @@ import com.teammoeg.immersiveindustry.content.misc.IIHorizontalBlock;
 import com.teammoeg.immersiveindustry.content.rotarykiln.*;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineBlock;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineMultiblock;
-import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineTileEntity;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.ToolType;
-import net.minecraftforge.fml.RegistryObject;
+import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineBlockEntity;
+import mezz.jei.library.load.registration.GuiHandlerRegistration;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -74,9 +71,8 @@ public class IIContent {
         }
 
         static Item.Properties createProps() {
-            return new Item.Properties().group(IIMain.itemGroup);
+            return new Item.Properties();
         }
-
         public static Item refractory_kiln_brick = new IIBaseItem("refractory_kiln_brick", createProps());
     }
 
@@ -102,39 +98,39 @@ public class IIContent {
     }
 
     public static class IITileTypes {
-        public static final DeferredRegister<TileEntityType<?>> REGISTER = DeferredRegister.create(
-                ForgeRegistries.TILE_ENTITIES, IIMain.MODID);
+        public static final DeferredRegister<BlockEntityType<?>> REGISTER = DeferredRegister.create(
+                ForgeRegistries.BLOCK_ENTITY_TYPES, IIMain.MODID);
 
-        public static final RegistryObject<TileEntityType<CrucibleTileEntity>> CRUCIBLE = REGISTER.register(
-                "crucible", makeType(() -> new CrucibleTileEntity(), () -> IIMultiblocks.crucible)
+        public static final RegistryObject<BlockEntityType<CrucibleBlockEntity>> CRUCIBLE = REGISTER.register(
+                "crucible", makeType(() -> new CrucibleBlockEntity(), () -> IIMultiblocks.crucible)
         );
-        public static final RegistryObject<TileEntityType<SteamTurbineTileEntity>> STEAMTURBINE = REGISTER.register(
-                "steam_turbine", makeType(() -> new SteamTurbineTileEntity(), () -> IIMultiblocks.steam_turbine)
+        public static final RegistryObject<BlockEntityType<SteamTurbineBlockEntity>> STEAMTURBINE = REGISTER.register(
+                "steam_turbine", makeType(() -> new SteamTurbineBlockEntity(), () -> IIMultiblocks.steam_turbine)
         );
-        public static final RegistryObject<TileEntityType<ElectrolyzerTileEntity>> ELECTROLYZER = REGISTER.register(
-                "electrolyzer", makeType(() -> new ElectrolyzerTileEntity(), () -> IIBlocks.electrolyzer)
+        public static final RegistryObject<BlockEntityType<ElectrolyzerBlockEntity>> ELECTROLYZER = REGISTER.register(
+                "electrolyzer", makeType(() -> new ElectrolyzerBlockEntity(), () -> IIBlocks.electrolyzer)
         );
-        public static final RegistryObject<TileEntityType<IndustrialElectrolyzerTileEntity>> IND_ELE = REGISTER.register(
-                "industrial_electrolyzer", makeType(() -> new IndustrialElectrolyzerTileEntity(), () -> IIMultiblocks.industrial_electrolyzer)
+        public static final RegistryObject<BlockEntityType<IndustrialElectrolyzerBlockEntity>> IND_ELE = REGISTER.register(
+                "industrial_electrolyzer", makeType(() -> new IndustrialElectrolyzerBlockEntity(), () -> IIMultiblocks.industrial_electrolyzer)
         );
-        public static final RegistryObject<TileEntityType<RotaryKilnTileEntity>> ROTARY_KILN= REGISTER.register(
-                "rotary_kiln", makeType(() -> new RotaryKilnTileEntity(), () -> IIMultiblocks.rotary_kiln)
+        public static final RegistryObject<BlockEntityType<RotaryKilnBlockEntity>> ROTARY_KILN= REGISTER.register(
+                "rotary_kiln", makeType(() -> new RotaryKilnBlockEntity(), () -> IIMultiblocks.rotary_kiln)
         );
-        public static final RegistryObject<TileEntityType<CarKilnTileEntity>> CAR_KILN= REGISTER.register(
-                "car_kiln", makeType(() -> new CarKilnTileEntity(), () -> IIMultiblocks.car_kiln)
+        public static final RegistryObject<BlockEntityType<CarKilnBlockEntity>> CAR_KILN= REGISTER.register(
+                "car_kiln", makeType(() -> new CarKilnBlockEntity(), () -> IIMultiblocks.car_kiln)
         );
-        private static <T extends TileEntity> Supplier<TileEntityType<T>> makeType(Supplier<T> create, Supplier<Block> valid) {
+        private static <T extends BlockEntity> Supplier<BlockEntityType<T>> makeType(Supplier<T> create, Supplier<Block> valid) {
             return makeTypeMultipleBlocks(create, () -> ImmutableSet.of(valid.get()));
         }
 
-        private static <T extends TileEntity> Supplier<TileEntityType<T>> makeTypeMultipleBlocks(Supplier<T> create, Supplier<Collection<Block>> valid) {
-            return () -> new TileEntityType<>(create, ImmutableSet.copyOf(valid.get()), null);
+        private static <T extends BlockEntity> Supplier<BlockEntityType<T>> makeTypeMultipleBlocks(Supplier<T> create, Supplier<Collection<Block>> valid) {
+            return () -> new BlockEntityType<>(create, ImmutableSet.copyOf(valid.get()), null);
         }
 
     }
 
     public static class IIRecipes {
-        public static final DeferredRegister<IRecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(
+        public static final DeferredRegister<IERecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(
                 ForgeRegistries.RECIPE_SERIALIZERS, IIMain.MODID
         );
 
@@ -146,37 +142,35 @@ public class IIContent {
         }
 
         public static void registerRecipeTypes() {
-            CrucibleRecipe.TYPE = IRecipeType.register(IIMain.MODID + ":crucible");
-            ElectrolyzerRecipe.TYPE = IRecipeType.register(IIMain.MODID + ":electrolyzer");
-            RotaryKilnRecipe.TYPE = IRecipeType.register(IIMain.MODID + ":rotary_kiln");
-            CarKilnRecipe.TYPE = IRecipeType.register(IIMain.MODID + ":car_kiln");
+            CrucibleRecipe.TYPE = IERecipeTypes.register(IIMain.MODID + ":crucible");
+            ElectrolyzerRecipe.TYPE = IERecipeTypes.register(IIMain.MODID + ":electrolyzer");
+            RotaryKilnRecipe.TYPE = IERecipeTypes.register(IIMain.MODID + ":rotary_kiln");
+            CarKilnRecipe.TYPE = IERecipeTypes.register(IIMain.MODID + ":car_kiln");
         }
     }
 
     public static void registerContainers() {
-        GuiHandler.register(CrucibleTileEntity.class, new ResourceLocation(IIMain.MODID, "crucible"), CrucibleContainer::new);
-        GuiHandler.register(ElectrolyzerTileEntity.class, new ResourceLocation(IIMain.MODID, "electrolyzer"), ElectrolyzerContainer::new);
-        GuiHandler.register(IndustrialElectrolyzerTileEntity.class, new ResourceLocation(IIMain.MODID, "industrial_electrolyzer"), IndustrialElectrolyzerContainer::new);
-        GuiHandler.register(CarKilnTileEntity.class, new ResourceLocation(IIMain.MODID, "car_kiln"), CarKilnContainer::new);
-        GuiHandler.register(RotaryKilnTileEntity.class, new ResourceLocation(IIMain.MODID, "rotary_kiln"), RotaryKilnContainer::new);
+        GuiHandler.register(CrucibleBlockEntity.class, new ResourceLocation(IIMain.MODID, "crucible"), CrucibleContainer::new);
+        GuiHandler.register(ElectrolyzerBlockEntity.class, new ResourceLocation(IIMain.MODID, "electrolyzer"), ElectrolyzerContainer::new);
+        GuiHandler.register(IndustrialElectrolyzerBlockEntity.class, new ResourceLocation(IIMain.MODID, "industrial_electrolyzer"), IndustrialElectrolyzerContainer::new);
+        GuiHandler.register(CarKilnBlockEntity.class, new ResourceLocation(IIMain.MODID, "car_kiln"), CarKilnContainer::new);
+        GuiHandler.register(RotaryKilnBlockEntity.class, new ResourceLocation(IIMain.MODID, "rotary_kiln"), RotaryKilnContainer::new);
     }
 
     public static class IIProps {
         public static void init() {
         }
 
-        public static final AbstractBlock.Properties METALProps = AbstractBlock.Properties
-                .create(Material.IRON)
+        public static final Block.Properties METALProps = Block.Properties
+                .of()
                 .sound(SoundType.METAL)
-                .setRequiresTool()
-                .harvestTool(ToolType.PICKAXE)
-                .hardnessAndResistance(2, 10);
-        public static final AbstractBlock.Properties MACHINEProps = AbstractBlock.Properties
-                .create(Material.IRON)
+                .requiresCorrectToolForDrops()
+                .strength(2,10);
+        public static final Block.Properties MACHINEProps = Block.Properties
+                .of()
                 .sound(SoundType.METAL)
-                .setRequiresTool()
-                .harvestTool(ToolType.PICKAXE)
-                .hardnessAndResistance(3, 15)
-                .notSolid();
+                .requiresCorrectToolForDrops()
+                .strength(3, 15)
+                .noOcclusion();
     }
 }

@@ -19,23 +19,29 @@
 package com.teammoeg.immersiveindustry.content.crucible;
 
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockPartBlock;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
-import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheaterTileEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheaterBlockEntity;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.content.IActiveState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tileentity.BlockEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.NonNullList;
@@ -44,6 +50,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -53,6 +65,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -60,10 +73,10 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.function.Function;
 
-public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEntity> implements IIEInventory,
-        IActiveState, IEBlockInterfaces.IInteractionObjectIE, IEBlockInterfaces.IProcessTile, IEBlockInterfaces.IBlockBounds {
+public class CrucibleBlockEntity extends MultiblockPartBlock<CrucibleBlockEntity> implements IIEInventory,
+        IActiveState, IEBlockInterfaces.IInteractionObjectIE, IEBlockInterfaces.IProcessBE, IEBlockInterfaces.IBlockBounds, IMultiblockState {
 
-    public CrucibleTileEntity.CrucibleData guiData = new CrucibleTileEntity.CrucibleData();
+    public CrucibleBlockEntity.CrucibleData guiData = new CrucibleBlockEntity.CrucibleData();
     private NonNullList<ItemStack> inventory = NonNullList.withSize(6, ItemStack.EMPTY);
     public int temperature;
     public int burnTime;
@@ -76,14 +89,14 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
 
     private static BlockPos fluidout = new BlockPos(2, 2, 2);
 
-    public CrucibleTileEntity() {
+    public CrucibleBlockEntity() {
         super(IIContent.IIMultiblocks.CRUCIBLE, IIContent.IITileTypes.CRUCIBLE.get(), false);
     }
 
     @Nonnull
     @Override
     public IFluidTank[] getAccessibleFluidTanks(Direction side) {
-        CrucibleTileEntity master = master();
+        CrucibleBlockEntity master = master();
         if (master != null) {
             if (this.posInMultiblock.getY() == 2 && (this.posInMultiblock.getZ() == 2 ||
                     this.posInMultiblock.getX() == 2)) {
@@ -100,7 +113,7 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
 
     @Override
     public boolean canDrainTankFrom(int iTank, Direction side) {
-        CrucibleTileEntity master = master();
+        CrucibleBlockEntity master = master();
         if (master != null) {
             return true;
         }
@@ -129,13 +142,23 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
     }
 
     @Override
+    public IEMenuTypes.ArgContainer getContainerType() {
+        return null;
+    }
+
+    @Override
+    public boolean canUseGui(Player player) {
+        return ;
+    }
+
+    @Override
     public boolean canUseGui(PlayerEntity player) {
         return formed;
     }
 
     @Override
     public int[] getCurrentProcessesStep() {
-        CrucibleTileEntity master = master();
+        CrucibleBlockEntity master = master();
         if (master != this && master != null)
             return master.getCurrentProcessesStep();
         return new int[]{processMax - process};
@@ -143,7 +166,7 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
 
     @Override
     public int[] getCurrentProcessesMax() {
-        CrucibleTileEntity master = master();
+        CrucibleBlockEntity master = master();
         if (master != this && master != null)
             return master.getCurrentProcessesMax();
         return new int[]{processMax};
@@ -152,10 +175,15 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
     @Nullable
     @Override
     public NonNullList<ItemStack> getInventory() {
-        CrucibleTileEntity master = master();
+        CrucibleBlockEntity master = master();
         if (master != null && master.formed && formed)
             return master.inventory;
         return this.inventory;
+    }
+
+    @Override
+    public boolean isStackValid(int i, ItemStack itemStack) {
+        return false;
     }
 
     @Override
@@ -189,7 +217,7 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
     LazyOptional<IItemHandler> outputHandler = registerConstantCap(
             new IEInventoryHandler(1, this, 3, false, true)
     );
-    private CapabilityReference<IFluidHandler> fluidHandler = CapabilityReference.forTileEntityAt(this, () -> {
+    private CapabilityReference<IFluidHandler> fluidHandler = CapabilityReference.forBlockEntityAt(this, () -> {
         return new DirectionalBlockPos(this.getBlockPosForPos(fluidout),Direction.DOWN);
     }, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
 
@@ -198,7 +226,7 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            CrucibleTileEntity master = master();
+            CrucibleBlockEntity master = master();
             if (master != null) {
                 if (this.posInMultiblock.getY() <= 1)
             		return master.fuelHandler.cast();
@@ -263,9 +291,9 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                             for (int y = 0; y < 4; ++y)
                                 for (int z = 0; z < 3; ++z) {
                                     BlockPos actualPos = getBlockPosForPos(new BlockPos(x, y, z));
-                                    TileEntity te = Utils.getExistingTileEntity(world, actualPos);
-                                    if (te instanceof CrucibleTileEntity)
-                                        ((CrucibleTileEntity) te).setActive(activeAfterTick);
+                                    BlockEntity te = Utils.getExistingTileEntity(world, actualPos);
+                                    if (te instanceof CrucibleBlockEntity)
+                                        ((CrucibleBlockEntity) te).setActive(activeAfterTick);
                                 }
                     }
                 }
@@ -329,7 +357,7 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
                                 processMax = 0;
                             } else {
                                 process--;
-                                getFromPreheater(BlastFurnacePreheaterTileEntity::doSpeedup, 0);
+                                getFromPreheater(BlastFurnacePreheaterBlockEntity::doSpeedup, 0);
                             }
                         }
                         this.markContainingBlockForUpdate(null);
@@ -423,6 +451,32 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
         }
     }
 
+    @Override
+    public BlockState getState() {
+        return null;
+    }
+
+    @Override
+    public void setState(BlockState blockState) {
+
+    }
+
+    @NotNull
+    @Override
+    public VoxelShape getBlockBounds(@org.jetbrains.annotations.Nullable CollisionContext collisionContext) {
+        return null;
+    }
+
+    @Override
+    public void writeSaveNBT(CompoundTag compoundTag) {
+
+    }
+
+    @Override
+    public void readSaveNBT(CompoundTag compoundTag) {
+
+    }
+
     public class CrucibleData implements IIntArray {
         public static final int BURN_TIME = 0;
         public static final int PROCESS_MAX = 1;
@@ -465,15 +519,15 @@ public class CrucibleTileEntity extends MultiblockPartTileEntity<CrucibleTileEnt
         }
     }
 
-    public <V> V getFromPreheater(Function<BlastFurnacePreheaterTileEntity, V> getter, V orElse) {
+    public <V> V getFromPreheater(Function<BlastFurnacePreheaterBlockEntity, V> getter, V orElse) {
         return getBlast().map(getter).orElse(orElse);
     }
 
-    public Optional<BlastFurnacePreheaterTileEntity> getBlast() {
+    public Optional<BlastFurnacePreheaterBlockEntity> getBlast() {
         BlockPos pos = getPos().add(0, -1, 0).offset(getFacing(), 2);
-        TileEntity te = Utils.getExistingTileEntity(world, pos);
-        if (te instanceof BlastFurnacePreheaterTileEntity&&((BlastFurnacePreheaterTileEntity) te).getFacing().equals(this.getFacing().getOpposite()))
-            return Optional.of((BlastFurnacePreheaterTileEntity) te);
+        BlockEntity te = Utils.getExistingTileEntity(world, pos);
+        if (te instanceof BlastFurnacePreheaterBlockEntity&&((BlastFurnacePreheaterBlockEntity) te).getFacing().equals(this.getFacing().getOpposite()))
+            return Optional.of((BlastFurnacePreheaterBlockEntity) te);
         return Optional.empty();
     }
 
