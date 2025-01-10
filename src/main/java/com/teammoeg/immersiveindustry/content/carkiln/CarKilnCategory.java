@@ -25,6 +25,8 @@ import java.util.Arrays;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
+import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
+
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -35,6 +37,7 @@ import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
@@ -43,7 +46,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.item.ItemStack;
 
 public class CarKilnCategory implements IRecipeCategory<CarKilnRecipe> {
-    public static ResourceLocation UID = new ResourceLocation(IIMain.MODID, "car_kiln");
+    public static RecipeType<CarKilnRecipe> UID = new RecipeType<>(new ResourceLocation(IIMain.MODID, "car_kiln"),CarKilnRecipe.class);
     private IDrawable BACKGROUND;
     private IDrawable ICON;
     private IDrawable TANK;
@@ -74,7 +77,7 @@ public class CarKilnCategory implements IRecipeCategory<CarKilnRecipe> {
 
 
     public String getTitle() {
-        return (new TranslationTextComponent("gui.jei.category." + IIMain.MODID + ".car_kiln").getString());
+        return (LangUtil.translate("gui.jei.category." + IIMain.MODID + ".car_kiln").getString());
     }
 
     @Override
@@ -111,7 +114,7 @@ public class CarKilnCategory implements IRecipeCategory<CarKilnRecipe> {
         if (!recipe.input_fluid.isEmpty()) {
             guiFluidStacks.set(0, recipe.input_fluid);
             if(recipe.start_fluid_cost!=0)
-            guiFluidStacks.addTooltipCallback((s,b,i,t)->t.add(new TranslationTextComponent("gui.jei.tooltip.immersiveindustry.start_cost",recipe.start_fluid_cost)));
+            guiFluidStacks.addTooltipCallback((s,b,i,t)->t.add(LangUtil.translate("gui.jei.tooltip.immersiveindustry.start_cost",recipe.start_fluid_cost)));
         }
         //guiItemStacks.init(4, false, 89, 33);
         guiItemStacks.set(ingredients);

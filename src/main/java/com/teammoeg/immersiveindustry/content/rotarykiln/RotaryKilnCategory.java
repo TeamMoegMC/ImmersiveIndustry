@@ -22,34 +22,36 @@ import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStack
 
 import java.util.Arrays;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
+import com.teammoeg.immersiveindustry.content.carkiln.CarKilnRecipe;
+import com.teammoeg.immersiveindustry.util.LangUtil;
+
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableAnimated.StartDirection;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
-import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 public class RotaryKilnCategory implements IRecipeCategory<RotaryKilnRecipe> {
-    public static ResourceLocation UID = new ResourceLocation(IIMain.MODID, "rotary_kiln");
+    public static RecipeType<RotaryKilnRecipe> UID = new RecipeType<>(new ResourceLocation(IIMain.MODID, "rotary_kiln"),RotaryKilnRecipe.class);
     private IDrawable BACKGROUND;
     private IDrawable ICON;
     private IDrawable TANK;
     private IDrawableAnimated ARROW;
 
     public RotaryKilnCategory(IGuiHelper guiHelper) {
-        this.ICON = guiHelper.createDrawableIngredient(new ItemStack(IIContent.IIMultiblocks.rotary_kiln));
+        this.ICON = guiHelper.createDrawableItemStack(new ItemStack(IIContent.IIMultiblocks.rotary_kiln));
         this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/rotary_kiln.png"), 9, 22, 143, 59);
         this.TANK = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/rotary_kiln.png"), 197, 1, 18, 48);
         IDrawableStatic arrow = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/rotary_kiln.png"), 178, 59, 38, 16);
@@ -57,23 +59,24 @@ public class RotaryKilnCategory implements IRecipeCategory<RotaryKilnRecipe> {
     }
 
     @Override
-    public void draw(RotaryKilnRecipe recipe, MatrixStack transform, double mouseX, double mouseY) {
-        ARROW.draw(transform, 79, 22);
-    }
+	public RecipeType<RotaryKilnRecipe> getRecipeType() {
+		return UID;
+	}
 
-    @Override
-    public ResourceLocation getUid() {
-        return UID;
-    }
+	@Override
+	public void setRecipe(IRecipeLayoutBuilder builder, RotaryKilnRecipe recipe, IFocusGroup focuses) {
+		// TODO Auto-generated method stub
+		
+	}
 
-    @Override
-    public Class<? extends RotaryKilnRecipe> getRecipeClass() {
-        return RotaryKilnRecipe.class;
-    }
+	@Override
+	public void draw(RotaryKilnRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+		ARROW.draw(guiGraphics, 79, 22);
+	}
 
 
-    public String getTitle() {
-        return (new TranslationTextComponent("gui.jei.category." + IIMain.MODID + ".rotary_kiln").getString());
+    public Component getTitle() {
+        return (LangUtil.translate("gui.jei.category." + IIMain.MODID + ".rotary_kiln"));
     }
 
     @Override
@@ -110,7 +113,7 @@ public class RotaryKilnCategory implements IRecipeCategory<RotaryKilnRecipe> {
         guiItemStacks.init(2, false, 102, 40);
         guiItemStacks.addTooltipCallback((s,b,i,t)->{
         	if(s==2)
-        		t.add(new TranslationTextComponent("gui.jei.category." + IIMain.MODID + ".rotary_kiln.chance",((int)(recipe.secoutputchance*10000))/100).mergeStyle(TextFormatting.BLUE));
+        		t.add(LangUtil.translate("gui.jei.category." + IIMain.MODID + ".rotary_kiln.chance",((int)(recipe.secoutputchance*10000))/100).mergeStyle(TextFormatting.BLUE));
         });
         guiFluidStacks.init(0, false, 124, 4, 16, 47, 3200, false, TANK);
         if (!recipe.output_fluid.isEmpty()) {

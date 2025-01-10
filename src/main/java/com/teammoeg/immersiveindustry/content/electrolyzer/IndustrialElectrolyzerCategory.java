@@ -19,38 +19,36 @@
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
+import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
+
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableAnimated.StartDirection;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
-import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class IndustrialElectrolyzerCategory implements IRecipeCategory<ElectrolyzerRecipe> {
-    public static ResourceLocation UID = new ResourceLocation(IIMain.MODID, "industrial_electrolyzer");
+    public static RecipeType<ElectrolyzerRecipe> UID = new RecipeType<>(new ResourceLocation(IIMain.MODID, "industrial_electrolyzer"),ElectrolyzerRecipe.class);
     private IDrawable BACKGROUND;
     private IDrawable ICON;
     private IDrawable TANK;
     private IDrawableAnimated ARROW;
-    public static final ResourceLocation Electrode_Tag = new ResourceLocation(IIMain.MODID, "electrodes");
-    public static List<Item> electrodes;
+    public static final TagKey<Item> Electrode_Tag = ItemTags.create(new ResourceLocation(IIMain.MODID, "electrodes"));
 
     public IndustrialElectrolyzerCategory(IGuiHelper guiHelper) {
         this.ICON = guiHelper.createDrawableIngredient(new ItemStack(IIContent.IIMultiblocks.industrial_electrolyzer));
@@ -72,7 +70,7 @@ public class IndustrialElectrolyzerCategory implements IRecipeCategory<Electroly
 
 
     public String getTitle() {
-        return (new TranslationTextComponent("gui.jei.category." + IIMain.MODID + ".industrial_electrolyzer").getString());
+        return (LangUtil.translate("gui.jei.category." + IIMain.MODID + ".industrial_electrolyzer").getString());
     }
 
     @Override
@@ -125,10 +123,9 @@ public class IndustrialElectrolyzerCategory implements IRecipeCategory<Electroly
         guiItemStacks.init(3, true, 45, 3);
         guiItemStacks.init(4, false, 101, 32);
         guiItemStacks.set(ingredients);
-        if (electrodes != null) {
-            List<ItemStack> electrode = electrodes.stream().map(ItemStack::new).collect(Collectors.toList());
-            guiItemStacks.set(2, electrode);
-            guiItemStacks.set(3, electrode);
-        }
+        List<ItemStack> electrode = ForgeRegistries.ITEMS.tags().getTag(IndustrialElectrolyzerCategory.Electrode_Tag).stream().map(ItemStack::new).collect(Collectors.toList());
+        guiItemStacks.set(2, electrode);
+        guiItemStacks.set(3, electrode);
+        
     }
 }

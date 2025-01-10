@@ -56,8 +56,8 @@ public class JEICompat implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(new ItemStack(IIContent.IIBlocks.burning_chamber), CrucibleCategory.UID);
-        registration.addRecipeCatalyst(new ItemStack(IIContent.IIBlocks.electrolyzer), ElectrolyzerCategory.UID);
+        registration.addRecipeCatalyst(new ItemStack(IIContent.IIBlocks.burning_chamber.get()), CrucibleCategory.UID);
+        registration.addRecipeCatalyst(new ItemStack(IIContent.IIBlocks.electrolyzer.get()), ElectrolyzerCategory.UID);
         registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.industrial_electrolyzer), IndustrialElectrolyzerCategory.UID);
         registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.rotary_kiln), RotaryKilnCategory.UID);
         registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.car_kiln), CarKilnCategory.UID);
@@ -68,12 +68,11 @@ public class JEICompat implements IModPlugin {
         ClientLevel world = Minecraft.getInstance().level;
         checkNotNull(world, "minecraft world");
         //RecipeManager recipeManager = world.getRecipeManager();
-        IndustrialElectrolyzerCategory.electrodes=ForgeRegistries.ITEMS.getValues().stream().filter(e->e.getTags().contains(IndustrialElectrolyzerCategory.Electrode_Tag)).collect(Collectors.toList());
-        registration.addRecipes(new ArrayList<>(CrucibleRecipe.recipeList.values()), CrucibleCategory.UID);
-        registration.addRecipes(ElectrolyzerRecipe.recipeList.values().stream().filter(r->!r.flag).filter(r->r.inputs.length<2).collect(Collectors.toList()), ElectrolyzerCategory.UID);
-        registration.addRecipes(ElectrolyzerRecipe.recipeList.values().stream().filter(r -> r.inputs.length < 3).collect(Collectors.toList()), IndustrialElectrolyzerCategory.UID);
-        registration.addRecipes(new ArrayList<>(RotaryKilnRecipe.recipeList.values()), RotaryKilnCategory.UID);
-        registration.addRecipes(CarKilnRecipe.recipeList, CarKilnCategory.UID);
+        registration.addRecipes(CrucibleCategory.UID,new ArrayList<>(CrucibleRecipe.recipeList.values()));
+        registration.addRecipes(ElectrolyzerCategory.UID,ElectrolyzerRecipe.recipeList.values().stream().filter(r->!r.flag).filter(r->r.inputs.length<2).collect(Collectors.toList()));
+        registration.addRecipes(IndustrialElectrolyzerCategory.UID,ElectrolyzerRecipe.recipeList.values().stream().filter(r -> r.inputs.length < 3).collect(Collectors.toList()));
+        registration.addRecipes(RotaryKilnCategory.UID,new ArrayList<>(RotaryKilnRecipe.recipeList.values()));
+        registration.addRecipes(CarKilnCategory.UID,CarKilnRecipe.recipeList);
     }
 
     @Override

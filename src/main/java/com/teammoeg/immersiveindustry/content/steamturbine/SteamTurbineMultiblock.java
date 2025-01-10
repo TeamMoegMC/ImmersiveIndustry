@@ -18,36 +18,21 @@
 
 package com.teammoeg.immersiveindustry.content.steamturbine;
 
-import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class SteamTurbineMultiblock extends IETemplateMultiblock {
     public SteamTurbineMultiblock() {
         super(new ResourceLocation(IIMain.MODID, "multiblocks/steam_turbine"),
                 new BlockPos(1, 1, 3), new BlockPos(1, 1, 6), new BlockPos(3, 3, 7),
-                () -> IIContent.IIMultiblocks.steam_turbine.getDefaultState());
+                IIContent.IIMultiblocks.STEAMTURBINE);
         
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean canRenderFormedStructure() {
-        return false;
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void renderFormedStructure(MatrixStack transform, IRenderTypeBuffer buffer) {
-    }
 
     @Override
     public float getManualScale() {

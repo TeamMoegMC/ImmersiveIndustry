@@ -48,7 +48,7 @@ public class IIMain {
         IIContent.IITileTypes.REGISTER.register(mod);
         IIContent.IIRecipes.RECIPE_SERIALIZERS.register(mod);
         DistExecutor.safeRunWhenOn(Dist.CLIENT,()->ClientProxy::setup);
-        IIContent.IIRecipes.registerRecipeTypes();
+        IIContent.IIRecipes.init();
 //        DeferredWorkQueue.runLater(IIContent.IIRecipes::registerRecipeTypes);
     }
 //    public void onMissing(final MissingMappings<Block> ev) {
@@ -61,7 +61,7 @@ public class IIMain {
 //    	});
 //    }
     public void setup(final FMLCommonSetupEvent event) {
-        MinecraftForge.EVENT_BUS.register(new IIRecipeReloadListener(null));
+        MinecraftForge.EVENT_BUS.register(new IIRecipeReloadListener());
     }
     
 }

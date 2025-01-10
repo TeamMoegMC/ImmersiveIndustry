@@ -58,7 +58,7 @@ public class CrucibleScreen extends IEContainerScreen<CrucibleContainer> {
         if (mouseX >= this.guiLeft + 10 && mouseX < this.guiLeft + 19 && mouseY > this.guiTop + 10 && mouseY < this.guiTop + 67) {
             //Temperature in kelvins
             int k = this.tile.temperature - this.tile.temperature % 100 + 300;
-            tooltip.add(new TranslationTextComponent("gui.immersiveindustry.crucible.tooltip.temperature_in_kelvin", k));
+            tooltip.add(LangUtil.translate("gui.immersiveindustry.crucible.tooltip.temperature_in_kelvin", k));
         }
         if (!tooltip.isEmpty()) {
             GuiUtils.drawHoveringText(transform, tooltip, mouseX, mouseY, width, height, -1, font);

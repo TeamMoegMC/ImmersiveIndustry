@@ -17,7 +17,7 @@ public abstract class DatapackFailureScreenMixin {
 //	@Inject(at=@At("TAIL"),method="init")
 //	public void ii$init(CallbackInfo cbi) {
 //		if(IIMain.loadfailed)
-//			this.field_243284_a = IBidiRenderer.func_243258_a(this.font,this.getTitle().copyRaw().appendSibling(new TranslationTextComponent("gui.immersiveindustry.failed_datapack")), this.width - 50);
+//			this.field_243284_a = IBidiRenderer.func_243258_a(this.font,this.getTitle().copyRaw().appendSibling(LangUtil.translate("gui.immersiveindustry.failed_datapack")), this.width - 50);
 //	}
 	
 }

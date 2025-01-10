@@ -22,19 +22,16 @@ import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Collections;
 import java.util.Map;
 
 public class ElectrolyzerRecipe extends IESerializableRecipe {
-    public static IRecipeType<ElectrolyzerRecipe> TYPE;
+    public static RegistryObject<RecipeType<ElectrolyzerRecipe>> TYPE;
     public static RegistryObject<IERecipeSerializer<ElectrolyzerRecipe>> SERIALIZER;
 
     public final IngredientWithSize[] inputs;

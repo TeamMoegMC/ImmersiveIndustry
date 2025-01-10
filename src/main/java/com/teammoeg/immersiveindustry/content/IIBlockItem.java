@@ -26,4 +26,7 @@ public class IIBlockItem extends BlockItem {
     public IIBlockItem(Block block, Properties properties) {
         super(block, properties);
     }
+    public IIBlockItem(Block block) {
+        super(block,new Item.Properties());
+    }
 }

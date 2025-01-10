@@ -21,8 +21,19 @@ package com.teammoeg.immersiveindustry;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockItem;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.IEMultiblockBuilder;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.NonMirrorableWithActiveBlock;
+import blusunrize.immersiveengineering.common.register.IEBlocks;
+
 import com.google.common.collect.ImmutableSet;
+import com.teammoeg.frostedheart.bootstrap.common.FHBlockEntityTypes;
+import com.teammoeg.frostedheart.bootstrap.common.FHBlocks;
+import com.teammoeg.frostedheart.bootstrap.common.FHItems;
 import com.teammoeg.immersiveindustry.content.IIBaseBlock;
 import com.teammoeg.immersiveindustry.content.IIBaseItem;
 import com.teammoeg.immersiveindustry.content.IIBlockItem;
@@ -39,63 +50,116 @@ import mezz.jei.library.load.registration.GuiHandlerRegistration;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class IIContent {
-    public static List<Block> registeredBlocks = new ArrayList<>();
-    public static List<Item> registeredItems = new ArrayList<>();
 
     public static class IIBlocks {
         public static void init() {
         }
+        public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, IIMain.MODID);
+        
+        protected static <T extends Block> RegistryObject<T> register(String name, Supplier<T> block, String itemName, Function<T, Item> item) {
+            RegistryObject<T> blk = BLOCKS.register(name, block);
+            IItems.ITEMS.register(itemName, () -> item.apply(blk.get()));
+            return blk;
+        }
 
+        protected static <T extends Block> RegistryObject<T> register(String name, Supplier<T> block) {
+            return register(name, block, name, IIBlockItem::new);
+        }
 
-        public static Block electrolyzer = new ElectrolyzerBlock("electrolyzer", IIProps.MACHINEProps, IIBlockItem::new);
-        public static Block burning_chamber = new IIBaseBlock("burning_chamber", IIProps.METALProps, IIBlockItem::new);
-        public static Block car_kiln_brick = new IIHorizontalBlock("car_kiln_brick", IIProps.MACHINEProps, IIBlockItem::new);
-        public static Block rotary_kiln_cylinder = new IIDirectionalBlock("rotary_kiln_cylinder", IIProps.MACHINEProps, IIBlockItem::new);
+        
+        protected static <T extends Block> RegistryObject<T> register(String name, Supplier<T> block, Function<T, Item> item) {
+            return register(name, block, name, item);
+        }
+        
+
+        public static RegistryObject<ElectrolyzerBlock> electrolyzer = register("electrolyzer", ()->new ElectrolyzerBlock(IIProps.MACHINEProps));
+        public static RegistryObject<IIBaseBlock> burning_chamber = register("burning_chamber", ()->new IIBaseBlock(IIProps.METALProps));
+        public static RegistryObject<IIHorizontalBlock> car_kiln_brick = register("car_kiln_brick", ()->new IIHorizontalBlock(IIProps.MACHINEProps));
+        public static RegistryObject<IIDirectionalBlock> rotary_kiln_cylinder = register("rotary_kiln_cylinder", ()->new IIDirectionalBlock(IIProps.MACHINEProps));
     }
 
     public static class IItems {
         public static void init() {
         }
-
+        public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, IIMain.MODID);
         static Item.Properties createProps() {
             return new Item.Properties();
         }
-        public static Item refractory_kiln_brick = new IIBaseItem("refractory_kiln_brick", createProps());
+        public static RegistryObject<IIBaseItem> refractory_kiln_brick = ITEMS.register("refractory_kiln_brick",()->new IIBaseItem(createProps()));
     }
 
     public static class IIMultiblocks {
-        public static final IETemplateMultiblock CRUCIBLE = new CrucibleMultiblock();
-        public static final IETemplateMultiblock STEAMTURBINE = new SteamTurbineMultiblock();
-        public static final IETemplateMultiblock IND_ELE = new IndustrialElectrolyzerMultiblock();
-        public static final IETemplateMultiblock ROTARY_KILN = new RotaryKilnMultiblock();
-        public static final IETemplateMultiblock CAR_KILN = new CarKilnMultiblock();
+    	public static final MultiblockRegistration<?> CRUCIBLE = null;
+        public static final MultiblockRegistration<?> STEAMTURBINE = null;
+        public static final MultiblockRegistration<?> IND_ELE = null;
+        public static final MultiblockRegistration<?> ROTARY_KILN = null;
+        public static final MultiblockRegistration<?> CAR_KILN = null;
+    	
+		private static <S extends IMultiblockState> IEMultiblockBuilder<S> stone(IMultiblockLogic<S> logic, String name, boolean solid) {
+			Properties properties = Properties.of()
+				.mapColor(MapColor.STONE)
+				.instrument(NoteBlockInstrument.BASEDRUM)
+				.strength(2, 20);
+			if (!solid)
+				properties.noOcclusion();
+			return new IEMultiblockBuilder<>(logic, name)
+				.notMirrored()
+				.customBlock(
+					IIBlocks.BLOCKS, IItems.ITEMS,
+					r -> new NonMirrorableWithActiveBlock<>(properties, r),
+					MultiblockItem::new)
+				.defaultBEs(IITileTypes.REGISTER);
+		}
 
-        public static Block crucible = new CrucibleBlock("crucible", IITileTypes.CRUCIBLE);
-        public static Block steam_turbine = new SteamTurbineBlock("steam_turbine", IITileTypes.STEAMTURBINE);
-        public static Block industrial_electrolyzer = new IndustrialElectrolyzerBlock("industrial_electrolyzer", IITileTypes.IND_ELE);
-        public static Block rotary_kiln=new RotaryKilnBlock("rotary_kiln",IITileTypes.ROTARY_KILN);
-        public static Block car_kiln=new CarKilnBlock("car_kiln",IITileTypes.CAR_KILN);
+		private static <S extends IMultiblockState> IEMultiblockBuilder<S> metal(IMultiblockLogic<S> logic, String name) {
+			return new IEMultiblockBuilder<>(logic, name)
+				.defaultBEs(IITileTypes.REGISTER)
+				.customBlock(
+					IIBlocks.BLOCKS, IItems.ITEMS,
+					r -> new NonMirrorableWithActiveBlock<>(IEBlocks.METAL_PROPERTIES_NO_OCCLUSION.get(), r),
+					MultiblockItem::new);
+		}
+
         public static void init() {
-            MultiblockHandler.registerMultiblock(IIMultiblocks.CRUCIBLE);
-            MultiblockHandler.registerMultiblock(IIMultiblocks.STEAMTURBINE);
-            MultiblockHandler.registerMultiblock(IIMultiblocks.IND_ELE);
-            MultiblockHandler.registerMultiblock(IIMultiblocks.ROTARY_KILN);
-            MultiblockHandler.registerMultiblock(IIMultiblocks.CAR_KILN);
+        	Multiblock.init();
+        }
+        public static class Multiblock{
+            public static final IETemplateMultiblock CRUCIBLE = new CrucibleMultiblock();
+            public static final IETemplateMultiblock STEAMTURBINE = new SteamTurbineMultiblock();
+            public static final IETemplateMultiblock IND_ELE = new IndustrialElectrolyzerMultiblock();
+            public static final IETemplateMultiblock ROTARY_KILN = new RotaryKilnMultiblock();
+            public static final IETemplateMultiblock CAR_KILN = new CarKilnMultiblock();
+            public static void init() {
+            	MultiblockHandler.registerMultiblock(CRUCIBLE);
+                MultiblockHandler.registerMultiblock(STEAMTURBINE);
+                MultiblockHandler.registerMultiblock(IND_ELE);
+                MultiblockHandler.registerMultiblock(ROTARY_KILN);
+                MultiblockHandler.registerMultiblock(CAR_KILN);
+            }
         }
     }
+    
 
     public static class IITileTypes {
         public static final DeferredRegister<BlockEntityType<?>> REGISTER = DeferredRegister.create(
@@ -130,22 +194,26 @@ public class IIContent {
     }
 
     public static class IIRecipes {
-        public static final DeferredRegister<IERecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(
+        public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(
                 ForgeRegistries.RECIPE_SERIALIZERS, IIMain.MODID
         );
-
+        public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(
+            ForgeRegistries.RECIPE_TYPES, IIMain.MODID
+        	);
         static {
             CrucibleRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("crucible", CrucibleRecipeSerializer::new);
             ElectrolyzerRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("electrolyzer", ElectrolyzerRecipeSerializer::new);
             RotaryKilnRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("rotary_kiln", RotaryKilnRecipeSerializer::new);
             CarKilnRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("car_kiln",CarKilnRecipeSerializer::new);
+            CrucibleRecipe.TYPE = register("crucible");
+            ElectrolyzerRecipe.TYPE = register("electrolyzer");
+            RotaryKilnRecipe.TYPE = register("rotary_kiln");
+            CarKilnRecipe.TYPE = register("car_kiln");
         }
-
-        public static void registerRecipeTypes() {
-            CrucibleRecipe.TYPE = IERecipeTypes.register(IIMain.MODID + ":crucible");
-            ElectrolyzerRecipe.TYPE = IERecipeTypes.register(IIMain.MODID + ":electrolyzer");
-            RotaryKilnRecipe.TYPE = IERecipeTypes.register(IIMain.MODID + ":rotary_kiln");
-            CarKilnRecipe.TYPE = IERecipeTypes.register(IIMain.MODID + ":car_kiln");
+        public static void init() {}
+    
+        public static <T extends Recipe<?>> RegistryObject<RecipeType<T>> register(String name) {
+        	return RECIPE_TYPES.register(name, ()->RecipeType.simple(new ResourceLocation(IIMain.MODID,name)));
         }
     }
 

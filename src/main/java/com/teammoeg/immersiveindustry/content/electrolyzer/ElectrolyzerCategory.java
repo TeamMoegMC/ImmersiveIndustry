@@ -19,29 +19,24 @@
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
+import com.teammoeg.immersiveindustry.content.carkiln.CarKilnRecipe;
+
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableAnimated.StartDirection;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
-import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Arrays;
 
 public class ElectrolyzerCategory implements IRecipeCategory<ElectrolyzerRecipe> {
-    public static ResourceLocation UID = new ResourceLocation(IIMain.MODID, "electrolyzer");
+    public static RecipeType<ElectrolyzerRecipe> UID = new RecipeType<>(new ResourceLocation(IIMain.MODID, "electrolyzer"),ElectrolyzerRecipe.class);
     private IDrawable BACKGROUND;
     private IDrawable ICON;
     private IDrawable TANK;
@@ -71,7 +66,7 @@ public class ElectrolyzerCategory implements IRecipeCategory<ElectrolyzerRecipe>
 
 
     public String getTitle() {
-        return (new TranslationTextComponent("gui.jei.category." + IIMain.MODID + ".electrolyzer").getString());
+        return (LangUtil.translate("gui.jei.category." + IIMain.MODID + ".electrolyzer").getString());
     }
 
     @Override

@@ -24,35 +24,11 @@ import javax.annotation.Nullable;
 
 import com.teammoeg.immersiveindustry.content.IIBaseBlock;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ILiquidContainer;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fml.network.NetworkHooks;
 
 public class ElectrolyzerBlock extends IIBaseBlock{
-    public ElectrolyzerBlock(String name, Properties blockProps, BiFunction<Block, Item.Properties, Item> createItemBlock) {
-        super(name, blockProps, createItemBlock);
+    public ElectrolyzerBlock(Properties blockProps) {
+        super(blockProps);
     }
     public static final DirectionProperty FACING=BlockStateProperties.HORIZONTAL_FACING;
     public static final VoxelShape ELECShape=Block.makeCuboidShape(0,0,0,16,15,16);//1 px lower may avoid render glitch?

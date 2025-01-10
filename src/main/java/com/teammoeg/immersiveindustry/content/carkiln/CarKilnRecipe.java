@@ -21,19 +21,15 @@ package com.teammoeg.immersiveindustry.content.carkiln;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Collections;
 import java.util.List;
 
 public class CarKilnRecipe extends IESerializableRecipe {
-    public static IRecipeType<CarKilnRecipe> TYPE;
+    public static RegistryObject<RecipeType<CarKilnRecipe>> TYPE;
     public static RegistryObject<IERecipeSerializer<CarKilnRecipe>> SERIALIZER;
 
     public final IngredientWithSize[] inputs;
