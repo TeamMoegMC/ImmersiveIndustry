@@ -21,13 +21,13 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
-public class IndustrialElectrolyzerRenderer extends TileEntityRenderer<IndustrialElectrolyzerTileEntity> {
+public class IndustrialElectrolyzerRenderer extends TileEntityRenderer<IndustrialElectrolyzerBlockEntity> {
     public IndustrialElectrolyzerRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
     public static DynamicModel<Direction> ELECTRODES;
 	@Override
-    public void render(IndustrialElectrolyzerTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(IndustrialElectrolyzerBlockEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
 		if(!te.formed||te.isDummy()||!te.getWorldNonnull().isBlockLoaded(te.getPos()))
 			return;
 		List<String> renderedParts = new ArrayList<>();

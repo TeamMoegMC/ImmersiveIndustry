@@ -18,37 +18,30 @@
 
 package com.teammoeg.immersiveindustry;
 
-import static com.teammoeg.immersiveindustry.IIContent.registeredBlocks;
-import static com.teammoeg.immersiveindustry.IIContent.registeredItems;
-
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = IIMain.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class RegistryEvents {
-    @SubscribeEvent
-    public static void registerBlocks(RegistryEvent.Register<Block> event) {
-        for (Block block : registeredBlocks) {
-            try {
-            	event.getRegistry().register(block);
-            } catch (Throwable e) {
-                throw e;
-            }
-        }
-    }
-
-
-    @SubscribeEvent
-    public static void registerItems(RegistryEvent.Register<Item> event) {
-        for (Item item : registeredItems) {
-            try {
-                event.getRegistry().register(item);
-            } catch (Throwable e) {
-                throw e;
-            }
-        }
-    }
+//    @SubscribeEvent
+//    public static void registerBlocks(RegistryEvent.Register<Block> event) {
+//        for (Block block : registeredBlocks) {
+//            try {
+//            	event.getRegistry().register(block);
+//            } catch (Throwable e) {
+//                throw e;
+//            }
+//        }
+//    }
+//
+//
+//    @SubscribeEvent
+//    public static void registerItems(RegistryEvent.Register<Item> event) {
+//        for (Item item : registeredItems) {
+//            try {
+//                event.getRegistry().register(item);
+//            } catch (Throwable e) {
+//                throw e;
+//            }
+//        }
+//    }
 }

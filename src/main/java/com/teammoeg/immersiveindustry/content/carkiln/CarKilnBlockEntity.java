@@ -4,9 +4,11 @@ import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
+import blusunrize.immersiveengineering.common.blocks.MultiblockBEType;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -27,6 +29,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -41,9 +44,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Set;
 
-public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntity>
+public class CarKilnBlockEntity extends MultiblockBEType<CarKilnBlockEntity>
 		implements IEBlockInterfaces.IBlockBounds, EnergyHelper.IIEInternalFluxHandler, IIEInventory,
-		IEBlockInterfaces.IInteractionObjectIE, IEBlockInterfaces.IProcessTile {
+		IEBlockInterfaces.IInteractionObjectIE, IEBlockInterfaces.IProcessTile, IMultiblockState {
 	public int processMax = 0;
 	public int process = 0;
 	public int tickEnergy = 0;
@@ -56,7 +59,7 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 	NonNullList<ItemStack> results = NonNullList.withSize(9, ItemStack.EMPTY);
 	public FluidTank[] tankinput = new FluidTank[]{new FluidTank(16000)};
 
-	public CarKilnTileEntity() {
+	public CarKilnBlockEntity() {
 		super(IIMultiblocks.CAR_KILN, IITileTypes.CAR_KILN.get(), false);
 	}
 
@@ -253,7 +256,7 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 
 	@Override
 	protected boolean canFillTankFrom(int i, Direction side, FluidStack fluidStack) {
-		CarKilnTileEntity master = master();
+		CarKilnBlockEntity master = master();
 		if (master != null) {
 			return true;
 		}
@@ -262,7 +265,7 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 
 	@Override
 	protected IFluidTank[] getAccessibleFluidTanks(Direction side) {
-		CarKilnTileEntity master = master();
+		CarKilnBlockEntity master = master();
 		if (master != null) {
 			if (this.posInMultiblock.getY() == 3 && this.posInMultiblock.getX() == 1 && this.posInMultiblock.getZ() == 0
 					&& (side == null || side == getFacing())) {
@@ -318,7 +321,7 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 	@Nonnull
 	@Override
 	public FluxStorage getFluxStorage() {
-		CarKilnTileEntity master = this.master();
+		CarKilnBlockEntity master = this.master();
 		return master != null ? master.energyStorage : this.energyStorage;
 	}
 
@@ -416,7 +419,7 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 
 	@Override
 	public int[] getCurrentProcessesStep() {
-		CarKilnTileEntity master = master();
+		CarKilnBlockEntity master = master();
 		if (master != this && master != null)
 			return master.getCurrentProcessesStep();
 		return new int[]{processMax - process};
@@ -424,7 +427,7 @@ public class CarKilnTileEntity extends MultiblockPartTileEntity<CarKilnTileEntit
 
 	@Override
 	public int[] getCurrentProcessesMax() {
-		CarKilnTileEntity master = master();
+		CarKilnBlockEntity master = master();
 		if (master != this && master != null)
 			return master.getCurrentProcessesMax();
 		return new int[]{processMax};

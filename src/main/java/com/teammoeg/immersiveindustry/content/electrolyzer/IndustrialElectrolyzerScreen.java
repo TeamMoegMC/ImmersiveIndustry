@@ -35,7 +35,7 @@ import java.util.List;
 
 public class IndustrialElectrolyzerScreen extends IEContainerScreen<IndustrialElectrolyzerContainer> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(IIMain.MODID, "textures/gui/industrial_electrolyzer.png");
-    private IndustrialElectrolyzerTileEntity tile;
+    private IndustrialElectrolyzerBlockEntity tile;
 
     public IndustrialElectrolyzerScreen(IndustrialElectrolyzerContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);

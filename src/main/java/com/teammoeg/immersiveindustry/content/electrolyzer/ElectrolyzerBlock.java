@@ -47,9 +47,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class ElectrolyzerBlock extends IIBaseBlock{
@@ -71,7 +69,7 @@ public class ElectrolyzerBlock extends IIBaseBlock{
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new ElectrolyzerTileEntity();
+        return new ElectrolyzerBlockEntity();
     }
 
     @Override

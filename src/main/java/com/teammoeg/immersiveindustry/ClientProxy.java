@@ -5,7 +5,7 @@ import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType
 import com.teammoeg.immersiveindustry.content.carkiln.CarKilnRenderer;
 import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerRenderer;
 import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class ClientProxy {
 	public static void setup() {

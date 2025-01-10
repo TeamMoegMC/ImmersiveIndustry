@@ -45,7 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTileEntity>
+public class RotaryKilnBlockEntity extends MultiblockPartTileEntity<RotaryKilnBlockEntity>
 		implements IEBlockInterfaces.IBlockBounds, EnergyHelper.IIEInternalFluxHandler, IIEInventory,
 		IEBlockInterfaces.IInteractionObjectIE, IEBlockInterfaces.IProcessTile {
 	public int processMax = 0;
@@ -71,13 +71,13 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 		return new DirectionalBlockPos(this.getBlockPosForPos(fluidout),Direction.DOWN);
 	}, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
 
-	public RotaryKilnTileEntity() {
+	public RotaryKilnBlockEntity() {
 		super(IIMultiblocks.ROTARY_KILN, IITileTypes.ROTARY_KILN.get(), false);
 	}
 
 	@Override
 	protected boolean canDrainTankFrom(int i, Direction side) {
-		RotaryKilnTileEntity master = master();
+		RotaryKilnBlockEntity master = master();
 		if (master != null) {
 			return true;
 		}
@@ -93,7 +93,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 	@Nonnull
 	@Override
 	protected IFluidTank[] getAccessibleFluidTanks(Direction side) {
-		RotaryKilnTileEntity master = master();
+		RotaryKilnBlockEntity master = master();
 		if (master != null) {
 			if (this.posInMultiblock.getZ() == 4 && this.posInMultiblock.getY() == 2
 					&& this.posInMultiblock.getX() == 1) {
@@ -299,7 +299,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 	@Nonnull
 	@Override
 	public FluxStorage getFluxStorage() {
-		RotaryKilnTileEntity master = this.master();
+		RotaryKilnBlockEntity master = this.master();
 		return master != null ? master.energyStorage : this.energyStorage;
 	}
 
@@ -384,7 +384,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 
 	@Override
 	public int[] getCurrentProcessesStep() {
-		RotaryKilnTileEntity master = master();
+		RotaryKilnBlockEntity master = master();
 		if (master != this && master != null)
 			return master.getCurrentProcessesStep();
 		return new int[] { processMax - process };
@@ -392,7 +392,7 @@ public class RotaryKilnTileEntity extends MultiblockPartTileEntity<RotaryKilnTil
 
 	@Override
 	public int[] getCurrentProcessesMax() {
-		RotaryKilnTileEntity master = master();
+		RotaryKilnBlockEntity master = master();
 		if (master != this && master != null)
 			return master.getCurrentProcessesMax();
 		return new int[] { processMax };

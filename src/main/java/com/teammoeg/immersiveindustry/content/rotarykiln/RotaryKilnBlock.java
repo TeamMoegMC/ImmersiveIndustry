@@ -33,7 +33,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.RegistryObject;
 
-public class RotaryKilnBlock extends IEMultiblockBlock<RotaryKilnTileEntity> {
+public class RotaryKilnBlock extends IEMultiblockBlock<RotaryKilnBlockEntity> {
 
     public RotaryKilnBlock(String name, RegistryObject type) {
         super(name, Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(4.0F, 40.0F).notSolid(), type);
@@ -43,7 +43,7 @@ public class RotaryKilnBlock extends IEMultiblockBlock<RotaryKilnTileEntity> {
 	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player,
 			Hand hand, BlockRayTraceResult hit) {
 		if(world.isRemote)
-			((RotaryKilnTileEntity)Utils.getExistingTileEntity(world, pos)).master().angle+=90;
+			((RotaryKilnBlockEntity)Utils.getExistingTileEntity(world, pos)).master().angle+=90;
 		return super.onBlockActivated(state, world, pos, player, hand, hit);
 	}
 	@Override

@@ -1,13 +1,14 @@
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
-		maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-		jcenter()
+        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        maven { url = 'https://maven.parchmentmc.org' }
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
-		classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: "${forgegradle_version}", changing: true
+        classpath group: 'org.spongepowered', name: 'mixingradle', version: "${mixingradle_version}"
+        classpath group: 'org.parchmentmc', name: 'librarian', version: "${librarian_version}"
     }
 }
 
@@ -19,13 +20,18 @@ plugins {
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'maven-publish'
+apply plugin: 'idea'
 
-version = "${mc_version}-${mod_version}"
+version = "${minecraft_version}-${mod_version}"
 group = 'com.teammoeg'
 archivesBaseName = 'ImmersiveIndustry'
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '17.0'
 
 repositories {
 	mavenLocal()
@@ -54,39 +60,27 @@ sourceSets {
         runtimeClasspath += main.output
     }
 }
+
 minecraft {
-
-    mappings channel: 'snapshot', version: '20210309-1.16.5'
-    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
-    
+    mappings channel: 'parchment', version: "${parchment_version}-${minecraft_version}"
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
     runs {
         client {
             workingDirectory project.file('run')
-
             property 'forge.logging.markers', 'REGISTRIES'
-			
 			arg "-mixin.config=" + "immersiveindustry.mixins.json"
-
             property 'forge.logging.console.level', 'debug'
-
             mods {
                 immersiveindustry {
                     source sourceSets.main
                 }
             }
         }
-
         server {
             workingDirectory project.file('run')
-			
             property 'forge.logging.markers', 'REGISTRIES'
-			
 			arg "-mixin.config=" + "immersiveindustry.mixins.json"
-
             property 'forge.logging.console.level', 'debug'
-
             mods {
                 immersiveindustry {
                     source sourceSets.main
@@ -96,15 +90,10 @@ minecraft {
 
         data {
             workingDirectory project.file('run')
-
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-			
 			arg "-mixin.config=" + "immersiveindustry.mixins.json"
-
             property 'forge.logging.console.level', 'debug'
-
             args '--mod', 'immersiveindustry', '--all', '--output', file('src/generated/resources/'),'validate', '--existing', file('src/main/resources/'), '--existing-mod', 'immersiveengineering'
-
             mods {
                 immersiveindustry {
                 	source sourceSets.main
@@ -117,20 +106,20 @@ minecraft {
 
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
-//    compile fileTree(include: ['*.jar'], dir: 'libs')
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    compile fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:1.16.5-5.0.7-143")
-    implementation fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:1.16.5-5.0.7-143:datagen")
-	
+    implementation fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:${ie_version}")
+    implementation fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:${ie_version}:datagen")
 	//compile fg.deobf('com.cannolicatfish:Project-Rankine:1.16.5-1.3')
     //implementation fg.deobf('com.cannolicatfish:Project-Rankine:1.16.5-1.3')
 
+    compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"))
+    compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
+    // at runtime, use the full JEI jar for Forge
+    implementation(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
 
-    compile fg.deobf("mezz.jei:jei-1.16.5:7.6.4.88")
-
-    annotationProcessor "org.spongepowered:mixin:0.8.2:processor"
-    testAnnotationProcessor "org.spongepowered:mixin:0.8.2:processor"
+    annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
+    testAnnotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
 }
 
 jar {
@@ -208,7 +197,7 @@ String getChangelogText() {
             def temp = it
             if (lineCount == 0) {
                 temp = "ImmersiveIndustry ${version}"
-                temp = "<span style=\"font-size: 18px; color: #333399;\">ImmersiveIndustry v${mod_version}</span>&nbsp;&nbsp;<em>for Minecraft ${mc_version}</em><br/>"
+                temp = "<span style=\"font-size: 18px; color: #333399;\">ImmersiveIndustry v${mod_version}</span>&nbsp;&nbsp;<em>for Minecraft ${minecraft_version}</em><br/>"
             } else if (it.startsWith('-')) {
                 temp = "&nbsp;&nbsp;&nbsp;$temp<br/>"
             } else {
@@ -232,7 +221,7 @@ curseforge {
 
         releaseType = 'release' // Default versions are marked release
 
-        addGameVersion "1.16.5"
+        addGameVersion "1.20.1"
 
         mainArtifact (jar) {
             relations {

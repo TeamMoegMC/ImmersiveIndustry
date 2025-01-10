@@ -37,7 +37,7 @@ import java.util.function.Function;
 public class CrucibleScreen extends IEContainerScreen<CrucibleContainer> {
     private static final Function<BlastFurnacePreheaterTileEntity, Boolean> PREHEATER_ACTIVE = (tile) -> tile.active;
     private static final ResourceLocation TEXTURE = new ResourceLocation(IIMain.MODID, "textures/gui/crucible.png");
-    private CrucibleTileEntity tile;
+    private CrucibleBlockEntity tile;
 
     public CrucibleScreen(CrucibleContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);

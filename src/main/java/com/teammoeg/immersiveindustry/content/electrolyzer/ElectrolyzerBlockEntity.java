@@ -49,7 +49,7 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInventory, EnergyHelper.IIEInternalFluxHandler,
+public class ElectrolyzerBlockEntity extends IEBaseTileEntity implements IIEInventory, EnergyHelper.IIEInternalFluxHandler,
         ITickableTileEntity, IEBlockInterfaces.IProcessTile, IEBlockInterfaces.IStateBasedDirectional, IEBlockInterfaces.IInteractionObjectIE {
     public int process = 0;
     public int processMax = 0;
@@ -60,7 +60,7 @@ public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInven
     private NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 
 
-    public ElectrolyzerTileEntity() {
+    public ElectrolyzerBlockEntity() {
         super(IIContent.IITileTypes.ELECTROLYZER.get());
     }
 
@@ -199,10 +199,10 @@ public class ElectrolyzerTileEntity extends IEBaseTileEntity implements IIEInven
     }
 
     static class FluidHandler implements IFluidHandler {
-        ElectrolyzerTileEntity tile;
+        ElectrolyzerBlockEntity tile;
 
         @Nullable
-        FluidHandler(ElectrolyzerTileEntity tile) {
+        FluidHandler(ElectrolyzerBlockEntity tile) {
             this.tile = tile;
         }
 

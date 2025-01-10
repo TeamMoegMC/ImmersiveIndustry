@@ -4,7 +4,6 @@ import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -18,9 +17,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.List;
-
-public class CarKilnRenderer extends TileEntityRenderer<CarKilnTileEntity> {
+public class CarKilnRenderer extends TileEntityRenderer<CarKilnBlockEntity> {
 	public CarKilnRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
 		super(rendererDispatcherIn);
 	}
@@ -32,7 +29,7 @@ public class CarKilnRenderer extends TileEntityRenderer<CarKilnTileEntity> {
 	private static final IEObjState s2=new IEObjState(VisibilityList.show("shelf1","shelf2"));
 	
 	@Override
-    public void render(CarKilnTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(CarKilnBlockEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
 		if(!te.formed||te.isDummy()||!te.getWorldNonnull().isBlockLoaded(te.getPos()))
 			return;
 		BlockPos blockPos = te.getPos();

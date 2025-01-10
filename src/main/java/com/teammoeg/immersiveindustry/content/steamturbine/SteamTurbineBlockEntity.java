@@ -59,14 +59,14 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbineTileEntity> implements
+public class SteamTurbineBlockEntity extends MultiblockPartTileEntity<SteamTurbineBlockEntity> implements
         IEBlockInterfaces.IBlockBounds, IEBlockInterfaces.ISoundTile {
     public FluidTank tanks;
     public boolean active = false;
     public final int steam;
-    private static final CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> SHAPES = CachedShapesWithTransform.createForMultiblock(SteamTurbineTileEntity::getShape);
+    private static final CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> SHAPES = CachedShapesWithTransform.createForMultiblock(SteamTurbineBlockEntity::getShape);
 
-    public SteamTurbineTileEntity() {
+    public SteamTurbineBlockEntity() {
         super(IIContent.IIMultiblocks.STEAMTURBINE, IIContent.IITileTypes.STEAMTURBINE.get(), true);
         steam=IIConfig.COMMON.steamTurbineSteam.get();
         this.tanks = new FluidTank(24 * FluidAttributes.BUCKET_VOLUME, fluidStack -> {
@@ -97,7 +97,7 @@ public class SteamTurbineTileEntity extends MultiblockPartTileEntity<SteamTurbin
     @Nonnull
     @Override
     protected IFluidTank[] getAccessibleFluidTanks(Direction side) {
-        SteamTurbineTileEntity master = master();
+        SteamTurbineBlockEntity master = master();
         if (master != null && (posInMultiblock.getZ() == 0 && posInMultiblock.getY() == 1 && posInMultiblock.getX() == 2)
                 && (side == null || side == getFacing()))
             return new FluidTank[]{master.tanks};

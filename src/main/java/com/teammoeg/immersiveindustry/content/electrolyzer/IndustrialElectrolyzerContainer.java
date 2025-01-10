@@ -26,9 +26,9 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class IndustrialElectrolyzerContainer extends IEBaseContainer<IndustrialElectrolyzerTileEntity> {
+public class IndustrialElectrolyzerContainer extends IEBaseContainer<IndustrialElectrolyzerBlockEntity> {
 	public static final ResourceLocation Electrode_Tag=new ResourceLocation(IIMain.MODID,"electrodes");
-    public IndustrialElectrolyzerContainer(int id, PlayerInventory inventoryPlayer, IndustrialElectrolyzerTileEntity tile) {
+    public IndustrialElectrolyzerContainer(int id, PlayerInventory inventoryPlayer, IndustrialElectrolyzerBlockEntity tile) {
         super(tile, id);
 
         // input

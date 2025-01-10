@@ -35,7 +35,7 @@ import java.util.List;
 
 public class RotaryKilnScreen extends IEContainerScreen<RotaryKilnContainer> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(IIMain.MODID, "textures/gui/rotary_kiln.png");
-    private RotaryKilnTileEntity tile;
+    private RotaryKilnBlockEntity tile;
 
     public RotaryKilnScreen(RotaryKilnContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);

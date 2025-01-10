@@ -17,7 +17,7 @@ import net.minecraft.util.math.vector.Vector3f;
 
 import java.util.List;
 
-public class RotaryKilnRenderer extends TileEntityRenderer<RotaryKilnTileEntity> {
+public class RotaryKilnRenderer extends TileEntityRenderer<RotaryKilnBlockEntity> {
 	public RotaryKilnRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
 		super(rendererDispatcherIn);
 	}
@@ -25,7 +25,7 @@ public class RotaryKilnRenderer extends TileEntityRenderer<RotaryKilnTileEntity>
 	public static DynamicModel<Direction> ROLL;
 
 	@Override
-	public void render(RotaryKilnTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+	public void render(RotaryKilnBlockEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
 		if (!te.formed || te.isDummy() || !te.getWorldNonnull().isBlockLoaded(te.getPos()))
 			return;
 		BlockPos blockPos = te.getPos();
