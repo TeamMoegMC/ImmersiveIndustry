@@ -38,7 +38,7 @@ import javax.annotation.Nullable;
 public class CrucibleRecipeSerializer extends IERecipeSerializer<CrucibleRecipe> {
     @Override
     public ItemStack getIcon() {
-        return new ItemStack(IIContent.IIMultiblocks.crucible);
+        return new ItemStack(IIContent.IIMultiblocks.CRUCIBLE.blockItem().get());
     }
 
     @Override

@@ -16,14 +16,14 @@ import net.minecraft.util.math.vector.Matrix4f;
 public class DebugHelper {
 	public static RenderType BOLD_LINE_TYPE;
 	static {
-		RenderType.State renderState;
+		RenderType.SteamTurbineState renderState;
 		renderState = RenderStateAccess.getState();
 		BOLD_LINE_TYPE = RenderType.makeType("ii_line_bold", DefaultVertexFormats.POSITION_COLOR, GL11.GL_LINES,
 				128, renderState);
 	}
 	//hack to access render state protected members
 	public static class RenderStateAccess extends RenderState {
-		public static RenderType.State getState() {
+		public static RenderType.SteamTurbineState getState() {
 			return RenderType.State.getBuilder().line(new RenderState.LineState(OptionalDouble.of(1)))//this is line width
 					.layer(VIEW_OFFSET_Z_LAYERING).target(MAIN_TARGET).writeMask(COLOR_DEPTH_WRITE).build(true);
 		}

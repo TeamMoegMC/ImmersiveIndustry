@@ -18,20 +18,28 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
-import com.teammoeg.immersiveindustry.content.carkiln.CarKilnRecipe;
+import com.teammoeg.immersiveindustry.util.LangUtil;
 
-import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableAnimated.StartDirection;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.library.util.RecipeUtil;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;
 
@@ -42,31 +50,36 @@ public class ElectrolyzerCategory implements IRecipeCategory<ElectrolyzerRecipe>
     private IDrawable TANK;
     private IDrawableAnimated ARROW;
     public ElectrolyzerCategory(IGuiHelper guiHelper) {
-        this.ICON = guiHelper.createDrawableIngredient(new ItemStack(IIContent.IIBlocks.electrolyzer));
+        this.ICON = guiHelper.createDrawableItemStack(new ItemStack(IIContent.IIBlocks.electrolyzer.get()));
         this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/electrolyzer.png"), 17, 14, 115, 60);
         this.TANK = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/electrolyzer.png"),197,1,18, 48);
         IDrawableStatic arrow=guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/electrolyzer.png"),178,57,21,15);
         ARROW=guiHelper.createAnimatedDrawable(arrow,20,StartDirection.LEFT,false);
     }
-	@Override
-	public void draw(ElectrolyzerRecipe recipe, MatrixStack transform, double mouseX, double mouseY)
-	{
-		
-		ARROW.draw(transform,59, 21);
+
+    @Override
+	public RecipeType<ElectrolyzerRecipe> getRecipeType() {
+		return UID;
 	}
-    @Override
-    public ResourceLocation getUid() {
-        return UID;
-    }
+	@Override
+	public void draw(ElectrolyzerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+		ARROW.draw(guiGraphics,59, 21);
+	}
+	@Override
+	public void setRecipe(IRecipeLayoutBuilder builder, ElectrolyzerRecipe recipe, IFocusGroup focuses) {
+		
+		IRecipeSlotBuilder fluidSlot=builder.addSlot(RecipeIngredientRole.INPUT,4,4).setFluidRenderer(50, false, 16, 47).setOverlay(TANK, 0, 0);
+		if (recipe.inputs.length > 0)
+			builder.addSlot(RecipeIngredientRole.INPUT, 33, 19).addItemStacks(Arrays.asList(recipe.inputs[0].getMatchingStacks()));
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 89, 19).addItemStack(RecipeUtil.getResultItem(recipe));
+		
+		if(recipe.input_fluid!=null)
+			fluidSlot.addIngredients(ForgeTypes.FLUID_STACK, recipe.input_fluid.getMatchingFluidStacks());
 
-    @Override
-    public Class<? extends ElectrolyzerRecipe> getRecipeClass() {
-        return ElectrolyzerRecipe.class;
-    }
-
-
-    public String getTitle() {
-        return (LangUtil.translate("gui.jei.category." + IIMain.MODID + ".electrolyzer").getString());
+		
+	}
+	public Component getTitle() {
+        return (LangUtil.translate("gui.jei.category." + IIMain.MODID + ".electrolyzer"));
     }
 
     @Override
@@ -79,27 +92,5 @@ public class ElectrolyzerCategory implements IRecipeCategory<ElectrolyzerRecipe>
         return ICON;
     }
 
-    @Override
-    public void setIngredients(ElectrolyzerRecipe recipe, IIngredients ingredients) {
-    	if(recipe.input_fluid!=null)
-    		ingredients.setInputLists(VanillaTypes.FLUID, Arrays.asList(recipe.input_fluid.getMatchingFluidStacks()));
-        if(recipe.inputs.length!=0)
-        	ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.inputs[0]).build());
 
-        ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
-    }
-
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, ElectrolyzerRecipe recipe, IIngredients ingredients) {
-        IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-        IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
-        guiFluidStacks.init(2, true, 4, 4, 16, 47, FluidAttributes.BUCKET_VOLUME / 20, false,TANK);
-        if (recipe.inputs.length > 0)
-            guiItemStacks.init(0, true, 33, 19);
-
-        guiItemStacks.init(1, false, 89, 19);
-        guiFluidStacks.set(ingredients);
-        guiItemStacks.set(ingredients);
-    }
 }

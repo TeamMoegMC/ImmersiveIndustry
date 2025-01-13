@@ -21,45 +21,17 @@ package com.teammoeg.immersiveindustry.content.crucible;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
 
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class CrucibleMultiblock extends IETemplateMultiblock {
     public CrucibleMultiblock() {
         super(new ResourceLocation(IIMain.MODID, "multiblocks/crucible"),
                 new BlockPos(1, 1, 1), new BlockPos(1, 1, 2), new BlockPos(3, 4, 3),
-                () -> IIContent.IIMultiblocks.crucible.getDefaultState());
+                IIContent.IIMultiblocks.CRUCIBLE);
     }
 
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean canRenderFormedStructure() {
-        return true;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private static ItemStack renderStack;
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void renderFormedStructure(MatrixStack transform, IRenderTypeBuffer buffer) {
-        if (renderStack == null)
-            renderStack = new ItemStack(IIContent.IIMultiblocks.crucible);
-        transform.translate(1.5D, 1.5D, 1.5D);
-        ClientUtils.mc().getItemRenderer().renderItem(
-                renderStack,
-                ItemCameraTransforms.TransformType.NONE,
-                0xf000f0,
-                OverlayTexture.NO_OVERLAY,
-                transform, buffer);
-
-    }
 
     @Override
     public boolean canBeMirrored() {

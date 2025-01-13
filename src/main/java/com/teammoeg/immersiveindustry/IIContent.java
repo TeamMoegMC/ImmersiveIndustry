@@ -20,6 +20,7 @@ package com.teammoeg.immersiveindustry;
 
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
@@ -31,9 +32,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.NonMirror
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 
 import com.google.common.collect.ImmutableSet;
-import com.teammoeg.frostedheart.bootstrap.common.FHBlockEntityTypes;
-import com.teammoeg.frostedheart.bootstrap.common.FHBlocks;
-import com.teammoeg.frostedheart.bootstrap.common.FHItems;
 import com.teammoeg.immersiveindustry.content.IIBaseBlock;
 import com.teammoeg.immersiveindustry.content.IIBaseItem;
 import com.teammoeg.immersiveindustry.content.IIBlockItem;
@@ -43,11 +41,11 @@ import com.teammoeg.immersiveindustry.content.electrolyzer.*;
 import com.teammoeg.immersiveindustry.content.misc.IIDirectionalBlock;
 import com.teammoeg.immersiveindustry.content.misc.IIHorizontalBlock;
 import com.teammoeg.immersiveindustry.content.rotarykiln.*;
-import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineBlock;
+import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineLogic;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineMultiblock;
-import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineBlockEntity;
 import mezz.jei.library.load.registration.GuiHandlerRegistration;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
@@ -111,7 +109,10 @@ public class IIContent {
 
     public static class IIMultiblocks {
     	public static final MultiblockRegistration<?> CRUCIBLE = null;
-        public static final MultiblockRegistration<?> STEAMTURBINE = null;
+        public static final MultiblockRegistration<?> STEAMTURBINE = metal(new SteamTurbineLogic(),"rotary_kiln")
+        	.redstone(t->t.rsstate, new BlockPos(0,1,0))
+        	.structure(()->Multiblock.ROTARY_KILN)
+        	.build();
         public static final MultiblockRegistration<?> IND_ELE = null;
         public static final MultiblockRegistration<?> ROTARY_KILN = null;
         public static final MultiblockRegistration<?> CAR_KILN = null;
@@ -164,24 +165,8 @@ public class IIContent {
     public static class IITileTypes {
         public static final DeferredRegister<BlockEntityType<?>> REGISTER = DeferredRegister.create(
                 ForgeRegistries.BLOCK_ENTITY_TYPES, IIMain.MODID);
-
-        public static final RegistryObject<BlockEntityType<CrucibleBlockEntity>> CRUCIBLE = REGISTER.register(
-                "crucible", makeType(() -> new CrucibleBlockEntity(), () -> IIMultiblocks.crucible)
-        );
-        public static final RegistryObject<BlockEntityType<SteamTurbineBlockEntity>> STEAMTURBINE = REGISTER.register(
-                "steam_turbine", makeType(() -> new SteamTurbineBlockEntity(), () -> IIMultiblocks.steam_turbine)
-        );
         public static final RegistryObject<BlockEntityType<ElectrolyzerBlockEntity>> ELECTROLYZER = REGISTER.register(
                 "electrolyzer", makeType(() -> new ElectrolyzerBlockEntity(), () -> IIBlocks.electrolyzer)
-        );
-        public static final RegistryObject<BlockEntityType<IndustrialElectrolyzerBlockEntity>> IND_ELE = REGISTER.register(
-                "industrial_electrolyzer", makeType(() -> new IndustrialElectrolyzerBlockEntity(), () -> IIMultiblocks.industrial_electrolyzer)
-        );
-        public static final RegistryObject<BlockEntityType<RotaryKilnBlockEntity>> ROTARY_KILN= REGISTER.register(
-                "rotary_kiln", makeType(() -> new RotaryKilnBlockEntity(), () -> IIMultiblocks.rotary_kiln)
-        );
-        public static final RegistryObject<BlockEntityType<CarKilnBlockEntity>> CAR_KILN= REGISTER.register(
-                "car_kiln", makeType(() -> new CarKilnBlockEntity(), () -> IIMultiblocks.car_kiln)
         );
         private static <T extends BlockEntity> Supplier<BlockEntityType<T>> makeType(Supplier<T> create, Supplier<Block> valid) {
             return makeTypeMultipleBlocks(create, () -> ImmutableSet.of(valid.get()));
@@ -201,17 +186,20 @@ public class IIContent {
             ForgeRegistries.RECIPE_TYPES, IIMain.MODID
         	);
         static {
+        	CrucibleRecipe.TYPE = register("crucible",CrucibleRecipe.class);
+            ElectrolyzerRecipe.TYPE = register("electrolyzer",ElectrolyzerRecipe.class);
+            RotaryKilnRecipe.TYPE = register("rotary_kiln",RotaryKilnRecipe.class);
+            CarKilnRecipe.TYPE = register("car_kiln",CarKilnRecipe.class);
             CrucibleRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("crucible", CrucibleRecipeSerializer::new);
             ElectrolyzerRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("electrolyzer", ElectrolyzerRecipeSerializer::new);
             RotaryKilnRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("rotary_kiln", RotaryKilnRecipeSerializer::new);
             CarKilnRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("car_kiln",CarKilnRecipeSerializer::new);
-            CrucibleRecipe.TYPE = register("crucible");
-            ElectrolyzerRecipe.TYPE = register("electrolyzer");
-            RotaryKilnRecipe.TYPE = register("rotary_kiln");
-            CarKilnRecipe.TYPE = register("car_kiln");
+            
         }
         public static void init() {}
-    
+        public static <T extends Recipe<?>> TypeWithClass<T> register(String name,Class<T> clazz){
+        	return new TypeWithClass<>(register(name), clazz);
+        }
         public static <T extends Recipe<?>> RegistryObject<RecipeType<T>> register(String name) {
         	return RECIPE_TYPES.register(name, ()->RecipeType.simple(new ResourceLocation(IIMain.MODID,name)));
         }

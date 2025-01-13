@@ -18,17 +18,13 @@
 
 package com.teammoeg.immersiveindustry.content.rotarykiln;
 
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
-
-import java.util.Arrays;
-
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
-import com.teammoeg.immersiveindustry.content.carkiln.CarKilnRecipe;
 import com.teammoeg.immersiveindustry.util.LangUtil;
 
-import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableAnimated.StartDirection;
@@ -36,8 +32,10 @@ import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -51,7 +49,7 @@ public class RotaryKilnCategory implements IRecipeCategory<RotaryKilnRecipe> {
     private IDrawableAnimated ARROW;
 
     public RotaryKilnCategory(IGuiHelper guiHelper) {
-        this.ICON = guiHelper.createDrawableItemStack(new ItemStack(IIContent.IIMultiblocks.rotary_kiln));
+        this.ICON = guiHelper.createDrawableItemStack(new ItemStack(IIContent.IIMultiblocks.ROTARY_KILN.blockItem().get()));
         this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/rotary_kiln.png"), 9, 22, 143, 59);
         this.TANK = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/rotary_kiln.png"), 197, 1, 18, 48);
         IDrawableStatic arrow = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/rotary_kiln.png"), 178, 59, 38, 16);
@@ -65,8 +63,23 @@ public class RotaryKilnCategory implements IRecipeCategory<RotaryKilnRecipe> {
 
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, RotaryKilnRecipe recipe, IFocusGroup focuses) {
-		// TODO Auto-generated method stub
 		
+		builder.addSlot(RecipeIngredientRole.INPUT,2, 17).addItemStacks(recipe.input.getMatchingStackList());
+		IRecipeSlotBuilder itemOut=builder.addSlot(RecipeIngredientRole.OUTPUT, 84, 40);
+        if(!recipe.output.isEmpty()) {
+        	itemOut.addItemStack(recipe.output);
+        }
+        IRecipeSlotBuilder itemSecOut=builder.addSlot(RecipeIngredientRole.OUTPUT, 102, 40);
+        if(recipe.secoutput!=null){
+        	itemSecOut.addItemStack(recipe.secoutput.stack().get()).addTooltipCallback((l,t)->{
+            		t.add(LangUtil.translate("gui.jei.category." + IIMain.MODID + ".rotary_kiln.chance",((int)(recipe.secoutput.chance()*10000))/100).withStyle(ChatFormatting.BLUE));
+            });
+        }
+        IRecipeSlotBuilder fluidOut=builder.addSlot(RecipeIngredientRole.OUTPUT, 124, 4).setFluidRenderer(3200, false, 16, 47).setOverlay(TANK, 0, 0);
+        if (!recipe.output_fluid.isEmpty()) {
+        	fluidOut.addIngredient(ForgeTypes.FLUID_STACK, recipe.output_fluid);
+
+        }
 	}
 
 	@Override
@@ -89,36 +102,4 @@ public class RotaryKilnCategory implements IRecipeCategory<RotaryKilnRecipe> {
         return ICON;
     }
 
-    @Override
-    public void setIngredients(RotaryKilnRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).build());
-        if(!recipe.output.isEmpty()) {
-	        if(recipe.secoutput.isEmpty())
-	        	ingredients.setOutput(VanillaTypes.ITEM, recipe.output);
-	        else
-	        	ingredients.setOutputLists(VanillaTypes.ITEM, Arrays.asList(Arrays.asList(recipe.output),Arrays.asList(recipe.secoutput)));
-        }
-        if (!recipe.output_fluid.isEmpty())
-            ingredients.setOutput(VanillaTypes.FLUID, recipe.output_fluid);
-    }
-
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, RotaryKilnRecipe recipe, IIngredients ingredients) {
-        IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-        IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
-        guiItemStacks.init(0, true, 2, 17);
-
-        guiItemStacks.init(1, false, 84, 40);
-        guiItemStacks.init(2, false, 102, 40);
-        guiItemStacks.addTooltipCallback((s,b,i,t)->{
-        	if(s==2)
-        		t.add(LangUtil.translate("gui.jei.category." + IIMain.MODID + ".rotary_kiln.chance",((int)(recipe.secoutputchance*10000))/100).mergeStyle(TextFormatting.BLUE));
-        });
-        guiFluidStacks.init(0, false, 124, 4, 16, 47, 3200, false, TANK);
-        if (!recipe.output_fluid.isEmpty()) {
-            guiFluidStacks.set(0, recipe.output_fluid);
-        }
-        guiItemStacks.set(ingredients);
-    }
 }

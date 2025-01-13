@@ -22,7 +22,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
-import com.teammoeg.immersiveindustry.util.JEIUtils;
+import com.teammoeg.immersiveindustry.util.JEISlotBuilder;
 import com.teammoeg.immersiveindustry.util.LangUtil;
 
 import mezz.jei.api.constants.VanillaTypes;
@@ -38,6 +38,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.library.util.RecipeUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -52,7 +53,7 @@ public class CrucibleCategory implements IRecipeCategory<CrucibleRecipe> {
     private IDrawable TANK;
     private IDrawableAnimated ARROW;
     public CrucibleCategory(IGuiHelper guiHelper) {
-        this.ICON = guiHelper.createDrawableItemStack(new ItemStack(IIContent.IIMultiblocks.crucible));
+        this.ICON = guiHelper.createDrawableItemStack(new ItemStack(IIContent.IIMultiblocks.CRUCIBLE.blockItem().get()));
         this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/crucible_jei.png"), 19, 3, 150, 65);
         this.TANK = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/crucible.png"),238,34,18, 48);
         IDrawableStatic arrow=guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/crucible.png"),204,15,21,15);
@@ -93,9 +94,14 @@ public class CrucibleCategory implements IRecipeCategory<CrucibleRecipe> {
         if (recipe.output_fluid != FluidStack.EMPTY) {
         	fluidOut.addIngredient(ForgeTypes.FLUID_STACK, recipe.output_fluid);
         }
-        JEIUtils.makeItemLayouts(RecipeIngredientRole.INPUT, recipeLayout, JEIIngredientStackListBuilder.make(recipe.inputs).build(), 10, 8,31,8,10,29,31,29);
+        JEISlotBuilder<ItemStack> itemInput=JEISlotBuilder.itemStack(recipeLayout, JEIIngredientStackListBuilder.make(recipe.inputs).build()).asInput();
+        itemInput.addSlot(10,  8);
+        itemInput.addSlot(31,  8);
+        itemInput.addSlot(10, 29);
+        itemInput.addSlot(31, 29);
+
         
-        recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 89, 8).addItemStack(recipe.getRecipeOutput());
+        recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 89, 8).addItemStack(RecipeUtil.getResultItem(recipe));
 
     }
 }

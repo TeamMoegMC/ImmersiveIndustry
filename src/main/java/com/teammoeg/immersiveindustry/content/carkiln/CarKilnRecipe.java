@@ -21,12 +21,21 @@ package com.teammoeg.immersiveindustry.content.carkiln;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Collections;
 import java.util.List;
+
+import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
 
 public class CarKilnRecipe extends IESerializableRecipe {
     public static RegistryObject<RecipeType<CarKilnRecipe>> TYPE;
@@ -38,9 +47,11 @@ public class CarKilnRecipe extends IESerializableRecipe {
     public final int time;
     public final int tickEnergy;
     public final int start_fluid_cost;
+    
+    public static Lazy<TypeWithClass<CarKilnRecipe>> IEType=Lazy.of(()->new TypeWithClass<>(TYPE, CarKilnRecipe.class));
 
     public CarKilnRecipe(ResourceLocation id, ItemStack[] output, IngredientWithSize[] inputs, FluidStack input_fluid, int time, int tickEnergy,int start_fluid_cost) {
-        super(output[0], TYPE, id);
+        super(Lazy.of(()->output[0]), IEType.get(), id);
         this.output = output;
         this.inputs = inputs;
         this.input_fluid = input_fluid;
@@ -52,11 +63,6 @@ public class CarKilnRecipe extends IESerializableRecipe {
     @Override
     protected IERecipeSerializer getIESerializer() {
         return SERIALIZER.get();
-    }
-
-    @Override
-    public ItemStack getRecipeOutput() {
-        return this.output[0];
     }
     public int getInputAmount() {
     	int total=0;
@@ -110,4 +116,9 @@ public class CarKilnRecipe extends IESerializableRecipe {
             nonnulllist.add(is.getBaseIngredient());
         return nonnulllist;
     }
+
+	@Override
+	public ItemStack getResultItem(RegistryAccess pRegistryAccess) {
+		return output[0];
+	}
 }

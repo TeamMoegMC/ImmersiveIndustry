@@ -21,36 +21,44 @@ package com.teammoeg.immersiveindustry.content.rotarykiln;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.crafting.StackWithChance;
+import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Collections;
 import java.util.Map;
 
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipe;
+
 public class RotaryKilnRecipe extends IESerializableRecipe {
-    public static RegistryObject<RecipeType<RotaryKilnRecipe>> TYPE;
+    public static TypeWithClass<RotaryKilnRecipe> TYPE;
     public static RegistryObject<IERecipeSerializer<RotaryKilnRecipe>> SERIALIZER;
 
     public final IngredientWithSize input;
     public final ItemStack output;
-    public final ItemStack secoutput;
-    public final float secoutputchance;
+    public final StackWithChance secoutput;
     public final FluidStack output_fluid;
     public final int time;
     public final int tickEnergy;
 
 
-
     public RotaryKilnRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input,
 			FluidStack output_fluid, int time,
-			int tickEnergy, ItemStack secoutput, float secoutputchance) {
-		super(output, TYPE, id);
+			int tickEnergy, StackWithChance secoutput) {
+		super(Lazy.of(()->output), TYPE, id);
 		this.input = input;
 		this.output = output;
 		this.secoutput = secoutput;
-		this.secoutputchance = secoutputchance;
 		this.output_fluid = output_fluid;
 		this.time = time;
 		this.tickEnergy = tickEnergy;
@@ -62,12 +70,12 @@ public class RotaryKilnRecipe extends IESerializableRecipe {
     }
 
     @Override
-    public ItemStack getRecipeOutput() {
+    public ItemStack getResultItem(RegistryAccess ra) {
         return this.output;
     }
 
     // Initialized by reload listener
-    public static Map<ResourceLocation, RotaryKilnRecipe> recipeList = Collections.emptyMap();
+    public static CachedRecipeList<RotaryKilnRecipe> recipeList = new CachedRecipeList<>(TYPE);
 
     public boolean matches(ItemStack input) {
         if (this.input != null && this.input.test(input))
@@ -75,15 +83,15 @@ public class RotaryKilnRecipe extends IESerializableRecipe {
         return false;
     }
 
-    public static RotaryKilnRecipe findRecipe(ItemStack input) {
-        for (RotaryKilnRecipe recipe : recipeList.values())
+    public static RotaryKilnRecipe findRecipe(Level l,ItemStack input) {
+        for (RotaryKilnRecipe recipe : recipeList.getRecipes(l))
             if (recipe != null && recipe.matches(input))
                 return recipe;
         return null;
     }
 
-    public static boolean isValidRecipeInput(ItemStack input) {
-        for (RotaryKilnRecipe recipe : recipeList.values()) {
+    public static boolean isValidRecipeInput(Level l,ItemStack input) {
+        for (RotaryKilnRecipe recipe : recipeList.getRecipes(l)) {
             if (recipe.input.test(input))
                 return true;
         }

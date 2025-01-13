@@ -22,101 +22,87 @@ import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStack
 
 import java.util.Arrays;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
+import com.teammoeg.immersiveindustry.util.JEISlotBuilder;
+import com.teammoeg.immersiveindustry.util.JEISlotBuilder.JEISlotBuilderBuilder;
+import com.teammoeg.immersiveindustry.util.LangUtil;
 
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.forge.ForgeTypes;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableAnimated.StartDirection;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
-import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.item.ItemStack;
 
 public class CarKilnCategory implements IRecipeCategory<CarKilnRecipe> {
-    public static RecipeType<CarKilnRecipe> UID = new RecipeType<>(new ResourceLocation(IIMain.MODID, "car_kiln"),CarKilnRecipe.class);
-    private IDrawable BACKGROUND;
-    private IDrawable ICON;
-    private IDrawable TANK;
-    private IDrawableAnimated ARROW;
+	public static RecipeType<CarKilnRecipe> UID = new RecipeType<>(new ResourceLocation(IIMain.MODID, "car_kiln"), CarKilnRecipe.class);
+	private IDrawable BACKGROUND;
+	private IDrawable ICON;
+	private IDrawable TANK;
+	private IDrawableAnimated ARROW;
 
-    public CarKilnCategory(IGuiHelper guiHelper) {
-        this.ICON = guiHelper.createDrawableIngredient(new ItemStack(IIContent.IIMultiblocks.car_kiln));
-        this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/car_kiln.png"), 6, 16, 143, 71);
-        this.TANK = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/car_kiln.png"), 197, 1, 18, 48);
-        IDrawableStatic arrow = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/car_kiln.png"), 177, 57, 37, 17);
-        ARROW = guiHelper.createAnimatedDrawable(arrow, 40, StartDirection.LEFT, false);
-    }
+	public CarKilnCategory(IGuiHelper guiHelper) {
+		this.ICON = guiHelper.createDrawableItemStack(new ItemStack(IIContent.IIMultiblocks.CAR_KILN.blockItem().get()));
+		this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/car_kiln.png"), 6, 16, 143, 71);
+		this.TANK = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/car_kiln.png"), 197, 1, 18, 48);
+		IDrawableStatic arrow = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/car_kiln.png"), 177, 57, 37, 17);
+		ARROW = guiHelper.createAnimatedDrawable(arrow, 40, StartDirection.LEFT, false);
+	}
 
-    @Override
-    public void draw(CarKilnRecipe recipe, MatrixStack transform, double mouseX, double mouseY) {
-        ARROW.draw(transform, 77, 13);
-    }
+	@Override
+	public RecipeType<CarKilnRecipe> getRecipeType() {
+		return UID;
+	}
 
-    @Override
-    public ResourceLocation getUid() {
-        return UID;
-    }
+	@Override
+	public void setRecipe(IRecipeLayoutBuilder builder, CarKilnRecipe recipe, IFocusGroup focuses) {
+		JEISlotBuilder<ItemStack> itemInput = JEISlotBuilder.itemStack(builder, JEIIngredientStackListBuilder.make(recipe.inputs).build()).asInput();
+		for (int i = 0; i < 4; ++i) {
+			itemInput.addSlot(28 + i % 2 * 18, 4 + i / 2 * 18);
+		}
+		JEISlotBuilder<ItemStack> itemOutput = JEISlotBuilder.itemStack(builder, recipe.output).asInput();
+		for (int i = 0; i < 5; ++i) {
+			itemOutput.addSlot(89 + i % 3 * 18, 33 + i / 3 * 18);
+		}
+		IRecipeSlotBuilder fluidSlot = builder.addSlot(RecipeIngredientRole.INPUT, 4, 10).setFluidRenderer(3200, false, 16, 47).setOverlay(TANK, 0, 0);
+		if (!recipe.input_fluid.isEmpty()) {
+			fluidSlot.addIngredient(ForgeTypes.FLUID_STACK, recipe.input_fluid);
+			if (recipe.start_fluid_cost != 0)
+				fluidSlot.addTooltipCallback((l, t) -> t.add(LangUtil.translate("gui.jei.tooltip.immersiveindustry.start_cost", recipe.start_fluid_cost)));
+		}
+	}
 
-    @Override
-    public Class<? extends CarKilnRecipe> getRecipeClass() {
-        return CarKilnRecipe.class;
-    }
+	@Override
+	public void draw(CarKilnRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+		ARROW.draw(guiGraphics, 77, 13);
+	}
 
+	public Component getTitle() {
+		return (LangUtil.translate("gui.jei.category." + IIMain.MODID + ".car_kiln"));
+	}
 
-    public String getTitle() {
-        return (LangUtil.translate("gui.jei.category." + IIMain.MODID + ".car_kiln").getString());
-    }
+	@Override
+	public IDrawable getBackground() {
+		return BACKGROUND;
+	}
 
-    @Override
-    public IDrawable getBackground() {
-        return BACKGROUND;
-    }
+	@Override
+	public IDrawable getIcon() {
+		return ICON;
+	}
 
-    @Override
-    public IDrawable getIcon() {
-        return ICON;
-    }
-
-    @Override
-    public void setIngredients(CarKilnRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.inputs).build());
-    
-        ingredients.setOutputs(VanillaTypes.ITEM,Arrays.asList(recipe.output));
-        if (!recipe.input_fluid.isEmpty())
-            ingredients.setInput(VanillaTypes.FLUID, recipe.input_fluid);
-    }
-
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, CarKilnRecipe recipe, IIngredients ingredients) {
-        IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-        IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
-        for (int i = 0; i < recipe.inputs.length; ++i) {
-            guiItemStacks.init(i, true, 28 + i % 2 * 18, 4 + i / 2 * 18);
-        }
-        for (int i = 0; i < recipe.output.length; ++i) {
-            guiItemStacks.init(i+4,false, 89 + i % 3 * 18, 33 + i / 3 * 18);
-        }
-        guiFluidStacks.init(0, true, 4, 10, 16, 47, 3200, false, TANK);
-        if (!recipe.input_fluid.isEmpty()) {
-            guiFluidStacks.set(0, recipe.input_fluid);
-            if(recipe.start_fluid_cost!=0)
-            guiFluidStacks.addTooltipCallback((s,b,i,t)->t.add(LangUtil.translate("gui.jei.tooltip.immersiveindustry.start_cost",recipe.start_fluid_cost)));
-        }
-        //guiItemStacks.init(4, false, 89, 33);
-        guiItemStacks.set(ingredients);
-    }
 }

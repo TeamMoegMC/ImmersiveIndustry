@@ -48,28 +48,9 @@ import java.util.Set;
 public class RotaryKilnBlockEntity extends MultiblockPartTileEntity<RotaryKilnBlockEntity>
 		implements IEBlockInterfaces.IBlockBounds, EnergyHelper.IIEInternalFluxHandler, IIEInventory,
 		IEBlockInterfaces.IInteractionObjectIE, IEBlockInterfaces.IProcessTile {
-	public int processMax = 0;
-	public int process = 0;
-	public int cd = 0;
-	public int tickEnergy = 0;
-	boolean active;
-	public int angle;// angle for animation in degrees
-	private NonNullList<ItemStack> inventory = NonNullList.withSize(5, ItemStack.EMPTY);
-	private List<RotaryKilnProcess> processes = new ArrayList<>();
-	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
-	EnergyHelper.IEForgeEnergyWrapper wrapper = new EnergyHelper.IEForgeEnergyWrapper(this, null);
+
 	public FluidTank[] tankout = new FluidTank[]{new FluidTank(32000)};
-	private static BlockPos itemout = new BlockPos(1, 0, 7);
-	private static BlockPos fluidout = new BlockPos(1, 3, 4);
 
-	private CapabilityReference<IItemHandler> outputItemCap = CapabilityReference.forTileEntityAt(this, () -> {
-		Direction fw = getFacing().rotateY();
-		return new DirectionalBlockPos(this.getBlockPosForPos(itemout), fw);
-	}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
-
-	private CapabilityReference<IFluidHandler> outputfCap = CapabilityReference.forTileEntityAt(this, () -> {
-		return new DirectionalBlockPos(this.getBlockPosForPos(fluidout),Direction.DOWN);
-	}, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
 
 	public RotaryKilnBlockEntity() {
 		super(IIMultiblocks.ROTARY_KILN, IITileTypes.ROTARY_KILN.get(), false);

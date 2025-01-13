@@ -18,25 +18,13 @@
 
 package com.teammoeg.immersiveindustry.content.rotarykiln;
 
-import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockManualData;
-import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.utils.BasicClientProperties;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 
-import java.util.function.Consumer;
-
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
 
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class RotaryKilnMultiblock extends IETemplateMultiblock {
     public RotaryKilnMultiblock() {
@@ -46,33 +34,6 @@ public class RotaryKilnMultiblock extends IETemplateMultiblock {
 
     }
 
-
-
-
-    @OnlyIn(Dist.CLIENT)
-    private static ItemStack renderStack;
-
-    @Override
-	public void initializeClient(Consumer<MultiblockManualData> consumer) {
-		consumer.accept(new BasicClientProperties(this) {
-
-
-			@Override
-		    @OnlyIn(Dist.CLIENT)
-		    public boolean canRenderFormedStructure() {
-		        return true;
-		    }
-
-			@Override
-			 public void renderFormedStructure(PoseStack transform, MultiBufferSource bufferSource) {
-				transform.pushPose();
-		        transform.translate(1.5D, 1.5D, 1.5D);
-		        super.renderFormedStructure(transform, bufferSource);
-		        transform.popPose();
-		    }
-			
-		});
-	}
 
 
 	@Override

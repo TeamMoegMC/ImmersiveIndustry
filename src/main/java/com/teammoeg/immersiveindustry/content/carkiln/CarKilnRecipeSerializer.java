@@ -26,10 +26,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
@@ -39,22 +40,48 @@ import javax.annotation.Nullable;
 public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
 	@Override
 	public ItemStack getIcon() {
-		return new ItemStack(IIContent.IIMultiblocks.car_kiln);
+		return new ItemStack(IIContent.IIMultiblocks.CAR_KILN.blockItem().get());
 	}
 
 	@Override
-	public CarKilnRecipe readFromJson(ResourceLocation recipeId, JsonObject json) {
+	public @org.jetbrains.annotations.Nullable CarKilnRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+		int outs=buffer.readVarInt();
+		ItemStack[] output=new ItemStack[outs] ;
+		for(int i=0;i<outs;i++)
+			output[i]= buffer.readItem();
+		IngredientWithSize[] inputs = new IngredientWithSize[buffer.readVarInt()];
+		for (int i = 0; i < inputs.length; i++)
+			inputs[i] = IngredientWithSize.read(buffer);
+		return new CarKilnRecipe(recipeId, output, inputs, FluidStack.readFromPacket(buffer),buffer.readVarInt(),buffer.readVarInt(),buffer.readVarInt());
+	}
+
+	@Override
+	public void toNetwork(FriendlyByteBuf buffer, CarKilnRecipe recipe) {
+		buffer.writeVarInt(recipe.output.length);
+		for(int i=0;i<recipe.output.length;i++)
+			buffer.writeItem(recipe.output[i]);
+		buffer.writeVarInt(recipe.inputs.length);
+		for (IngredientWithSize input : recipe.inputs)
+			input.write(buffer);
+		recipe.input_fluid.writeToPacket(buffer);
+		buffer.writeVarInt(recipe.time);
+		buffer.writeVarInt(recipe.tickEnergy);
+		buffer.writeVarInt(recipe.start_fluid_cost);
+	}
+
+	@Override
+	public CarKilnRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context) {
 		ItemStack[] output;
 		if(json.has("results")) {
 			JsonArray ja=json.get("results").getAsJsonArray();
 			ArrayList<ItemStack> ops=new ArrayList<>();
 			for(JsonElement je:ja) {
-				ops.add(readOutput(je));
+				ops.add(readOutput(je).get());
 			}
 			output=ops.toArray(new ItemStack[0]);
 				
 		}else
-			output= new ItemStack[]{readOutput(json.get("result"))};
+			output= new ItemStack[]{readOutput(json.get("result")).get()};
 		IngredientWithSize[] inputs;
 		if (json.has("inputs")) {
 			JsonArray ja = json.get("inputs").getAsJsonArray();
@@ -70,7 +97,7 @@ public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
 			inputs = new IngredientWithSize[0];
 		FluidStack input_fluid = FluidStack.EMPTY;
 		if (json.has("input_fluid"))
-			input_fluid = ApiUtils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "input_fluid"));
+			input_fluid = ApiUtils.jsonDeserializeFluidStack(json.get("input_fluid").getAsJsonObject());
 
 		int time = 200;
 		if (json.has("time"))
@@ -82,32 +109,5 @@ public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
 		if(json.has("start_fluid_cost"))
 			start_fluid_cost=json.get("start_fluid_cost").getAsInt();
 		return new CarKilnRecipe(recipeId, output, inputs, input_fluid, time, tickEnergy,start_fluid_cost);
-	}
-
-	@Nullable
-	@Override
-	public CarKilnRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
-		int outs=buffer.readVarInt();
-		ItemStack[] output=new ItemStack[outs] ;
-		for(int i=0;i<outs;i++)
-			output[i]= buffer.readItemStack();
-		IngredientWithSize[] inputs = new IngredientWithSize[buffer.readVarInt()];
-		for (int i = 0; i < inputs.length; i++)
-			inputs[i] = IngredientWithSize.read(buffer);
-		return new CarKilnRecipe(recipeId, output, inputs, FluidStack.readFromPacket(buffer),buffer.readVarInt(),buffer.readVarInt(),buffer.readVarInt());
-	}
-
-	@Override
-	public void write(PacketBuffer buffer, CarKilnRecipe recipe) {
-		buffer.writeVarInt(recipe.output.length);
-		for(int i=0;i<recipe.output.length;i++)
-			buffer.writeItemStack(recipe.output[i]);
-		buffer.writeVarInt(recipe.inputs.length);
-		for (IngredientWithSize input : recipe.inputs)
-			input.write(buffer);
-		recipe.input_fluid.writeToPacket(buffer);
-		buffer.writeVarInt(recipe.time);
-		buffer.writeVarInt(recipe.tickEnergy);
-		buffer.writeVarInt(recipe.start_fluid_cost);
 	}
 }

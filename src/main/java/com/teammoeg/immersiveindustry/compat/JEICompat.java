@@ -58,9 +58,9 @@ public class JEICompat implements IModPlugin {
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(new ItemStack(IIContent.IIBlocks.burning_chamber.get()), CrucibleCategory.UID);
         registration.addRecipeCatalyst(new ItemStack(IIContent.IIBlocks.electrolyzer.get()), ElectrolyzerCategory.UID);
-        registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.industrial_electrolyzer), IndustrialElectrolyzerCategory.UID);
-        registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.rotary_kiln), RotaryKilnCategory.UID);
-        registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.car_kiln), CarKilnCategory.UID);
+        registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.IND_ELE.blockItem().get()), IndustrialElectrolyzerCategory.UID);
+        registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.ROTARY_KILN.blockItem().get()), RotaryKilnCategory.UID);
+        registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.CAR_KILN.blockItem().get()), CarKilnCategory.UID);
     }
 
     @Override

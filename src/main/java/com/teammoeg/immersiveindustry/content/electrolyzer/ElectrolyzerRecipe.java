@@ -22,13 +22,21 @@ import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Collections;
 import java.util.Map;
+
+import com.teammoeg.immersiveindustry.content.carkiln.CarKilnRecipe;
 
 public class ElectrolyzerRecipe extends IESerializableRecipe {
     public static RegistryObject<RecipeType<ElectrolyzerRecipe>> TYPE;
@@ -41,9 +49,11 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
     public final int time;
     public final int tickEnergy;
     public final boolean flag;
+    
+    public static Lazy<TypeWithClass<ElectrolyzerRecipe>> IEType=Lazy.of(()->new TypeWithClass<>(TYPE, ElectrolyzerRecipe.class));
 
     public ElectrolyzerRecipe(ResourceLocation id, ItemStack output, IngredientWithSize[] input, FluidTagInput input_fluid, FluidStack output_fluid, int time, int tickEnergy, boolean flag) {
-        super(output, TYPE, id);
+        super(Lazy.of(()->output), IEType.get(), id);
         this.output = output;
         this.inputs = input;
         this.input_fluid = input_fluid;
@@ -59,7 +69,7 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
     }
 
     @Override
-    public ItemStack getRecipeOutput() {
+    public ItemStack getResultItem(RegistryAccess ra) {
         return this.output;
     }
 
@@ -110,4 +120,5 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
         	nonnulllist.add(is.getBaseIngredient());
         return nonnulllist;
     }
+
 }
