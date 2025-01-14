@@ -1,31 +1,24 @@
 package com.teammoeg.immersiveindustry.content.rotarykiln;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teammoeg.immersiveindustry.IIContent.IIMultiblocks;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
+import com.teammoeg.immersiveindustry.util.DynamicBlockModelReference;
 
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import java.util.List;
 
-public class RotaryKilnRenderer extends TileEntityRenderer<RotaryKilnBlockEntity> {
-	public RotaryKilnRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
-		super(rendererDispatcherIn);
+public class RotaryKilnRenderer implements BlockEntityRenderer<MultiblockBlockEntityMaster<RotaryKilnState>> {
+	public RotaryKilnRenderer(BlockEntityRenderDispatcher rendererDispatcherIn) {
 	}
 
-	public static DynamicModel<Direction> ROLL;
+	public static DynamicBlockModelReference ROLL;
 
 	@Override
-	public void render(RotaryKilnBlockEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+	public void render(MultiblockBlockEntityMaster<RotaryKilnState> te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
 		if (!te.formed || te.isDummy() || !te.getWorldNonnull().isBlockLoaded(te.getPos()))
 			return;
 		BlockPos blockPos = te.getPos();

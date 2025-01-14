@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.Tree;
+
 import com.teammoeg.immersiveindustry.IIContent.IITileTypes;
 import com.teammoeg.immersiveindustry.content.carkiln.CarKilnRenderer;
 import com.teammoeg.immersiveindustry.content.carkiln.CarKilnScreen;
@@ -33,16 +34,20 @@ import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyze
 import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerScreen;
 import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnRenderer;
 import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnScreen;
+import com.teammoeg.immersiveindustry.util.DynamicBlockModelReference;
+
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -76,7 +81,13 @@ public class ClientRegistryEvents {
         ClientRegistry.bindTileEntityRenderer(IITileTypes.CAR_KILN.get(), CarKilnRenderer::new);
         addManual();
     }
-
+	@SubscribeEvent
+	public static void registerModels(ModelEvent.RegisterAdditional ev)
+	{
+		DynamicBlockModelReference.registeredModels.forEach(rl->{
+			ev.register(new ModelResourceLocation(rl,""));
+		});
+	}
     public static <C extends Container, S extends Screen & IHasContainer<C>> void
     registerIEScreen(ResourceLocation containerName, ScreenManager.IScreenFactory<C, S> factory) {
         ContainerType<C> type = (ContainerType<C>) GuiHandler.getContainerType(containerName);

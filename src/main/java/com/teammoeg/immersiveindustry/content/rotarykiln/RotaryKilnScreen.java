@@ -20,27 +20,23 @@ package com.teammoeg.immersiveindustry.content.rotarykiln;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
+import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.teammoeg.immersiveindustry.IIMain;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
+import com.teammoeg.immersiveindustry.IIMain;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class RotaryKilnScreen extends IEContainerScreen<RotaryKilnContainer> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(IIMain.MODID, "textures/gui/rotary_kiln.png");
-    private RotaryKilnBlockEntity tile;
 
-    public RotaryKilnScreen(RotaryKilnContainer container, PlayerInventory inv, ITextComponent title) {
-        super(container, inv, title);
-        this.tile = container.tile;
-        this.ySize = 178;
+    public RotaryKilnScreen(RotaryKilnContainer container, Inventory inv, Component title) {
+        super(container, inv, title,TEXTURE);
+        this.height=178;
     }
 
     @Override
@@ -49,7 +45,18 @@ public class RotaryKilnScreen extends IEContainerScreen<RotaryKilnContainer> {
     }
 
     @Override
-    public void render(MatrixStack transform, int mouseX, int mouseY, float partial) {
+	protected List<InfoArea> makeInfoAreas() {
+		return super.makeInfoAreas();
+	}
+
+	@Override
+	protected void gatherAdditionalTooltips(int mouseX, int mouseY, Consumer<Component> addLine, Consumer<Component> addGray) {
+		// TODO Auto-generated method stub
+		super.gatherAdditionalTooltips(mouseX, mouseY, addLine, addGray);
+	}
+
+	@Override
+    public void render(GuiMatrix transform, int mouseX, int mouseY, float partial) {
         super.render(transform, mouseX, mouseY, partial);
         List<ITextComponent> tooltip = new ArrayList<>();
 

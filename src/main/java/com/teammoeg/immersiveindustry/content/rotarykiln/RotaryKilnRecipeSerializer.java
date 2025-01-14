@@ -61,7 +61,10 @@ public class RotaryKilnRecipeSerializer extends IERecipeSerializer<RotaryKilnRec
 
 	@Override
 	public RotaryKilnRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context) {
-		ItemStack output = readOutput(json.get("result")).get();
+		
+		ItemStack output=ItemStack.EMPTY;
+		if(json.has("result"))
+			output= readOutput(json.get("result")).get();
         IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
         FluidStack result_fluid = FluidStack.EMPTY;
         if (json.has("result_fluid"))

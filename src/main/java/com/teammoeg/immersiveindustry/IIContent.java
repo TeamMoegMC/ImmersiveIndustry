@@ -43,10 +43,19 @@ import com.teammoeg.immersiveindustry.content.misc.IIHorizontalBlock;
 import com.teammoeg.immersiveindustry.content.rotarykiln.*;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineLogic;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineMultiblock;
+import com.teammoeg.immersiveindustry.util.ClientContainerConstructor;
+import com.teammoeg.immersiveindustry.util.MultiBlockMenuConstructor;
+import com.teammoeg.immersiveindustry.util.MultiblockContainer;
+
 import mezz.jei.library.load.registration.GuiHandlerRegistration;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -58,6 +67,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -67,6 +77,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import org.apache.commons.lang3.mutable.Mutable;
+import org.apache.commons.lang3.mutable.MutableObject;
 
 public class IIContent {
 
@@ -109,12 +122,15 @@ public class IIContent {
 
     public static class IIMultiblocks {
     	public static final MultiblockRegistration<?> CRUCIBLE = null;
-        public static final MultiblockRegistration<?> STEAMTURBINE = metal(new SteamTurbineLogic(),"rotary_kiln")
+        public static final MultiblockRegistration<?> STEAMTURBINE = metal(new SteamTurbineLogic(),"steam_turbine")
         	.redstone(t->t.rsstate, new BlockPos(0,1,0))
-        	.structure(()->Multiblock.ROTARY_KILN)
+        	.structure(()->Multiblock.STEAMTURBINE)
         	.build();
         public static final MultiblockRegistration<?> IND_ELE = null;
-        public static final MultiblockRegistration<?> ROTARY_KILN = null;
+        public static final MultiblockRegistration<?> ROTARY_KILN =  metal(new RotaryKilnLogic(),"rotary_kiln")
+        	.redstone(t->t.state, new BlockPos(0,1,5))
+        	.structure(()->Multiblock.ROTARY_KILN)
+        	.build();
         public static final MultiblockRegistration<?> CAR_KILN = null;
     	
 		private static <S extends IMultiblockState> IEMultiblockBuilder<S> stone(IMultiblockLogic<S> logic, String name, boolean solid) {
@@ -204,7 +220,39 @@ public class IIContent {
         	return RECIPE_TYPES.register(name, ()->RecipeType.simple(new ResourceLocation(IIMain.MODID,name)));
         }
     }
+    public static class IIMenus{
+    	@FunctionalInterface
+    	public interface BEMenuFactory<T extends AbstractContainerMenu, BE extends BlockEntity> {
+    		T get(int id, Inventory inventoryPlayer, BE tile);
+    	}
+    	  public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(
+              ForgeRegistries.MENU_TYPES, IIMain.MODID
+          	);
+    	MultiblockContainer<IMultiblockState, AbstractContainerMenu> type=registerMultiblock("rotary_kiln", RotaryKilnContainer::new,RotaryKilnContainer::new);
+    	@SuppressWarnings("unchecked")
+    	public static <T extends AbstractContainerMenu, BE extends BlockEntity> RegistryObject<MenuType<T>> register(Class<BE> BEClass, String name, BEMenuFactory<T, BE> factory) {
+    		return MENU_TYPES.register(name, () -> IForgeMenuType.create((id, inv, pb) -> {
+    			BlockEntity be = inv.player.level().getBlockEntity(pb.readBlockPos());
+    			if (BEClass.isInstance(be))
+    				return factory.get(id, inv, (BE) be);
+    			return null;
+    		}));
+    	}
 
+    	public static <S extends IMultiblockState, C extends AbstractContainerMenu> MultiblockContainer<S, C> registerMultiblock(
+    		String name,
+    		MultiBlockMenuConstructor<S, C> container,
+    		ClientContainerConstructor<C> client) {
+    		RegistryObject<MenuType<C>> typeRef = MENU_TYPES.register(name,() -> {
+    			Mutable<MenuType<C>> typeBox = new MutableObject<>();
+    			MenuType<C> type = new MenuType<>((id, inv) -> client.construct(typeBox.getValue(), id, inv), FeatureFlagSet.of());
+    			typeBox.setValue(type);
+    			return type;
+    		});
+    		return new MultiblockContainer<>(typeRef, container);
+    	}
+    	
+    }
     public static void registerContainers() {
         GuiHandler.register(CrucibleBlockEntity.class, new ResourceLocation(IIMain.MODID, "crucible"), CrucibleContainer::new);
         GuiHandler.register(ElectrolyzerBlockEntity.class, new ResourceLocation(IIMain.MODID, "electrolyzer"), ElectrolyzerContainer::new);

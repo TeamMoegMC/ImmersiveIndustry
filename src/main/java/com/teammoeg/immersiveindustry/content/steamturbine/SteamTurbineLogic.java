@@ -31,6 +31,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -81,10 +82,10 @@ public class SteamTurbineLogic implements IMultiblockLogic<SteamTurbineState>,IS
 
 	@Override
 	public <T> LazyOptional<T> getCapability(IMultiblockContext<SteamTurbineState> ctx, CapabilityPosition position, Capability<T> cap) {
-		if(FLUID_INPUT.equalsOrNullFace(position)) {
+		if(cap==ForgeCapabilities.FLUID_HANDLER&&FLUID_INPUT.equalsOrNullFace(position)) {
 			return ctx.getState().fluidCap.cast(ctx);
 		}
-		if(position.side()==RelativeBlockFace.UP||position.side()==null) {
+		if(cap==ForgeCapabilities.ENERGY&&position.side()==RelativeBlockFace.UP||position.side()==null) {
 			if(ENERGY_OUT1.isCapabilityPosition(position)||ENERGY_OUT2.isCapabilityPosition(position)) {
 				return ctx.getState().energyView.cast(ctx);
 			}
