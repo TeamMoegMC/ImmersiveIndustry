@@ -1,7 +1,7 @@
 {
   "loader": "forge:obj",
   "model": "immersiveindustry:models/block/multiblocks/industrial_electrolyzer.obj",
-  "flip-v": true,
+  "flip_v": true,
   "transform": {
     "thirdperson_righthand": {
       "translation": [

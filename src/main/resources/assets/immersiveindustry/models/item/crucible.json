@@ -4,7 +4,7 @@
   "textures": {
     "side": "immersiveindustry:block/multiblocks/crucible_cup_lit"
   },
-  "flip-v": true,
+  "flip_v": true,
   "transform": {
     "thirdperson_righthand": {
       "translation": [
