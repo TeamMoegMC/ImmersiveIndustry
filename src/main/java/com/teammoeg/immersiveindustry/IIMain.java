@@ -19,7 +19,6 @@
 package com.teammoeg.immersiveindustry;
 
 import com.teammoeg.immersiveindustry.content.IICreativeTab;
-import com.teammoeg.immersiveindustry.data.IIRecipeReloadListener;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -62,7 +61,7 @@ public class IIMain {
 //    	});
 //    }
     public void setup(final FMLCommonSetupEvent event) {
-        MinecraftForge.EVENT_BUS.register(new IIRecipeReloadListener());
+        //MinecraftForge.EVENT_BUS.register(new IIRecipeReloadListener());
         IINetwork.register();
     }
     

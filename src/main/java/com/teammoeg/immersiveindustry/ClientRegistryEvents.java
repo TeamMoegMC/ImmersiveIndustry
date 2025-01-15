@@ -25,12 +25,6 @@ import blusunrize.lib.manual.ManualEntry.SpecialElementData;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.Tree;
 
-import com.teammoeg.frostedheart.FHMain;
-import com.teammoeg.frostedheart.bootstrap.common.FHBlockEntityTypes;
-import com.teammoeg.frostedheart.bootstrap.common.FHMultiblocks;
-import com.teammoeg.frostedheart.content.climate.heatdevice.generator.t1.T1GeneratorRenderer;
-import com.teammoeg.frostedheart.content.climate.heatdevice.generator.t2.T2GeneratorRenderer;
-import com.teammoeg.frostedheart.content.research.blocks.MechCalcRenderer;
 import com.teammoeg.immersiveindustry.IIContent.IIMenus;
 import com.teammoeg.immersiveindustry.IIContent.IIMultiblocks;
 import com.teammoeg.immersiveindustry.IIContent.IITileTypes;
@@ -100,11 +94,6 @@ public class ClientRegistryEvents {
 			ev.register(rl);
 		});
 	}
-    public static <C extends Container, S extends Screen & IHasContainer<C>> void
-    registerIEScreen(ResourceLocation containerName, ScreenManager.IScreenFactory<C, S> factory) {
-        ContainerType<C> type = (ContainerType<C>) GuiHandler.getContainerType(containerName);
-        ScreenManager.registerFactory(type, factory);
-    }
 
     public static void addManual() {
         ManualInstance man = ManualHelper.getManual();

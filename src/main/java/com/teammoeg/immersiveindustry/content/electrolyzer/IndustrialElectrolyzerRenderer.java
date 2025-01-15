@@ -17,10 +17,11 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraftforge.client.model.data.ModelData;
 
 public class IndustrialElectrolyzerRenderer implements BlockEntityRenderer<MultiblockBlockEntityMaster<IndustrialElectrolyzerState>> {
-	public IndustrialElectrolyzerRenderer(BlockEntityRenderDispatcher rendererDispatcherIn) {
+	public IndustrialElectrolyzerRenderer(BlockEntityRendererProvider.Context rendererDispatcherIn) {
     }
     public static DynamicBlockModelReference ELECTRODES;
     public static final Function<Integer,ModelData> getData=Util.memoize((t)->{

@@ -234,6 +234,9 @@ public class IIContent {
           	);
     	public static final MultiblockContainer<RotaryKilnState, RotaryKilnContainer> ROTARY_KILN=registerMultiblock("rotary_kiln", RotaryKilnContainer::new,RotaryKilnContainer::new);
     	public static final MultiblockContainer<IndustrialElectrolyzerState, IndustrialElectrolyzerContainer> INDUSTRIAL_ELECTROLYZER=registerMultiblock("industrial_electrolyzer", IndustrialElectrolyzerContainer::new,IndustrialElectrolyzerContainer::new);
+    	public static final RegistryObject<MenuType<?>> ELECTROLYZER=MENU_TYPES.register("electrolyzer", IForgeMenuType.create(ElectrolyzerContainer::new))
+    	
+    	
     	@SuppressWarnings("unchecked")
     	public static <T extends AbstractContainerMenu, BE extends BlockEntity> RegistryObject<MenuType<T>> register(Class<BE> BEClass, String name, BEMenuFactory<T, BE> factory) {
     		return MENU_TYPES.register(name, () -> IForgeMenuType.create((id, inv, pb) -> {
@@ -256,14 +259,10 @@ public class IIContent {
     		});
     		return new MultiblockContainer<>(typeRef, container);
     	}
-    	
+    	public static void init() {}
     }
     public static void registerContainers() {
-        GuiHandler.register(CrucibleBlockEntity.class, new ResourceLocation(IIMain.MODID, "crucible"), CrucibleContainer::new);
-        GuiHandler.register(ElectrolyzerBlockEntity.class, new ResourceLocation(IIMain.MODID, "electrolyzer"), ElectrolyzerContainer::new);
-        GuiHandler.register(IndustrialElectrolyzerBlockEntity.class, new ResourceLocation(IIMain.MODID, "industrial_electrolyzer"), IndustrialElectrolyzerContainer::new);
-        GuiHandler.register(CarKilnBlockEntity.class, new ResourceLocation(IIMain.MODID, "car_kiln"), CarKilnContainer::new);
-        GuiHandler.register(RotaryKilnBlockEntity.class, new ResourceLocation(IIMain.MODID, "rotary_kiln"), RotaryKilnContainer::new);
+    	IIMenus.init();
     }
 
     public static class IIProps {

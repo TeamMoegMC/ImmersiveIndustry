@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import java.util.List;
 
@@ -19,7 +20,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class RotaryKilnRenderer implements BlockEntityRenderer<MultiblockBlockEntityMaster<RotaryKilnState>> {
-	public RotaryKilnRenderer(BlockEntityRenderDispatcher rendererDispatcherIn) {
+	public RotaryKilnRenderer(BlockEntityRendererProvider.Context rendererDispatcherIn) {
 	}
 	public static DynamicBlockModelReference ROLL;
 	Quaternionf rotateH=new Quaternionf().rotateAxis((float) (-2f/180*Math.PI), new Vector3f(1,0,0));
