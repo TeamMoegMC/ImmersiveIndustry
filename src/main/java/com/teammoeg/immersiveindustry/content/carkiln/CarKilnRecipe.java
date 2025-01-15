@@ -18,10 +18,13 @@
 
 package com.teammoeg.immersiveindustry.content.carkiln;
 
+import java.util.Collections;
+import java.util.List;
+
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -31,11 +34,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
-
-import java.util.Collections;
-import java.util.List;
-
-import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
 
 public class CarKilnRecipe extends IESerializableRecipe {
     public static RegistryObject<RecipeType<CarKilnRecipe>> TYPE;

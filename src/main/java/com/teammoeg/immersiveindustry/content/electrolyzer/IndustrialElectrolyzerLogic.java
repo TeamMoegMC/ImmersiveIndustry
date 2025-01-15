@@ -61,7 +61,8 @@ public class IndustrialElectrolyzerLogic
 		
 		int energyConsume = IIConfig.COMMON.electrolyzerBase.get() * 6;
 		double elconsume = IIConfig.COMMON.electrodeCost.get();
-		tryOutput(context);
+		if(tryOutput(context))
+			context.markMasterDirty();
 		boolean hasElectrode1=state.inventory.getStackInSlot(2).is(IndustrialElectrolyzerContainer.Electrode_Tag);
 		boolean hasElectrode2=state.inventory.getStackInSlot(3).is(IndustrialElectrolyzerContainer.Electrode_Tag);
 		if(state.hasElectrode1!=hasElectrode1||state.hasElectrode2!=hasElectrode2) {
