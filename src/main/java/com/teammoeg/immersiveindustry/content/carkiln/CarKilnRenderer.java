@@ -6,6 +6,8 @@ import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import com.teammoeg.immersiveindustry.IIContent.IIMultiblocks;
+import com.teammoeg.immersiveindustry.util.DynamicBlockModelReference;
+
 import net.minecraft.client.renderer.RenderType;
 
 public class CarKilnRenderer extends TileEntityRenderer<CarKilnBlockEntity> {
@@ -13,7 +15,7 @@ public class CarKilnRenderer extends TileEntityRenderer<CarKilnBlockEntity> {
 		super(rendererDispatcherIn);
 	}
 
-	public static DynamicModel<Direction> PARTS;
+	public static DynamicBlockModelReference PARTS;
 	private static final IEObjState gate= new IEObjState(VisibilityList.show("inletBoard"));
 	private static final IEObjState trolley=new IEObjState(VisibilityList.show("trolleyFloor1","trolleyFloor2"));
 	private static final IEObjState s1=new IEObjState(VisibilityList.show("shelf2"));

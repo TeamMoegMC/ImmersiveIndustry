@@ -1,6 +1,10 @@
 package com.teammoeg.immersiveindustry.content.rotarykiln;
 
 import com.teammoeg.immersiveindustry.util.CapabilityProcessor;
+import com.teammoeg.immersiveindustry.util.ChangeDetectedItemHandler;
+import com.teammoeg.immersiveindustry.util.RangedCheckedInputWrapper;
+import com.teammoeg.immersiveindustry.util.RangedOutputWrapper;
+
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.energy.WrappingEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.RedstoneControl.RSState;
@@ -16,13 +20,14 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 
 public class RotaryKilnState implements IMultiblockState{
 	
 	//common properties
 	boolean active;
-	public SlotwiseItemHandler inventory;
+	public ChangeDetectedItemHandler inventory;
 	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(16000);
 	public FluidTank tankout = new FluidTank(32000);
 	public RotaryKilnProcess[] processes=new RotaryKilnProcess[2];
@@ -38,15 +43,10 @@ public class RotaryKilnState implements IMultiblockState{
 	CapabilityReference<IFluidHandler> outFluidCap;
 	public final RSState state=RSState.enabledByDefault();
 	public RotaryKilnState(IInitialMultiblockContext<RotaryKilnState> capabilitySource) {
-		inventory=
-			SlotwiseItemHandler.makeWithGroups(capabilitySource.getMarkDirtyRunnable(),
-			new IOConstraintGroup(IOConstraint.input(r->RotaryKilnRecipe.isValidRecipeInput(capabilitySource.levelSupplier().get(), r)),1),
-			new IOConstraintGroup(IOConstraint.BLOCKED,2),
-			new IOConstraintGroup(IOConstraint.OUTPUT,2)
-			);
+		inventory=new ChangeDetectedItemHandler(5,capabilitySource.getMarkDirtyRunnable());
 		capabilities.itemHandler()
-			.addCapability(RotaryKilnLogic.itemin, new RangedWrapper(inventory,0,1))
-			.addCapability(RotaryKilnLogic.itemout, new RangedWrapper(inventory,3,5));
+			.addCapability(RotaryKilnLogic.itemin, new RangedCheckedInputWrapper(inventory,0,1,(s,r)->RotaryKilnRecipe.isValidRecipeInput(capabilitySource.levelSupplier().get(), r)))
+			.addCapability(RotaryKilnLogic.itemout, new RangedOutputWrapper(inventory,3,5));
 		capabilities.fluidHandler()
 			.addCapability(RotaryKilnLogic.fluidout, ArrayFluidHandler.drainOnly(tankout, capabilitySource.getMarkDirtyRunnable()));
 		capabilities.energy()

@@ -21,11 +21,9 @@ package com.teammoeg.immersiveindustry.content.electrolyzer;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
-import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
 import com.teammoeg.immersiveindustry.util.JEISlotBuilder;
 import com.teammoeg.immersiveindustry.util.LangUtil;
 
-import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -49,7 +47,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 

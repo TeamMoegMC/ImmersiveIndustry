@@ -69,9 +69,9 @@ public class JEICompat implements IModPlugin {
         checkNotNull(world, "minecraft world");
         //RecipeManager recipeManager = world.getRecipeManager();
         registration.addRecipes(CrucibleCategory.UID,new ArrayList<>(CrucibleRecipe.recipeList.values()));
-        registration.addRecipes(ElectrolyzerCategory.UID,ElectrolyzerRecipe.recipeList.values().stream().filter(r->!r.flag).filter(r->r.inputs.length<2).collect(Collectors.toList()));
-        registration.addRecipes(IndustrialElectrolyzerCategory.UID,ElectrolyzerRecipe.recipeList.values().stream().filter(r -> r.inputs.length < 3).collect(Collectors.toList()));
-        registration.addRecipes(RotaryKilnCategory.UID,new ArrayList<>(RotaryKilnRecipe.recipeList.values()));
+        registration.addRecipes(ElectrolyzerCategory.UID,ElectrolyzerRecipe.recipeList.getRecipes(world).stream().filter(r->!r.flag).filter(r->r.inputs.length<2).collect(Collectors.toList()));
+        registration.addRecipes(IndustrialElectrolyzerCategory.UID,ElectrolyzerRecipe.recipeList.getRecipes(world).stream().filter(r -> r.inputs.length < 3).collect(Collectors.toList()));
+        registration.addRecipes(RotaryKilnCategory.UID,new ArrayList<>(RotaryKilnRecipe.recipeList.getRecipes(world)));
         registration.addRecipes(CarKilnCategory.UID,CarKilnRecipe.recipeList);
     }
 

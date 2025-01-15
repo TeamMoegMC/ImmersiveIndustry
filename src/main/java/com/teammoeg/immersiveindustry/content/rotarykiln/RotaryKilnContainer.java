@@ -20,12 +20,13 @@ package com.teammoeg.immersiveindustry.content.rotarykiln;
 
 import com.teammoeg.immersiveindustry.util.IIBaseContainer;
 import com.teammoeg.immersiveindustry.util.IIContainerData;
-import com.teammoeg.immersiveindustry.util.IIContainerData.FHDataSlot;
+import com.teammoeg.immersiveindustry.util.NoAccessSlot;
+import com.teammoeg.immersiveindustry.util.OutputSlot;
+import com.teammoeg.immersiveindustry.util.IIContainerData.CustomDataSlot;
 
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.common.gui.IEContainerMenu.MultiblockMenuContext;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -36,9 +37,9 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 public class RotaryKilnContainer extends IIBaseContainer {
-	FHDataSlot<FluidStack> tankSlot=IIContainerData.SLOT_TANK.create(this);
-	FHDataSlot<Float> process=IIContainerData.SLOT_FIXED.create(this);
-	FHDataSlot<Integer> energySlot=IIContainerData.SLOT_INT.create(this);
+	CustomDataSlot<FluidStack> tankSlot=IIContainerData.SLOT_TANK.create(this);
+	CustomDataSlot<Float> process=IIContainerData.SLOT_FIXED.create(this);
+	CustomDataSlot<Integer> energySlot=IIContainerData.SLOT_INT.create(this);
 	FluidTank tank;
 	MutableEnergyStorage energy;
     public RotaryKilnContainer(MenuType<RotaryKilnContainer> type, int windowId, Inventory inventoryPlayer, MultiblockMenuContext<RotaryKilnState> te){
@@ -76,8 +77,8 @@ public class RotaryKilnContainer extends IIBaseContainer {
 
         
 
-        this.addSlot(new RotarySlot(inv, 1, 38, 40));
-        this.addSlot(new RotarySlot(inv, 2, 64, 40));
+        this.addSlot(new NoAccessSlot(inv, 1, 38, 40));
+        this.addSlot(new NoAccessSlot(inv, 2, 64, 40));
 
         // output
         this.addSlot(new OutputSlot(inv, 3, 94, 63));
@@ -87,32 +88,6 @@ public class RotaryKilnContainer extends IIBaseContainer {
                 addSlot(new Slot(inventoryPlayer, j + i * 9 + 9, 8 + j * 18, 96 + i * 18));
         for (int i = 0; i < 9; i++)
             addSlot(new Slot(inventoryPlayer, i, 8 + i * 18, 154));
-    }
-
-    public static class RotarySlot extends SlotItemHandler {
-        public RotarySlot(IItemHandlerModifiable inv, int id, int x, int y) {
-            super( inv, id, x, y);
-        }
-
-        @Override
-        public boolean mayPlace(ItemStack itemStack) {
-            return false;
-        }
-
-        @Override
-        public boolean mayPickup(Player playerIn) {
-            return false;
-        }
-    }
-    public static class OutputSlot extends SlotItemHandler {
-        public OutputSlot(IItemHandlerModifiable inv, int id, int x, int y) {
-            super( inv, id, x, y);
-        }
-
-        @Override
-        public boolean mayPickup(Player playerIn) {
-            return false;
-        }
     }
 }
 

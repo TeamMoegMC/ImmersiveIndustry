@@ -2,58 +2,53 @@ package com.teammoeg.immersiveindustry.content.electrolyzer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.teammoeg.immersiveindustry.IIContent.IIMultiblocks;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.teammoeg.immersiveindustry.util.DynamicBlockModelReference;
 
-import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
-import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
-import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
-import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
+import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.Util;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraftforge.client.model.data.ModelData;
 
-public class IndustrialElectrolyzerRenderer extends TileEntityRenderer<IndustrialElectrolyzerBlockEntity> {
-    public IndustrialElectrolyzerRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+public class IndustrialElectrolyzerRenderer implements BlockEntityRenderer<MultiblockBlockEntityMaster<IndustrialElectrolyzerState>> {
+	public IndustrialElectrolyzerRenderer(BlockEntityRendererProvider.Context rendererDispatcherIn) {
     }
-    public static DynamicModel<Direction> ELECTRODES;
-	@Override
-    public void render(IndustrialElectrolyzerBlockEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
-		if(!te.formed||te.isDummy()||!te.getWorldNonnull().isBlockLoaded(te.getPos()))
-			return;
-		List<String> renderedParts = new ArrayList<>();
-		if(!te.getInventory().get(3).isEmpty()) {
+    public static DynamicBlockModelReference ELECTRODES;
+    public static final Function<Integer,ModelData> getData=Util.memoize((t)->{
+    	List<String> renderedParts = new ArrayList<>();
+		if((t&1)==1) {
 			renderedParts.add("anode1");
 			renderedParts.add("anode2");
 			renderedParts.add("anode3");
 			renderedParts.add("anode4");
 		}
-		if(!te.getInventory().get(4).isEmpty()) {
+		if((t&2)==2) {
 			renderedParts.add("anode5");
 			renderedParts.add("anode6");
 			renderedParts.add("anode7");
 			renderedParts.add("anode8");
 		}
-		if(renderedParts.isEmpty())
-			return;
-		BlockPos blockPos = te.getPos();
-		BlockState state = te.getWorld().getBlockState(blockPos);
-		if(state.getBlock()!=IIMultiblocks.industrial_electrolyzer)
-			return;
-		IEObjState objState = new IEObjState(VisibilityList.show(renderedParts));
+    	return ModelData.builder().with(DynamicSubmodelCallbacks.getProperty(), VisibilityList.show(renderedParts)).build();
+    });
+	@Override
+    public void render(MultiblockBlockEntityMaster<IndustrialElectrolyzerState> te, float partialTicks, PoseStack matrixStack, MultiBufferSource pBuffer, int pPackedLight, int pPackedOverlay) {
+		IndustrialElectrolyzerState state=te.getHelper().getState();
+		int type=state.hasElectrode1?1:0;
+		type+=state.hasElectrode2?2:0;
+		if(type==0)return;
 
-		matrixStack.push();
-		List<BakedQuad> quads = ELECTRODES.getNullQuads(te.getFacing(), state, new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE));
-		RenderUtils.renderModelTESRFast(quads, bufferIn.getBuffer(RenderType.getSolid()), matrixStack, combinedLightIn, combinedOverlayIn);
-		matrixStack.pop();
+
+		List<BakedQuad> quads = ELECTRODES.get().getQuads(null, null, te.getLevel().random, getData.apply(type), null);
+		RenderUtils.renderModelTESRFast(quads, pBuffer.getBuffer(RenderType.solid()), matrixStack, pPackedLight, pPackedOverlay);
     }
 }

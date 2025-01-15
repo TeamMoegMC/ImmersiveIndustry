@@ -20,37 +20,33 @@ package com.teammoeg.immersiveindustry;
 
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.client.manual.ManualElementMultiblock;
-import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualEntry.SpecialElementData;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.Tree;
 
+import com.teammoeg.immersiveindustry.IIContent.IIMenus;
+import com.teammoeg.immersiveindustry.IIContent.IIMultiblocks;
 import com.teammoeg.immersiveindustry.IIContent.IITileTypes;
 import com.teammoeg.immersiveindustry.content.carkiln.CarKilnRenderer;
 import com.teammoeg.immersiveindustry.content.carkiln.CarKilnScreen;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleScreen;
 import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerScreen;
+import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerContainer;
 import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerRenderer;
 import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerScreen;
 import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnRenderer;
 import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnScreen;
 import com.teammoeg.immersiveindustry.util.DynamicBlockModelReference;
 
-import net.minecraft.client.gui.IHasContainer;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -65,8 +61,11 @@ public class ClientRegistryEvents {
     @SuppressWarnings("unused")
     @SubscribeEvent
     public static void onClientSetup(final FMLClientSetupEvent event) {
+        MenuScreens.register(IIMenus.ROTARY_KILN.getType(), RotaryKilnScreen::new);
+        MenuScreens.register(IIMenus.INDUSTRIAL_ELECTROLYZER.getType(), IndustrialElectrolyzerScreen::new);
 
-        registerIEScreen(new ResourceLocation(IIMain.MODID, "crucible"), CrucibleScreen::new);
+        
+        /*registerIEScreen(new ResourceLocation(IIMain.MODID, "crucible"), CrucibleScreen::new);
         registerIEScreen(new ResourceLocation(IIMain.MODID, "electrolyzer"), ElectrolyzerScreen::new);
         registerIEScreen(new ResourceLocation(IIMain.MODID, "industrial_electrolyzer"), IndustrialElectrolyzerScreen::new);
         registerIEScreen(new ResourceLocation(IIMain.MODID, "car_kiln"), CarKilnScreen::new);
@@ -76,24 +75,25 @@ public class ClientRegistryEvents {
         RenderTypeLookup.setRenderLayer(IIContent.IIBlocks.electrolyzer, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.industrial_electrolyzer, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.rotary_kiln, RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.car_kiln, RenderType.getCutout());
-        ClientRegistry.bindTileEntityRenderer(IITileTypes.IND_ELE.get(), IndustrialElectrolyzerRenderer::new);
+        RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.car_kiln, RenderType.getCutout());*/
+       /* ClientRegistry.bindTileEntityRenderer(IITileTypes.IND_ELE.get(), IndustrialElectrolyzerRenderer::new);
         ClientRegistry.bindTileEntityRenderer(IITileTypes.ROTARY_KILN.get(), RotaryKilnRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(IITileTypes.CAR_KILN.get(), CarKilnRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(IITileTypes.CAR_KILN.get(), CarKilnRenderer::new);*/
         addManual();
     }
+	@SubscribeEvent
+	public static void registerBERenders(RegisterRenderers event){
+        event.registerBlockEntityRenderer(IIMultiblocks.IND_ELE.masterBE().get(), IndustrialElectrolyzerRenderer::new);
+        event.registerBlockEntityRenderer(IIMultiblocks.ROTARY_KILN.masterBE().get(), RotaryKilnRenderer::new);
+        event.registerBlockEntityRenderer(IIMultiblocks.CAR_KILN.masterBE().get(), CarKilnRenderer::new);
+	}
 	@SubscribeEvent
 	public static void registerModels(ModelEvent.RegisterAdditional ev)
 	{
 		DynamicBlockModelReference.registeredModels.forEach(rl->{
-			ev.register(new ModelResourceLocation(rl,""));
+			ev.register(rl);
 		});
 	}
-    public static <C extends Container, S extends Screen & IHasContainer<C>> void
-    registerIEScreen(ResourceLocation containerName, ScreenManager.IScreenFactory<C, S> factory) {
-        ContainerType<C> type = (ContainerType<C>) GuiHandler.getContainerType(containerName);
-        ScreenManager.registerFactory(type, factory);
-    }
 
     public static void addManual() {
         ManualInstance man = ManualHelper.getManual();

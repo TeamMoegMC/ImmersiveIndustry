@@ -22,28 +22,33 @@
 package com.teammoeg.immersiveindustry.util;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.jetbrains.annotations.NotNull;
 
+import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-public class RecipeHandler<T extends Recipe<?>>{
+public class RecipeHandler<T extends Recipe<?>,R>{
 	private int process;
 	private int processMax;
 	private ResourceLocation lastRecipe;
 	private boolean recipeTested=false;
-	private Runnable doRecipe;
-	private BiFunction<ResourceLocation,T,Integer> getTimes;
+	private R recipeResultCache;
+	private final BiFunction<ResourceLocation,T,Integer> getTimes;
+	private final Function<ResourceLocation, R> generator;
 	public ResourceLocation getLastRecipe() {
 		return lastRecipe;
 	}
-	public RecipeHandler(Runnable doRecipe,BiFunction<ResourceLocation,T,Integer> getTimes) {
-		this.doRecipe=doRecipe;
+	public RecipeHandler(BiFunction<ResourceLocation,T,Integer> getTimes,Function<ResourceLocation,R> resultGenerator) {
 		this.getTimes=getTimes;
+		this.generator=resultGenerator;
 	}
 	public void onContainerChanged() {
 		//System.out.println("revalidate needed");
@@ -54,6 +59,7 @@ public class RecipeHandler<T extends Recipe<?>>{
 	}
 	public void setRecipe(T recipe) {
 		//System.out.println("revalidate return "+recipe);
+		recipeResultCache=null;
 		if (recipe!= null) {
 			if(processMax==0||!recipe.getId().equals(lastRecipe)) {
 				process=processMax=getTimes.apply(lastRecipe, recipe);
@@ -65,17 +71,35 @@ public class RecipeHandler<T extends Recipe<?>>{
 		}
 		recipeTested=true;
 	}
+	public R getRecipeResultCache() {
+		if(recipeResultCache==null) {
+			recipeResultCache=generator.apply(lastRecipe);
+		}
+		return recipeResultCache;
+	}
+
+	public boolean shouldTickProcess() {
+		return processMax > 0;
+	}
 	public boolean tickProcess(int num) {
-		if (process > 0) {
-			process-=num;
-			if(process<=0) {
-				doRecipe.run();
-				process=processMax=0;
-				recipeTested=false;
+		if (processMax > 0) {
+			if(process>0) {
+				process-=num;
+				if(process<=0) {
+					process=0;
+					recipeTested=false;
+				}
+				return true;
 			}
-			return true;
 		}
 		return false;
+	}
+	public boolean isRecipeFinished() {
+		return processMax>0&&process<=0;
+	}
+	public void endProcess() {
+		recipeResultCache=null;
+		process=processMax=0;
 	}
 	public void resetProgress() {
 		process=processMax;
@@ -84,6 +108,7 @@ public class RecipeHandler<T extends Recipe<?>>{
 		process=nbt.getInt("process");
 		processMax=nbt.getInt("processMax");
 		if (!isClient) {
+			recipeResultCache=null;
 			if(nbt.contains("lastRecipe"))
 				lastRecipe=new ResourceLocation(nbt.getString("lastRecipe"));
 			else
@@ -108,6 +133,11 @@ public class RecipeHandler<T extends Recipe<?>>{
 	}
 	public int getFinishedProgress() {
 		return processMax-process;
+	}
+	public float getProgressRatio() {
+		if(processMax<=0)
+			return 0;
+		return getFinishedProgress()*1f/processMax;
 	}
 	public IItemHandlerModifiable createItemHanlderWrapper(IItemHandlerModifiable wrapped,int inputSlots) {
 		return new IItemHandlerModifiable() {
