@@ -1,7 +1,7 @@
 {
   "loader": "forge:obj",
   "model": "immersiveindustry:models/block/multiblocks/rotary_kiln_item.obj",
-  "flip-v": true,
+  "flip_v": true,
   "transform": {
     "thirdperson_righthand": {
       "translation": [

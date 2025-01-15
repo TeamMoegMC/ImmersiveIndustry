@@ -5,7 +5,17 @@
   },
   "loader": "immersiveengineering:basic_split",
   "dynamic": false,
-  "base_model": "immersiveindustry:block/multiblocks/crucible",
+  "inner_model": {
+    "parent": "minecraft:block/block",
+    "textures": {
+      "particle": "immersiveindustry:block/multiblocks/crucible_cup",
+      "side": "immersiveindustry:block/multiblocks/crucible_cup"
+    },
+    "loader": "forge:obj",
+    "model": "immersiveindustry:models/block/multiblocks/crucible.obj",
+    "automatic_culling": false,
+    "flip_v": true
+  },
   "split_parts": [
     [
       -1,

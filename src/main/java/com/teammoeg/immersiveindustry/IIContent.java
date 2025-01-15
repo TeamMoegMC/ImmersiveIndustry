@@ -135,7 +135,7 @@ public class IIContent {
         	.redstone(t->t.state, new BlockPos(0,1,5))
         	.structure(()->Multiblock.ROTARY_KILN)
         	.build();
-        public static final MultiblockRegistration<?> CAR_KILN = null;
+        public static final MultiblockRegistration<?> CAR_KILN = null; 
     	
 		private static <S extends IMultiblockState> IEMultiblockBuilder<S> stone(IMultiblockLogic<S> logic, String name, boolean solid) {
 			Properties properties = Properties.of()
