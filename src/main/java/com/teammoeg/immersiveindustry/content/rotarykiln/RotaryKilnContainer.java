@@ -22,7 +22,7 @@ import com.teammoeg.immersiveindustry.util.IIBaseContainer;
 import com.teammoeg.immersiveindustry.util.IIContainerData;
 import com.teammoeg.immersiveindustry.util.NoAccessSlot;
 import com.teammoeg.immersiveindustry.util.OutputSlot;
-import com.teammoeg.immersiveindustry.util.IIContainerData.FHDataSlot;
+import com.teammoeg.immersiveindustry.util.IIContainerData.CustomDataSlot;
 
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.common.gui.IEContainerMenu.MultiblockMenuContext;
@@ -37,9 +37,9 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 public class RotaryKilnContainer extends IIBaseContainer {
-	FHDataSlot<FluidStack> tankSlot=IIContainerData.SLOT_TANK.create(this);
-	FHDataSlot<Float> process=IIContainerData.SLOT_FIXED.create(this);
-	FHDataSlot<Integer> energySlot=IIContainerData.SLOT_INT.create(this);
+	CustomDataSlot<FluidStack> tankSlot=IIContainerData.SLOT_TANK.create(this);
+	CustomDataSlot<Float> process=IIContainerData.SLOT_FIXED.create(this);
+	CustomDataSlot<Integer> energySlot=IIContainerData.SLOT_INT.create(this);
 	FluidTank tank;
 	MutableEnergyStorage energy;
     public RotaryKilnContainer(MenuType<RotaryKilnContainer> type, int windowId, Inventory inventoryPlayer, MultiblockMenuContext<RotaryKilnState> te){

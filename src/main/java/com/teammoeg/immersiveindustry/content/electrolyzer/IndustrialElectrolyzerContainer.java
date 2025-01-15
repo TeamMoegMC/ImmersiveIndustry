@@ -25,7 +25,7 @@ import com.teammoeg.immersiveindustry.IIMain;
 import com.teammoeg.immersiveindustry.util.IIBaseContainer;
 import com.teammoeg.immersiveindustry.util.IIContainerData;
 import com.teammoeg.immersiveindustry.util.OutputSlot;
-import com.teammoeg.immersiveindustry.util.IIContainerData.FHDataSlot;
+import com.teammoeg.immersiveindustry.util.IIContainerData.CustomDataSlot;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
@@ -43,10 +43,10 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 public class IndustrialElectrolyzerContainer extends IIBaseContainer {
-	FHDataSlot<FluidStack> tankSlot1=IIContainerData.SLOT_TANK.create(this);
-	FHDataSlot<FluidStack> tankSlot2=IIContainerData.SLOT_TANK.create(this);
-	FHDataSlot<Float> process=IIContainerData.SLOT_FIXED.create(this);
-	FHDataSlot<Integer> energySlot=IIContainerData.SLOT_INT.create(this);
+	CustomDataSlot<FluidStack> tankSlot1=IIContainerData.SLOT_TANK.create(this);
+	CustomDataSlot<FluidStack> tankSlot2=IIContainerData.SLOT_TANK.create(this);
+	CustomDataSlot<Float> process=IIContainerData.SLOT_FIXED.create(this);
+	CustomDataSlot<Integer> energySlot=IIContainerData.SLOT_INT.create(this);
 	FluidTank[] tank;
 	MutableEnergyStorage energy;
 	public static final TagKey<Item> Electrode_Tag=ItemTags.create(new ResourceLocation(IIMain.MODID,"electrodes"));

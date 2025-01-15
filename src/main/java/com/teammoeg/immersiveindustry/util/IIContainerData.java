@@ -22,7 +22,7 @@ public class IIContainerData {
 	public static interface DataSlotConverter<A> extends IntFunction<A>{
 		int apply(A a);
 		A getDefault();
-		default FHDataSlot<A> create(IIBaseContainer container) {
+		default CustomDataSlot<A> create(IIBaseContainer container) {
 			return IIContainerData.create(container,this);
 		}
 	}
@@ -31,7 +31,7 @@ public class IIContainerData {
 		void write(FriendlyByteBuf network,A data);
 		A copy(A data);
 		A getDefault();
-		default FHDataSlot<A> create(IIBaseContainer container) {
+		default CustomDataSlot<A> create(IIBaseContainer container) {
 			return IIContainerData.create(container,this);
 		}
 	}
@@ -40,11 +40,11 @@ public class IIContainerData {
 		A decode(int[] values);
 		int getCount();
 		A getDefault();
-		default FHDataSlot<A> create(IIBaseContainer container) {
+		default CustomDataSlot<A> create(IIBaseContainer container) {
 			return IIContainerData.create(container,this);
 		}
 	}
-	public interface FHDataSlot<T>{
+	public interface CustomDataSlot<T>{
 		T getValue();
 		
 		void setValue(T t);
@@ -58,7 +58,7 @@ public class IIContainerData {
 			return ()->mapper.apply(getValue());
 		}
 	}
-	private static class SingleDataSlot<T> extends DataSlot implements FHDataSlot<T>{
+	private static class SingleDataSlot<T> extends DataSlot implements CustomDataSlot<T>{
 		T value;
 		DataSlotConverter<T> conv;
 		Supplier<T> getter;
@@ -112,7 +112,7 @@ public class IIContainerData {
 		OtherDataSlotEncoder<T> getConverter();
 		
 	}
-	private static class OtherDataSlot<T> implements FHDataSlot<T>,SyncableDataSlot<T>{
+	private static class OtherDataSlot<T> implements CustomDataSlot<T>,SyncableDataSlot<T>{
 		T value;
 		T oldValue;
 		OtherDataSlotEncoder<T> conv;
@@ -164,7 +164,7 @@ public class IIContainerData {
 		}
 
 	}
-	private static class MultiDataSlot<T> implements ContainerData,FHDataSlot<T>{
+	private static class MultiDataSlot<T> implements ContainerData,CustomDataSlot<T>{
 		T value;
 		T lastValue;
 		int[] values;
@@ -379,18 +379,18 @@ public class IIContainerData {
 	static {
 		encoders.register(SLOT_TANK);
 	}
-	public static <T> FHDataSlot<T> create(IIBaseContainer container,DataSlotConverter<T> type) {
+	public static <T> CustomDataSlot<T> create(IIBaseContainer container,DataSlotConverter<T> type) {
 		SingleDataSlot<T> slot=new SingleDataSlot<>(type);
 		container.addDataSlot(slot);
 		return slot;
 		
 	}
-	public static <T> FHDataSlot<T> create(IIBaseContainer container,MultipleDataSlotConverter<T> type) {
+	public static <T> CustomDataSlot<T> create(IIBaseContainer container,MultipleDataSlotConverter<T> type) {
 		MultiDataSlot<T> slot=new MultiDataSlot<>(type);
 		container.addDataSlots(slot);
 		return slot;
 	}
-	public static <T> FHDataSlot<T> create(IIBaseContainer container,OtherDataSlotEncoder<T> type) {
+	public static <T> CustomDataSlot<T> create(IIBaseContainer container,OtherDataSlotEncoder<T> type) {
 		OtherDataSlot<T> slot=new OtherDataSlot<>(type);
 		container.addDataSlot(slot);
 		return slot;
