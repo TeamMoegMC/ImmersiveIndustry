@@ -43,6 +43,7 @@ import com.teammoeg.immersiveindustry.content.misc.IIHorizontalBlock;
 import com.teammoeg.immersiveindustry.content.rotarykiln.*;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineLogic;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineMultiblock;
+import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineState;
 import com.teammoeg.immersiveindustry.util.ClientContainerConstructor;
 import com.teammoeg.immersiveindustry.util.MultiBlockMenuConstructor;
 import com.teammoeg.immersiveindustry.util.MultiblockContainer;
@@ -122,12 +123,15 @@ public class IIContent {
 
     public static class IIMultiblocks {
     	public static final MultiblockRegistration<?> CRUCIBLE = null;
-        public static final MultiblockRegistration<?> STEAMTURBINE = metal(new SteamTurbineLogic(),"steam_turbine")
+        public static final MultiblockRegistration<SteamTurbineState> STEAMTURBINE = metal(new SteamTurbineLogic(),"steam_turbine")
         	.redstone(t->t.rsstate, new BlockPos(0,1,0))
         	.structure(()->Multiblock.STEAMTURBINE)
         	.build();
-        public static final MultiblockRegistration<?> IND_ELE = null;
-        public static final MultiblockRegistration<?> ROTARY_KILN =  metal(new RotaryKilnLogic(),"rotary_kiln")
+        public static final MultiblockRegistration<IndustrialElectrolyzerState> IND_ELE =  metal(new IndustrialElectrolyzerLogic(),"industrial_electrolyzer")
+        	.redstone(t->t.state, new BlockPos(1,1,4))
+        	.structure(()->Multiblock.IND_ELE)
+        	.build();
+        public static final MultiblockRegistration<RotaryKilnState> ROTARY_KILN =  metal(new RotaryKilnLogic(),"rotary_kiln")
         	.redstone(t->t.state, new BlockPos(0,1,5))
         	.structure(()->Multiblock.ROTARY_KILN)
         	.build();
@@ -228,7 +232,8 @@ public class IIContent {
     	  public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(
               ForgeRegistries.MENU_TYPES, IIMain.MODID
           	);
-    	MultiblockContainer<IMultiblockState, AbstractContainerMenu> type=registerMultiblock("rotary_kiln", RotaryKilnContainer::new,RotaryKilnContainer::new);
+    	public static final MultiblockContainer<RotaryKilnState, RotaryKilnContainer> ROTARY_KILN=registerMultiblock("rotary_kiln", RotaryKilnContainer::new,RotaryKilnContainer::new);
+    	public static final MultiblockContainer<IndustrialElectrolyzerState, IndustrialElectrolyzerContainer> INDUSTRIAL_ELECTROLYZER=registerMultiblock("industrial_electrolyzer", IndustrialElectrolyzerContainer::new,IndustrialElectrolyzerContainer::new);
     	@SuppressWarnings("unchecked")
     	public static <T extends AbstractContainerMenu, BE extends BlockEntity> RegistryObject<MenuType<T>> register(Class<BE> BEClass, String name, BEMenuFactory<T, BE> factory) {
     		return MENU_TYPES.register(name, () -> IForgeMenuType.create((id, inv, pb) -> {

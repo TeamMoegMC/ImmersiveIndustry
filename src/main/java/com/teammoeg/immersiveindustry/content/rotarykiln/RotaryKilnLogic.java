@@ -1,5 +1,6 @@
 package com.teammoeg.immersiveindustry.content.rotarykiln;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.teammoeg.immersiveindustry.util.CapabilityFacing;
@@ -12,6 +13,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultib
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MBInventoryUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import net.minecraft.core.BlockPos;
@@ -172,5 +174,10 @@ public class RotaryKilnLogic implements IMultiblockLogic<RotaryKilnState>, IClie
 			update|=IIUtil.outputItem(inventory, state.outInvCap, 4);
 		}
 		return update;
+	}
+
+	@Override
+	public void dropExtraItems(RotaryKilnState state, Consumer<ItemStack> drop) {
+		MBInventoryUtils.dropItems(state.inventory, drop);
 	}
 }

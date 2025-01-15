@@ -23,12 +23,14 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
+import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
@@ -36,10 +38,13 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.Collections;
 import java.util.Map;
 
+import com.mojang.datafixers.util.Pair;
 import com.teammoeg.immersiveindustry.content.carkiln.CarKilnRecipe;
+import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnRecipe;
+import com.teammoeg.immersiveindustry.util.RecipeSimulateHelper;
 
 public class ElectrolyzerRecipe extends IESerializableRecipe {
-    public static RegistryObject<RecipeType<ElectrolyzerRecipe>> TYPE;
+    public static TypeWithClass<ElectrolyzerRecipe> TYPE;
     public static RegistryObject<IERecipeSerializer<ElectrolyzerRecipe>> SERIALIZER;
 
     public final IngredientWithSize[] inputs;
@@ -49,11 +54,9 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
     public final int time;
     public final int tickEnergy;
     public final boolean flag;
-    
-    public static Lazy<TypeWithClass<ElectrolyzerRecipe>> IEType=Lazy.of(()->new TypeWithClass<>(TYPE, ElectrolyzerRecipe.class));
 
     public ElectrolyzerRecipe(ResourceLocation id, ItemStack output, IngredientWithSize[] input, FluidTagInput input_fluid, FluidStack output_fluid, int time, int tickEnergy, boolean flag) {
-        super(Lazy.of(()->output), IEType.get(), id);
+        super(Lazy.of(()->output),TYPE, id);
         this.output = output;
         this.inputs = input;
         this.input_fluid = input_fluid;
@@ -73,11 +76,9 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
         return this.output;
     }
 
-    // Initialized by reload listener
-    public static Map<ResourceLocation, ElectrolyzerRecipe> recipeList = Collections.emptyMap();
-
-    public static boolean isValidRecipeInput(ItemStack input) {
-        for (ElectrolyzerRecipe recipe : recipeList.values())
+    public static CachedRecipeList<ElectrolyzerRecipe> recipeList = new CachedRecipeList<>(TYPE);
+    public static boolean isValidRecipeInput(Level l,ItemStack input) {
+        for (ElectrolyzerRecipe recipe : recipeList.getRecipes(l))
             for(IngredientWithSize is:recipe.inputs) {
             	if(is.testIgnoringSize(input))
             		return true;
@@ -85,29 +86,38 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
         return false;
     }
 
-    public static ElectrolyzerRecipe findRecipe(ItemStack input, ItemStack input2, FluidStack input_fluid,boolean isLarge) {
-    	int size=(input.isEmpty()?0:1)+(input2.isEmpty()?0:1);
-    	outer:
-    	for (ElectrolyzerRecipe recipe : recipeList.values())
-        	if(isLarge||!recipe.flag) {
-        		if(recipe.inputs.length>0) {
-        			if(recipe.inputs.length<=size) {
-	        			for(IngredientWithSize is:recipe.inputs) {
-	        				if(!is.test(input)&&!is.test(input2))
-	        					continue outer;
-	        			}
-        			}else continue outer;
-        		}
-
-        		if(recipe.input_fluid!=null&&!recipe.input_fluid.test(input_fluid))
-        			continue;
-        		return recipe;
-        	}
+    public static ElectrolyzerRecipe findRecipe(Level l,ItemStack input, ItemStack input2, FluidStack input_fluid,boolean isLarge) {
+    	for (ElectrolyzerRecipe recipe : recipeList.getRecipes(l)) {
+    		Pair<ElectrolyzerRecipe,Map<Integer,Integer>> data=test(recipe,input,input2,input_fluid,isLarge);
+    		if(data!=null)
+    			return data.getFirst();
+    	}
+    	
         return null;
     }
-
-    public static boolean isValidRecipeFluid(FluidStack input_fluid) {
-        for (ElectrolyzerRecipe recipe : recipeList.values())
+    public static Pair<ElectrolyzerRecipe, Map<Integer, Integer>> executeRecipe(Level l,ResourceLocation rl,ItemStack input, ItemStack input2, FluidStack input_fluid,boolean isLarge) {
+    	return test(recipeList.getById(l, rl),input,input2,input_fluid,isLarge);
+    }
+    public static Pair<ElectrolyzerRecipe,Map<Integer,Integer>> test(ElectrolyzerRecipe recipe,ItemStack input, ItemStack input2, FluidStack input_fluid,boolean isLarge) {
+    	int size=(input.isEmpty()?0:1)+(input2.isEmpty()?0:1);
+    	if(isLarge||!recipe.flag) {
+    		Map<Integer,Integer> slotOps=null;
+    		if(recipe.inputs.length>0) {
+    			if(recipe.inputs.length>size) 
+    				return null;
+				RecipeSimulateHelper helper=new RecipeSimulateHelper(input,input2);
+				slotOps=helper.simulateExtract(recipe.inputs);
+				if(slotOps==null)
+					return null;
+    		}
+    		if(recipe.input_fluid!=null&&!recipe.input_fluid.test(input_fluid))
+    			return null;
+    		return Pair.of(recipe, slotOps);
+    	}
+        return null;
+    }
+    public static boolean isValidRecipeFluid(Level l,FluidStack input_fluid) {
+        for (ElectrolyzerRecipe recipe : recipeList.getRecipes(l))
             if (recipe.input_fluid!=null && recipe.input_fluid.testIgnoringAmount(input_fluid))
                 return true;
         return false;
