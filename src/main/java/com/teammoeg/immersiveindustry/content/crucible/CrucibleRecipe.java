@@ -18,39 +18,38 @@
 
 package com.teammoeg.immersiveindustry.content.crucible;
 
+import java.util.Collections;
+import java.util.Map;
+
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
+import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.Collections;
-import java.util.Map;
-
 
 public class CrucibleRecipe extends IESerializableRecipe {
-    public static RegistryObject<RecipeType<CrucibleRecipe>> TYPE;
+    public static TypeWithClass<CrucibleRecipe> TYPE;
     public static RegistryObject<IERecipeSerializer<CrucibleRecipe>> SERIALIZER;
     // Initialized by reload listener
-    public static Map<ResourceLocation, CrucibleRecipe> recipeList = Collections.emptyMap();
+    public static CachedRecipeList<CrucibleRecipe> recipeList = new CachedRecipeList<>(TYPE);
     public final IngredientWithSize inputs[];
     public final Lazy<ItemStack> output;
     public final FluidStack output_fluid;
     public final int time;
     public final int temperature ;
-    public static Lazy<TypeWithClass<CrucibleRecipe>> IEType=Lazy.of(()->new TypeWithClass<>(TYPE, CrucibleRecipe.class));
     public CrucibleRecipe(ResourceLocation id, Lazy<ItemStack> output2, FluidStack output_fluid, IngredientWithSize[] input, int time, int temperature) {
-        super(output2, IEType.get(), id);
+        super(output2, TYPE, id);
         this.output = output2;
         this.output_fluid = output_fluid;
         this.inputs = input;
@@ -73,8 +72,8 @@ public class CrucibleRecipe extends IESerializableRecipe {
 
 
 
-    public static boolean isValidInput(ItemStack stack) {
-        for (CrucibleRecipe recipe : recipeList.values())
+    public static boolean isValidInput(Level l,ItemStack stack) {
+        for (CrucibleRecipe recipe : recipeList.getRecipes(l))
             for (IngredientWithSize is : recipe.inputs) {
                 if (is.testIgnoringSize(stack))
                     return true;
@@ -85,10 +84,10 @@ public class CrucibleRecipe extends IESerializableRecipe {
         return BlastFurnaceFuel.getBlastFuelTime(l, stack);//stack.getItem().getTags().contains("coal_coke");
     }
 
-    public static CrucibleRecipe findRecipe(ItemStack input, ItemStack input2, ItemStack input3, ItemStack input4) {
+    public static CrucibleRecipe findRecipe(Level l,ItemStack input, ItemStack input2, ItemStack input3, ItemStack input4) {
         int size = (input.isEmpty() ? 0 : 1) + (input2.isEmpty() ? 0 : 1) + (input3.isEmpty() ? 0 : 1) + (input4.isEmpty() ? 0 : 1);
         outer:
-        for (CrucibleRecipe recipe : recipeList.values()) {
+        for (CrucibleRecipe recipe : recipeList.getRecipes(l)) {
             if (recipe.inputs.length > 0) {
                 if (recipe.inputs.length <= size) {
                     for (IngredientWithSize is : recipe.inputs) {
