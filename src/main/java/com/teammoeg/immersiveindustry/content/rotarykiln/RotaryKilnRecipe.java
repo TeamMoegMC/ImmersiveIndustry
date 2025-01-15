@@ -29,16 +29,10 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
-
-import java.util.Collections;
-import java.util.Map;
-
-import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipe;
 
 public class RotaryKilnRecipe extends IESerializableRecipe {
     public static TypeWithClass<RotaryKilnRecipe> TYPE;
@@ -65,7 +59,7 @@ public class RotaryKilnRecipe extends IESerializableRecipe {
 	}
 
 	@Override
-    protected IERecipeSerializer getIESerializer() {
+    protected IERecipeSerializer<?> getIESerializer() {
         return SERIALIZER.get();
     }
 

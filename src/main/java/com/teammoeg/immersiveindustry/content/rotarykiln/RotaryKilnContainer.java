@@ -22,6 +22,7 @@ import com.teammoeg.immersiveindustry.util.IIBaseContainer;
 import com.teammoeg.immersiveindustry.util.IIContainerData;
 import com.teammoeg.immersiveindustry.util.IIContainerData.FHDataSlot;
 
+import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.common.gui.IEContainerMenu.MultiblockMenuContext;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -29,37 +30,40 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 public class RotaryKilnContainer extends IIBaseContainer {
 	FHDataSlot<FluidStack> tankSlot=IIContainerData.SLOT_TANK.create(this);
-	FHDataSlot<Integer> process=IIContainerData.SLOT_INT.create(this);
-	FHDataSlot<Integer> processMax=IIContainerData.SLOT_INT.create(this);
+	FHDataSlot<Float> process=IIContainerData.SLOT_FIXED.create(this);
+	FHDataSlot<Integer> energySlot=IIContainerData.SLOT_INT.create(this);
+	FluidTank tank;
+	MutableEnergyStorage energy;
     public RotaryKilnContainer(MenuType<RotaryKilnContainer> type, int windowId, Inventory inventoryPlayer, MultiblockMenuContext<RotaryKilnState> te){
         super(type, windowId,inventoryPlayer.player,5);
         RotaryKilnState state=te.mbContext().getState();
         process.bind(()->{
         	if(state.processes[1]!=null) 
-        		return state.processes[1].process;
+        		return state.processes[1].process*1f/state.processes[1].processMax;
         	if(state.processes[0]!=null)
-        		return state.processes[0].process;
-        	return 0;
+        		return state.processes[0].process*1f/state.processes[0].processMax;
+        	return 0f;
         });
-        processMax.bind(()->{
-        	if(state.processes[1]!=null) 
-        		return state.processes[1].processMax;
-        	if(state.processes[0]!=null)
-        		return state.processes[0].processMax;
-        	return 0;
-        });
-        tankSlot.bind(()->state.tankout.getFluid());
+        tank=state.tankout;
+        tankSlot.bind(()->tank.getFluid());
+        energy=state.energyStorage;
+        energySlot.bind(()->energy.getEnergyStored());
         addSlots(state.inventory,inventoryPlayer);
     }
     public RotaryKilnContainer(MenuType<RotaryKilnContainer> type, int windowId, Inventory inventoryPlayer){
     	super(type, windowId,inventoryPlayer.player,5);
     	addSlots(new ItemStackHandler(5),inventoryPlayer);
+    	tank=new FluidTank(32000);
+    	tankSlot.bind(t->tank.setFluid(t));
+    	energy= new MutableEnergyStorage(32000);
+    	energySlot.bind(t->energy.setStoredEnergy(t));
     }
     public void addSlots(IItemHandlerModifiable inv,Inventory inventoryPlayer) {
         // input

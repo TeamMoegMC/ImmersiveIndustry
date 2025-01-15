@@ -25,6 +25,7 @@ public class SteamTurbineState implements IMultiblockState{
 	public final static TagKey<Fluid> fluidTag=FluidTags.create(new ResourceLocation("forge", "steam"));
 	public final RSState rsstate=RSState.enabledByDefault();
 	public boolean active = false;
+	@SuppressWarnings("deprecation")
 	public FluidTank tanks= new FluidTank(24 * 1000, fluidStack -> {
         return fluidStack.getFluid().is(fluidTag);
     });

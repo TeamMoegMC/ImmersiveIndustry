@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.client.manual.ManualElementMultiblock;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.lib.manual.ManualEntry;
+import blusunrize.lib.manual.ManualEntry.SpecialElementData;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.Tree;
 
@@ -99,7 +100,7 @@ public class ClientRegistryEvents {
         CATEGORY = man.getRoot().getOrCreateSubnode(new ResourceLocation(IIMain.MODID, "main"), 100);
         {
             ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
-            builder.addSpecialElement("crucible", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.CRUCIBLE));
+            builder.addSpecialElement(new SpecialElementData("crucible", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.Multiblock.CRUCIBLE)));
             builder.readFromFile(new ResourceLocation(IIMain.MODID, "crucible"));
             man.addEntry(CATEGORY, builder.create(), 0);
         }
@@ -110,25 +111,25 @@ public class ClientRegistryEvents {
         }
         {
             ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
-            builder.addSpecialElement("industrial_electrolyzer", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.IND_ELE));
+            builder.addSpecialElement(new SpecialElementData("industrial_electrolyzer", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.Multiblock.IND_ELE)));
             builder.readFromFile(new ResourceLocation(IIMain.MODID, "industrial_electrolyzer"));
             man.addEntry(CATEGORY, builder.create(), 2);
         }
         {
             ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
-            builder.addSpecialElement("car_kiln", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.CAR_KILN));
+            builder.addSpecialElement(new SpecialElementData("car_kiln", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.Multiblock.CAR_KILN)));
             builder.readFromFile(new ResourceLocation(IIMain.MODID, "car_kiln"));
             man.addEntry(CATEGORY, builder.create(), 3);
         }
         {
             ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
-            builder.addSpecialElement("rotary_kiln", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.ROTARY_KILN));
+            builder.addSpecialElement(new SpecialElementData("rotary_kiln", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.Multiblock.ROTARY_KILN)));
             builder.readFromFile(new ResourceLocation(IIMain.MODID, "rotary_kiln"));
             man.addEntry(CATEGORY, builder.create(), 4);
         }
         {
             ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
-            builder.addSpecialElement("steam_turbine", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.STEAMTURBINE));
+            builder.addSpecialElement(new SpecialElementData("steam_turbine", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.Multiblock.STEAMTURBINE)));
             builder.readFromFile(new ResourceLocation(IIMain.MODID, "steam_turbine"));
             man.addEntry(CATEGORY, builder.create(), 5);
         }
