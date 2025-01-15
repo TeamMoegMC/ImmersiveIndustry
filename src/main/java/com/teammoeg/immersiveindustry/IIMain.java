@@ -47,6 +47,7 @@ public class IIMain {
         IIContent.registerContainers();
         IIContent.IITileTypes.REGISTER.register(mod);
         IIContent.IIRecipes.RECIPE_SERIALIZERS.register(mod);
+        IIMenuTypes.REGISTER.register(mod);
         DistExecutor.safeRunWhenOn(Dist.CLIENT,()->ClientProxy::setup);
         IIContent.IIRecipes.init();
         

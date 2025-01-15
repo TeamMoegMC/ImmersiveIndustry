@@ -18,8 +18,6 @@
 
 package com.teammoeg.immersiveindustry;
 
-import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
-import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
@@ -30,7 +28,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMulti
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.IEMultiblockBuilder;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.NonMirrorableWithActiveBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
-
 import com.google.common.collect.ImmutableSet;
 import com.teammoeg.immersiveindustry.content.IIBaseBlock;
 import com.teammoeg.immersiveindustry.content.IIBaseItem;
@@ -46,14 +43,10 @@ import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineMultibloc
 import com.teammoeg.immersiveindustry.util.ClientContainerConstructor;
 import com.teammoeg.immersiveindustry.util.MultiBlockMenuConstructor;
 import com.teammoeg.immersiveindustry.util.MultiblockContainer;
-
-import mezz.jei.library.load.registration.GuiHandlerRegistration;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.flag.FeatureFlagSet;
-import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
@@ -71,15 +64,13 @@ import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
+
+import java.util.Collection;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class IIContent {
 
@@ -182,14 +173,20 @@ public class IIContent {
         public static final DeferredRegister<BlockEntityType<?>> REGISTER = DeferredRegister.create(
                 ForgeRegistries.BLOCK_ENTITY_TYPES, IIMain.MODID);
         public static final RegistryObject<BlockEntityType<ElectrolyzerBlockEntity>> ELECTROLYZER = REGISTER.register(
-                "electrolyzer", makeType(() -> new ElectrolyzerBlockEntity(), () -> IIBlocks.electrolyzer)
+                "electrolyzer", makeType(ElectrolyzerBlockEntity::new, IIBlocks.electrolyzer)
         );
-        private static <T extends BlockEntity> Supplier<BlockEntityType<T>> makeType(Supplier<T> create, Supplier<Block> valid) {
-            return makeTypeMultipleBlocks(create, () -> ImmutableSet.of(valid.get()));
+        public static <T extends BlockEntity> Supplier<BlockEntityType<T>> makeType(BlockEntityType.BlockEntitySupplier<T> create, Supplier<? extends Block> valid)
+        {
+            return makeTypeMultipleBlocks(create, ImmutableSet.of(valid));
         }
 
-        private static <T extends BlockEntity> Supplier<BlockEntityType<T>> makeTypeMultipleBlocks(Supplier<T> create, Supplier<Collection<Block>> valid) {
-            return () -> new BlockEntityType<>(create, ImmutableSet.copyOf(valid.get()), null);
+        public static <T extends BlockEntity> Supplier<BlockEntityType<T>> makeTypeMultipleBlocks(
+                BlockEntityType.BlockEntitySupplier<T> create, Collection<? extends Supplier<? extends Block>> valid
+        )
+        {
+            return () -> new BlockEntityType<>(
+                    create, ImmutableSet.copyOf(valid.stream().map(Supplier::get).collect(Collectors.toList())), null
+            );
         }
 
     }
