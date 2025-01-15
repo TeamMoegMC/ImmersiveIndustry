@@ -5,6 +5,6 @@
   },
   "loader": "forge:obj",
   "model": "immersiveindustry:models/block/multiblocks/steam_turbine.obj",
-  "detectCullableFaces": false,
-  "flip-v": true
+  "automatic_culling": false,
+  "flip_v": true
 }

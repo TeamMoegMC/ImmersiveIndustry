@@ -5,7 +5,16 @@
   },
   "loader": "immersiveengineering:basic_split",
   "dynamic": false,
-  "base_model": "immersiveindustry:block/multiblocks/car_kiln",
+  "inner_model": {
+    "parent": "minecraft:block/block",
+    "textures": {
+      "particle": "immersiveindustry:block/multiblocks/car_kiln_base"
+    },
+    "loader": "forge:obj",
+    "model": "immersiveindustry:models/block/multiblocks/car_kiln.obj",
+    "automatic_culling": false,
+    "flip_v": true
+  },
   "split_parts": [
     [
       -1,

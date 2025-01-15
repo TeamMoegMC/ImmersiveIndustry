@@ -5,7 +5,16 @@
   },
   "loader": "immersiveengineering:basic_split",
   "dynamic": false,
-  "base_model": "immersiveindustry:block/multiblocks/steam_turbine",
+  "base_model": {
+    "parent": "minecraft:block/block",
+    "textures": {
+      "particle": "immersiveindustry:block/multiblocks/steam_turbine"
+    },
+    "loader": "forge:obj",
+    "model": "immersiveindustry:models/block/multiblocks/steam_turbine.obj",
+    "automatic_culling": false,
+    "flip_v": true
+  },
   "split_parts": [
     [
       -1,
