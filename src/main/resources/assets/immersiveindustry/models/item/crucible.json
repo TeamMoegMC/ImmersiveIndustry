@@ -5,7 +5,7 @@
     "side": "immersiveindustry:block/multiblocks/crucible_cup_lit"
   },
   "flip_v": true,
-  "transform": {
+  "display": {
     "thirdperson_righthand": {
       "translation": [
         0.0,

@@ -2,7 +2,7 @@
   "loader": "forge:obj",
   "model": "immersiveindustry:models/block/multiblocks/steam_turbine.obj",
   "flip_v": true,
-  "transform": {
+  "display": {
     "thirdperson_righthand": {
       "translation": [
         0.0,
