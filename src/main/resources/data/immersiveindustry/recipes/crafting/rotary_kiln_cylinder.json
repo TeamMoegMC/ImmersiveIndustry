@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "immersiveindustry:refractory_kiln_brick"
+    },
+    "b": {
+      "tag": "forge:plates/steel"
+    },
+    "c": {
+      "item": "minecraft:brick"
+    }
+  },
+  "pattern": [
+    "aaa",
+    "ccc",
+    "bbb"
+  ],
+  "result": {
+    "item": "immersiveindustry:refractory_kiln_cylinder",
+    "count": 2
+  },
+  "show_notification": true
+}
