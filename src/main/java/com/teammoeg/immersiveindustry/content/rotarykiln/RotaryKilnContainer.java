@@ -63,7 +63,7 @@ public class RotaryKilnContainer extends IIBaseContainer {
     	super(type, windowId,inventoryPlayer.player,5);
     	addSlots(new ItemStackHandler(5),inventoryPlayer);
     	energy= new MutableEnergyStorage(16000);
-    	energySlot.bind(t->{System.out.println(t);energy.setStoredEnergy(t);});
+    	energySlot.bind(t->energy.setStoredEnergy(t));
     	tank=new FluidTank(32000);
     	tankSlot.bind(t->tank.setFluid(t));
 

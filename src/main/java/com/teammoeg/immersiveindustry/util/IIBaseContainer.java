@@ -204,6 +204,8 @@ public abstract class IIBaseContainer extends AbstractContainerMenu {
 			((SyncableDataSlot)specialDataSlots.get(i)).setValue(o);
 		});
 	}
+	
+	
 	@Override
 	public void broadcastChanges() {
 		super.broadcastChanges();

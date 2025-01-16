@@ -1,11 +1,10 @@
 package com.teammoeg.immersiveindustry.util;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
-
-import com.google.common.base.Objects;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -32,6 +31,7 @@ public class IIContainerData {
 		void write(FriendlyByteBuf network,A data);
 		A copy(A data);
 		A getDefault();
+		boolean isSame(A data,A data2);
 		default CustomDataSlot<A> create(IIBaseContainer container) {
 			return IIContainerData.create(container,this);
 		}
@@ -41,6 +41,7 @@ public class IIContainerData {
 		A decode(int[] values);
 		int getCount();
 		A getDefault();
+		boolean isSame(A data,A data2);
 		default CustomDataSlot<A> create(IIBaseContainer container) {
 			return IIContainerData.create(container,this);
 		}
@@ -78,8 +79,7 @@ public class IIContainerData {
 		 * */
 		@Override
 		public void set(int pValue) {
-			value=conv.apply(pValue);
-			setter.accept(value);
+			setValue(conv.apply(pValue));
 		}
 		@Override
 		public T getValue() {
@@ -154,7 +154,8 @@ public class IIContainerData {
 		}
 		public boolean checkForUpdate() {
 			T curval=getValue();
-			if(!Objects.equal(oldValue, curval)) {
+			if(!conv.isSame(oldValue, curval)) {
+				
 				oldValue=conv.copy(curval);
 				return true;
 			}
@@ -181,7 +182,7 @@ public class IIContainerData {
 			values=new int[conv.getCount()];
 		}
 		private void updateIfNeeded() {
-			if(!Objects.equal(value, lastValue)) {
+			if(!conv.isSame(value, lastValue)) {
 				conv.encode(value, values);
 				lastValue=value;
 			}
@@ -312,6 +313,10 @@ public class IIContainerData {
 		public Long getDefault() {
 			return 0L;
 		}
+		@Override
+		public boolean isSame(Long data, Long data2) {
+			return Objects.equals(data, data2);
+		}
 	};
 	public static final MultipleDataSlotConverter<BlockPos> SLOT_BLOCKPOS=new MultipleDataSlotConverter<>(){
 		@Override
@@ -332,6 +337,10 @@ public class IIContainerData {
 		@Override
 		public BlockPos getDefault() {
 			return BlockPos.ZERO;
+		}
+		@Override
+		public boolean isSame(BlockPos data, BlockPos data2) {
+			return Objects.equals(data, data2);
 		}
 	};
 	public static final MultipleDataSlotConverter<Vec3i> SLOT_V3I=new MultipleDataSlotConverter<>(){
@@ -354,6 +363,10 @@ public class IIContainerData {
 		public Vec3i getDefault() {
 			return Vec3i.ZERO;
 		}
+		@Override
+		public boolean isSame(Vec3i data, Vec3i data2) {
+			return Objects.equals(data, data2);
+		}
 	};
 	public static final OtherDataSlotEncoder<FluidStack> SLOT_TANK=new OtherDataSlotEncoder<>(){
 
@@ -375,6 +388,16 @@ public class IIContainerData {
 		@Override
 		public FluidStack getDefault() {
 			return FluidStack.EMPTY;
+		}
+
+		@Override
+		public boolean isSame(FluidStack data, FluidStack data2) {
+			if(data==null) {
+				return data==data2;
+			}
+			if(data2==null)
+				return false;
+			return data.isFluidStackIdentical(data2);
 		}
 
 	};
