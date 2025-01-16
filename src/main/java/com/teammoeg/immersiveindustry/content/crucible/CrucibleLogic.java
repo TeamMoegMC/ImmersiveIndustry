@@ -58,9 +58,9 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 					state.burnTime = totalTime;
 					ItemStack origin = inventory.getStackInSlot(4);
 					if (origin.getCount() == 1)
-						inventory.setStackInSlot(4, ItemStack.EMPTY);
+						inventory.setStackInSlotNoChange(4, ItemStack.EMPTY);
 					else
-						inventory.setStackInSlot(4, origin.copyWithCount(origin.getCount() - 1));
+						inventory.setStackInSlotNoChange(4, origin.copyWithCount(origin.getCount() - 1));
 					context.markMasterDirty();
 				}
 			}

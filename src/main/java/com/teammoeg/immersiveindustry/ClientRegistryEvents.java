@@ -64,8 +64,8 @@ public class ClientRegistryEvents {
         MenuScreens.register(IIMenus.ELECTROLYZER.get(), ElectrolyzerScreen::new);
         MenuScreens.register(IIMenus.ROTARY_KILN.getType(), RotaryKilnScreen::new);
         MenuScreens.register(IIMenus.INDUSTRIAL_ELECTROLYZER.getType(), IndustrialElectrolyzerScreen::new);
-
-        
+        MenuScreens.register(IIMenus.CAR_KILN.getType(), CarKilnScreen::new);
+        MenuScreens.register(IIMenus.CRUCIBLE.getType(), CrucibleScreen::new);
         /*registerIEScreen(new ResourceLocation(IIMain.MODID, "crucible"), CrucibleScreen::new);
         registerIEScreen(new ResourceLocation(IIMain.MODID, "electrolyzer"), ElectrolyzerScreen::new);
         registerIEScreen(new ResourceLocation(IIMain.MODID, "industrial_electrolyzer"), IndustrialElectrolyzerScreen::new);

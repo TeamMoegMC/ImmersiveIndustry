@@ -63,7 +63,7 @@ public class CarKilnLogic implements IMultiblockLogic<CarKilnState>, IClientTick
 				state.result.setStackInSlot(i, ItemHandlerHelper.insertItem(state.resultwrap, cur, false));
 			}
 		}
-		if (!state.state.isEnabled(context) && state.energyStorage.getEnergyStored() >= energyConsume) {
+		if (!shouldEarlyExit&&state.state.isEnabled(context) && state.energyStorage.getEnergyStored() >= energyConsume) {
 			RecipeHandler<CarKilnRecipe> handler = state.recipe;
 			
 			if (handler.shouldTestRecipe()) {

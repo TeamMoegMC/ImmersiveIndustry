@@ -27,8 +27,8 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class RotaryKilnLogic implements IMultiblockLogic<RotaryKilnState>, IClientTickableComponent<RotaryKilnState>, IServerTickableComponent<RotaryKilnState> {
-	static final CapabilityFacing itemout = new CapabilityFacing(1, 0, 6,RelativeBlockFace.LEFT);
-	static final CapabilityFacing powerin = new CapabilityFacing(1, 0, 0,RelativeBlockFace.RIGHT);
+	static final CapabilityFacing itemout = new CapabilityFacing(1, 0, 6,RelativeBlockFace.BACK);
+	static final CapabilityFacing powerin = new CapabilityFacing(1, 0, 0,RelativeBlockFace.FRONT);
 	static final CapabilityFacing itemin = new CapabilityFacing(1, 2, 0,RelativeBlockFace.UP);
 	static final CapabilityFacing fluidout = new CapabilityFacing(1, 2, 4,RelativeBlockFace.UP);
 	
@@ -67,7 +67,7 @@ public class RotaryKilnLogic implements IMultiblockLogic<RotaryKilnState>, IClie
 				if(maxouttimes>0) {
 					int inputNum=maxouttimes*rcp.input.getCount();
 					process1Slot.shrink(inputNum);
-					state.inventory.setStackInSlot(2, process1Slot);
+					state.inventory.setStackInSlotNoChange(2, process1Slot);
 					if(!rcp.output.isEmpty())
 						IIUtil.insertToOutput(state.inventory, 3, rcp.output.copyWithCount(maxouttimes*rcp.output.getCount()));
 					

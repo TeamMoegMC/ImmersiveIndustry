@@ -40,7 +40,7 @@ public class CarKilnScreen extends IEContainerScreen<CarKilnContainer> {
 
     public CarKilnScreen(CarKilnContainer container, Inventory inv, Component title) {
         super(container, inv, title,TEXTURE);
-        this.height = 178;
+        this.imageHeight = 178;
     }
 
     @Override

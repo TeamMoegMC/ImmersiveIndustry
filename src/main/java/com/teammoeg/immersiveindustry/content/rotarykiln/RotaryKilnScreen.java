@@ -38,7 +38,7 @@ public class RotaryKilnScreen extends IEContainerScreen<RotaryKilnContainer> {
 
     public RotaryKilnScreen(RotaryKilnContainer container, Inventory inv, Component title) {
         super(container, inv, title,TEXTURE);
-        this.height=178;
+        this.imageHeight=178;
     }
 
     @Override

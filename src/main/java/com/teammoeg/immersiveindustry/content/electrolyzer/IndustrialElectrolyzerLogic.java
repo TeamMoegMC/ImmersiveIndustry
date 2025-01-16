@@ -60,7 +60,7 @@ public class IndustrialElectrolyzerLogic
 			context.markDirtyAndSync();
 		}
 
-		if (!state.state.isEnabled(context) && state.energyStorage.getEnergyStored() >= energyConsume && hasElectrode1 && hasElectrode2) {
+		if (state.state.isEnabled(context) && state.energyStorage.getEnergyStored() >= energyConsume && hasElectrode1 && hasElectrode2) {
 			RecipeHandler<ElectrolyzerRecipe> handler = state.recipe;
 			ChangeDetectedItemHandler inventory = state.inventory;
 			if (handler.shouldTestRecipe()) {
@@ -82,7 +82,7 @@ public class IndustrialElectrolyzerLogic
 						if (duracost > 0)
 							for (ele = 2; ele < 4; ++ele) {
 								if (inventory.getStackInSlot(ele).hurt(1, rs, null)) {
-									inventory.setStackInSlot(ele, ItemStack.EMPTY);
+									inventory.setStackInSlotNoChange(ele, ItemStack.EMPTY);
 								}
 							}
 						state.energyStorage.extractEnergy(energyConsume, false);
