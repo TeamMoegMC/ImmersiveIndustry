@@ -57,7 +57,7 @@ public class ElectrolyzerScreen extends IEContainerScreen<ElectrolyzerContainer>
 
         float process = menu.guiProgress.get();
         int h = (int) (21 * process);
-        transform.blit(TEXTURE, leftPos + 76, topPos + 35, 178, 57, 21 - h, 15);
+        transform.blit(TEXTURE, leftPos + 76, topPos + 35, 178, 57, h, 15);
 
     }
 
