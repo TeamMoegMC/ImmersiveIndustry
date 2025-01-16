@@ -4,7 +4,7 @@
     "tag": "forge:raw_materials/aluminum"
   },
   "fluid": {
-    "fluid": "minecraft:water",
+    "tag": "minecraft:water",
     "amount": 1000
   },
   "result": {
