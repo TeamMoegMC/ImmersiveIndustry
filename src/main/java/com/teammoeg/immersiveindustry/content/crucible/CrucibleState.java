@@ -71,4 +71,14 @@ public class CrucibleState implements IMultiblockState {
         tank.readFromNBT(nbt.getCompound("tank"));
 	}
 
+	@Override
+	public void writeSyncNBT(CompoundTag nbt) {
+		nbt.putBoolean("active", active);
+	}
+
+	@Override
+	public void readSyncNBT(CompoundTag nbt) {
+		active=nbt.getBoolean("active");
+	}
+
 }

@@ -168,12 +168,14 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 		RandomSource random = context.getLevel().getRawLevel().random;
 		Level world = context.getLevel().getRawLevel();
 		BlockPos pos = context.getLevel().toAbsolute(IIMultiblocks.CRUCIBLE.masterPosInMB());
-		if (random.nextFloat() < 0.4F) {
-			for (int i = 0; i < random.nextInt(2) + 2; ++i) {
-				world.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, true, pos.getX() + 0.5D + random.nextDouble() / 3.0D * (random.nextBoolean() ? 1 : -1),
-					pos.getY() + random.nextDouble() + random.nextDouble(), pos.getZ() + 0.5D + random.nextDouble() / 3.0D * (random.nextBoolean() ? 1 : -1), 0.0D, 0.05D, 0.0D);
-				world.addAlwaysVisibleParticle(ParticleTypes.SMOKE, pos.getX() + 0.25D + random.nextDouble() / 2.0D * (random.nextBoolean() ? 1 : -1), pos.getY() + 0.4D,
-					pos.getZ() + 0.25D + random.nextDouble() / 2.0D * (random.nextBoolean() ? 1 : -1), 0.002D, 0.01D, 0.0D);
+		if(context.getState().active) {
+			if (random.nextFloat() < 0.4F) {
+				for (int i = 0; i < random.nextInt(2) + 2; ++i) {
+					world.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, true, pos.getX() + 0.5D + random.nextDouble() / 3.0D * (random.nextBoolean() ? 1 : -1),
+						pos.getY() + random.nextDouble() + random.nextDouble(), pos.getZ() + 0.5D + random.nextDouble() / 3.0D * (random.nextBoolean() ? 1 : -1), 0.0D, 0.05D, 0.0D);
+					world.addAlwaysVisibleParticle(ParticleTypes.SMOKE, pos.getX() + 0.25D + random.nextDouble() / 2.0D * (random.nextBoolean() ? 1 : -1), pos.getY() + 0.4D,
+						pos.getZ() + 0.25D + random.nextDouble() / 2.0D * (random.nextBoolean() ? 1 : -1), 0.002D, 0.01D, 0.0D);
+				}
 			}
 		}
 	}

@@ -42,6 +42,7 @@ import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineLogic;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineMultiblock;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineState;
 import com.teammoeg.immersiveindustry.util.ClientContainerConstructor;
+import com.teammoeg.immersiveindustry.util.IIMenuComponent;
 import com.teammoeg.immersiveindustry.util.MultiBlockMenuConstructor;
 import com.teammoeg.immersiveindustry.util.MultiblockContainer;
 import net.minecraft.core.BlockPos;
@@ -111,6 +112,7 @@ public class IIContent {
     public static class IIMultiblocks {
     	public static final MultiblockRegistration<CrucibleState> CRUCIBLE = stone(new CrucibleLogic(),"crucible",false)
         	.structure(()->Multiblock.CRUCIBLE)
+        	.component(new IIMenuComponent<>(IIMenus.CRUCIBLE))
         	.build();
         public static final MultiblockRegistration<SteamTurbineState> STEAMTURBINE = metal(new SteamTurbineLogic(),"steam_turbine")
         	.redstone(t->t.rsstate, new BlockPos(0,1,0))
@@ -119,14 +121,17 @@ public class IIContent {
         public static final MultiblockRegistration<IndustrialElectrolyzerState> INDUSTRIAL_ELECTROLYZER =  metal(new IndustrialElectrolyzerLogic(),"industrial_electrolyzer")
         	.redstone(t->t.state, new BlockPos(1,1,4))
         	.structure(()->Multiblock.INDUSTRIAL_ELECTROLYZER)
+        	.component(new IIMenuComponent<>(IIMenus.INDUSTRIAL_ELECTROLYZER))
         	.build();
         public static final MultiblockRegistration<RotaryKilnState> ROTARY_KILN =  metal(new RotaryKilnLogic(),"rotary_kiln")
         	.redstone(t->t.state, new BlockPos(0,1,5))
         	.structure(()->Multiblock.ROTARY_KILN)
+        	.component(new IIMenuComponent<>(IIMenus.ROTARY_KILN))
         	.build();
         public static final MultiblockRegistration<CarKilnState> CAR_KILN = metal(new CarKilnLogic(),"car_kiln")
         	.redstone(t->t.state, new BlockPos(0,1,2))
         	.structure(()->Multiblock.CAR_KILN)
+        	.component(new IIMenuComponent<>(IIMenus.CAR_KILN))
         	.build(); 
     	
 		private static <S extends IMultiblockState> IEMultiblockBuilder<S> stone(IMultiblockLogic<S> logic, String name, boolean solid) {
@@ -232,7 +237,9 @@ public class IIContent {
     	  public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(
               ForgeRegistries.MENU_TYPES, IIMain.MODID
           	);
+    	public static final MultiblockContainer<CrucibleState, CrucibleContainer> CRUCIBLE=registerMultiblock("crucible", CrucibleContainer::new,CrucibleContainer::new);
     	public static final MultiblockContainer<RotaryKilnState, RotaryKilnContainer> ROTARY_KILN=registerMultiblock("rotary_kiln", RotaryKilnContainer::new,RotaryKilnContainer::new);
+    	public static final MultiblockContainer<CarKilnState, CarKilnContainer> CAR_KILN=registerMultiblock("car_kiln", CarKilnContainer::new,CarKilnContainer::new);
     	public static final MultiblockContainer<IndustrialElectrolyzerState, IndustrialElectrolyzerContainer> INDUSTRIAL_ELECTROLYZER=registerMultiblock("industrial_electrolyzer", IndustrialElectrolyzerContainer::new,IndustrialElectrolyzerContainer::new);
     	public static final RegistryObject<MenuType<ElectrolyzerContainer>> ELECTROLYZER=register("electrolyzer",ElectrolyzerContainer::makeClient);
     	
