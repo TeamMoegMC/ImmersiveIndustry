@@ -7,7 +7,7 @@ Minecraft Mod for 1.16.5 (Forge) and 1.20.1 (Forge/NeoForge)
 We added new Multiblocks:
 
 - Crucible
-- Steam Turbine
+- Steam Turbine: Uses Steam to generate FE. Please use *Create: Steam Powered* Mod to generate Steam.
 - Industrial Electrolyzer
 - Car Kiln
 - Rotary Kiln
