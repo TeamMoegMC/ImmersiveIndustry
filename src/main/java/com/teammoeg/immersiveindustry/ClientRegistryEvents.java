@@ -61,6 +61,7 @@ public class ClientRegistryEvents {
     @SuppressWarnings("unused")
     @SubscribeEvent
     public static void onClientSetup(final FMLClientSetupEvent event) {
+        MenuScreens.register(IIMenus.ELECTROLYZER.get(), ElectrolyzerScreen::new);
         MenuScreens.register(IIMenus.ROTARY_KILN.getType(), RotaryKilnScreen::new);
         MenuScreens.register(IIMenus.INDUSTRIAL_ELECTROLYZER.getType(), IndustrialElectrolyzerScreen::new);
 
