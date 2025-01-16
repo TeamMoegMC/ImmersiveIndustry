@@ -6,9 +6,13 @@ issueTrackerURL = "https://github.com/TeamMoegMC/ImmersiveIndustry/issues"
 modId = "immersiveindustry" #mandatory
 version = "${file.jarVersion}" #mandatory
 displayName = "Immersive Industry" #mandatory
-authors = "[TeamMoeg] dashuaibia YueSha"
+authors = "[TeamMoeg] dashuaibia khjxiaogu YueSha"
+itemIcon="immersiveindustry:electrolyzer"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/immersive-industry"
 description = '''
 Introduce more various process and energy production machines to Immersive Engineering.
+
+Discord: https://discord.gg/BWn6E94
 '''
 [[dependencies.immersiveindustry]]
     modId = "forge"
@@ -27,7 +31,7 @@ Introduce more various process and energy production machines to Immersive Engin
 [[dependencies.immersiveindustry]]
     modId="immersiveengineering"
     mandatory=true
-    versionRange="[1.20.1-5.0.0,)"
-    ordering="AFTER"
+    versionRange="[1.20.1-10.1.0,)"
+    ordering="BEFORE"
     side="BOTH"
 
