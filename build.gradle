@@ -43,6 +43,10 @@ repositories {
         name = "DVS1 Maven FS"
         url = "https://dvs1.progwml6.com/files/maven"
     }
+    maven {
+        name = "TeamMoeg COS Maven"
+        url = "https://maven-1301510336.cos.ap-guangzhou.myqcloud.com"
+    }
 }
 sourceSets {
     main {
@@ -117,6 +121,8 @@ dependencies {
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
     // at runtime, use the full JEI jar for Forge
     implementation(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
+
+//    implementation fg.deobf("com.teammoeg:FrostedHeart:+")
 
     annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
     testAnnotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
