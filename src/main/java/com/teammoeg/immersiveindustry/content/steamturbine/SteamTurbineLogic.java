@@ -106,7 +106,7 @@ public class SteamTurbineLogic implements IMultiblockLogic<SteamTurbineState>,IS
 	public void tickServer(IMultiblockContext<SteamTurbineState> context) {
 		SteamTurbineState state=context.getState();
 		boolean pactive=context.getState().active;
-        if (!state.rsstate.isEnabled(context)&& !state.tanks.isEmpty()) {
+        if (state.rsstate.isEnabled(context)&& !state.tanks.isEmpty()) {
             List<IEnergyStorage> presentOutputs = state.energyOutputs.stream()
 				.map(CapabilityReference::getNullable)
 				.filter(Objects::nonNull)

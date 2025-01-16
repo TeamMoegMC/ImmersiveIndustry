@@ -39,7 +39,7 @@ public class SteamTurbineState implements IMultiblockState{
 		outputs.add(SteamTurbineLogic.ENERGY_OUT2.getFacingCapability(capabilitySource, ForgeCapabilities.ENERGY));
 		outputs.add(SteamTurbineLogic.ENERGY_OUT2.getFacingCapability(capabilitySource, ForgeCapabilities.ENERGY));
 		this.energyOutputs = outputs.build();
-		fluidCap=new StoredCapability<>(new ArrayFluidHandler(tanks,false,true,capabilitySource.getMarkDirtyRunnable()));
+		fluidCap=new StoredCapability<>(ArrayFluidHandler.fillOnly(tanks, capabilitySource.getMarkDirtyRunnable()));
 		
 	}
 
