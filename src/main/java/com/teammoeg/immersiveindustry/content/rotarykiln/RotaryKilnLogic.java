@@ -23,6 +23,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -52,42 +54,47 @@ public class RotaryKilnLogic implements IMultiblockLogic<RotaryKilnState>, IClie
 				ItemStack secoutSlot=state.inventory.getStackInSlot(4);
 				if((outSlot.isEmpty()||rcp.output.isEmpty()||ItemHandlerHelper.canItemStacksStack(outSlot, rcp.output))) {
 					if((secoutSlot.isEmpty()||rcp.secoutput==null||ItemHandlerHelper.canItemStacksStack(secoutSlot,rcp.secoutput.stack().get()))) {
-						
-					}
-				}
-				int maxoutcount=outSlot.getMaxStackSize()-outSlot.getCount();
-				int maxsecoutcount=secoutSlot.getMaxStackSize()-secoutSlot.getCount();
-				int maxouttimes=64;
-				if(!rcp.output.isEmpty())
-					maxouttimes=Math.min(maxoutcount/rcp.output.getCount(), maxouttimes);
-				if(rcp.secoutput!=null)
-					maxouttimes=(int) Math.min(maxsecoutcount/(rcp.secoutput.stack().get().getCount()*rcp.secoutput.chance()), maxouttimes);
-				
-				maxouttimes=Math.min(process1Slot.getCount()/rcp.input.getCount(),maxouttimes);
-				if(maxouttimes>0) {
-					int inputNum=maxouttimes*rcp.input.getCount();
-					process1Slot.shrink(inputNum);
-					state.inventory.setStackInSlotNoChange(2, process1Slot);
-					if(!rcp.output.isEmpty())
-						IIUtil.insertToOutput(state.inventory, 3, rcp.output.copyWithCount(maxouttimes*rcp.output.getCount()));
-					
-					if(rcp.secoutput!=null) {
-						@SuppressWarnings("resource")
-						RandomSource rnd=context.getLevel().getRawLevel().random;
-						int tcount=0;
-						for(int i=0;i<maxouttimes;i++) {
-							if(rcp.secoutput.chance()>=rnd.nextFloat()) {
-								tcount++;
+						if(state.tankout.isEmpty()||rcp.output_fluid.isEmpty()||state.tankout.fill(rcp.output_fluid, FluidAction.SIMULATE)==rcp.output_fluid.getAmount()) {
+						int maxoutcount=outSlot.getMaxStackSize()-outSlot.getCount();
+						int maxsecoutcount=secoutSlot.getMaxStackSize()-secoutSlot.getCount();
+						int maxouttimes=64;
+						if(!rcp.output.isEmpty())
+							maxouttimes=Math.min(maxoutcount/rcp.output.getCount(), maxouttimes);
+						if(rcp.secoutput!=null)
+							maxouttimes=(int) Math.min(maxsecoutcount/(rcp.secoutput.stack().get().getCount()*rcp.secoutput.chance()), maxouttimes);
+						if(!rcp.output_fluid.isEmpty())
+							maxouttimes=(int) Math.min(state.tankout.getSpace()/rcp.output_fluid.getAmount(), maxouttimes);
+						maxouttimes=Math.min(process1Slot.getCount()/rcp.input.getCount(),maxouttimes);
+						if(maxouttimes>0) {
+							int inputNum=maxouttimes*rcp.input.getCount();
+							process1Slot.shrink(inputNum);
+							state.inventory.setStackInSlotNoChange(2, process1Slot);
+							if(!rcp.output.isEmpty())
+								IIUtil.insertToOutput(state.inventory, 3, rcp.output.copyWithCount(maxouttimes*rcp.output.getCount()));
+							if(!rcp.output_fluid.isEmpty()) {
+								state.tankout.fill(new FluidStack(rcp.output_fluid,rcp.output_fluid.getAmount()*maxouttimes), FluidAction.EXECUTE);
 							}
+							if(rcp.secoutput!=null) {
+								@SuppressWarnings("resource")
+								RandomSource rnd=context.getLevel().getRawLevel().random;
+								int tcount=0;
+								for(int i=0;i<maxouttimes;i++) {
+									if(rcp.secoutput.chance()>=rnd.nextFloat()) {
+										tcount++;
+									}
+								}
+								IIUtil.insertToOutput(state.inventory, 4, rcp.secoutput.stack().get().copyWithCount(tcount*rcp.secoutput.stack().get().getCount()));
+							}
+							update=true;
 						}
-						IIUtil.insertToOutput(state.inventory, 4, rcp.secoutput.stack().get().copyWithCount(tcount*rcp.secoutput.stack().get().getCount()));
+						if(process1Slot.isEmpty()) {
+							state.processes[1]=null;
+							update=true;
+						}
+						}
 					}
-					update=true;
 				}
-				if(process1Slot.isEmpty()) {
-					state.processes[1]=null;
-					update=true;
-				}
+
 				
 			}
 			//if process 0 over half and process 1 is empty, move 0 to 1
