@@ -18,28 +18,23 @@
 
 package com.teammoeg.immersiveindustry.content.crucible;
 
-import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
-import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
-import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
-import blusunrize.immersiveengineering.client.gui.info.InfoArea;
-import blusunrize.immersiveengineering.client.utils.GuiHelper;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Inventory;
+import java.util.List;
+import java.util.function.Consumer;
+
+import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableList;
 import com.teammoeg.immersiveindustry.IIMain;
 import com.teammoeg.immersiveindustry.util.LangUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
-import javax.annotation.Nonnull;
+import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
+import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
+import blusunrize.immersiveengineering.client.gui.info.InfoArea;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
 public class CrucibleScreen extends IEContainerScreen<CrucibleContainer> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(IIMain.MODID, "textures/gui/crucible.png");

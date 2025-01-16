@@ -18,6 +18,8 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
+import java.util.Arrays;
+
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
 import com.teammoeg.immersiveindustry.util.LangUtil;
@@ -40,8 +42,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.Arrays;
 
 public class ElectrolyzerCategory implements IRecipeCategory<ElectrolyzerRecipe> {
     public static RecipeType<ElectrolyzerRecipe> UID = new RecipeType<>(new ResourceLocation(IIMain.MODID, "electrolyzer"),ElectrolyzerRecipe.class);

@@ -1,23 +1,22 @@
 package com.teammoeg.immersiveindustry.content.rotarykiln;
 
-import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
-import blusunrize.immersiveengineering.client.utils.RenderUtils;
+import java.util.List;
+
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.teammoeg.immersiveindustry.util.DynamicBlockModelReference;
 import com.teammoeg.immersiveindustry.util.RenderHelper;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
+import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
-import java.util.List;
-
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 
 public class RotaryKilnRenderer implements BlockEntityRenderer<MultiblockBlockEntityMaster<RotaryKilnState>> {
 	public RotaryKilnRenderer(BlockEntityRendererProvider.Context rendererDispatcherIn) {

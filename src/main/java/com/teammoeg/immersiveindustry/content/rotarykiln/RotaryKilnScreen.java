@@ -18,6 +18,11 @@
 
 package com.teammoeg.immersiveindustry.content.rotarykiln;
 
+import java.util.Arrays;
+import java.util.List;
+
+import com.teammoeg.immersiveindustry.IIMain;
+
 import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
@@ -27,10 +32,6 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-
-import com.teammoeg.immersiveindustry.IIMain;
-import java.util.Arrays;
-import java.util.List;
 
 public class RotaryKilnScreen extends IEContainerScreen<RotaryKilnContainer> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(IIMain.MODID, "textures/gui/rotary_kiln.png");

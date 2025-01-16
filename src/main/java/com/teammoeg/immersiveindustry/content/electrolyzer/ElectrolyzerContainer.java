@@ -18,9 +18,12 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
+import static com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerBlockEntity.*;
+
+import com.teammoeg.immersiveindustry.util.OutputSlot;
+
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.common.gui.IEContainerMenu;
-import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers;
 import blusunrize.immersiveengineering.common.gui.sync.GetterAndSetter;
@@ -31,15 +34,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import org.jetbrains.annotations.NotNull;
-
-import com.teammoeg.immersiveindustry.util.OutputSlot;
-
-import static com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerBlockEntity.*;
 
 public class ElectrolyzerContainer extends IEContainerMenu {
     public final EnergyStorage energyStorage;

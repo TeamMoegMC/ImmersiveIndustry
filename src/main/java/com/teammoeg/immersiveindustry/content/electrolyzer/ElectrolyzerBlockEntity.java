@@ -18,28 +18,35 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Map;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.teammoeg.immersiveindustry.IIContent.IIMenus;
+import com.teammoeg.immersiveindustry.IIContent.IITileTypes;
+import com.teammoeg.immersiveindustry.util.LangUtil;
+
 import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessBE;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
-import blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import com.teammoeg.immersiveindustry.IIContent;
-import com.teammoeg.immersiveindustry.IIContent.IIMenus;
-import com.teammoeg.immersiveindustry.IIContent.IITileTypes;
-import com.teammoeg.immersiveindustry.util.LangUtil;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -52,7 +59,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
@@ -61,17 +67,10 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.Map;
 
 public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
         IIEInventory, IEServerTickableBE,

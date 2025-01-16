@@ -18,20 +18,22 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
+import com.google.common.collect.ImmutableList;
+import com.teammoeg.immersiveindustry.IIMain;
+
 import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
-import com.google.common.collect.ImmutableList;
-import com.teammoeg.immersiveindustry.IIMain;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-
-import javax.annotation.Nonnull;
-import java.util.List;
 
 public class ElectrolyzerScreen extends IEContainerScreen<ElectrolyzerContainer> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(IIMain.MODID, "textures/gui/electrolyzer.png");

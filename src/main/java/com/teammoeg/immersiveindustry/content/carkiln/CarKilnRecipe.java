@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -36,7 +37,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
 
 public class CarKilnRecipe extends IESerializableRecipe {
-    public static RegistryObject<RecipeType<CarKilnRecipe>> TYPE;
+    public static TypeWithClass<CarKilnRecipe> TYPE;
     public static RegistryObject<IERecipeSerializer<CarKilnRecipe>> SERIALIZER;
 
     public final IngredientWithSize[] inputs;
@@ -46,10 +47,9 @@ public class CarKilnRecipe extends IESerializableRecipe {
     public final int tickEnergy;
     public final int start_fluid_cost;
     
-    public static Lazy<TypeWithClass<CarKilnRecipe>> IEType=Lazy.of(()->new TypeWithClass<>(TYPE, CarKilnRecipe.class));
 
     public CarKilnRecipe(ResourceLocation id, ItemStack[] output, IngredientWithSize[] inputs, FluidStack input_fluid, int time, int tickEnergy,int start_fluid_cost) {
-        super(Lazy.of(()->output[0]), IEType.get(), id);
+        super(Lazy.of(()->output[0]), TYPE, id);
         this.output = output;
         this.inputs = inputs;
         this.input_fluid = input_fluid;
@@ -70,7 +70,7 @@ public class CarKilnRecipe extends IESerializableRecipe {
     	return total;
     }
     // Initialized by reload listener
-    public static List<CarKilnRecipe> recipeList = Collections.emptyList();
+    public static CachedRecipeList<CarKilnRecipe> recipeList = new CachedRecipeList<>(TYPE);
 
     public static boolean isValidInput(ItemStack stack) {
         for (CarKilnRecipe recipe : recipeList)

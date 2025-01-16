@@ -84,7 +84,7 @@ public class ClientRegistryEvents {
     }
 	@SubscribeEvent
 	public static void registerBERenders(RegisterRenderers event){
-        event.registerBlockEntityRenderer(IIMultiblocks.IND_ELE.masterBE().get(), IndustrialElectrolyzerRenderer::new);
+        event.registerBlockEntityRenderer(IIMultiblocks.INDUSTRIAL_ELECTROLYZER.masterBE().get(), IndustrialElectrolyzerRenderer::new);
         event.registerBlockEntityRenderer(IIMultiblocks.ROTARY_KILN.masterBE().get(), RotaryKilnRenderer::new);
         event.registerBlockEntityRenderer(IIMultiblocks.CAR_KILN.masterBE().get(), CarKilnRenderer::new);
 	}
@@ -112,7 +112,7 @@ public class ClientRegistryEvents {
         }
         {
             ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
-            builder.addSpecialElement(new SpecialElementData("industrial_electrolyzer", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.Multiblock.IND_ELE)));
+            builder.addSpecialElement(new SpecialElementData("industrial_electrolyzer", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.Multiblock.INDUSTRIAL_ELECTROLYZER)));
             builder.readFromFile(new ResourceLocation(IIMain.MODID, "industrial_electrolyzer"));
             man.addEntry(CATEGORY, builder.create(), 2);
         }

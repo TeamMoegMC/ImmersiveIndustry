@@ -20,9 +20,9 @@ package com.teammoeg.immersiveindustry.content.rotarykiln;
 
 import com.teammoeg.immersiveindustry.util.IIBaseContainer;
 import com.teammoeg.immersiveindustry.util.IIContainerData;
+import com.teammoeg.immersiveindustry.util.IIContainerData.CustomDataSlot;
 import com.teammoeg.immersiveindustry.util.NoAccessSlot;
 import com.teammoeg.immersiveindustry.util.OutputSlot;
-import com.teammoeg.immersiveindustry.util.IIContainerData.CustomDataSlot;
 
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.common.gui.IEContainerMenu.MultiblockMenuContext;

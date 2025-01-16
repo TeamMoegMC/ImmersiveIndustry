@@ -1,12 +1,7 @@
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
-import java.util.Map;
 import java.util.function.Supplier;
 
-import org.jetbrains.annotations.Nullable;
-
-import com.mojang.datafixers.util.Pair;
-import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnState;
 import com.teammoeg.immersiveindustry.util.CapabilityProcessor;
 import com.teammoeg.immersiveindustry.util.ChangeDetectedItemHandler;
 import com.teammoeg.immersiveindustry.util.RangedCheckedInputWrapper;

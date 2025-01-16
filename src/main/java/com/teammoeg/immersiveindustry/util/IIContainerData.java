@@ -6,6 +6,7 @@ import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
 import com.google.common.base.Objects;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;

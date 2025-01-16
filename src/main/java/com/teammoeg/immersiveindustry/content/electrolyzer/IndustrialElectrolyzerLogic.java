@@ -1,21 +1,14 @@
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Function;
 
-import javax.annotation.Nullable;
-
-import com.mojang.datafixers.util.Pair;
 import com.teammoeg.immersiveindustry.IIConfig;
-import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnState;
 import com.teammoeg.immersiveindustry.util.CapabilityFacing;
 import com.teammoeg.immersiveindustry.util.ChangeDetectedItemHandler;
 import com.teammoeg.immersiveindustry.util.IIUtil;
 import com.teammoeg.immersiveindustry.util.RecipeHandler;
 import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
 
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
@@ -25,9 +18,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockL
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -38,10 +29,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 

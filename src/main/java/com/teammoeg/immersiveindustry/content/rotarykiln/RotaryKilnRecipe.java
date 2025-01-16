@@ -19,11 +19,11 @@
 package com.teammoeg.immersiveindustry.content.rotarykiln;
 
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
-import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;

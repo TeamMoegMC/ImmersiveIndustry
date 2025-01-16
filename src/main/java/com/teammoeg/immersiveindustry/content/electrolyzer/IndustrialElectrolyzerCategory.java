@@ -18,12 +18,15 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
 import com.teammoeg.immersiveindustry.util.JEISlotBuilder;
 import com.teammoeg.immersiveindustry.util.LangUtil;
 
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -47,9 +50,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class IndustrialElectrolyzerCategory implements IRecipeCategory<ElectrolyzerRecipe> {
     public static RecipeType<ElectrolyzerRecipe> UID = new RecipeType<>(new ResourceLocation(IIMain.MODID, "industrial_electrolyzer"),ElectrolyzerRecipe.class);
     private IDrawable BACKGROUND;
@@ -59,7 +59,7 @@ public class IndustrialElectrolyzerCategory implements IRecipeCategory<Electroly
     public static final TagKey<Item> Electrode_Tag = ItemTags.create(new ResourceLocation(IIMain.MODID, "electrodes"));
 
     public IndustrialElectrolyzerCategory(IGuiHelper guiHelper) {
-        this.ICON = guiHelper.createDrawableItemStack(new ItemStack(IIContent.IIMultiblocks.IND_ELE.blockItem().get()));
+        this.ICON = guiHelper.createDrawableItemStack(new ItemStack(IIContent.IIMultiblocks.INDUSTRIAL_ELECTROLYZER.blockItem().get()));
         this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/industrial_electrolyzer.png"), 6,6,145, 68);
         this.TANK = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/industrial_electrolyzer.png"),197,1,18, 48);
         IDrawableStatic arrow=guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/industrial_electrolyzer.png"),178,57,21,15);

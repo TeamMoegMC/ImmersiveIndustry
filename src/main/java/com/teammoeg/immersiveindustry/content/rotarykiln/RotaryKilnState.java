@@ -12,16 +12,11 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultib
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
-import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
-import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraint;
-import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraintGroup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.RangedWrapper;
 
 public class RotaryKilnState implements IMultiblockState{
 	

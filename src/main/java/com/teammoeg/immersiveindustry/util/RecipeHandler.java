@@ -23,16 +23,13 @@ package com.teammoeg.immersiveindustry.util;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.jetbrains.annotations.NotNull;
 
-import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 public class RecipeHandler<T extends Recipe<?>,R>{

@@ -18,12 +18,9 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
-import javax.annotation.Nullable;
+import com.teammoeg.immersiveindustry.IIContent;
 
 import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
-import com.teammoeg.immersiveindustry.IIContent;
-import com.teammoeg.immersiveindustry.content.IIBaseBlock;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -46,9 +43,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.network.NetworkHooks;
 
-import java.util.function.BiFunction;
-
-public class ElectrolyzerBlock extends IEEntityBlock {
+public class ElectrolyzerBlock extends IEEntityBlock<ElectrolyzerBlockEntity> {
 
     public static final DirectionProperty FACING= BlockStateProperties.HORIZONTAL_FACING;
     public static final VoxelShape ELECShape= Block.box(0,0,0,16,15,16);//1 px lower may avoid render glitch?

@@ -18,11 +18,10 @@
 
 package com.teammoeg.immersiveindustry.content.rotarykiln;
 
-import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
-
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
 
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 

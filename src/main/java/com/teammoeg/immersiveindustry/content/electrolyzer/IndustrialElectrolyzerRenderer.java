@@ -15,7 +15,6 @@ import net.minecraft.Util;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraftforge.client.model.data.ModelData;
@@ -48,7 +47,7 @@ public class IndustrialElectrolyzerRenderer implements BlockEntityRenderer<Multi
 		if(type==0)return;
 
 
-		List<BakedQuad> quads = ELECTRODES.get().getQuads(null, null, te.getLevel().random, getData.apply(type), null);
+		List<BakedQuad> quads = ELECTRODES.apply(getData.apply(type));
 		RenderUtils.renderModelTESRFast(quads, pBuffer.getBuffer(RenderType.solid()), matrixStack, pPackedLight, pPackedOverlay);
     }
 }

@@ -58,7 +58,7 @@ public class JEICompat implements IModPlugin {
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(new ItemStack(IIContent.IIBlocks.burning_chamber.get()), CrucibleCategory.UID);
         registration.addRecipeCatalyst(new ItemStack(IIContent.IIBlocks.electrolyzer.get()), ElectrolyzerCategory.UID);
-        registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.IND_ELE.blockItem().get()), IndustrialElectrolyzerCategory.UID);
+        registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.INDUSTRIAL_ELECTROLYZER.blockItem().get()), IndustrialElectrolyzerCategory.UID);
         registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.ROTARY_KILN.blockItem().get()), RotaryKilnCategory.UID);
         registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.CAR_KILN.blockItem().get()), CarKilnCategory.UID);
     }
@@ -72,7 +72,7 @@ public class JEICompat implements IModPlugin {
         registration.addRecipes(ElectrolyzerCategory.UID,ElectrolyzerRecipe.recipeList.getRecipes(world).stream().filter(r->!r.flag).filter(r->r.inputs.length<2).collect(Collectors.toList()));
         registration.addRecipes(IndustrialElectrolyzerCategory.UID,ElectrolyzerRecipe.recipeList.getRecipes(world).stream().filter(r -> r.inputs.length < 3).collect(Collectors.toList()));
         registration.addRecipes(RotaryKilnCategory.UID,new ArrayList<>(RotaryKilnRecipe.recipeList.getRecipes(world)));
-        registration.addRecipes(CarKilnCategory.UID,CarKilnRecipe.recipeList);
+        registration.addRecipes(CarKilnCategory.UID,new ArrayList<>(CarKilnRecipe.recipeList.getRecipes(world)));
     }
 
     @Override

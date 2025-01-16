@@ -18,31 +18,26 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
+import java.util.Map;
+
+import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
+import com.teammoeg.immersiveindustry.util.RecipeSimulateHelper;
+
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
-
-import java.util.Collections;
-import java.util.Map;
-
-import com.mojang.datafixers.util.Pair;
-import com.teammoeg.immersiveindustry.content.carkiln.CarKilnRecipe;
-import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnRecipe;
-import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
-import com.teammoeg.immersiveindustry.util.RecipeSimulateHelper;
 
 public class ElectrolyzerRecipe extends IESerializableRecipe {
     public static TypeWithClass<ElectrolyzerRecipe> TYPE;

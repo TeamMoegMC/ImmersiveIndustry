@@ -20,8 +20,8 @@ package com.teammoeg.immersiveindustry.content.crucible;
 
 import com.teammoeg.immersiveindustry.util.IIBaseContainer;
 import com.teammoeg.immersiveindustry.util.IIContainerData;
-import com.teammoeg.immersiveindustry.util.OutputSlot;
 import com.teammoeg.immersiveindustry.util.IIContainerData.CustomDataSlot;
+import com.teammoeg.immersiveindustry.util.OutputSlot;
 
 import blusunrize.immersiveengineering.common.gui.IEContainerMenu.MultiblockMenuContext;
 import net.minecraft.world.entity.player.Inventory;

@@ -18,14 +18,13 @@
 
 package com.teammoeg.immersiveindustry.content.crucible;
 
-import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
 import com.teammoeg.immersiveindustry.util.JEISlotBuilder;
 import com.teammoeg.immersiveindustry.util.LangUtil;
 
-import mezz.jei.api.constants.VanillaTypes;
+import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;

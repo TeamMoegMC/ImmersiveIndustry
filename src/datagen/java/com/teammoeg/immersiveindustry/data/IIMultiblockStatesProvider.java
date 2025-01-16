@@ -61,7 +61,7 @@ public class IIMultiblockStatesProvider extends IIExtendedStatesProvider {
     }
 
     protected void registerStatesAndModels() {
-        createMultiblock(IIContent.IIMultiblocks.industrial_electrolyzer, split(obj("block/multiblocks/industrial_electrolyzer.obj"), IIContent.IIMultiblocks.IND_ELE));
+        createMultiblock(IIContent.IIMultiblocks.industrial_electrolyzer, split(obj("block/multiblocks/industrial_electrolyzer.obj"), IIContent.IIMultiblocks.INDUSTRIAL_ELECTROLYZER));
         createMultiblock(IIContent.IIMultiblocks.steam_turbine, split(obj("block/multiblocks/steam_turbine.obj"), IIContent.IIMultiblocks.STEAMTURBINE));
         createMultiblock(IIContent.IIMultiblocks.rotary_kiln, split(obj("block/multiblocks/rotary_kiln.obj"), IIContent.IIMultiblocks.ROTARY_KILN));
         createMultiblock(IIContent.IIMultiblocks.car_kiln, split(obj("block/multiblocks/car_kiln.obj"), IIContent.IIMultiblocks.CAR_KILN));

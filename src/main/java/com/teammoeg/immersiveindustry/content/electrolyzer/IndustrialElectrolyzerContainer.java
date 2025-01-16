@@ -18,15 +18,14 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
-import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
-import blusunrize.immersiveengineering.common.gui.IEContainerMenu.MultiblockMenuContext;
-
 import com.teammoeg.immersiveindustry.IIMain;
 import com.teammoeg.immersiveindustry.util.IIBaseContainer;
 import com.teammoeg.immersiveindustry.util.IIContainerData;
-import com.teammoeg.immersiveindustry.util.OutputSlot;
 import com.teammoeg.immersiveindustry.util.IIContainerData.CustomDataSlot;
+import com.teammoeg.immersiveindustry.util.OutputSlot;
 
+import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
+import blusunrize.immersiveengineering.common.gui.IEContainerMenu.MultiblockMenuContext;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;

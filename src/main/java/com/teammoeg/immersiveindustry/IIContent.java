@@ -118,15 +118,15 @@ public class IIContent {
         	.redstone(t->t.rsstate, new BlockPos(0,1,0))
         	.structure(()->Multiblock.STEAMTURBINE)
         	.build();
-        public static final MultiblockRegistration<IndustrialElectrolyzerState> IND_ELE =  metal(new IndustrialElectrolyzerLogic(),"industrial_electrolyzer")
+        public static final MultiblockRegistration<IndustrialElectrolyzerState> INDUSTRIAL_ELECTROLYZER =  metal(new IndustrialElectrolyzerLogic(),"industrial_electrolyzer")
         	.redstone(t->t.state, new BlockPos(1,1,4))
-        	.structure(()->Multiblock.IND_ELE)
+        	.structure(()->Multiblock.INDUSTRIAL_ELECTROLYZER)
         	.build();
         public static final MultiblockRegistration<RotaryKilnState> ROTARY_KILN =  metal(new RotaryKilnLogic(),"rotary_kiln")
         	.redstone(t->t.state, new BlockPos(0,1,5))
         	.structure(()->Multiblock.ROTARY_KILN)
         	.build();
-        public static final MultiblockRegistration<?> CAR_KILN = null; 
+        public static final MultiblockRegistration<CarKilnState> CAR_KILN = null; 
     	
 		private static <S extends IMultiblockState> IEMultiblockBuilder<S> stone(IMultiblockLogic<S> logic, String name, boolean solid) {
 			Properties properties = Properties.of()
@@ -159,13 +159,13 @@ public class IIContent {
         public static class Multiblock{
             public static final IETemplateMultiblock CRUCIBLE = new CrucibleMultiblock();
             public static final IETemplateMultiblock STEAMTURBINE = new SteamTurbineMultiblock();
-            public static final IETemplateMultiblock IND_ELE = new IndustrialElectrolyzerMultiblock();
+            public static final IETemplateMultiblock INDUSTRIAL_ELECTROLYZER = new IndustrialElectrolyzerMultiblock();
             public static final IETemplateMultiblock ROTARY_KILN = new RotaryKilnMultiblock();
             public static final IETemplateMultiblock CAR_KILN = new CarKilnMultiblock();
             public static void init() {
             	MultiblockHandler.registerMultiblock(CRUCIBLE);
                 MultiblockHandler.registerMultiblock(STEAMTURBINE);
-                MultiblockHandler.registerMultiblock(IND_ELE);
+                MultiblockHandler.registerMultiblock(INDUSTRIAL_ELECTROLYZER);
                 MultiblockHandler.registerMultiblock(ROTARY_KILN);
                 MultiblockHandler.registerMultiblock(CAR_KILN);
             }

@@ -19,8 +19,8 @@
 package com.teammoeg.immersiveindustry;
 
 import com.teammoeg.immersiveindustry.content.IICreativeTab;
+
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;

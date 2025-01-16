@@ -18,15 +18,14 @@
 
 package com.teammoeg.immersiveindustry.content.rotarykiln;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.api.crafting.StackWithChance;
-
 import com.google.gson.JsonObject;
 import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;

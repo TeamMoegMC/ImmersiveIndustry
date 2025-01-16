@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+
 import net.minecraft.network.FriendlyByteBuf;
 
 public class IdRegistry<T> {

@@ -1,22 +1,16 @@
 package com.teammoeg.immersiveindustry.content.crucible;
 
-import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
-import java.util.Map.Entry;
 import java.util.function.Function;
 
 import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent.IIMultiblocks;
-import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipe;
-import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnState;
 import com.teammoeg.immersiveindustry.util.CapabilityFacing;
 import com.teammoeg.immersiveindustry.util.ChangeDetectedItemHandler;
 import com.teammoeg.immersiveindustry.util.IIUtil;
 import com.teammoeg.immersiveindustry.util.RecipeHandler;
 import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
 
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
@@ -28,12 +22,9 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlock
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheaterBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.NonMirrorableWithActiveBlock;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Entity.RemovalReason;
 import net.minecraft.world.entity.LivingEntity;
@@ -46,10 +37,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, IMultiblockLogic<CrucibleState>, IServerTickableComponent<CrucibleState> {
