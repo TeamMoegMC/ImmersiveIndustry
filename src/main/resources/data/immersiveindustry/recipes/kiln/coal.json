@@ -4,7 +4,7 @@
     "item": "minecraft:coal"
   },
   "result": {
-    "tag": "forge:coal_coke"
+    "item": "immersiveengineering:coal_coke"
   },
   "result_fluid": {
     "fluid": "immersiveengineering:creosote",

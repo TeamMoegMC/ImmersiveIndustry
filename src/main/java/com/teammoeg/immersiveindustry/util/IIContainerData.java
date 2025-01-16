@@ -79,6 +79,7 @@ public class IIContainerData {
 		@Override
 		public void set(int pValue) {
 			value=conv.apply(pValue);
+			setter.accept(value);
 		}
 		@Override
 		public T getValue() {
