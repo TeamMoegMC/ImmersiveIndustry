@@ -25,6 +25,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import blusunrize.immersiveengineering.common.blocks.metal.FluidPumpBlockEntity;
 import com.teammoeg.immersiveindustry.IIContent.IIMenus;
 import com.teammoeg.immersiveindustry.IIContent.IITileTypes;
 import com.teammoeg.immersiveindustry.util.LangUtil;
@@ -60,6 +61,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
@@ -78,6 +80,8 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
         IProcessBE, IStateBasedDirectional, IConfigurableSides, IBlockOverlayText,MenuProvider{
 
     public static final int NUM_SLOTS = 2;
+    public static final int SLOT_IN = 0;
+    public static final int SLOT_OUT = 1;
     public static final int ENERGY_CAPACITY = 20000;
     public static final int TANK_CAPACITY = 8 * FluidType.BUCKET_VOLUME;
 
@@ -136,52 +140,58 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
 
     @Override
     public void tickServer() {
-        if (!level.isClientSide) {
-            if (energyStorage.getEnergyStored() >= tickEnergy) {
-                if (process > 0) {
-                    process--;
-                    energyStorage.extractEnergy(tickEnergy, false);
-                    this.markContainingBlockForUpdate(null);
-                    return;
-                }
-                if (!result.isEmpty()) {
-                    if (inventory.get(1).isEmpty()) {
-                        inventory.set(1, result);
-                        result = ItemStack.EMPTY;
-                        process = processMax = 0;
-                        tickEnergy = 0;
-                	} else if (inventory.get(1).is(result.getItem())) {
-                    	inventory.get(1).grow(result.getCount());
-                    	result=ItemStack.EMPTY;
-                        process = processMax = 0;
-                        tickEnergy = 0;
-                	}else return;
-                }
-                ElectrolyzerRecipe recipe=getRecipe();
-                if (recipe != null) {
-                    this.processMax = this.process = recipe.time;
-                    this.tickEnergy = recipe.tickEnergy;
-                    if (recipe.inputs.length > 0) {
-                        Utils.modifyInvStackSize(inventory, 0, -recipe.inputs[0].getCount());
-                    }
-                    if (recipe.input_fluid != null)
-                        tank.drain(recipe.input_fluid.getAmount(), IFluidHandler.FluidAction.EXECUTE);
-                    result = recipe.output.copy();
-                }
-            } else if (process > 0) {
-                process = processMax;
+        // If energy is available, start the process.
+        if (energyStorage.getEnergyStored() >= tickEnergy) {
+            // The Process has started, continue.
+            if (process > 0) {
+                process--;
+                energyStorage.extractEnergy(tickEnergy, false);
                 this.markContainingBlockForUpdate(null);
+                return;
             }
+            // Process is finished, check if we can output the result.
+            // If we can, output the result and reset the process.
+            if (!result.isEmpty()) {
+                // If the output slot is empty, set the output slot to the result.
+                if (inventory.get(SLOT_OUT).isEmpty()) {
+                    inventory.set(SLOT_OUT, result);
+                    result = ItemStack.EMPTY;
+                    process = processMax = 0;
+                    tickEnergy = 0;
+                } else if (inventory.get(SLOT_OUT).is(result.getItem())) {
+                    inventory.get(SLOT_OUT).grow(result.getCount());
+                    result = ItemStack.EMPTY;
+                    process = processMax = 0;
+                    tickEnergy = 0;
+                } else return;
+            }
+            // If we can't output the result, check if we can start a new process.
+            ElectrolyzerRecipe recipe = getRecipe();
+            if (recipe != null) {
+                this.processMax = this.process = recipe.time;
+                this.tickEnergy = recipe.tickEnergy;
+                if (recipe.inputs.length > 0) {
+                    Utils.modifyInvStackSize(inventory, SLOT_IN, -recipe.inputs[0].getCount());
+                }
+                if (recipe.input_fluid != null)
+                    tank.drain(recipe.input_fluid.getAmount(), IFluidHandler.FluidAction.EXECUTE);
+                result = recipe.output.copy();
+            }
+        }
+        // Else if energy is not enough, but process started, reset process.
+        else if (process > 0) {
+            process = processMax;
+            this.markContainingBlockForUpdate(null);
         }
     }
 
     @Nullable
     public ElectrolyzerRecipe getRecipe() {
-        RecipeProcessResult<ElectrolyzerRecipe> recipe = ElectrolyzerRecipe.findRecipe(this.getLevel(),inventory.get(0),ItemStack.EMPTY, tank.getFluid(),false);
+        RecipeProcessResult<ElectrolyzerRecipe> recipe = ElectrolyzerRecipe.findRecipe(this.getLevel(),inventory.get(SLOT_IN),ItemStack.EMPTY, tank.getFluid(),false);
         if (recipe == null)
             return null;
-        if (inventory.get(1).isEmpty() || (ItemStack.isSameItem(inventory.get(1), recipe.recipe().output) &&
-                inventory.get(1).getCount() + recipe.recipe().output.getCount() <= getSlotLimit(1))) {
+        if (inventory.get(SLOT_OUT).isEmpty() || (ItemStack.isSameItem(inventory.get(SLOT_OUT), recipe.recipe().output) &&
+                inventory.get(SLOT_OUT).getCount() + recipe.recipe().output.getCount() <= getSlotLimit(SLOT_OUT))) {
             return recipe.recipe();
         }
         return null;
@@ -200,13 +210,16 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
     @Nonnull
     @Override
     public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing) {
-        if(facing!=null&&facing.getAxis()!=this.getFacing().getClockWise().getAxis()) {
-            if(capability==ForgeCapabilities.ENERGY && sideConfig.get(facing) == IEEnums.IOSideConfig.INPUT)
+        if (facing != null) {
+            if (capability == ForgeCapabilities.ENERGY) {
                 return energyCap.cast();
-	    	if (facing!=Direction.UP&&capability == ForgeCapabilities.FLUID_HANDLER)
-	            return tankCap.cast();
-	        if (capability == ForgeCapabilities.ITEM_HANDLER)
-	            return invHandler.cast();
+            }
+            if (capability == ForgeCapabilities.FLUID_HANDLER && sideConfig.get(facing) == IEEnums.IOSideConfig.INPUT) {
+                return tankCap.cast();
+            }
+            if (capability == ForgeCapabilities.ITEM_HANDLER) {
+                return invHandler.cast();
+            }
         }
         return super.getCapability(capability, facing);
     }
@@ -216,10 +229,10 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
     {
         for(Direction d : DirectionUtils.VALUES)
         {
-            if(d == this.getFacing().getClockWise())
-                sideConfig.put(d, IEEnums.IOSideConfig.INPUT);
-            else
+            if(d == Direction.UP)
                 sideConfig.put(d, IEEnums.IOSideConfig.NONE);
+            else
+                sideConfig.put(d, IEEnums.IOSideConfig.INPUT);
         }
     }
 
@@ -230,7 +243,15 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
     }
 
     @Override
-    public boolean toggleSide(Direction side, Player p) {
+    public boolean toggleSide(Direction side, Player p)
+    {
+        if (side != Direction.UP) {
+            sideConfig.put(side, IEEnums.IOSideConfig.next(sideConfig.get(side)));
+            this.setChanged();
+            this.markContainingBlockForUpdate(null);
+            getLevelNonnull().blockEvent(getBlockPos(), this.getBlockState().getBlock(), 0, 0);
+            return true;
+        }
         return false;
     }
 
@@ -286,10 +307,11 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
 
 
     public float getGuiProgress() {
-        if (processMax == 0 || process == 0)
-            return 0;
-        else
-            return Mth.clamp(process/processMax, 0, 1);
+        float progress = 0;
+        if (processMax != 0) {
+            progress = Mth.clamp(1 - process / processMax, 0, 1);
+        }
+        return progress;
     }
 
 	@Override
