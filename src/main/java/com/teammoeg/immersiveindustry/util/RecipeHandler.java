@@ -32,20 +32,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-public class RecipeHandler<T extends Recipe<?>,R>{
+public class RecipeHandler<T extends Recipe<?>>{
 	private int process;
 	private int processMax;
 	private ResourceLocation lastRecipe;
 	private boolean recipeTested=false;
-	private R recipeResultCache;
+	private RecipeProcessResult<T> recipeResultCache;
 	private final BiFunction<ResourceLocation,T,Integer> getTimes;
-	private final Function<ResourceLocation, R> generator;
 	public ResourceLocation getLastRecipe() {
 		return lastRecipe;
 	}
-	public RecipeHandler(BiFunction<ResourceLocation,T,Integer> getTimes,Function<ResourceLocation,R> resultGenerator) {
+	public RecipeHandler(BiFunction<ResourceLocation,T,Integer> getTimes) {
 		this.getTimes=getTimes;
-		this.generator=resultGenerator;
 	}
 	public void onContainerChanged() {
 		//System.out.println("revalidate needed");
@@ -54,24 +52,28 @@ public class RecipeHandler<T extends Recipe<?>,R>{
 	public boolean shouldTestRecipe() {
 		return !recipeTested;
 	}
-	public void setRecipe(T recipe) {
+	public boolean setRecipe(RecipeProcessResult<T> recipeObj) {
 		//System.out.println("revalidate return "+recipe);
-		recipeResultCache=null;
-		if (recipe!= null) {
-			if(processMax==0||!recipe.getId().equals(lastRecipe)) {
-				process=processMax=getTimes.apply(lastRecipe, recipe);
-				lastRecipe=recipe.getId();
+		recipeResultCache=recipeObj;
+		boolean res=false;
+		if (recipeObj!= null) {
+			if(processMax==0||!recipeObj.getId().equals(lastRecipe)) {
+				process=processMax=getTimes.apply(lastRecipe, recipeObj.recipe());
+				lastRecipe=recipeObj.getId();
+				res= true;
 			}
 		}else {
 			process=processMax=0;
 			lastRecipe=null;
+			res=true;
 		}
 		recipeTested=true;
+		return res;
 	}
-	public R getRecipeResultCache() {
-		if(recipeResultCache==null) {
+	public RecipeProcessResult<T> getRecipeResultCache() {
+		/*if(recipeResultCache==null) {
 			recipeResultCache=generator.apply(lastRecipe);
-		}
+		}*/
 		return recipeResultCache;
 	}
 

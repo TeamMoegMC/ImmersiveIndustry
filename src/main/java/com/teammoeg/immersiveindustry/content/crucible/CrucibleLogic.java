@@ -115,9 +115,9 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 			state.temperature -= IIUtil.randomValue(rs, IIConfig.COMMON.crucibleCoolDown.get());
 			context.markMasterDirty();
 		}
-		RecipeHandler<CrucibleRecipe, RecipeProcessResult<CrucibleRecipe>> handler = state.recipe;
+		RecipeHandler<CrucibleRecipe> handler = state.recipe;
 		if (handler.shouldTestRecipe()) {
-			CrucibleRecipe recipeResult = CrucibleRecipe.findRecipe(context.getLevel().getRawLevel(), inventory);
+			RecipeProcessResult<CrucibleRecipe> recipeResult = CrucibleRecipe.findRecipe(context.getLevel().getRawLevel(), inventory);
 			handler.setRecipe(recipeResult);
 			context.markMasterDirty();
 		}

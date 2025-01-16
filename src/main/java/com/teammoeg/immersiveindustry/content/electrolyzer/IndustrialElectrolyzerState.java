@@ -25,7 +25,7 @@ import net.minecraftforge.items.IItemHandler;
 
 public class IndustrialElectrolyzerState implements IMultiblockState {
 	//common properties
-	public RecipeHandler<ElectrolyzerRecipe,RecipeProcessResult<ElectrolyzerRecipe>> recipe;
+	public RecipeHandler<ElectrolyzerRecipe> recipe;
 	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(32000);
 	public FluidTank[] tank = new FluidTank[]{null,
 			new FluidTank(16000)};
@@ -45,7 +45,7 @@ public class IndustrialElectrolyzerState implements IMultiblockState {
 	public IndustrialElectrolyzerState(IInitialMultiblockContext<IndustrialElectrolyzerState> capabilitySource) {
 		Supplier<Level> l=capabilitySource.levelSupplier();
 		inventory=new ChangeDetectedItemHandler(5,capabilitySource.getMarkDirtyRunnable());
-		recipe=new RecipeHandler<>((t,r)->r.time,t->ElectrolyzerRecipe.executeRecipe(l.get(),t, inventory.getStackInSlot(0), inventory.getStackInSlot(1), tank[0].getFluid(), true));
+		recipe=new RecipeHandler<>((t,r)->r.time);
 		inventory.addSlotListener(0,2, recipe::onContainerChanged);
 		tank[0]=new FluidTank(16000, f->ElectrolyzerRecipe.isValidRecipeFluid(l.get(),f)) {
 

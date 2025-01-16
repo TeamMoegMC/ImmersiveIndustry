@@ -19,6 +19,7 @@
 package com.teammoeg.immersiveindustry.content.carkiln;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import com.google.gson.JsonArray;
@@ -52,7 +53,7 @@ public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
 		IngredientWithSize[] inputs = new IngredientWithSize[buffer.readVarInt()];
 		for (int i = 0; i < inputs.length; i++)
 			inputs[i] = IngredientWithSize.read(buffer);
-		return new CarKilnRecipe(recipeId, output, inputs, FluidStack.readFromPacket(buffer),buffer.readVarInt(),buffer.readVarInt(),buffer.readVarInt());
+		return new CarKilnRecipe(recipeId, output, inputs, FluidTagInput.read(buffer),buffer.readVarInt(),buffer.readVarInt());
 	}
 
 	@Override
@@ -63,10 +64,9 @@ public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
 		buffer.writeVarInt(recipe.inputs.length);
 		for (IngredientWithSize input : recipe.inputs)
 			input.write(buffer);
-		recipe.input_fluid.writeToPacket(buffer);
+		recipe.input_fluid.write(buffer);
 		buffer.writeVarInt(recipe.time);
 		buffer.writeVarInt(recipe.tickEnergy);
-		buffer.writeVarInt(recipe.start_fluid_cost);
 	}
 
 	@Override
@@ -95,9 +95,9 @@ public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
 			inputs[0] = IngredientWithSize.deserialize(json.get("input"));
 		} else
 			inputs = new IngredientWithSize[0];
-		FluidStack input_fluid = FluidStack.EMPTY;
+		FluidTagInput input_fluid = null;
 		if (json.has("input_fluid"))
-			input_fluid = ApiUtils.jsonDeserializeFluidStack(json.get("input_fluid").getAsJsonObject());
+			input_fluid = FluidTagInput.deserialize(json.get("input_fluid"));
 
 		int time = 200;
 		if (json.has("time"))
@@ -105,9 +105,6 @@ public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
 		int tickEnergy = IIConfig.COMMON.carKilnBase.get();
 		if (json.has("tickEnergy"))
 			tickEnergy = json.get("tickEnergy").getAsInt();
-		int start_fluid_cost=0;
-		if(json.has("start_fluid_cost"))
-			start_fluid_cost=json.get("start_fluid_cost").getAsInt();
-		return new CarKilnRecipe(recipeId, output, inputs, input_fluid, time, tickEnergy,start_fluid_cost);
+		return new CarKilnRecipe(recipeId, output, inputs, input_fluid, time, tickEnergy);
 	}
 }

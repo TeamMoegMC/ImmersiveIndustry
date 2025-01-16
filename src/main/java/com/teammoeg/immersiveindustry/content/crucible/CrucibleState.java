@@ -25,7 +25,7 @@ import net.minecraftforge.items.IItemHandler;
 public class CrucibleState implements IMultiblockState {
 	//common properties
     ChangeDetectedItemHandler inventory;
-    RecipeHandler<CrucibleRecipe,RecipeProcessResult<CrucibleRecipe>> recipe;
+    RecipeHandler<CrucibleRecipe> recipe;
     public int temperature;
     public int burnTime;
     public int burnTimeMax;
@@ -41,6 +41,7 @@ public class CrucibleState implements IMultiblockState {
     CapabilityReference<IFluidHandler> outputFluidCap;
 	public CrucibleState(IInitialMultiblockContext<CrucibleState> capabilitySource) {
 		Supplier<@Nullable Level> level=capabilitySource.levelSupplier();
+		recipe=new RecipeHandler<>((r,t)->t.time);
 		inventory=new ChangeDetectedItemHandler(6, capabilitySource.getMarkDirtyRunnable());
 		inventory.addSlotListener(0,5, recipe::onContainerChanged);
 		inputHandler=new StoredCapability<>(new RangedCheckedInputWrapper(inventory,0,4,(i,r)->CrucibleRecipe.isValidInput(level.get(),r)));

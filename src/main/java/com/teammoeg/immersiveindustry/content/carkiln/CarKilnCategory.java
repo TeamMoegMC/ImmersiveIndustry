@@ -79,10 +79,10 @@ public class CarKilnCategory implements IRecipeCategory<CarKilnRecipe> {
 			itemOutput.addSlot(89 + i % 3 * 18, 33 + i / 3 * 18);
 		}
 		IRecipeSlotBuilder fluidSlot = builder.addSlot(RecipeIngredientRole.INPUT, 4, 10).setFluidRenderer(3200, false, 16, 47).setOverlay(TANK, 0, 0);
-		if (!recipe.input_fluid.isEmpty()) {
-			fluidSlot.addIngredient(ForgeTypes.FLUID_STACK, recipe.input_fluid);
-			if (recipe.start_fluid_cost != 0)
-				fluidSlot.addTooltipCallback((l, t) -> t.add(LangUtil.translate("gui.jei.tooltip.immersiveindustry.start_cost", recipe.start_fluid_cost)));
+		if (recipe.input_fluid!=null) {
+			fluidSlot.addIngredients(ForgeTypes.FLUID_STACK, recipe.input_fluid.getMatchingFluidStacks());
+			//if (recipe.start_fluid_cost != 0)
+			//	fluidSlot.addTooltipCallback((l, t) -> t.add(LangUtil.translate("gui.jei.tooltip.immersiveindustry.start_cost", recipe.start_fluid_cost)));
 		}
 	}
 

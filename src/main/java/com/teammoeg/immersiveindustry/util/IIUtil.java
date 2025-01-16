@@ -34,6 +34,9 @@ public class IIUtil {
 		}
 		return false;
 	}
+	
+	
+	
 	public static ItemStack insertToOutput(IItemHandlerModifiable inv, int slot, ItemStack in) {
 		ItemStack is = inv.getStackInSlot(slot);
 		if (is.isEmpty()) {

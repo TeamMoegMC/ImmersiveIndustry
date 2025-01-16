@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 import com.teammoeg.immersiveindustry.IIContent.IIMenus;
 import com.teammoeg.immersiveindustry.IIContent.IITileTypes;
 import com.teammoeg.immersiveindustry.util.LangUtil;
+import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
 
 import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.Lib;
@@ -176,12 +177,12 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
 
     @Nullable
     public ElectrolyzerRecipe getRecipe() {
-        ElectrolyzerRecipe recipe = ElectrolyzerRecipe.findRecipe(this.getLevel(),inventory.get(0),ItemStack.EMPTY, tank.getFluid(),false);
+        RecipeProcessResult<ElectrolyzerRecipe> recipe = ElectrolyzerRecipe.findRecipe(this.getLevel(),inventory.get(0),ItemStack.EMPTY, tank.getFluid(),false);
         if (recipe == null)
             return null;
-        if (inventory.get(1).isEmpty() || (ItemStack.isSameItem(inventory.get(1), recipe.output) &&
-                inventory.get(1).getCount() + recipe.output.getCount() <= getSlotLimit(1))) {
-            return recipe;
+        if (inventory.get(1).isEmpty() || (ItemStack.isSameItem(inventory.get(1), recipe.recipe().output) &&
+                inventory.get(1).getCount() + recipe.recipe().output.getCount() <= getSlotLimit(1))) {
+            return recipe.recipe();
         }
         return null;
     }

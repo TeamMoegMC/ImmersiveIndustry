@@ -12,6 +12,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.teammoeg.immersiveindustry.IIContent.IIMultiblocks;
 import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnState;
 import com.teammoeg.immersiveindustry.util.DynamicBlockModelReference;
+import com.teammoeg.immersiveindustry.util.RenderHelper;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -35,27 +36,33 @@ public class CarKilnRenderer implements BlockEntityRenderer<MultiblockBlockEntit
 	public void render(MultiblockBlockEntityMaster<CarKilnState> pBlockEntity, float pPartialTick, PoseStack matrixStack, MultiBufferSource pBuffer, int pPackedLight, int pPackedOverlay) {
 		Level l=pBlockEntity.getHelper().getContext().getLevel().getRawLevel();
 		Direction d=pBlockEntity.getHelper().getContext().getLevel().getOrientation().front();
+		int pos=pBlockEntity.getHelper().getState().pos;
 		matrixStack.pushPose();
-		if(te.pos<24) {
+		matrixStack.mulPose(RenderHelper.DIR_TO_FACING.apply(d));
+		matrixStack.pushPose();
+		if(pos<24) {
 			matrixStack.translate(0,1.75, 0);
 		}else {
-			matrixStack.translate(0,1.75-(te.pos-24)/16D,0);
+			matrixStack.translate(0,1.75-(pos-24)/16D,0);
 		}
+		
 		RenderUtils.renderModelTESRFast(PARTS.apply(gate), pBuffer.getBuffer(RenderType.solid()), matrixStack, pPackedOverlay, pPackedOverlay);
 		matrixStack.popPose();
 		matrixStack.pushPose();
-		if(te.pos<=24){
-			double delta=te.pos/16D-1.5;
-			matrixStack.translate(delta*d.getXOffset(),0,delta*d.getZOffset());
+		
+		if(pos<=24){
+			double delta=pos/16D-1.5;
+			matrixStack.translate(delta*d.getStepX(),0,delta*d.getStepZ());
 		}
-		int titem=te.modelState;
+		int titem=pBlockEntity.getHelper().getState().maxProcessCount;
 		if(titem>0) {
 			if(titem>16)
-				RenderUtils.renderModelTESRFast(PARTS.getNullQuads(d, state, new SinglePropertyModelData<>(s2, Model.IE_OBJ_STATE)), bufferIn.getBuffer(RenderType.getSolid()), matrixStack, combinedLightIn, combinedOverlayIn);
+				RenderUtils.renderModelTESRFast(PARTS.apply(s2),pBuffer.getBuffer(RenderType.solid()), matrixStack, pPackedLight, pPackedOverlay);
 			else
-				RenderUtils.renderModelTESRFast(PARTS.getNullQuads(d, state, new SinglePropertyModelData<>(s1, Model.IE_OBJ_STATE)), bufferIn.getBuffer(RenderType.getSolid()), matrixStack, combinedLightIn, combinedOverlayIn);
+				RenderUtils.renderModelTESRFast(PARTS.apply(s1),pBuffer.getBuffer(RenderType.solid()), matrixStack, pPackedLight, pPackedOverlay);
 		}
-		RenderUtils.renderModelTESRFast(PARTS.getNullQuads(d, state, new SinglePropertyModelData<>(trolley, Model.IE_OBJ_STATE)), bufferIn.getBuffer(RenderType.getSolid()), matrixStack, combinedLightIn, combinedOverlayIn);
+		RenderUtils.renderModelTESRFast(PARTS.apply(trolley), pBuffer.getBuffer(RenderType.solid()), matrixStack, pPackedLight, pPackedOverlay);
+		matrixStack.popPose();
 		matrixStack.popPose();
 	}
 }

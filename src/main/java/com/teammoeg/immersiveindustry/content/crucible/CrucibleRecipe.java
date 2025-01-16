@@ -104,11 +104,11 @@ public class CrucibleRecipe extends IESerializableRecipe {
         return null;
     }
 
-    public static CrucibleRecipe findRecipe(Level l,IItemHandler handler) {
+    public static RecipeProcessResult<CrucibleRecipe> findRecipe(Level l,IItemHandler handler) {
     	for (CrucibleRecipe recipe : recipeList.getRecipes(l)) {
     		RecipeProcessResult<CrucibleRecipe> data=test(recipe,handler);
     		if(data!=null)
-    			return data.recipe();
+    			return data;
     	}
     	
         return null;

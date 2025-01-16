@@ -42,10 +42,6 @@ public class IndustrialElectrolyzerScreen extends IEContainerScreen<IndustrialEl
     }
 
     @Override
-    public void init() {
-        super.init();
-    }
-    @Override
 	protected List<InfoArea> makeInfoAreas() {
 		return Arrays.asList(new FluidInfoArea(menu.tank[0], new Rect2i(leftPos+10,topPos+25,16,47), 196, 0, 20, 51, background),
 							new FluidInfoArea(menu.tank[1], new Rect2i(leftPos+132,topPos+25,16,47), 196, 0, 20, 51, background),

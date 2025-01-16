@@ -61,10 +61,10 @@ public class IndustrialElectrolyzerLogic
 		}
 
 		if (!state.state.isEnabled(context) && state.energyStorage.getEnergyStored() >= energyConsume && hasElectrode1 && hasElectrode2) {
-			RecipeHandler<ElectrolyzerRecipe, RecipeProcessResult<ElectrolyzerRecipe>> handler = state.recipe;
+			RecipeHandler<ElectrolyzerRecipe> handler = state.recipe;
 			ChangeDetectedItemHandler inventory = state.inventory;
 			if (handler.shouldTestRecipe()) {
-				ElectrolyzerRecipe recipeResult = ElectrolyzerRecipe.findRecipe(context.getLevel().getRawLevel(), inventory.getStackInSlot(0), inventory.getStackInSlot(1), state.tank[0].getFluid(),
+				RecipeProcessResult<ElectrolyzerRecipe> recipeResult = ElectrolyzerRecipe.findRecipe(context.getLevel().getRawLevel(), inventory.getStackInSlot(0), inventory.getStackInSlot(1), state.tank[0].getFluid(),
 					true);
 				handler.setRecipe(recipeResult);
 				context.markMasterDirty();

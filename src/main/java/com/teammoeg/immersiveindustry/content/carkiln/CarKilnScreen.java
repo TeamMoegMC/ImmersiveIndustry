@@ -20,60 +20,47 @@ package com.teammoeg.immersiveindustry.content.carkiln;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
+import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
+import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
+import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.teammoeg.immersiveindustry.IIMain;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
+import com.teammoeg.immersiveindustry.IIMain;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CarKilnScreen extends IEContainerScreen<CarKilnContainer> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(IIMain.MODID, "textures/gui/car_kiln.png");
-    private CarKilnBlockEntity tile;
 
-    public CarKilnScreen(CarKilnContainer container, PlayerInventory inv, ITextComponent title) {
-        super(container, inv, title);
-        this.tile = container.tile;
-        this.ySize = 178;
+    public CarKilnScreen(CarKilnContainer container, Inventory inv, Component title) {
+        super(container, inv, title,TEXTURE);
+        this.height = 178;
     }
 
     @Override
     public void init() {
         super.init();
     }
+    @Override
+	protected List<InfoArea> makeInfoAreas() {
+		return Arrays.asList(new FluidInfoArea(menu.tank, new Rect2i(leftPos+10,topPos+26,16,47), 196, 0, 20, 51, background),
+							new EnergyInfoArea(leftPos+157,topPos+26,menu.energy));
+	}
 
     @Override
-    public void render(MatrixStack transform, int mouseX, int mouseY, float partial) {
-        super.render(transform, mouseX, mouseY, partial);
-        List<ITextComponent> tooltip = new ArrayList<>();
-        GuiHelper.handleGuiTank(transform, tile.tankinput[0], guiLeft + 10, guiTop + 26, 16, 47, 196, 0, 20, 51, mouseX, mouseY, TEXTURE, tooltip);
-        if (mouseX >= this.guiLeft + 157 && mouseX < this.guiLeft + 163 && mouseY > this.guiTop + 26 && mouseY < this.guiTop + 71) {
-            tooltip.add(new StringTextComponent(this.tile.getEnergyStored((Direction) null) + "/" + this.tile.getMaxEnergyStored((Direction) null) + " IF"));
+	protected void drawContainerBackgroundPre(GuiGraphics graphics, float partialTicks, int x, int y) {
+		super.drawContainerBackgroundPre(graphics, partialTicks, x, y);
+		if (menu.process.getValue()>0) {
+            int w = (int) (37 * menu.process.getValue());
+            graphics.blit(TEXTURE, leftPos + 83, topPos + 29, 177, 57, 37 - w, 17);
         }
-        if (!tooltip.isEmpty()) {
-            GuiUtils.drawHoveringText(transform, tooltip, mouseX, mouseY, width, height, -1, font);
-        }
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float partial, int x, int y) {
-        ClientUtils.bindTexture(TEXTURE);
-        this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
-
-        if (tile.processMax > 0) {
-            int w = (int) (37 * (tile.process / (float) tile.processMax));
-            this.blit(transform, guiLeft + 83, guiTop + 29, 177, 57, 37 - w, 17);
-        }
-        GuiHelper.handleGuiTank(transform, tile.tankinput[0], guiLeft + 10, guiTop + 26, 16, 47, 196, 0, 20, 51, x, y, TEXTURE, null);
-        int stored = (int) (46.0F * ((float) this.tile.getEnergyStored(null) / (float) this.tile.getMaxEnergyStored(null)));
-        this.fillGradient(transform, this.guiLeft + 157, this.guiTop + 26 + (46 - stored), this.guiLeft + 164, this.guiTop + 72, -4909824, -10482944);
-    }
+	}
 
 
 }

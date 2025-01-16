@@ -18,9 +18,12 @@
 
 package com.teammoeg.immersiveindustry.content.carkiln;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 
+import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
+import com.teammoeg.immersiveindustry.util.RecipeSimulateHelper;
+
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
@@ -31,9 +34,10 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.RegistryObject;
 
 public class CarKilnRecipe extends IESerializableRecipe {
@@ -42,20 +46,22 @@ public class CarKilnRecipe extends IESerializableRecipe {
 
     public final IngredientWithSize[] inputs;
     public final ItemStack[] output;
-    public final FluidStack input_fluid;
+    public final FluidTagInput input_fluid;
     public final int time;
     public final int tickEnergy;
-    public final int start_fluid_cost;
-    
+    public int maxProcess;
 
-    public CarKilnRecipe(ResourceLocation id, ItemStack[] output, IngredientWithSize[] inputs, FluidStack input_fluid, int time, int tickEnergy,int start_fluid_cost) {
+    public CarKilnRecipe(ResourceLocation id, ItemStack[] output, IngredientWithSize[] inputs, FluidTagInput input_fluid, int time, int tickEnergy) {
         super(Lazy.of(()->output[0]), TYPE, id);
         this.output = output;
         this.inputs = inputs;
         this.input_fluid = input_fluid;
         this.time = time;
         this.tickEnergy = tickEnergy;
-        this.start_fluid_cost=start_fluid_cost;
+        maxProcess=64;
+        for(ItemStack out:output) {
+        	maxProcess=Math.min(maxProcess, out.getCount()/out.getMaxStackSize());
+        }
     }
 
     @Override
@@ -72,8 +78,8 @@ public class CarKilnRecipe extends IESerializableRecipe {
     // Initialized by reload listener
     public static CachedRecipeList<CarKilnRecipe> recipeList = new CachedRecipeList<>(TYPE);
 
-    public static boolean isValidInput(ItemStack stack) {
-        for (CarKilnRecipe recipe : recipeList)
+    public static boolean isValidInput(Level l,ItemStack stack) {
+        for (CarKilnRecipe recipe : recipeList.getRecipes(l))
             for (IngredientWithSize is : recipe.inputs) {
                 if (is.testIgnoringSize(stack))
                     return true;
@@ -81,32 +87,38 @@ public class CarKilnRecipe extends IESerializableRecipe {
         return false;
     }
     
-    //returns recipe
-    public static CarKilnRecipe findRecipe(List<ItemStack> input,FluidStack f,int startIndex,int endIndex) {
-    	int size=0;
-    	for(int i=startIndex;i<endIndex;i++) {
-    		if(!input.get(i).isEmpty())
-    			size++;
+
+    public static RecipeProcessResult<CarKilnRecipe> findRecipe(Level l,IItemHandler input, FluidStack input_fluid) {
+    	for (CarKilnRecipe recipe : recipeList.getRecipes(l)) {
+    		RecipeProcessResult<CarKilnRecipe> data=test(recipe,input,input_fluid);
+    		if(data!=null)
+    			return data;
     	}
-    	if(size<=0)return null;
-    	exter:
-    	for (CarKilnRecipe recipe : recipeList)
-        	if(recipe.inputs.length<=size) {
-        		if(!recipe.input_fluid.isEmpty())
-        		if(!f.isFluidEqual(recipe.input_fluid)||(f.getAmount()<recipe.input_fluid.getAmount()+recipe.start_fluid_cost))continue;
-        		outer:
-        		for(IngredientWithSize iws:recipe.inputs) {
-        			for(int i=startIndex;i<endIndex;i++)
-        				if(iws.test(input.get(i)))
-        					continue outer;
-        			continue exter;
-        		}
-        		return recipe;
-        	}
+    	
         return null;
     }
-
-
+    public static RecipeProcessResult<CarKilnRecipe> executeRecipe(Level l,ResourceLocation rl,IItemHandler input, FluidStack input_fluid) {
+    	return test(recipeList.getById(l, rl),input,input_fluid);
+    }
+    public static RecipeProcessResult<CarKilnRecipe> test(CarKilnRecipe recipe,IItemHandler input, FluidStack input_fluid) {
+    	int size=0;
+    	for(int i=0;i<4;i++) {
+    		if(!input.getStackInSlot(i).isEmpty())
+    			size++;
+    	}
+		Map<Integer,Integer> slotOps=null;
+		if(recipe.inputs.length>0) {
+			if(recipe.inputs.length>size) 
+				return null;
+			RecipeSimulateHelper helper=new RecipeSimulateHelper(input,0,4);
+			slotOps=helper.simulateExtract(recipe.inputs);
+			if(slotOps==null)
+				return null;
+		}
+		if(recipe.input_fluid!=null&&!recipe.input_fluid.test(input_fluid))
+			return null;
+		return new RecipeProcessResult<>(recipe, slotOps);
+    }
     @Override
     public NonNullList<Ingredient> getIngredients() {
         NonNullList<Ingredient> nonnulllist = NonNullList.create();

@@ -77,6 +77,7 @@ public class IndustrialElectrolyzerContainer extends IIBaseContainer {
         this.addSlot(new ElectrodeSlot(inv, 2, 34, 10));
         this.addSlot(new ElectrodeSlot(inv, 3, 52, 10) );
         this.addSlot(new OutputSlot(inv, 4, 108, 39));
+        super.addPlayerInventory(inventoryPlayer, 8, 84, 142);
     }
     public static class ElectrodeSlot extends SlotItemHandler{
 

@@ -6,6 +6,7 @@ import java.util.function.Function;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.teammoeg.immersiveindustry.util.DynamicBlockModelReference;
+import com.teammoeg.immersiveindustry.util.RenderHelper;
 
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
@@ -45,9 +46,10 @@ public class IndustrialElectrolyzerRenderer implements BlockEntityRenderer<Multi
 		int type=state.hasElectrode1?1:0;
 		type+=state.hasElectrode2?2:0;
 		if(type==0)return;
-
-
+		matrixStack.pushPose();
+		matrixStack.mulPose(RenderHelper.DIR_TO_FACING.apply(te.getHelper().getContext().getLevel().getOrientation().front()));
 		List<BakedQuad> quads = ELECTRODES.apply(getData.apply(type));
 		RenderUtils.renderModelTESRFast(quads, pBuffer.getBuffer(RenderType.solid()), matrixStack, pPackedLight, pPackedOverlay);
+		matrixStack.popPose();
     }
 }

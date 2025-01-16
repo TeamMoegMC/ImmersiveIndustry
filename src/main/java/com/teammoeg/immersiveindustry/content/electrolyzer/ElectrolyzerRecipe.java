@@ -82,11 +82,11 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
         return false;
     }
 
-    public static ElectrolyzerRecipe findRecipe(Level l,ItemStack input, ItemStack input2, FluidStack input_fluid,boolean isLarge) {
+    public static RecipeProcessResult<ElectrolyzerRecipe> findRecipe(Level l,ItemStack input, ItemStack input2, FluidStack input_fluid,boolean isLarge) {
     	for (ElectrolyzerRecipe recipe : recipeList.getRecipes(l)) {
     		RecipeProcessResult<ElectrolyzerRecipe> data=test(recipe,input,input2,input_fluid,isLarge);
     		if(data!=null)
-    			return data.recipe();
+    			return data;
     	}
     	
         return null;

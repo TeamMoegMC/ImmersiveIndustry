@@ -74,6 +74,7 @@ public class CrucibleContainer extends IIBaseContainer {
             }
         });
         this.addSlot(new OutputSlot(inv, 5, 109, 12)); 
+        super.addPlayerInventory(inventoryPlayer, 8, 84, 142);
     }
     static class CrucibleSlot extends SlotItemHandler{
     	Level l;
