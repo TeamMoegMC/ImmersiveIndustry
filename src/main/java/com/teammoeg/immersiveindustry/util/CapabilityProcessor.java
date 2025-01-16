@@ -96,11 +96,11 @@ public class CapabilityProcessor {
 		}
 	}
 	public <T> CapabilityProcessor addCapability(Capability<T> cap,CapabilityPosition pos,T obj) {
-		capabilities.merge(cap, new SingleCapabilityQuery<T>(pos,obj), CapabilityQuery::append);
+		capabilities.merge(cap, new SingleCapabilityQuery<T>(pos,obj), (a,b)->a.append((CapabilityQuery)b));
 		return this;
 	}
 	public <T> CapabilityProcessor addCapability(Capability<T> cap,CapabilityFacing pos,T obj) {
-		capabilities.merge(cap, new SingleCapabilityQuery<T>(pos.capPos(),obj), CapabilityQuery::append);
+		capabilities.merge(cap, new SingleCapabilityQuery<T>(pos.capPos(),obj), (a,b)->a.append((CapabilityQuery)b));
 		return this;
 	}
 	public <T> CapabilityBuilder<T> addCapabilities(Capability<T> cap){

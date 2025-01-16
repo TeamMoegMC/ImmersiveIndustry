@@ -76,8 +76,6 @@ import java.util.stream.Collectors;
 public class IIContent {
 
     public static class IIBlocks {
-        public static void init() {
-        }
         public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, IIMain.MODID);
         
         protected static <T extends Block> RegistryObject<T> register(String name, Supplier<T> block, String itemName, Function<T, Item> item) {
@@ -103,8 +101,6 @@ public class IIContent {
     }
 
     public static class IItems {
-        public static void init() {
-        }
         public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, IIMain.MODID);
         static Item.Properties createProps() {
             return new Item.Properties();
@@ -152,6 +148,7 @@ public class IIContent {
 		private static <S extends IMultiblockState> IEMultiblockBuilder<S> metal(IMultiblockLogic<S> logic, String name) {
 			return new IEMultiblockBuilder<>(logic, name)
 				.defaultBEs(IITileTypes.REGISTER)
+				.notMirrored()
 				.customBlock(
 					IIBlocks.BLOCKS, IItems.ITEMS,
 					r -> new NonMirrorableWithActiveBlock<>(IEBlocks.METAL_PROPERTIES_NO_OCCLUSION.get(), r),
@@ -207,18 +204,19 @@ public class IIContent {
         public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(
             ForgeRegistries.RECIPE_TYPES, IIMain.MODID
         	);
+    	public static final TypeWithClass<CrucibleRecipe> CRUCIBLE = register("crucible",CrucibleRecipe.class);
+    	public static final TypeWithClass<ElectrolyzerRecipe> ELECTROLYZER = register("electrolyzer",ElectrolyzerRecipe.class);
+    	public static final TypeWithClass<RotaryKilnRecipe> ROTARY_KILN = register("rotary_kiln",RotaryKilnRecipe.class);
+    	public static final TypeWithClass<CarKilnRecipe> CAR_KILN = register("car_kiln",CarKilnRecipe.class);
         static {
-        	CrucibleRecipe.TYPE = register("crucible",CrucibleRecipe.class);
-            ElectrolyzerRecipe.TYPE = register("electrolyzer",ElectrolyzerRecipe.class);
-            RotaryKilnRecipe.TYPE = register("rotary_kiln",RotaryKilnRecipe.class);
-            CarKilnRecipe.TYPE = register("car_kiln",CarKilnRecipe.class);
+
+            
             CrucibleRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("crucible", CrucibleRecipeSerializer::new);
             ElectrolyzerRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("electrolyzer", ElectrolyzerRecipeSerializer::new);
             RotaryKilnRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("rotary_kiln", RotaryKilnRecipeSerializer::new);
             CarKilnRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("car_kiln",CarKilnRecipeSerializer::new);
             
         }
-        public static void init() {}
         public static <T extends Recipe<?>> TypeWithClass<T> register(String name,Class<T> clazz){
         	return new TypeWithClass<>(register(name), clazz);
         }
@@ -267,8 +265,6 @@ public class IIContent {
     }
 
     public static class IIProps {
-        public static void init() {
-        }
 
         public static final Block.Properties METALProps = Block.Properties
                 .of()

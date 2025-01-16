@@ -39,15 +39,15 @@ public class IIMain {
 //        MinecraftForge.EVENT_BUS.addGenericListener(Block.class,this::onMissing);
         IICreativeTab.register(mod);
         IIConfig.register();
-        IIContent.IIProps.init();
-        IIContent.IIBlocks.init();
-        IIContent.IItems.init();
+        IIContent.IIBlocks.BLOCKS.register(mod);
+        IIContent.IItems.ITEMS.register(mod);;
         IIContent.IIMultiblocks.init();
         IIContent.registerContainers();
         IIContent.IITileTypes.REGISTER.register(mod);
         IIContent.IIRecipes.RECIPE_SERIALIZERS.register(mod);
+        IIContent.IIRecipes.RECIPE_TYPES.register(mod);
+        IIContent.IIMenus.MENU_TYPES.register(mod);
         DistExecutor.safeRunWhenOn(Dist.CLIENT,()->ClientProxy::setup);
-        IIContent.IIRecipes.init();
         
 //        DeferredWorkQueue.runLater(IIContent.IIRecipes::registerRecipeTypes);
     }

@@ -18,6 +18,8 @@
 
 package com.teammoeg.immersiveindustry.content.rotarykiln;
 
+import com.teammoeg.immersiveindustry.IIContent.IIRecipes;
+
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
@@ -35,7 +37,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
 
 public class RotaryKilnRecipe extends IESerializableRecipe {
-    public static TypeWithClass<RotaryKilnRecipe> TYPE;
     public static RegistryObject<IERecipeSerializer<RotaryKilnRecipe>> SERIALIZER;
 
     public final IngredientWithSize input;
@@ -49,7 +50,7 @@ public class RotaryKilnRecipe extends IESerializableRecipe {
     public RotaryKilnRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input,
 			FluidStack output_fluid, int time,
 			int tickEnergy, StackWithChance secoutput) {
-		super(Lazy.of(()->output), TYPE, id);
+		super(Lazy.of(()->output), IIRecipes.ROTARY_KILN, id);
 		this.input = input;
 		this.output = output;
 		this.secoutput = secoutput;
@@ -69,7 +70,7 @@ public class RotaryKilnRecipe extends IESerializableRecipe {
     }
 
     // Initialized by reload listener
-    public static CachedRecipeList<RotaryKilnRecipe> recipeList = new CachedRecipeList<>(TYPE);
+    public static CachedRecipeList<RotaryKilnRecipe> recipeList = new CachedRecipeList<>(IIRecipes.ROTARY_KILN);
 
     public boolean matches(ItemStack input) {
         if (this.input != null && this.input.test(input))

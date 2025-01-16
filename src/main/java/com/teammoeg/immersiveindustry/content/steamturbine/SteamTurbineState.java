@@ -29,7 +29,7 @@ public class SteamTurbineState implements IMultiblockState{
 	public FluidTank tanks= new FluidTank(24 * 1000, fluidStack -> {
         return fluidStack.getFluid().is(fluidTag);
     });
-	BooleanSupplier isSoundPlaying;
+	BooleanSupplier isSoundPlaying=()->false;
 	final StoredCapability<IFluidHandler> fluidCap;
 	final StoredCapability<IEnergyStorage> energyView=new StoredCapability<>(NullEnergyStorage.INSTANCE);
 	ImmutableList<CapabilityReference<IEnergyStorage>> energyOutputs;

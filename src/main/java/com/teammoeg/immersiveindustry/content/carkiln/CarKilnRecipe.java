@@ -20,6 +20,7 @@ package com.teammoeg.immersiveindustry.content.carkiln;
 
 import java.util.Map;
 
+import com.teammoeg.immersiveindustry.IIContent.IIRecipes;
 import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.RecipeSimulateHelper;
 
@@ -41,7 +42,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.RegistryObject;
 
 public class CarKilnRecipe extends IESerializableRecipe {
-    public static TypeWithClass<CarKilnRecipe> TYPE;
     public static RegistryObject<IERecipeSerializer<CarKilnRecipe>> SERIALIZER;
 
     public final IngredientWithSize[] inputs;
@@ -52,7 +52,7 @@ public class CarKilnRecipe extends IESerializableRecipe {
     public int maxProcess;
 
     public CarKilnRecipe(ResourceLocation id, ItemStack[] output, IngredientWithSize[] inputs, FluidTagInput input_fluid, int time, int tickEnergy) {
-        super(Lazy.of(()->output[0]), TYPE, id);
+        super(Lazy.of(()->output[0]), IIRecipes.CAR_KILN, id);
         this.output = output;
         this.inputs = inputs;
         this.input_fluid = input_fluid;
@@ -76,7 +76,7 @@ public class CarKilnRecipe extends IESerializableRecipe {
     	return total;
     }
     // Initialized by reload listener
-    public static CachedRecipeList<CarKilnRecipe> recipeList = new CachedRecipeList<>(TYPE);
+    public static CachedRecipeList<CarKilnRecipe> recipeList = new CachedRecipeList<>(IIRecipes.CAR_KILN);
 
     public static boolean isValidInput(Level l,ItemStack stack) {
         for (CarKilnRecipe recipe : recipeList.getRecipes(l))

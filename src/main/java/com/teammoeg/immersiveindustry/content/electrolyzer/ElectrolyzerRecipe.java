@@ -20,6 +20,7 @@ package com.teammoeg.immersiveindustry.content.electrolyzer;
 
 import java.util.Map;
 
+import com.teammoeg.immersiveindustry.IIContent.IIRecipes;
 import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.RecipeSimulateHelper;
 
@@ -40,7 +41,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
 
 public class ElectrolyzerRecipe extends IESerializableRecipe {
-    public static TypeWithClass<ElectrolyzerRecipe> TYPE;
     public static RegistryObject<IERecipeSerializer<ElectrolyzerRecipe>> SERIALIZER;
 
     public final IngredientWithSize[] inputs;
@@ -52,7 +52,7 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
     public final boolean flag;
 
     public ElectrolyzerRecipe(ResourceLocation id, ItemStack output, IngredientWithSize[] input, FluidTagInput input_fluid, FluidStack output_fluid, int time, int tickEnergy, boolean flag) {
-        super(Lazy.of(()->output),TYPE, id);
+        super(Lazy.of(()->output),IIRecipes.ELECTROLYZER, id);
         this.output = output;
         this.inputs = input;
         this.input_fluid = input_fluid;
@@ -72,7 +72,7 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
         return this.output;
     }
 
-    public static CachedRecipeList<ElectrolyzerRecipe> recipeList = new CachedRecipeList<>(TYPE);
+    public static CachedRecipeList<ElectrolyzerRecipe> recipeList = new CachedRecipeList<>(IIRecipes.ELECTROLYZER);
     public static boolean isValidRecipeInput(Level l,ItemStack input) {
         for (ElectrolyzerRecipe recipe : recipeList.getRecipes(l))
             for(IngredientWithSize is:recipe.inputs) {

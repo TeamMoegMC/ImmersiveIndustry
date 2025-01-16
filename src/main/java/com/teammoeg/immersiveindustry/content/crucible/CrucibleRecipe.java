@@ -20,6 +20,7 @@ package com.teammoeg.immersiveindustry.content.crucible;
 
 import java.util.Map;
 
+import com.teammoeg.immersiveindustry.IIContent.IIRecipes;
 import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.RecipeSimulateHelper;
 
@@ -42,17 +43,16 @@ import net.minecraftforge.registries.RegistryObject;
 
 
 public class CrucibleRecipe extends IESerializableRecipe {
-    public static TypeWithClass<CrucibleRecipe> TYPE;
     public static RegistryObject<IERecipeSerializer<CrucibleRecipe>> SERIALIZER;
     // Initialized by reload listener
-    public static CachedRecipeList<CrucibleRecipe> recipeList = new CachedRecipeList<>(TYPE);
+    public static CachedRecipeList<CrucibleRecipe> recipeList = new CachedRecipeList<>(IIRecipes.CRUCIBLE);
     public final IngredientWithSize inputs[];
     public final Lazy<ItemStack> output;
     public final FluidStack output_fluid;
     public final int time;
     public final int temperature ;
     public CrucibleRecipe(ResourceLocation id, Lazy<ItemStack> output2, FluidStack output_fluid, IngredientWithSize[] input, int time, int temperature) {
-        super(output2, TYPE, id);
+        super(output2, IIRecipes.CRUCIBLE, id);
         this.output = output2;
         this.output_fluid = output_fluid;
         this.inputs = input;
