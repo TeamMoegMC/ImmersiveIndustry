@@ -1,0 +1,15 @@
+{
+  "type": "immersiveindustry:crucible",
+  "inputs": [
+    {
+      "tag": "forge:dusts/iron"
+    },
+    {
+      "item": "minecraft:calcite"
+    }
+  ],
+  "result": {
+    "item": "immersiveengineering:ingot_steel"
+  },
+  "time": 1200
+}

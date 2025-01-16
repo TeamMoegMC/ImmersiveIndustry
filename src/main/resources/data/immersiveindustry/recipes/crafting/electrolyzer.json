@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "immersiveengineering:circuit_board"
+    },
+    "b": {
+      "item": "immersiveengineering:wirecoil_copper"
+    },
+    "c": {
+      "tag": "forge:ingots/silver"
+    },
+    "d": {
+      "tag": "forge:ingots/gold"
+    },
+    "e": {
+      "tag": "forge:ingots/steel"
+    }
+  },
+  "pattern": [
+    "cbc",
+    "dbd",
+    "eae"
+  ],
+  "result": {
+    "item": "immersiveindustry:electrolyzer"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "immersiveindustry:refractory_kiln_brick"
+    },
+    "b": {
+      "tag": "forge:plates/steel"
+    },
+    "c": {
+      "item": "immersiveengineering:wirecoil_copper"
+    }
+  },
+  "pattern": [
+    "aaa",
+    "aca",
+    "bbb"
+  ],
+  "result": {
+    "item": "immersiveindustry:car_kiln_brick",
+    "count": 2
+  },
+  "show_notification": true
+}

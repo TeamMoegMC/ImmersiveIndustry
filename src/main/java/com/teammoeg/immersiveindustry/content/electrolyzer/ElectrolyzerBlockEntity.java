@@ -286,7 +286,10 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
 
 
     public float getGuiProgress() {
-        return Mth.clamp(process/processMax, 0, 1);
+        if (processMax == 0 || process == 0)
+            return 0;
+        else
+            return Mth.clamp(process/processMax, 0, 1);
     }
 
 	@Override

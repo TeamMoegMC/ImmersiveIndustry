@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "immersiveengineering:dust_hop_graphite"
+    },
+    "b": {
+      "item": "minecraft:clay_ball"
+    }
+  },
+  "pattern": [
+    "aba",
+    "b b",
+    "aba"
+  ],
+  "result": {
+    "item": "immersiveindustry:refractory_kiln_brick",
+    "count": 2
+  },
+  "show_notification": true
+}

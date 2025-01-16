@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "forge:plates/iron"
+    },
+    "b": {
+      "tag": "forge:plates/steel"
+    }
+  },
+  "pattern": [
+    "aba",
+    "bab",
+    "aba"
+  ],
+  "result": {
+    "item": "immersiveindustry:burning_chamber",
+    "count": 2
+  },
+  "show_notification": true
+}
