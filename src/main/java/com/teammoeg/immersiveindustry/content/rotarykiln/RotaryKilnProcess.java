@@ -46,7 +46,9 @@ public class RotaryKilnProcess {
 		processMax=tag.getInt("processMax");
 		powerUsage=tag.getInt("power");
 		ResourceLocation newId=new ResourceLocation(tag.getString("recipe"));
+		
 		if(!newId.equals(recipeId))
 			recipeCache=null;
+		recipeId=newId;
 	}
 }

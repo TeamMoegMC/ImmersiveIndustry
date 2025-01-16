@@ -55,16 +55,18 @@ public class RotaryKilnContainer extends IIBaseContainer {
         tank=state.tankout;
         tankSlot.bind(()->tank.getFluid());
         energy=state.energyStorage;
+        
         energySlot.bind(()->energy.getEnergyStored());
         addSlots(state.inventory,inventoryPlayer);
     }
     public RotaryKilnContainer(MenuType<RotaryKilnContainer> type, int windowId, Inventory inventoryPlayer){
     	super(type, windowId,inventoryPlayer.player,5);
     	addSlots(new ItemStackHandler(5),inventoryPlayer);
+    	energy= new MutableEnergyStorage(16000);
+    	energySlot.bind(t->{System.out.println(t);energy.setStoredEnergy(t);});
     	tank=new FluidTank(32000);
     	tankSlot.bind(t->tank.setFluid(t));
-    	energy= new MutableEnergyStorage(32000);
-    	energySlot.bind(t->energy.setStoredEnergy(t));
+
     }
     public void addSlots(IItemHandlerModifiable inv,Inventory inventoryPlayer) {
         // input
