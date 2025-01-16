@@ -12,6 +12,7 @@ import com.teammoeg.immersiveindustry.util.ChangeDetectedItemHandler;
 import com.teammoeg.immersiveindustry.util.RangedCheckedInputWrapper;
 import com.teammoeg.immersiveindustry.util.RangedOutputWrapper;
 import com.teammoeg.immersiveindustry.util.RecipeHandler;
+import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
 
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.energy.WrappingEnergyStorage;
@@ -29,7 +30,7 @@ import net.minecraftforge.items.IItemHandler;
 
 public class IndustrialElectrolyzerState implements IMultiblockState {
 	//common properties
-	public RecipeHandler<ElectrolyzerRecipe,Pair<ElectrolyzerRecipe, Map<Integer, Integer>>> recipe;
+	public RecipeHandler<ElectrolyzerRecipe,RecipeProcessResult<ElectrolyzerRecipe>> recipe;
 	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(32000);
 	public FluidTank[] tank = new FluidTank[]{null,
 			new FluidTank(16000)};
@@ -50,8 +51,7 @@ public class IndustrialElectrolyzerState implements IMultiblockState {
 		Supplier<Level> l=capabilitySource.levelSupplier();
 		inventory=new ChangeDetectedItemHandler(5,capabilitySource.getMarkDirtyRunnable());
 		recipe=new RecipeHandler<>((t,r)->r.time,t->ElectrolyzerRecipe.executeRecipe(l.get(),t, inventory.getStackInSlot(0), inventory.getStackInSlot(1), tank[0].getFluid(), true));
-		inventory.addSlotListener(0, recipe::onContainerChanged);
-		inventory.addSlotListener(1, recipe::onContainerChanged);
+		inventory.addSlotListener(0,2, recipe::onContainerChanged);
 		tank[0]=new FluidTank(16000, f->ElectrolyzerRecipe.isValidRecipeFluid(l.get(),f)) {
 
 			@Override

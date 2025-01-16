@@ -18,8 +18,10 @@
 
 package com.teammoeg.immersiveindustry.content.crucible;
 
-import java.util.Collections;
 import java.util.Map;
+
+import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
+import com.teammoeg.immersiveindustry.util.RecipeSimulateHelper;
 
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
@@ -35,6 +37,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.RegistryObject;
 
 
@@ -101,7 +105,36 @@ public class CrucibleRecipe extends IESerializableRecipe {
         return null;
     }
 
-
+    public static CrucibleRecipe findRecipe(Level l,IItemHandler handler) {
+    	for (CrucibleRecipe recipe : recipeList.getRecipes(l)) {
+    		RecipeProcessResult<CrucibleRecipe> data=test(recipe,handler);
+    		if(data!=null)
+    			return data.recipe();
+    	}
+    	
+        return null;
+    }
+    public static RecipeProcessResult<CrucibleRecipe> executeRecipe(Level l,ResourceLocation rl,IItemHandler handler) {
+    	return test(recipeList.getById(l, rl),handler);
+    }
+    public static RecipeProcessResult<CrucibleRecipe> test(CrucibleRecipe recipe,IItemHandler handler) {
+    	int size=0;
+    	for(int i=0;i<4;i++) {
+    		if(!handler.getStackInSlot(i).isEmpty())
+    			size++;
+    	}
+    	
+		Map<Integer,Integer> slotOps=null;
+		if(recipe.inputs.length>0) {
+			if(recipe.inputs.length>size) 
+				return null;
+			RecipeSimulateHelper helper=new RecipeSimulateHelper(handler,0,4);
+			slotOps=helper.simulateExtract(recipe.inputs);
+			if(slotOps==null)
+				return null;
+		}
+		return new RecipeProcessResult<>(recipe, slotOps);
+    }
     @Override
     public NonNullList<Ingredient> getIngredients() {
         NonNullList<Ingredient> nonnulllist = NonNullList.create();

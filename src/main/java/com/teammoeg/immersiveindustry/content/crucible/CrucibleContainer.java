@@ -18,17 +18,11 @@
 
 package com.teammoeg.immersiveindustry.content.crucible;
 
-import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerContainer;
-import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerState;
-import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerContainer.ElectrodeSlot;
-import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerContainer.InputSlot;
 import com.teammoeg.immersiveindustry.util.IIBaseContainer;
 import com.teammoeg.immersiveindustry.util.IIContainerData;
 import com.teammoeg.immersiveindustry.util.OutputSlot;
 import com.teammoeg.immersiveindustry.util.IIContainerData.CustomDataSlot;
 
-import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
-import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.IEContainerMenu.MultiblockMenuContext;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
@@ -42,18 +36,21 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 public class CrucibleContainer extends IIBaseContainer {
-    public CrucibleBlockEntity.CrucibleData data;
     CustomDataSlot<Float> process=IIContainerData.SLOT_FIXED.create(this);
     CustomDataSlot<Float> fuelProcess=IIContainerData.SLOT_FIXED.create(this);
     CustomDataSlot<Integer> temperature=IIContainerData.SLOT_INT.create(this);
     CustomDataSlot<FluidStack> tankSlot=IIContainerData.SLOT_TANK.create(this);
+    CustomDataSlot<Boolean> hasPreheater=IIContainerData.SLOT_BOOL.create(this);
     FluidTank tank;
     public CrucibleContainer(MenuType<CrucibleContainer> type, int windowId, Inventory inventoryPlayer, MultiblockMenuContext<CrucibleState> te){
         super(type, windowId,inventoryPlayer.player,6);
         CrucibleState state=te.mbContext().getState();
         process.bind(()->state.recipe.getProgressRatio());
+        fuelProcess.bind(()->state.burnTime*1f/state.burnTimeMax);
+        temperature.bind(()->state.temperature/100);
         tank=state.tank;
         tankSlot.bind(()->tank.getFluid());
+        hasPreheater.bind(()->state.hasPreheater);
         addSlots(state.inventory,inventoryPlayer);
     }
     public CrucibleContainer(MenuType<CrucibleContainer> type, int windowId, Inventory inventoryPlayer){

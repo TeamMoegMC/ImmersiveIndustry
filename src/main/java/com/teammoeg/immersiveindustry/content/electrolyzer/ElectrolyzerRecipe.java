@@ -41,6 +41,7 @@ import java.util.Map;
 import com.mojang.datafixers.util.Pair;
 import com.teammoeg.immersiveindustry.content.carkiln.CarKilnRecipe;
 import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnRecipe;
+import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.RecipeSimulateHelper;
 
 public class ElectrolyzerRecipe extends IESerializableRecipe {
@@ -88,17 +89,17 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
 
     public static ElectrolyzerRecipe findRecipe(Level l,ItemStack input, ItemStack input2, FluidStack input_fluid,boolean isLarge) {
     	for (ElectrolyzerRecipe recipe : recipeList.getRecipes(l)) {
-    		Pair<ElectrolyzerRecipe,Map<Integer,Integer>> data=test(recipe,input,input2,input_fluid,isLarge);
+    		RecipeProcessResult<ElectrolyzerRecipe> data=test(recipe,input,input2,input_fluid,isLarge);
     		if(data!=null)
-    			return data.getFirst();
+    			return data.recipe();
     	}
     	
         return null;
     }
-    public static Pair<ElectrolyzerRecipe, Map<Integer, Integer>> executeRecipe(Level l,ResourceLocation rl,ItemStack input, ItemStack input2, FluidStack input_fluid,boolean isLarge) {
+    public static RecipeProcessResult<ElectrolyzerRecipe> executeRecipe(Level l,ResourceLocation rl,ItemStack input, ItemStack input2, FluidStack input_fluid,boolean isLarge) {
     	return test(recipeList.getById(l, rl),input,input2,input_fluid,isLarge);
     }
-    public static Pair<ElectrolyzerRecipe,Map<Integer,Integer>> test(ElectrolyzerRecipe recipe,ItemStack input, ItemStack input2, FluidStack input_fluid,boolean isLarge) {
+    public static RecipeProcessResult<ElectrolyzerRecipe> test(ElectrolyzerRecipe recipe,ItemStack input, ItemStack input2, FluidStack input_fluid,boolean isLarge) {
     	int size=(input.isEmpty()?0:1)+(input2.isEmpty()?0:1);
     	if(isLarge||!recipe.flag) {
     		Map<Integer,Integer> slotOps=null;
@@ -112,7 +113,7 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
     		}
     		if(recipe.input_fluid!=null&&!recipe.input_fluid.test(input_fluid))
     			return null;
-    		return Pair.of(recipe, slotOps);
+    		return new RecipeProcessResult<>(recipe, slotOps);
     	}
         return null;
     }

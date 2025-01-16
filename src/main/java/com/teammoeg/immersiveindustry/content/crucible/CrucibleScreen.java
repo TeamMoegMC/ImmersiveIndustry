@@ -20,73 +20,76 @@ package com.teammoeg.immersiveindustry.content.crucible;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
+import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
+import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
+import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
-import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheaterTileEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+
+import com.google.common.collect.ImmutableList;
 import com.teammoeg.immersiveindustry.IIMain;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+import com.teammoeg.immersiveindustry.util.LangUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
+import javax.annotation.Nonnull;
+
 public class CrucibleScreen extends IEContainerScreen<CrucibleContainer> {
-    private static final Function<BlastFurnacePreheaterTileEntity, Boolean> PREHEATER_ACTIVE = (tile) -> tile.active;
     private static final ResourceLocation TEXTURE = new ResourceLocation(IIMain.MODID, "textures/gui/crucible.png");
-    private CrucibleBlockEntity tile;
 
-    public CrucibleScreen(CrucibleContainer container, PlayerInventory inv, ITextComponent title) {
-        super(container, inv, title);
-        this.tile = container.tile;
-        clearIntArray(tile.guiData);
+    public CrucibleScreen(CrucibleContainer container, Inventory inv, Component title) {
+        super(container, inv, title,TEXTURE);
     }
 
+    @Nonnull
     @Override
-    public void init() {
-        super.init();
+    protected List<InfoArea> makeInfoAreas()
+    {
+        return ImmutableList.of(
+                new FluidInfoArea(menu.tank, new Rect2i(leftPos+145, topPos+12, 16, 47), 236, 32, 20, 51, TEXTURE)
+        );
     }
-
+    
     @Override
-    public void render(MatrixStack transform, int mouseX, int mouseY, float partial) {
-        super.render(transform, mouseX, mouseY, partial);
-        List<ITextComponent> tooltip = new ArrayList<>();
-        GuiHelper.handleGuiTank(transform, tile.tank[0], guiLeft + 145, guiTop + 12, 16, 47, 236, 32, 20, 51, mouseX, mouseY, TEXTURE, tooltip);
-        if (mouseX >= this.guiLeft + 10 && mouseX < this.guiLeft + 19 && mouseY > this.guiTop + 10 && mouseY < this.guiTop + 67) {
+	protected void gatherAdditionalTooltips(int mouseX, int mouseY, Consumer<Component> addLine, Consumer<Component> addGray) {
+		super.gatherAdditionalTooltips(mouseX, mouseY, addLine, addGray);
+        if (mouseX >= this.leftPos + 10 && mouseX < this.leftPos + 19 && mouseY > this.topPos + 10 && mouseY < this.topPos + 67) {
             //Temperature in kelvins
-            int k = this.tile.temperature - this.tile.temperature % 100 + 300;
-            tooltip.add(LangUtil.translate("gui.immersiveindustry.crucible.tooltip.temperature_in_kelvin", k));
+            int k = menu.temperature.getValue() *100 + 300;
+            addLine.accept(LangUtil.translate("gui.immersiveindustry.crucible.tooltip.temperature_in_kelvin", k));
         }
-        if (!tooltip.isEmpty()) {
-            GuiUtils.drawHoveringText(transform, tooltip, mouseX, mouseY, width, height, -1, font);
-        }
-    }
+	}
+
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float partial, int x, int y) {
-        ClientUtils.bindTexture(TEXTURE);
-        this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
-        GuiHelper.handleGuiTank(transform, tile.tank[0], guiLeft + 145, guiTop + 12, 16, 47, 236, 32, 20, 51, x, y, TEXTURE, null);
-        if (tile.temperature > 0) {
-            int temp = tile.temperature;
-            int bar = temp / 30;
-            this.blit(transform, guiLeft + 12, guiTop + 67 - bar, 177, 83 - bar, 5, bar);
-        }
-        if (tile.burnTime > 0) {
-            int h = (int) (tile.burnTime / 46.0f);
-            this.blit(transform, guiLeft + 84, guiTop + 47 - h, 179, 1 + 12 - h, 9, h);
-        }
-        if (tile.processMax > 0 && tile.process > 0) {
-            int h = (int) (21 * (tile.process / (float) tile.processMax));
-            this.blit(transform, guiLeft + 76, guiTop + 14, 204, 15, 21 - h, 15);
-        }
-        if (tile.getFromPreheater(PREHEATER_ACTIVE, false)) {
-            this.blit(transform, this.guiLeft + 28, this.guiTop + 54, 199, 32, 12, 11);
-        }
-    }
+	protected void drawContainerBackgroundPre(GuiGraphics graphics, float partialTicks, int x, int y) {
+    	int temp=menu.temperature.getValue();
+    	 if (temp > 0) {
+             int bar = temp / 30;
+             graphics.blit(TEXTURE, leftPos + 12, topPos + 67 - bar, 177, 83 - bar, 5, bar);
+         }
+    	 float burnTime=menu.fuelProcess.getValue();
+         if (burnTime > 0) {
+             int h = (int) (burnTime*12);
+             graphics.blit(TEXTURE, leftPos + 84, topPos + 47 - h, 179, 1 + 12 - h, 9, h);
+         }
+         float process=menu.process.getValue();
+         if (process > 0) {
+             int h = (int) (21 * process);
+             graphics.blit(TEXTURE, leftPos + 76, topPos + 14, 204, 15, 21 - h, 15);
+         }
+         
+         if (menu.hasPreheater.getValue()) {
+        	 graphics.blit(TEXTURE, leftPos + 28, topPos + 54, 199, 32, 12, 11);
+         }
+	}
 
 
 }

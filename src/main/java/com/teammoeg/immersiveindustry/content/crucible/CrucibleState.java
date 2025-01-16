@@ -8,6 +8,7 @@ import com.teammoeg.immersiveindustry.util.ChangeDetectedItemHandler;
 import com.teammoeg.immersiveindustry.util.RangedCheckedInputWrapper;
 import com.teammoeg.immersiveindustry.util.RangedOutputWrapper;
 import com.teammoeg.immersiveindustry.util.RecipeHandler;
+import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
@@ -25,13 +26,14 @@ import net.minecraftforge.items.IItemHandler;
 public class CrucibleState implements IMultiblockState {
 	//common properties
     ChangeDetectedItemHandler inventory;
-    RecipeHandler recipe;
+    RecipeHandler<CrucibleRecipe,RecipeProcessResult<CrucibleRecipe>> recipe;
     public int temperature;
     public int burnTime;
-    public int updatetick = 0;
+    public int burnTimeMax;
     public FluidTank tank = new FluidTank(14400);
     //client properties
     boolean active;
+    boolean hasPreheater;
     //capability handlers
     StoredCapability<IItemHandler> inputHandler;
     StoredCapability<IItemHandler> fuelHandler;
@@ -41,6 +43,7 @@ public class CrucibleState implements IMultiblockState {
 	public CrucibleState(IInitialMultiblockContext<CrucibleState> capabilitySource) {
 		Supplier<@Nullable Level> level=capabilitySource.levelSupplier();
 		inventory=new ChangeDetectedItemHandler(6, capabilitySource.getMarkDirtyRunnable());
+		inventory.addSlotListener(0,5, recipe::onContainerChanged);
 		inputHandler=new StoredCapability<>(new RangedCheckedInputWrapper(inventory,0,4,(i,r)->CrucibleRecipe.isValidInput(level.get(),r)));
 		fuelHandler=new StoredCapability<>(new RangedCheckedInputWrapper(inventory,4,5,(i,r)->CrucibleRecipe.getFuelTime(level.get(),r)>0));
 		outputHandler=new StoredCapability<>(new RangedOutputWrapper(inventory,5,6));
@@ -50,14 +53,22 @@ public class CrucibleState implements IMultiblockState {
 
 	@Override
 	public void writeSaveNBT(CompoundTag nbt) {
-		// TODO Auto-generated method stub
-		
+		nbt.put("inv", inventory.serializeNBT());
+		recipe.writeCustomNBT(nbt, false);
+		nbt.putInt("temperature", temperature);
+        nbt.putInt("burntime", burnTime);
+        nbt.putInt("burnTimeMax", burnTimeMax);
+        nbt.put("tank", tank.writeToNBT(new CompoundTag()));
 	}
 
 	@Override
 	public void readSaveNBT(CompoundTag nbt) {
-		// TODO Auto-generated method stub
-		
+        inventory.deserializeNBT(nbt.getCompound("inv"));
+        recipe.readCustomNBT(nbt, false);
+        temperature=nbt.getInt("temperature");
+        burnTime=nbt.getInt("burntime");
+        burnTimeMax=nbt.getInt("burnTimeMax");
+        tank.readFromNBT(nbt.getCompound("tank"));
 	}
 
 }

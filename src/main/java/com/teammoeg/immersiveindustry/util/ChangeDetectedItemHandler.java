@@ -29,6 +29,12 @@ public class ChangeDetectedItemHandler implements IItemHandlerModifiable, INBTSe
 			slotOnChange.add(null);
 		slotOnChange.set(slot, onchange);
 	}
+	public void addSlotListener(int minSlot,int maxSlot,Runnable onchange) {
+		while(slotOnChange.size()<maxSlot)
+			slotOnChange.add(null);
+		for(int i=minSlot;i<maxSlot;i++)
+			slotOnChange.set(i, onchange);
+	}
 	public int getSlots() {
 		return handler.getSlots();
 	}

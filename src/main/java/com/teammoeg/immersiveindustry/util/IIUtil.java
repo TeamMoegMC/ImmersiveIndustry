@@ -9,6 +9,8 @@ import java.util.function.Function;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -55,5 +57,16 @@ public class IIUtil {
 	public static <T> void writeList(FriendlyByteBuf buffer, Collection<T> elms, BiConsumer<T, FriendlyByteBuf> func) {
 		buffer.writeVarInt(elms.size());
 		elms.forEach(e -> func.accept(e, buffer));
+	}
+	public static int randomValue(RandomSource rs,double rate) {
+		if (rate > 0) {
+			int total = (int) rate;
+			double npart = Mth.frac(rate);
+			if (npart>0&&rs.nextDouble() < npart) {
+				total++;
+			}
+			return total;
+		}
+		return 0;
 	}
 }
