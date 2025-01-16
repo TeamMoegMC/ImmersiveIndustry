@@ -47,9 +47,9 @@ public class RotaryKilnContainer extends IIBaseContainer {
         RotaryKilnState state=te.mbContext().getState();
         process.bind(()->{
         	if(state.processes[1]!=null) 
-        		return state.processes[1].process*1f/state.processes[1].processMax;
+        		return (state.processes[1].processMax-state.processes[1].process)*1f/state.processes[1].processMax;
         	if(state.processes[0]!=null)
-        		return state.processes[0].process*1f/state.processes[0].processMax;
+        		return (state.processes[0].processMax-state.processes[0].process)*1f/state.processes[0].processMax;
         	return 0f;
         });
         tank=state.tankout;
