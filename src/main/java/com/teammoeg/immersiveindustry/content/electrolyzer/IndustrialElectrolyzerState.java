@@ -87,7 +87,7 @@ public class IndustrialElectrolyzerState implements IMultiblockState {
 	@Override
 	public void readSaveNBT(CompoundTag nbt) {
 		recipe.readCustomNBT(nbt, false);
-		energyStorage.deserializeNBT(nbt.getCompound("energy"));
+		energyStorage.deserializeNBT(nbt.get("energy"));
 		tank[0].readFromNBT(nbt.getCompound("tank0"));
 		tank[1].readFromNBT(nbt.getCompound("tank1"));
 		inventory.deserializeNBT(nbt.getCompound("inv"));

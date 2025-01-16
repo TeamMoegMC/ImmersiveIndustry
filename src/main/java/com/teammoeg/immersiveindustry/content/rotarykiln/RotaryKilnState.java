@@ -54,7 +54,7 @@ public class RotaryKilnState implements IMultiblockState{
 	@Override
 	public void writeSaveNBT(CompoundTag nbt) {
 		nbt.putBoolean("active", active);
-		nbt.put("inv",inventory.serializeNBT());
+		nbt.put("inv",inventory.serializeNBT()); 
 		nbt.put("energy",energyStorage.serializeNBT());
 		nbt.put("fluid", tankout.writeToNBT(new CompoundTag()));
 		if(processes[0]!=null)
@@ -67,7 +67,7 @@ public class RotaryKilnState implements IMultiblockState{
 	public void readSaveNBT(CompoundTag nbt) {
 		active = nbt.getBoolean("active");
 		inventory.deserializeNBT(nbt.getCompound("inv"));
-		energyStorage.deserializeNBT(nbt.getCompound("energy"));
+		energyStorage.deserializeNBT(nbt.get("energy"));
 		tankout.readFromNBT(nbt.getCompound("fluid"));
 		if(nbt.contains("process0")) {
 			CompoundTag tag=nbt.getCompound("process0");

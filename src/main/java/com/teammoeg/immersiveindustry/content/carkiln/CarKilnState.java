@@ -81,7 +81,7 @@ public class CarKilnState implements IMultiblockState {
 		result.deserializeNBT(nbt.getCompound("result"));
 		recipe.readCustomNBT(nbt, false);
 		nbt.putInt("processes", maxProcessCount);
-		energyStorage.deserializeNBT(nbt.getCompound("energy"));
+		energyStorage.deserializeNBT(nbt.get("energy"));
 		tank.readFromNBT(nbt.getCompound("tank"));
 		
 	}
