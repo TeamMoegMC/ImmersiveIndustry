@@ -224,24 +224,23 @@ public class IIContent {
     public static class IIMenus{
     	@FunctionalInterface
     	public interface BEMenuFactory<T extends AbstractContainerMenu, BE extends BlockEntity> {
-    		T get(int id, Inventory inventoryPlayer, BE tile);
+    		T get(MenuType<T> type,int id, Inventory inventoryPlayer);
     	}
     	  public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(
               ForgeRegistries.MENU_TYPES, IIMain.MODID
           	);
     	public static final MultiblockContainer<RotaryKilnState, RotaryKilnContainer> ROTARY_KILN=registerMultiblock("rotary_kiln", RotaryKilnContainer::new,RotaryKilnContainer::new);
     	public static final MultiblockContainer<IndustrialElectrolyzerState, IndustrialElectrolyzerContainer> INDUSTRIAL_ELECTROLYZER=registerMultiblock("industrial_electrolyzer", IndustrialElectrolyzerContainer::new,IndustrialElectrolyzerContainer::new);
-    	public static final RegistryObject<MenuType<?>> ELECTROLYZER=MENU_TYPES.register("electrolyzer", IForgeMenuType.create(ElectrolyzerContainer::new))
+    	public static final RegistryObject<MenuType<ElectrolyzerContainer>> ELECTROLYZER=register("electrolyzer",ElectrolyzerContainer::makeClient);
     	
     	
     	@SuppressWarnings("unchecked")
-    	public static <T extends AbstractContainerMenu, BE extends BlockEntity> RegistryObject<MenuType<T>> register(Class<BE> BEClass, String name, BEMenuFactory<T, BE> factory) {
-    		return MENU_TYPES.register(name, () -> IForgeMenuType.create((id, inv, pb) -> {
-    			BlockEntity be = inv.player.level().getBlockEntity(pb.readBlockPos());
-    			if (BEClass.isInstance(be))
-    				return factory.get(id, inv, (BE) be);
-    			return null;
-    		}));
+    	public static <T extends AbstractContainerMenu, BE extends BlockEntity> RegistryObject<MenuType<T>> register(String name, BEMenuFactory<T, BE> factory) {
+    		MutableObject<RegistryObject<MenuType<T>>> i=new MutableObject<>();
+    		
+    		RegistryObject<MenuType<T>> type=MENU_TYPES.register(name, () -> IForgeMenuType.create((id, inv, pb) -> factory.get(i.getValue().get(),id, inv)));
+    		i.setValue(type);
+    		return type;
     	}
 
     	public static <S extends IMultiblockState, C extends AbstractContainerMenu> MultiblockContainer<S, C> registerMultiblock(

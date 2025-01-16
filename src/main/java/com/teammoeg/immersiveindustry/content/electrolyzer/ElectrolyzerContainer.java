@@ -32,9 +32,12 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
+
+import com.teammoeg.immersiveindustry.util.OutputSlot;
 
 import static com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerBlockEntity.*;
 
@@ -60,7 +63,7 @@ public class ElectrolyzerContainer extends IEContainerMenu {
         );
     }
 
-    public ElectrolyzerContainer(MenuContext ctx, Inventory inventoryPlayer, IItemHandler inv,
+    public ElectrolyzerContainer(MenuContext ctx, Inventory inventoryPlayer, IItemHandlerModifiable inv,
                                  MutableEnergyStorage energyStorage, FluidTank tank,
                                  GetterAndSetter<Float> guiProgress) {
         super(ctx);
@@ -69,9 +72,14 @@ public class ElectrolyzerContainer extends IEContainerMenu {
         this.guiProgress = guiProgress;
         Level level = inventoryPlayer.player.level();
         // input
-        this.addSlot(new Electrolyzer(inv, 0, 51, 34));
+        this.addSlot(new SlotItemHandler(inv, 0, 51, 34) {
+        	@Override
+            public boolean mayPlace(ItemStack stack) {
+                return ElectrolyzerRecipe.isValidRecipeInput(level,stack);
+            }
+        });
         // output
-        this.addSlot(new IESlot.NewOutput(inv, 1, 107, 34));
+        this.addSlot(new OutputSlot(inv, 1, 107, 34));
         this.ownSlotCount = NUM_SLOTS;
 
         for (int i = 0; i < 3; i++)
@@ -85,29 +93,7 @@ public class ElectrolyzerContainer extends IEContainerMenu {
         addGenericData(new GenericContainerData<>(GenericDataSerializers.FLOAT, guiProgress));
     }
 
-    public static class SlotItemHandlerII extends SlotItemHandler
-    {
-        public SlotItemHandlerII(IItemHandler itemHandler, int index, int xPosition, int yPosition)
-        {
-            super(itemHandler, index, xPosition, yPosition);
-        }
 
-        @Override
-        public int getMaxStackSize(@NotNull ItemStack stack)
-        {
-            return Math.min(Math.min(this.getMaxStackSize(), stack.getMaxStackSize()), super.getMaxStackSize(stack));
-        }
-    }
 
-    private static class Electrolyzer extends SlotItemHandlerII {
-        public Electrolyzer(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
-            super(itemHandler, index, xPosition, yPosition);
-        }
-
-        @Override
-        public boolean mayPlace(ItemStack stack) {
-            return ElectrolyzerRecipe.isValidRecipeInput(stack);
-        }
-    }
 }
 

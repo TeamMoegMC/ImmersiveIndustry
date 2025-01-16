@@ -77,7 +77,8 @@ public class ElectrolyzerBlock extends IEEntityBlock {
 			return InteractionResult.SUCCESS;
     	if (!world.isClientSide) {
             BlockEntity tile = world.getBlockEntity(pos);
-            NetworkHooks.openScreen((ServerPlayer) player, (MenuProvider) tile, tile.getBlockPos());
+            if(tile instanceof MenuProvider menu)
+            	NetworkHooks.openScreen((ServerPlayer) player, menu);
         }
         return InteractionResult.SUCCESS;
     }

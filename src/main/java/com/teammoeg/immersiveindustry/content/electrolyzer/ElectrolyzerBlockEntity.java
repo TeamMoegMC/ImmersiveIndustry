@@ -36,7 +36,10 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.teammoeg.immersiveindustry.IIContent;
-import com.teammoeg.immersiveindustry.IIMenuTypes;
+import com.teammoeg.immersiveindustry.IIContent.IIMenus;
+import com.teammoeg.immersiveindustry.IIContent.IITileTypes;
+import com.teammoeg.immersiveindustry.util.LangUtil;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -44,7 +47,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -69,8 +75,7 @@ import java.util.Map;
 
 public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
         IIEInventory, IEServerTickableBE,
-        IProcessBE, IStateBasedDirectional, IConfigurableSides, IBlockOverlayText,
-        IInteractionObjectIE<ElectrolyzerBlockEntity> {
+        IProcessBE, IStateBasedDirectional, IConfigurableSides, IBlockOverlayText,MenuProvider{
 
     public static final int NUM_SLOTS = 2;
     public static final int ENERGY_CAPACITY = 20000;
@@ -83,7 +88,7 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
     public MutableEnergyStorage energyStorage = new MutableEnergyStorage(ENERGY_CAPACITY);
     private final ResettableCapability<IEnergyStorage> energyCap = registerEnergyInput(energyStorage);
 
-    public FluidTank tank = new FluidTank(TANK_CAPACITY, ElectrolyzerRecipe::isValidRecipeFluid);
+    public FluidTank tank = new FluidTank(TANK_CAPACITY, r->ElectrolyzerRecipe.isValidRecipeFluid(this.getLevel(),r));
     private final ResettableCapability<IFluidHandler> tankCap = registerFluidInput(tank);
     private NonNullList<ItemStack> inventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
     ResettableCapability<IItemHandler> invHandler = registerCapability(
@@ -91,8 +96,8 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
                     new boolean[]{false, true})
     );
 
-    public ElectrolyzerBlockEntity(BlockEntityType<ElectrolyzerBlockEntity> type, BlockPos pos, BlockState state) {
-        super(type, pos, state);
+    public ElectrolyzerBlockEntity(BlockPos pos, BlockState state) {
+        super(IITileTypes.ELECTROLYZER.get(), pos, state);
     }
 
     @Override
@@ -172,7 +177,7 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
 
     @Nullable
     public ElectrolyzerRecipe getRecipe() {
-        ElectrolyzerRecipe recipe = ElectrolyzerRecipe.findRecipe(inventory.get(0),ItemStack.EMPTY, tank.getFluid(),false);
+        ElectrolyzerRecipe recipe = ElectrolyzerRecipe.findRecipe(this.getLevel(),inventory.get(0),ItemStack.EMPTY, tank.getFluid(),false);
         if (recipe == null)
             return null;
         if (inventory.get(1).isEmpty() || (ItemStack.isSameItem(inventory.get(1), recipe.output) &&
@@ -278,24 +283,19 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
         return PlacementLimitation.PISTON_LIKE;
     }
 
-    @Nullable
-    @Override
-    public ElectrolyzerBlockEntity getGuiMaster() {
-        return this;
-    }
 
-    @Override
-    public IEMenuTypes.ArgContainer<ElectrolyzerBlockEntity, ?> getContainerType()
-    {
-        return IIMenuTypes.ELECTROLYZER;
-    }
-
-    @Override
-    public boolean canUseGui(Player player) {
-        return true;
-    }
 
     public float getGuiProgress() {
         return Mth.clamp(process/processMax, 0, 1);
     }
+
+	@Override
+	public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
+		return ElectrolyzerContainer.makeServer(IIMenus.ELECTROLYZER.get(), pContainerId, pPlayerInventory, this);
+	}
+
+	@Override
+	public Component getDisplayName() {
+		return LangUtil.translate("block.immersiveindustry.electrolyzer");
+	}
 }

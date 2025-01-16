@@ -68,7 +68,7 @@ public class JEICompat implements IModPlugin {
         ClientLevel world = Minecraft.getInstance().level;
         checkNotNull(world, "minecraft world");
         //RecipeManager recipeManager = world.getRecipeManager();
-        registration.addRecipes(CrucibleCategory.UID,new ArrayList<>(CrucibleRecipe.recipeList.values()));
+        registration.addRecipes(CrucibleCategory.UID,new ArrayList<>(CrucibleRecipe.recipeList.getRecipes(world)));
         registration.addRecipes(ElectrolyzerCategory.UID,ElectrolyzerRecipe.recipeList.getRecipes(world).stream().filter(r->!r.flag).filter(r->r.inputs.length<2).collect(Collectors.toList()));
         registration.addRecipes(IndustrialElectrolyzerCategory.UID,ElectrolyzerRecipe.recipeList.getRecipes(world).stream().filter(r -> r.inputs.length < 3).collect(Collectors.toList()));
         registration.addRecipes(RotaryKilnCategory.UID,new ArrayList<>(RotaryKilnRecipe.recipeList.getRecipes(world)));

@@ -7,6 +7,7 @@ import java.util.function.Function;
 import com.teammoeg.immersiveindustry.IIContent.IIMultiblocks;
 import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnState;
 import com.teammoeg.immersiveindustry.util.CapabilityFacing;
+import com.teammoeg.immersiveindustry.util.ChangeDetectedItemHandler;
 import com.teammoeg.immersiveindustry.util.IIUtil;
 
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
@@ -51,32 +52,8 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 	static final CapabilityFacing fluidout = new CapabilityFacing(2, 1, 2,RelativeBlockFace.UP);
 	@Override
 	public void tickServer(IMultiblockContext<CrucibleState> context) {
-        CrucibleRecipe recipe = getRecipe();
-        tryOutput();
-        updatetick++;
-        if (updatetick > 10) {
-            final boolean activeBeforeTick = getIsActive();
-            if (temperature > 0) {
-                updatetick = 0;
-                this.markContainingBlockForUpdate(null);
-                if (!activeBeforeTick)
-                    setActive(true);
-            } else if (activeBeforeTick)
-                setActive(false);
-            final boolean activeAfterTick = getIsActive();
-            if (activeBeforeTick != activeAfterTick) {
-                master().markDirty();
-                // scan 3x4x3
-                for (int x = 0; x < 3; ++x)
-                    for (int y = 0; y < 4; ++y)
-                        for (int z = 0; z < 3; ++z) {
-                            BlockPos actualPos = getBlockPosForPos(new BlockPos(x, y, z));
-                            BlockEntity te = Utils.getExistingTileEntity(world, actualPos);
-                            if (te instanceof CrucibleBlockEntity)
-                                ((CrucibleBlockEntity) te).setActive(activeAfterTick);
-                        }
-            }
-        }
+        //CrucibleRecipe recipe = getRecipe();
+        tryOutput(context);
         /*
         if (burnTime > 0){
             if (getFromPreheater(BlastFurnacePreheaterTileEntity::doSpeedup, 0) > 0) {
@@ -89,39 +66,57 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
         } else if (temperature > 0) {
             temperature--;
         }*/
+        CrucibleState state=context.getState();
+        ChangeDetectedItemHandler inventory=state.inventory;
+        boolean lastIsActive=state.active;
+        state.active=false;
+        if (state.burnTime <= 0)  {
+            if (!inventory.getStackInSlot(4).isEmpty() ) {
+            	int totalTime=CrucibleRecipe.getFuelTime(context.getLevel().getRawLevel(),inventory.getStackInSlot(4));
+            	if(totalTime>0) {
+	                //burnTime = IIConfig.COMMON.coke.get();
+	                state.burnTime = totalTime;
+	                ItemStack origin=inventory.getStackInSlot(4);
+	                if(origin.getCount()==1)
+	                	inventory.setStackInSlot(4, ItemStack.EMPTY);
+	                else
+	                	inventory.setStackInSlot(4, origin.copyWithCount(origin.getCount()-1));
+	                context.markMasterDirty();
+            	}
+            }
+        }
         //new heating mechanism
-        if (burnTime > 0){
+        if (state.burnTime > 0){
             double coefficient = getFanSpeed() < 64 ? 0 : Math.sqrt(getFanSpeed()) / 8 ;
             if (coefficient == 0){//Speed < 64, no boost
-                if(temperature > 1000){
-                    temperature--;
+                if(state.temperature > 1000){
+                	state.temperature--;
                 }else{
-                    temperature++;
+                	state.active=true;
+                	state.burnTime--;
+                	state.temperature++;
                 }
             }else{//Speed >= 64, higher temperature and faster speed up
-                if(temperature < 1700){
-                    temperature++;
+                if(state.temperature < 1700){
+                	state.active=true;
+                	state.burnTime--;
+                	state.temperature++;
                     if(Math.random() + Math.random() < coefficient){
-                        temperature++;
+                    	state.temperature++;
                     }
                     if(Math.random() + Math.random() + Math.random() < coefficient){
-                        temperature++;
+                    	state.temperature++;
                     }
                 }
             }
-        }else if (temperature > 0){
-            temperature--;
+            context.markMasterDirty();
         }
-        if (burnTime > 0) {
-            burnTime--;
-        } else {
-            if (!inventory.get(4).isEmpty() && CrucibleRecipe.getFuelTime(inventory.get(4)) > 0/*inventory.get(4).getItem().getTags().contains(coal_coke)*/) {
-                //burnTime = IIConfig.COMMON.coke.get();
-                burnTime = CrucibleRecipe.getFuelTime(inventory.get(4)) / 2;
-                inventory.get(4).shrink(1);
-                master().markDirty();
-            }
+        if (state.temperature > 0){
+        	if()
+        	state.temperature--;
+        	context.markMasterDirty();
         }
+
         if(recipe == null){
             process = 0;
             processMax = 0;
