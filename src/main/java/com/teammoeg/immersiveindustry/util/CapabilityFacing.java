@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPos
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 /**
  * CapabilityFacing
@@ -26,5 +27,8 @@ public record CapabilityFacing(MultiblockFace pos,CapabilityPosition capPos) {
 	}
 	public boolean isCapabilityPosition(CapabilityPosition pos) {
 		return capPos.equalsOrNullFace(pos);
+	}
+	public boolean isPosEquals(BlockPos pos) {
+		return capPos.posInMultiblock().equals(pos);
 	}
 }

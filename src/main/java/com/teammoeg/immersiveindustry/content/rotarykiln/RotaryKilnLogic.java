@@ -16,9 +16,11 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPos
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MBInventoryUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
@@ -174,11 +176,81 @@ public class RotaryKilnLogic implements IMultiblockLogic<RotaryKilnState>, IClie
 	public RotaryKilnState createInitialState(IInitialMultiblockContext<RotaryKilnState> capabilitySource) {
 		return new RotaryKilnState(capabilitySource);
 	}
+	static VoxelShape getShape(BlockPos pos) {
+		if(pos.getX()==1&&pos.getY()==0) {
+			return Shapes.block();
+		}
+		if(pos.getX()==1&&pos.getY()==1&&pos.getZ()!=0) {
+			return Shapes.block();
+		}
+		if(pos.getX()==0&pos.getY()<=1&&pos.getZ()==5) {
+			return Shapes.block();
+		}
+		
+		VoxelShape res=Shapes.empty();
+		if(pos.getY()==0) {
+			res=Shapes.box(0, 0, 0, 1, .5, 1);
+		}
 
+		if(pos.getZ()==0) {
+			if(pos.getX()==0) {
+				res=Shapes.or(res,Shapes.box(.4375, 0, .5625, 1, 1, 1));
+			}
+			if(pos.getX()==2) {
+				res=Shapes.or(res,Shapes.box(0, 0, .5625, .5625, 1, 1));
+			}
+			if(pos.getX()==1) {
+				if(pos.getY()==2)
+					return Shapes.or(Shapes.or(Shapes.box(0, .5, 0, 1, 1, 1), Shapes.box(.25, 0, .25, .75, .5, .75)),Shapes.box(0, 0, .75, 1, .5, 1));
+				else
+					return Shapes.box(0, 0, .5625, 1, 1, 1);
+			}
+		}else if(pos.getZ()==6) {
+			if(pos.getX()==0) {
+				res=Shapes.or(res,Shapes.box(.84375, 0, 0, 1, 1, 1));
+			}
+			if(pos.getX()==2) {
+				res=Shapes.or(res,Shapes.box(0, 0, 0, .15625, 1, 1));
+			}
+			if(pos.getX()==1) {
+				if(pos.getY()==2)
+					res=Shapes.box(0, 0, 0, 1, .5, 1);
+				else
+					res=Shapes.block();
+			}
+		}else {
+			if(pos.getX()==0) {
+				if(pos.getZ()==5||pos.getZ()==1)
+					res=Shapes.or(res,Shapes.box(.4375, 0, 0, 1, .875, 1));
+				else
+					res=Shapes.or(res,Shapes.box(.4375, 0, 0, 1, .75, 1));
+			}
+			if(pos.getX()==2) {
+				if(pos.getZ()==5||pos.getZ()==1)
+					res=Shapes.or(res,Shapes.box(.4375, 0, 0, 1, .875, 1));
+				else
+					res=Shapes.or(res,Shapes.box(.4375, 0, 0, 1, .75, 1));
+			}
+			if(pos.getX()==1) {
+				if(pos.getY()==2) {
+					if(pos.getZ()==5||pos.getZ()==1)
+						return Shapes.box(0, 0, 0, 1, .875, 1);
+					else 
+						res=Shapes.box(0, 0, 0, 1, .75, 1);
+					if(pos.getZ()==4)
+						res=Shapes.or(res, Shapes.box(.125, 0, .125, .875, 1, .875));
+				}else{
+					res=Shapes.box(0, 0, 0, 1, .5, 1);
+				}
+			}
+		}
+		return res;
+	}
+	static final Function<BlockPos, VoxelShape> shapeCache=Util.memoize(RotaryKilnLogic::getShape);
 	@Override
 	public Function<BlockPos, VoxelShape> shapeGetter(ShapeType forType) {
 	
-		return t->Shapes.block();
+		return shapeCache;
 	}
 	public boolean tryOutput(IMultiblockContext<RotaryKilnState> context) {
 		RotaryKilnState state=context.getState();
