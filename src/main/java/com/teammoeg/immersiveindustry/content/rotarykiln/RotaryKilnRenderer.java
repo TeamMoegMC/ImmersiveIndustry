@@ -32,11 +32,12 @@ public class RotaryKilnRenderer implements BlockEntityRenderer<MultiblockBlockEn
 	public RotaryKilnRenderer(BlockEntityRendererProvider.Context rendererDispatcherIn) {
 	}
 	public static DynamicBlockModelReference ROLL;
+	public static final Vector3f rotation_axis= new Vector3f(0,-0.2799f/16,7.9951f/16);
 	Quaternionf rotateH=new Quaternionf().rotateAxis((float) (2f/180*Math.PI), new Vector3f(1,0,0));
 	Lazy<ModelData> data=Lazy.of(()->ModelData.builder().with(DynamicSubmodelCallbacks.getProperty(), VisibilityList.show(Arrays.asList("rotorInEnd"))).build());
 	@Override
 	public void render(MultiblockBlockEntityMaster<RotaryKilnState> te, float pPartialTick, PoseStack matrixStack, MultiBufferSource pBuffer, int pPackedLight, int pPackedOverlay) {
-		Direction d=te.getHelper().getContext().getLevel().getOrientation().front().getOpposite();
+		/*Direction d=te.getHelper().getContext().getLevel().getOrientation().front().getOpposite();
 		BlockPos lightPos=te.getBlockPos().above(2);
 		matrixStack.pushPose();
 		float dx=0,dz=0;
@@ -63,6 +64,15 @@ public class RotaryKilnRenderer implements BlockEntityRenderer<MultiblockBlockEn
 		int calculatedLight =LevelRenderer.getLightColor(te.getLevel(), lightPos);
 		
 		matrixStack.rotateAround(RenderHelper.DIR_TO_FACING.apply(d),.5f,.5f,.5f);
+		RenderUtils.renderModelTESRFast(quads, pBuffer.getBuffer(RenderType.solid()), matrixStack, calculatedLight, pPackedOverlay);
+		matrixStack.popPose();*/
+		Direction d=te.getHelper().getContext().getLevel().getOrientation().front().getOpposite();
+		BlockPos lightPos=te.getBlockPos().above(2);
+		matrixStack.pushPose();
+		List<BakedQuad> quads = ROLL.apply(data.get());
+		int calculatedLight =LevelRenderer.getLightColor(te.getLevel(), lightPos);
+		matrixStack.rotateAround(RenderHelper.DIR_TO_FACING.apply(d),.5f,.5f,.5f);
+		matrixStack.rotateAround(new Quaternionf().rotateAxis((float) (te.getHelper().getState().angle*1f/180*Math.PI),rotation_axis),.5f ,.87064f,-2.21397f);
 		RenderUtils.renderModelTESRFast(quads, pBuffer.getBuffer(RenderType.solid()), matrixStack, calculatedLight, pPackedOverlay);
 		matrixStack.popPose();
 	}
