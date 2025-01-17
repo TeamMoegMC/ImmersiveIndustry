@@ -45,8 +45,9 @@ public class RotaryKilnLogic implements IMultiblockLogic<RotaryKilnState>, IClie
 		state.active=false;
 		boolean needRun=false;
 		int energycost=0;
-		//if process 1 complete then output
+		
 		if(state.state.isEnabled(context)) {
+			//if process 1 complete then output
 			if(state.processes[1]!=null&&state.processes[1].process>=state.processes[1].processMax) {
 				RotaryKilnRecipe rcp=state.processes[1].getRecipe(context.getLevel().getRawLevel());
 				ItemStack process1Slot=state.inventory.getStackInSlot(2);

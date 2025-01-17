@@ -1,0 +1,5 @@
+{
+  "loader": "immersiveengineering:ie_obj",
+  "callbacks":"immersiveengineering:submodel",
+  "model": "immersiveindustry:models/block/multiblocks/car_kiln_anim.obj"
+}

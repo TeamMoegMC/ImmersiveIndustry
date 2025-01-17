@@ -94,10 +94,10 @@ public class CrucibleCategory implements IRecipeCategory<CrucibleRecipe> {
         	fluidOut.addIngredient(ForgeTypes.FLUID_STACK, recipe.output_fluid);
         }
         JEISlotBuilder<ItemStack> itemInput=JEISlotBuilder.itemStack(recipeLayout, JEIIngredientStackListBuilder.make(recipe.inputs).build()).asInput();
-        itemInput.addSlot(10,  8);
-        itemInput.addSlot(31,  8);
-        itemInput.addSlot(10, 29);
-        itemInput.addSlot(31, 29);
+        itemInput.addSlot(11,  9);
+        itemInput.addSlot(32,  9);
+        itemInput.addSlot(11, 30);
+        itemInput.addSlot(32, 30);
 
         
         recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 89, 8).addItemStack(RecipeUtil.getResultItem(recipe));
