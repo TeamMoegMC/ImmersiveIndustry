@@ -27,7 +27,7 @@ import net.minecraft.resources.ResourceLocation;
 public class CarKilnMultiblock extends IETemplateMultiblock {
     public CarKilnMultiblock() {
         super(new ResourceLocation(IIMain.MODID, "multiblocks/car_kiln"),
-                new BlockPos(1, 1, 2), new BlockPos(1, 1, 3), new BlockPos(3, 5, 5),
+                new BlockPos(1, 1, 2), new BlockPos(1, 1, 3), new BlockPos(2, 2, 1),
                 IIContent.IIMultiblocks.CAR_KILN);
 
     }

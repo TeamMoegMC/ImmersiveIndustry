@@ -36,7 +36,7 @@ public class SteamTurbineState implements IMultiblockState{
 	public SteamTurbineState(IInitialMultiblockContext<SteamTurbineState> capabilitySource) {
 		ImmutableList.Builder<CapabilityReference<IEnergyStorage>> outputs = ImmutableList.builder();
 		
-		outputs.add(SteamTurbineLogic.ENERGY_OUT2.getFacingCapability(capabilitySource, ForgeCapabilities.ENERGY));
+		outputs.add(SteamTurbineLogic.ENERGY_OUT1.getFacingCapability(capabilitySource, ForgeCapabilities.ENERGY));
 		outputs.add(SteamTurbineLogic.ENERGY_OUT2.getFacingCapability(capabilitySource, ForgeCapabilities.ENERGY));
 		this.energyOutputs = outputs.build();
 		fluidCap=new StoredCapability<>(ArrayFluidHandler.fillOnly(tanks, capabilitySource.getMarkDirtyRunnable()));

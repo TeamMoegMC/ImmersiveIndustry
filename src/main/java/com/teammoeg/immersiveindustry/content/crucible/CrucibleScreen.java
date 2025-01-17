@@ -58,7 +58,7 @@ public class CrucibleScreen extends IEContainerScreen<CrucibleContainer> {
         if (mouseX >= this.leftPos + 10 && mouseX < this.leftPos + 19 && mouseY > this.topPos + 10 && mouseY < this.topPos + 67) {
             //Temperature in kelvins
             int k = menu.temperature.getValue() *100 + 300;
-            addLine.accept(LangUtil.translate("gui.immersiveindustry.crucible.tooltip.temperature_in_kelvin", k));
+            addLine.accept(Component.translatable("gui.immersiveindustry.crucible.temperature_in_kelvin", k));
         }
 	}
 
@@ -78,7 +78,7 @@ public class CrucibleScreen extends IEContainerScreen<CrucibleContainer> {
          float process=menu.process.getValue();
          if (process > 0) {
              int h = (int) (21 * process);
-             graphics.blit(TEXTURE, leftPos + 76, topPos + 14, 204, 15, 21 - h, 15);
+             graphics.blit(TEXTURE, leftPos + 76, topPos + 14, 204, 15, h, 15);
          }
          
          if (menu.hasPreheater.getValue()) {
