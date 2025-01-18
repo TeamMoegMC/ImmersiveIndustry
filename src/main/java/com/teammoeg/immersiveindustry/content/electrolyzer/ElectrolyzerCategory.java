@@ -70,8 +70,8 @@ public class ElectrolyzerCategory implements IRecipeCategory<ElectrolyzerRecipe>
 		
 		IRecipeSlotBuilder fluidSlot=builder.addSlot(RecipeIngredientRole.INPUT,4,4).setFluidRenderer(50, false, 16, 47).setOverlay(TANK, 0, 0);
 		if (recipe.inputs.length > 0)
-			builder.addSlot(RecipeIngredientRole.INPUT, 33, 19).addItemStacks(Arrays.asList(recipe.inputs[0].getMatchingStacks()));
-		builder.addSlot(RecipeIngredientRole.OUTPUT, 89, 19).addItemStack(RecipeUtil.getResultItem(recipe));
+			builder.addSlot(RecipeIngredientRole.INPUT, 34, 20).addItemStacks(Arrays.asList(recipe.inputs[0].getMatchingStacks()));
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 90, 20).addItemStack(RecipeUtil.getResultItem(recipe));
 		
 		if(recipe.input_fluid!=null)
 			fluidSlot.addIngredients(ForgeTypes.FLUID_STACK, recipe.input_fluid.getMatchingFluidStacks());

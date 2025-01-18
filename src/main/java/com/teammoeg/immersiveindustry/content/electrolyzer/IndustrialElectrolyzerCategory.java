@@ -76,14 +76,14 @@ public class IndustrialElectrolyzerCategory implements IRecipeCategory<Electroly
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, ElectrolyzerRecipe recipe, IFocusGroup focuses) {
 		JEISlotBuilder<ItemStack> itemInput=JEISlotBuilder.itemStack(builder, JEIIngredientStackListBuilder.make(recipe.inputs).build()).asInput();
-		itemInput.addSlot(27, 32);
-		itemInput.addSlot(45, 32);
+		itemInput.addSlot(28, 33);
+		itemInput.addSlot(46, 33);
 		List<ItemStack> electrode = ForgeRegistries.ITEMS.tags().getTag(IndustrialElectrolyzerCategory.Electrode_Tag).stream().map(ItemStack::new).collect(Collectors.toList());
-		builder.addSlot(RecipeIngredientRole.CATALYST, 27, 3).addItemStacks(electrode);
-		builder.addSlot(RecipeIngredientRole.CATALYST, 45, 3).addItemStacks(electrode);
+		builder.addSlot(RecipeIngredientRole.CATALYST, 28, 4).addItemStacks(electrode);
+		builder.addSlot(RecipeIngredientRole.CATALYST, 46, 4).addItemStacks(electrode);
 
 		
-		builder.addSlot(RecipeIngredientRole.OUTPUT,101, 32).addItemStack(RecipeUtil.getResultItem(recipe));
+		builder.addSlot(RecipeIngredientRole.OUTPUT,102, 33).addItemStack(RecipeUtil.getResultItem(recipe));
 		
 		IRecipeSlotBuilder fluidIn=builder.addSlot(RecipeIngredientRole.INPUT, 4, 19).setFluidRenderer(1000, false, 16, 47).setOverlay(TANK, 0, 0);
 		IRecipeSlotBuilder fluidOut=builder.addSlot(RecipeIngredientRole.OUTPUT, 126, 19).setFluidRenderer(1000, false, 16, 47).setOverlay(TANK, 0, 0);

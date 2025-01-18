@@ -78,15 +78,14 @@ public class CarKilnLogic implements IMultiblockLogic<CarKilnState>, IClientTick
 				RecipeProcessResult<CarKilnRecipe> recipeResult = CarKilnRecipe.findRecipe(context.getLevel().getRawLevel(), inventory, state.tank.getFluid());
 				if(handler.setRecipe(recipeResult)) {
 					state.maxProcessCount=0;
-					if(recipeResult!=null) {
-						state.maxProcessCount=64;
-						if(recipeResult.recipe().input_fluid!=null) {
-							state.maxProcessCount=state.tank.getFluidAmount()/recipeResult.recipe().input_fluid.getAmount();
-						}
-						System.out.println(recipeResult.recipe().maxProcess+","+recipeResult.getMaxRuns(inventory)+","+state.maxProcessCount);
-						state.maxProcessCount=Math.min(Math.min(recipeResult.getMaxRuns(inventory), recipeResult.recipe().maxProcess),state.maxProcessCount);
-						
+				}
+				if(recipeResult!=null) {
+					state.maxProcessCount=64;
+					if(recipeResult.recipe().input_fluid!=null) {
+						state.maxProcessCount=state.tank.getFluidAmount()/recipeResult.recipe().input_fluid.getAmount();
 					}
+					//System.out.println(recipeResult.recipe().maxProcess+","+recipeResult.getMaxRuns(inventory)+","+state.maxProcessCount);
+					state.maxProcessCount=Math.min(Math.min(recipeResult.getMaxRuns(inventory), recipeResult.recipe().maxProcess),state.maxProcessCount);
 				}
 				context.markDirtyAndSync();
 			}
@@ -120,7 +119,7 @@ public class CarKilnLogic implements IMultiblockLogic<CarKilnState>, IClientTick
 						CarKilnRecipe recipe = recipeResult.recipe();
 						recipeResult.runOperations(inventory,state.maxProcessCount);
 						if(recipe.input_fluid!=null)
-						state.tank.drain(recipe.input_fluid.getAmount(), FluidAction.EXECUTE);
+						state.tank.drain(recipe.input_fluid.getAmount()*state.maxProcessCount, FluidAction.EXECUTE);
 						for(ItemStack output:recipe.output) {
 							ItemHandlerHelper.insertItem(state.result, output.copyWithCount(output.getCount()*state.maxProcessCount), false);
 						}
@@ -164,16 +163,16 @@ public class CarKilnLogic implements IMultiblockLogic<CarKilnState>, IClientTick
 			return Shapes.block();
 		}
 		if(pos.getY()==3&&pos.getX()==1&&pos.getZ()==0) {
-			return Shapes.or(Shapes.box(0, 0, 0, 1, 1, .5), Shapes.box(.125, .125, .5, .825, .825, 1));
+			return Shapes.or(Shapes.box(0, 0, 0, 1, 1, .5), Shapes.box(.125, .125, .5, .875, .875, 1));
 		}
 		if(pos.getY()==2&&pos.getX()==1&&pos.getZ()==0) {
 			return  Shapes.or(Shapes.box(0, 0, 0, 1, .5, 1), Shapes.box(.3125, 0, .0625, .6825, 1, .4375));
 		}
 		if(pos.getY()==3&&pos.getX()==1&&pos.getZ()==1) {
-			return  Shapes.box(.125, 0, 0, .825, .825, .825);
+			return  Shapes.box(.125, 0, 0, .875, .875, .875);
 		}
 		if(pos.getY()==2&&pos.getX()==1&&pos.getZ()==1) {
-			return  Shapes.or(Shapes.box(0, 0, 0, 1, .8125, 1), Shapes.box(.125, 0, .125, .825, 1, .825));
+			return  Shapes.or(Shapes.box(0, 0, 0, 1, .8125, 1), Shapes.box(.125, 0, .125, .875, 1, .875));
 		}
 
 		VoxelShape base;
@@ -184,7 +183,7 @@ public class CarKilnLogic implements IMultiblockLogic<CarKilnState>, IClientTick
 		}else
 			base=Shapes.empty();
 		
-		if(pos.getY()>2) {
+		if(pos.getY()>=2) {
 			if(pos.getX()==0)
 				base=Shapes.or(base, Shapes.box(.125, 0, 0, .375, 1, 1));
 			else if(pos.getX()==2)

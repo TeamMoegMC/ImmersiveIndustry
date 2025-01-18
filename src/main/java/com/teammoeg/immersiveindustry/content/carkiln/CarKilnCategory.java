@@ -72,11 +72,11 @@ public class CarKilnCategory implements IRecipeCategory<CarKilnRecipe> {
 	public void setRecipe(IRecipeLayoutBuilder builder, CarKilnRecipe recipe, IFocusGroup focuses) {
 		JEISlotBuilder<ItemStack> itemInput = JEISlotBuilder.itemStack(builder, JEIIngredientStackListBuilder.make(recipe.inputs).build()).asInput();
 		for (int i = 0; i < 4; ++i) {
-			itemInput.addSlot(28 + i % 2 * 18, 4 + i / 2 * 18);
+			itemInput.addSlot(29 + i % 2 * 18, 5 + i / 2 * 18);
 		}
 		JEISlotBuilder<ItemStack> itemOutput = JEISlotBuilder.itemStack(builder, recipe.output).asInput();
 		for (int i = 0; i < 5; ++i) {
-			itemOutput.addSlot(89 + i % 3 * 18, 33 + i / 3 * 18);
+			itemOutput.addSlot(90 + i % 3 * 18, 34 + i / 3 * 18);
 		}
 		IRecipeSlotBuilder fluidSlot = builder.addSlot(RecipeIngredientRole.INPUT, 4, 10).setFluidRenderer(3200, false, 16, 47).setOverlay(TANK, 0, 0);
 		if (recipe.input_fluid!=null) {

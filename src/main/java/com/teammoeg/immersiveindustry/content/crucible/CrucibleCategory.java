@@ -82,13 +82,12 @@ public class CrucibleCategory implements IRecipeCategory<CrucibleRecipe> {
     public void draw(CrucibleRecipe recipe,IRecipeSlotsView view,GuiGraphics transform, double mouseX, double mouseY) {
         ARROW.draw(transform,57, 11);
         int k = recipe.temperature - recipe.temperature % 100 + 300;
-        String temperature = LangUtil.translate("gui.immersiveindustry.crucible.tooltip.temperature_in_kelvin", k).getString();
+        String temperature = LangUtil.translate("gui.immersiveindustry.crucible.temperature_in_kelvin", k).getString();
         transform.drawString(ClientUtils.font(), temperature, 45, 52, 14833698);
     }
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder recipeLayout, CrucibleRecipe recipe, IFocusGroup ingredients) {
-        recipeLayout.addSlot(RecipeIngredientRole.INPUT, 0, 0);
         IRecipeSlotBuilder fluidOut=recipeLayout.addSlot(RecipeIngredientRole.INPUT, 126, 9).setFluidRenderer(14400, false, 16, 47).setOverlay(TANK, 0, 0);
         if (recipe.output_fluid != FluidStack.EMPTY) {
         	fluidOut.addIngredient(ForgeTypes.FLUID_STACK, recipe.output_fluid);
@@ -100,7 +99,7 @@ public class CrucibleCategory implements IRecipeCategory<CrucibleRecipe> {
         itemInput.addSlot(32, 30);
 
         
-        recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 89, 8).addItemStack(RecipeUtil.getResultItem(recipe));
+        recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 90, 9).addItemStack(RecipeUtil.getResultItem(recipe));
 
     }
 }

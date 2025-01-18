@@ -60,7 +60,7 @@ public class CarKilnRecipe extends IESerializableRecipe {
         this.tickEnergy = tickEnergy;
         maxProcess=64;
         for(ItemStack out:output) {
-        	maxProcess=Math.min(maxProcess, out.getCount()/out.getMaxStackSize());
+        	maxProcess=Math.min(maxProcess, out.getMaxStackSize()/out.getCount());
         }
     }
 

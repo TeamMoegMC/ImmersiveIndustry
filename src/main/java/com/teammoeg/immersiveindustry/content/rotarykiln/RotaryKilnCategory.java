@@ -64,12 +64,12 @@ public class RotaryKilnCategory implements IRecipeCategory<RotaryKilnRecipe> {
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, RotaryKilnRecipe recipe, IFocusGroup focuses) {
 		
-		builder.addSlot(RecipeIngredientRole.INPUT,2, 17).addItemStacks(recipe.input.getMatchingStackList());
-		IRecipeSlotBuilder itemOut=builder.addSlot(RecipeIngredientRole.OUTPUT, 84, 40);
+		builder.addSlot(RecipeIngredientRole.INPUT,3, 18).addItemStacks(recipe.input.getMatchingStackList());
+		IRecipeSlotBuilder itemOut=builder.addSlot(RecipeIngredientRole.OUTPUT, 85, 41);
         if(!recipe.output.isEmpty()) {
         	itemOut.addItemStack(recipe.output);
         }
-        IRecipeSlotBuilder itemSecOut=builder.addSlot(RecipeIngredientRole.OUTPUT, 102, 40);
+        IRecipeSlotBuilder itemSecOut=builder.addSlot(RecipeIngredientRole.OUTPUT, 103, 41);
         if(recipe.secoutput!=null){
         	itemSecOut.addItemStack(recipe.secoutput.stack().get()).addTooltipCallback((l,t)->{
             		t.add(LangUtil.translate("gui.jei.category." + IIMain.MODID + ".rotary_kiln.chance",((int)(recipe.secoutput.chance()*10000))/100).withStyle(ChatFormatting.BLUE));
