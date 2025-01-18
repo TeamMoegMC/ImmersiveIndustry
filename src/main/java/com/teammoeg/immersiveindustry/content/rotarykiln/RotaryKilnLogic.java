@@ -216,7 +216,7 @@ public class RotaryKilnLogic implements IMultiblockLogic<RotaryKilnState>, IClie
 			if(pos.getX()==1) {
 				if(pos.getY()==2)
 					return Shapes.or(Shapes.or(Shapes.box(0, .5, 0, 1, 1, 1), Shapes.box(.25, 0, .25, .75, .5, .75)),Shapes.box(0, 0, .75, 1, .5, 1));
-				return Shapes.or(Shapes.box(0, 0, .5625, 1, 1, 1),Shapes.box(.25, .675, .25, .75, 1, .75));
+				return Shapes.or(Shapes.box(0, 0, .5625, 1, 1, 1),Shapes.box(.25, .5625, .25, .75, 1, .75));
 			}
 		}else if(pos.getZ()==6) {
 			if(pos.getX()==0) {

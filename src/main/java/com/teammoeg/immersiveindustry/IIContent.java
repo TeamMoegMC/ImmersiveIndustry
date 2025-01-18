@@ -20,6 +20,8 @@ package com.teammoeg.immersiveindustry;
 
 import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
+import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
@@ -63,6 +65,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -111,26 +114,26 @@ public class IIContent {
 
     public static class IIMultiblocks {
     	public static final MultiblockRegistration<CrucibleState> CRUCIBLE = stone(new CrucibleLogic(),"crucible",false)
-        	.structure(()->Multiblock.CRUCIBLE)
+        	.structure(Multiblock.CRUCIBLE)
         	.component(new IIMenuComponent<>(IIMenus.CRUCIBLE))
         	.build();
         public static final MultiblockRegistration<SteamTurbineState> STEAMTURBINE = metal(new SteamTurbineLogic(),"steam_turbine")
         	.redstone(t->t.rsstate, new BlockPos(0,1,0))
-        	.structure(()->Multiblock.STEAMTURBINE)
+        	.structure(Multiblock.STEAMTURBINE)
         	.build();
         public static final MultiblockRegistration<IndustrialElectrolyzerState> INDUSTRIAL_ELECTROLYZER =  metal(new IndustrialElectrolyzerLogic(),"industrial_electrolyzer")
         	.redstone(t->t.state, new BlockPos(1,1,4))
-        	.structure(()->Multiblock.INDUSTRIAL_ELECTROLYZER)
+        	.structure(Multiblock.INDUSTRIAL_ELECTROLYZER)
         	.component(new IIMenuComponent<>(IIMenus.INDUSTRIAL_ELECTROLYZER))
         	.build();
         public static final MultiblockRegistration<RotaryKilnState> ROTARY_KILN =  metal(new RotaryKilnLogic(),"rotary_kiln")
         	.redstone(t->t.state, new BlockPos(0,1,5))
-        	.structure(()->Multiblock.ROTARY_KILN)
+        	.structure(Multiblock.ROTARY_KILN)
         	.component(new IIMenuComponent<>(IIMenus.ROTARY_KILN))
         	.build();
         public static final MultiblockRegistration<CarKilnState> CAR_KILN = metal(new CarKilnLogic(),"car_kiln")
         	.redstone(t->t.state, new BlockPos(0,1,2))
-        	.structure(()->Multiblock.CAR_KILN)
+        	.structure(Multiblock.CAR_KILN)
         	.component(new IIMenuComponent<>(IIMenus.CAR_KILN))
         	.build(); 
     	
@@ -164,17 +167,19 @@ public class IIContent {
         	Multiblock.init();
         }
         public static class Multiblock{
-            public static final IETemplateMultiblock CRUCIBLE = new CrucibleMultiblock();
-            public static final IETemplateMultiblock STEAMTURBINE = new SteamTurbineMultiblock();
-            public static final IETemplateMultiblock INDUSTRIAL_ELECTROLYZER = new IndustrialElectrolyzerMultiblock();
-            public static final IETemplateMultiblock ROTARY_KILN = new RotaryKilnMultiblock();
-            public static final IETemplateMultiblock CAR_KILN = new CarKilnMultiblock();
+            public static final Lazy<TemplateMultiblock> CRUCIBLE = registerLazily(()->new CrucibleMultiblock());
+            public static final Lazy<TemplateMultiblock> STEAMTURBINE = registerLazily(()->new SteamTurbineMultiblock());
+            public static final Lazy<TemplateMultiblock> INDUSTRIAL_ELECTROLYZER = registerLazily(()->new IndustrialElectrolyzerMultiblock());
+            public static final Lazy<TemplateMultiblock> ROTARY_KILN = registerLazily(()->new RotaryKilnMultiblock());
+            public static final Lazy<TemplateMultiblock> CAR_KILN = registerLazily(()->new CarKilnMultiblock());
             public static void init() {
-            	MultiblockHandler.registerMultiblock(CRUCIBLE);
-                MultiblockHandler.registerMultiblock(STEAMTURBINE);
-                MultiblockHandler.registerMultiblock(INDUSTRIAL_ELECTROLYZER);
-                MultiblockHandler.registerMultiblock(ROTARY_KILN);
-                MultiblockHandler.registerMultiblock(CAR_KILN);
+            }
+            public static <T extends IMultiblock> Lazy<T> registerLazily(Supplier<T> mb){
+            	return Lazy.of(()->{
+            		T res=mb.get();
+            		MultiblockHandler.registerMultiblock(res);
+            		return res;
+            	});
             }
         }
     }
