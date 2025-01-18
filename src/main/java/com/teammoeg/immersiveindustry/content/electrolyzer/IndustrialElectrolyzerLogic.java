@@ -2,6 +2,9 @@ package com.teammoeg.immersiveindustry.content.electrolyzer;
 
 import java.util.function.Function;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
+import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.util.CapabilityFacing;
 import com.teammoeg.immersiveindustry.util.ChangeDetectedItemHandler;
@@ -25,20 +28,22 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class IndustrialElectrolyzerLogic
 	implements IMultiblockLogic<IndustrialElectrolyzerState>, IClientTickableComponent<IndustrialElectrolyzerState>, IServerTickableComponent<IndustrialElectrolyzerState> {
-	static final CapabilityFacing out1 = new CapabilityFacing(2, 0, 3, RelativeBlockFace.RIGHT);
-	static final CapabilityFacing out2 = new CapabilityFacing(0, 0, 3, RelativeBlockFace.LEFT);
-	static final CapabilityFacing in1 = new CapabilityFacing(2, 0, 1, RelativeBlockFace.RIGHT);
-	static final CapabilityFacing in2 = new CapabilityFacing(0, 0, 1, RelativeBlockFace.LEFT);
+	static final CapabilityFacing out1 = new CapabilityFacing(2, 0, 3, RelativeBlockFace.LEFT);
+	static final CapabilityFacing out2 = new CapabilityFacing(0, 0, 3, RelativeBlockFace.RIGHT);
+	static final CapabilityFacing in1 = new CapabilityFacing(2, 0, 1, RelativeBlockFace.LEFT);
+	static final CapabilityFacing in2 = new CapabilityFacing(0, 0, 1, RelativeBlockFace.RIGHT);
 	static final CapabilityFacing energy = new CapabilityFacing(1, 1, 0, RelativeBlockFace.FRONT);
 
 	public IndustrialElectrolyzerLogic() {
@@ -116,7 +121,17 @@ public class IndustrialElectrolyzerLogic
 
 	@Override
 	public void tickClient(IMultiblockContext<IndustrialElectrolyzerState> context) {
-		// TODO Auto-generated method stub
+		IndustrialElectrolyzerState state = context.getState();
+		if(!state.active)
+			return;
+		final IMultiblockLevel level = context.getLevel();
+		if(!state.isSoundPlaying.getAsBoolean())
+		{
+			final Vec3 soundPos = level.toAbsolute(new Vec3(1.5, 1.5, 1.5));
+			state.isSoundPlaying = MultiblockSound.startSound(
+					() -> state.active, context.isValid(), soundPos, IESounds.tesla, 0.075f
+			);
+		}
 
 	}
 

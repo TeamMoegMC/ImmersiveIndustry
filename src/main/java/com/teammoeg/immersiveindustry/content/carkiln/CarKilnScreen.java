@@ -58,7 +58,7 @@ public class CarKilnScreen extends IEContainerScreen<CarKilnContainer> {
 		super.drawContainerBackgroundPre(graphics, partialTicks, x, y);
 		if (menu.process.getValue()>0) {
             int w = (int) (37 * menu.process.getValue());
-            graphics.blit(TEXTURE, leftPos + 83, topPos + 29, 177, 57, 37 - w, 17);
+            graphics.blit(TEXTURE, leftPos + 83, topPos + 29, 177, 57, w, 17);
         }
 	}
 

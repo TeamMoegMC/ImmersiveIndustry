@@ -25,6 +25,18 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 
 public class CarKilnMultiblock extends IETemplateMultiblock {
+
+    // IMPORTANT NOTE ON TRIGGER POS:
+    // It is NOT an arbitrary choice!
+    // The default implementation of createStructure requires
+    // the trigger position to be on the OPPOSITE side of the structure's x-axis baseline
+    // ASCII art illustration:
+    // [ ] [T] [ ] ^
+    // [ ] [ ] [ ] z
+    // [ ] [ ] [O] |
+    // <-----x-----
+    // "T" is the trigger position that must be on the opposite side of the x-axis baseline
+    // "O" is the structure origin as defined by a structure file
     public CarKilnMultiblock() {
         super(new ResourceLocation(IIMain.MODID, "multiblocks/car_kiln"),
                 new BlockPos(1, 1, 2), new BlockPos(1, 1, 3), new BlockPos(3, 5, 5),

@@ -1,5 +1,6 @@
 package com.teammoeg.immersiveindustry.content.crucible;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
@@ -33,6 +34,7 @@ public class CrucibleState implements IMultiblockState {
     //client properties
     boolean active;
     boolean hasPreheater;
+	BooleanSupplier isSoundPlaying = () -> false;
     //capability handlers
     StoredCapability<IItemHandler> inputHandler;
     StoredCapability<IItemHandler> fuelHandler;

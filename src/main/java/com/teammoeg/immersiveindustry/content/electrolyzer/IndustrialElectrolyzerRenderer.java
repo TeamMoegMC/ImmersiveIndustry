@@ -48,6 +48,8 @@ public class IndustrialElectrolyzerRenderer implements BlockEntityRenderer<Multi
 		if(type==0)return;
 		matrixStack.pushPose();
 		matrixStack.mulPose(RenderHelper.DIR_TO_FACING.apply(te.getHelper().getContext().getLevel().getOrientation().front()));
+		// translate the position by x-=1, z-=1
+		matrixStack.translate(-1, 0, -1);
 		List<BakedQuad> quads = ELECTRODES.apply(getData.apply(type));
 		RenderUtils.renderModelTESRFast(quads, pBuffer.getBuffer(RenderType.solid()), matrixStack, pPackedLight, pPackedOverlay);
 		matrixStack.popPose();

@@ -1,0 +1,21 @@
+{
+  "type": "immersiveindustry:car_kiln",
+  "input_fluid": {
+    "tag": "minecraft:water",
+    "amount": 100
+  },
+  "inputs": [
+    {
+      "item": "minecraft:sand",
+      "count": 2
+    }
+  ],
+  "results": [
+    {
+      "item": "minecraft:sandstone",
+      "count": 2
+    }
+  ],
+  "time": 40,
+  "tickEnergy": 32
+}

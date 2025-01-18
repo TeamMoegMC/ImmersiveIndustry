@@ -41,16 +41,19 @@ public class CarKilnRenderer implements BlockEntityRenderer<MultiblockBlockEntit
 		}else {
 			matrixStack.translate(0,1.75-(pos-24)/16D,0);
 		}
-		
+		// weird issue, model is shifted, so we fix it
+		matrixStack.translate(-1, 0, -1);
 		RenderUtils.renderModelTESRFast(PARTS.apply(gate.get()), pBuffer.getBuffer(RenderType.solid()), matrixStack, pPackedOverlay, pPackedOverlay);
 		matrixStack.popPose();
 		matrixStack.pushPose();
-		
 		if(pos<=24){
 			double delta=pos/16D-1.5;
 			matrixStack.translate(delta*d.getStepX(),0,delta*d.getStepZ());
 		}
 		int titem=pBlockEntity.getHelper().getState().maxProcessCount;
+
+		// weird issue, model is shifted, so we fix it
+		matrixStack.translate(-1, 0, -1);
 		if(titem>0) {
 			if(titem>16)
 				RenderUtils.renderModelTESRFast(PARTS.apply(s2.get()),pBuffer.getBuffer(RenderType.solid()), matrixStack, pPackedLight, pPackedOverlay);

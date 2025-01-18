@@ -2,6 +2,7 @@ package com.teammoeg.immersiveindustry.content.carkiln;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import com.teammoeg.immersiveindustry.util.CapabilityFacing;
@@ -39,6 +40,7 @@ public class CarKilnState implements IMultiblockState {
 	
 	int pos;//animation process from 0-52, 0=idle 52=working
 	boolean active;
+	BooleanSupplier isSoundPlaying = () -> false;
 	//transient capabilities
 	public RSState state=RSState.enabledByDefault();
 	public List<CapabilityReference<IItemHandler>> outputItemCap=new ArrayList<>(3);
@@ -51,7 +53,7 @@ public class CarKilnState implements IMultiblockState {
 		CapabilityBuilder<IItemHandler> itemHandler=capabilities.itemHandler();
 		RangedOutputWrapper outwrap=new RangedOutputWrapper(inventory,4,9);
 		resultwrap=new RangedWrapper(inventory,4,9);
-		RangedCheckedInputWrapper inwrap=new RangedCheckedInputWrapper(inventory,4,9,(i,t)->CarKilnRecipe.isValidInput(level.get(), t));
+		RangedCheckedInputWrapper inwrap=new RangedCheckedInputWrapper(inventory,0,4,(i,t)->CarKilnRecipe.isValidInput(level.get(), t));
 		for(CapabilityFacing i:CarKilnLogic.outputItemCaps) {
 			outputItemCap.add(i.getFacingCapability(capabilitySource, ForgeCapabilities.ITEM_HANDLER));
 			itemHandler.addCapability(i, outwrap);

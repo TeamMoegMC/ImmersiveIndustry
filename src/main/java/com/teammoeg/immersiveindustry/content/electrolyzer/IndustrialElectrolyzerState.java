@@ -1,5 +1,6 @@
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import com.teammoeg.immersiveindustry.util.CapabilityProcessor;
@@ -34,6 +35,7 @@ public class IndustrialElectrolyzerState implements IMultiblockState {
 	boolean hasElectrode1=false;
 	boolean hasElectrode2=false;
 	boolean active;
+	BooleanSupplier isSoundPlaying = () -> false;
 	//transient capability and interfaces
 	CapabilityReference<IItemHandler> outInvCap1;
 	CapabilityReference<IFluidHandler> outFluidCap1;
