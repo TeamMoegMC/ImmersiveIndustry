@@ -20,12 +20,11 @@ package com.teammoeg.immersiveindustry.data;
 
 import com.teammoeg.immersiveindustry.IIMain;
 
-import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 
 @Mod.EventBusSubscriber(modid = IIMain.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class IIDataGenerator {
@@ -33,10 +32,5 @@ public class IIDataGenerator {
     public static void gatherData(GatherDataEvent event) {
         DataGenerator gen = event.getGenerator();
         ExistingFileHelper exHelper = event.getExistingFileHelper();
-        StaticTemplateManager.EXISTING_HELPER = exHelper;
-        if (event.includeServer()) {
-            gen.addProvider(new IIRecipeProvider(gen));
-            gen.addProvider(new IIMultiblockStatesProvider(gen, exHelper));
-        }
     }
 }
