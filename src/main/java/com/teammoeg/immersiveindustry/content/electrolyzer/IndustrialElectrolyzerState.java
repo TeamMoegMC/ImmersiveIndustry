@@ -49,21 +49,22 @@ public class IndustrialElectrolyzerState implements IMultiblockState {
 		inventory=new ChangeDetectedItemHandler(5,capabilitySource.getMarkDirtyRunnable());
 		recipe=new RecipeHandler<>((t,r)->r.time);
 		inventory.addSlotListener(0,2, recipe::onContainerChanged);
-		tank[0]=new FluidTank(16000, f->ElectrolyzerRecipe.isValidRecipeFluid(l.get(),f)) {
-
-			@Override
-			protected void onContentsChanged() {
-				recipe.onContainerChanged();
-			}
-			
-		};
+		tank[0]=new FluidTank(16000, f->ElectrolyzerRecipe.isValidRecipeFluid(l.get(),f));
+		ArrayFluidHandler inFluidHandler1=ArrayFluidHandler.fillOnly(tank[0], ()->{
+			capabilitySource.getMarkDirtyRunnable().run();
+			recipe.onContainerChanged();
+		});
+		ArrayFluidHandler inFluidHandler2=ArrayFluidHandler.fillOnly(tank[0], ()->{
+			capabilitySource.getMarkDirtyRunnable().run();
+			recipe.onContainerChanged();
+		});
 		outFluidCap1=IndustrialElectrolyzerLogic.out1.getFacingCapability(capabilitySource, ForgeCapabilities.FLUID_HANDLER);
 		outFluidCap2=IndustrialElectrolyzerLogic.out2.getFacingCapability(capabilitySource, ForgeCapabilities.FLUID_HANDLER);
 		outInvCap1=IndustrialElectrolyzerLogic.out1.getFacingCapability(capabilitySource, ForgeCapabilities.ITEM_HANDLER);
 		outInvCap2=IndustrialElectrolyzerLogic.out2.getFacingCapability(capabilitySource, ForgeCapabilities.ITEM_HANDLER);
 		capabilities.fluidHandler()
-		.addCapability(IndustrialElectrolyzerLogic.in1,ArrayFluidHandler.fillOnly(tank[0], capabilitySource.getMarkDirtyRunnable()))
-		.addCapability(IndustrialElectrolyzerLogic.in2,ArrayFluidHandler.fillOnly(tank[0], capabilitySource.getMarkDirtyRunnable()))
+		.addCapability(IndustrialElectrolyzerLogic.in1,inFluidHandler1)
+		.addCapability(IndustrialElectrolyzerLogic.in2,inFluidHandler2)
 		.addCapability(IndustrialElectrolyzerLogic.out1,ArrayFluidHandler.drainOnly(tank[1], capabilitySource.getMarkDirtyRunnable()))
 		.addCapability(IndustrialElectrolyzerLogic.out2,ArrayFluidHandler.drainOnly(tank[1], capabilitySource.getMarkDirtyRunnable()));
 		capabilities.itemHandler()

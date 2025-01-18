@@ -32,9 +32,17 @@ public class CarKilnRenderer implements BlockEntityRenderer<MultiblockBlockEntit
 	public void render(MultiblockBlockEntityMaster<CarKilnState> pBlockEntity, float pPartialTick, PoseStack matrixStack, MultiBufferSource pBuffer, int pPackedLight, int pPackedOverlay) {
 		Level l=pBlockEntity.getHelper().getContext().getLevel().getRawLevel();
 		Direction d=pBlockEntity.getHelper().getContext().getLevel().getOrientation().front();
+		int dx=0,dz=0;
+		/*switch(d) {
+		case EAST:dz=-1;break;
+		case SOUTH:dz=-1;dx=-1;break;
+		case WEST:dx=-1;break;
+		}*/
+		
 		int pos=pBlockEntity.getHelper().getState().pos;
 		matrixStack.pushPose();
-		matrixStack.mulPose(RenderHelper.DIR_TO_FACING.apply(d.getOpposite()));
+		matrixStack.rotateAround(RenderHelper.DIR_TO_FACING.apply(d.getOpposite()),0.5f,0.5f,0.5f);
+		matrixStack.translate(dx, 0, dz);
 		matrixStack.pushPose();
 		if(pos<24) {
 			matrixStack.translate(0,1.75, 0);
@@ -48,7 +56,7 @@ public class CarKilnRenderer implements BlockEntityRenderer<MultiblockBlockEntit
 		matrixStack.pushPose();
 		if(pos<=24){
 			double delta=pos/16D-1.5;
-			matrixStack.translate(delta*d.getStepX(),0,delta*d.getStepZ());
+			matrixStack.translate(/*delta*d.getStepX()*/0,0,-delta/**d.getStepZ()*/);
 		}
 		int titem=pBlockEntity.getHelper().getState().maxProcessCount;
 

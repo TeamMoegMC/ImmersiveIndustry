@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:block/block",
+  "parent": "minecraft:block/cube",
   "loader": "forge:obj",
   "model": "immersiveindustry:models/block/multiblocks/steam_turbine.obj",
   "flip_v": true,

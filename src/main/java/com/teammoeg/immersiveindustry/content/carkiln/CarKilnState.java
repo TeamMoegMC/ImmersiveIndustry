@@ -64,7 +64,11 @@ public class CarKilnState implements IMultiblockState {
 			itemHandler.addCapability(i, inwrap);
 		}
 		capabilities.energy().addCapability(CarKilnLogic.inputEnergyCap, new WrappingEnergyStorage(energyStorage,true,false,capabilitySource.getMarkDirtyRunnable()));
-		capabilities.fluidHandler().addCapability(CarKilnLogic.inputFluidCap, ArrayFluidHandler.fillOnly(tank, capabilitySource.getMarkDirtyRunnable()));
+		capabilities.fluidHandler().addCapability(CarKilnLogic.inputFluidCap, ArrayFluidHandler.fillOnly(tank, ()->{
+			capabilitySource.getMarkDirtyRunnable().run();
+			recipe.onContainerChanged();
+			
+		}));
 	}
 
 	@Override
@@ -76,7 +80,7 @@ public class CarKilnState implements IMultiblockState {
 		
 		nbt.put("energy", energyStorage.serializeNBT());
 		nbt.put("tank", tank.writeToNBT(new CompoundTag()));
-		
+		nbt.putByte("pos", (byte) pos);
 		
 	}
 	@Override
@@ -84,7 +88,7 @@ public class CarKilnState implements IMultiblockState {
 		inventory.deserializeNBT(nbt.getCompound("inv"));
 		result.deserializeNBT(nbt.getCompound("result"));
 		recipe.readCustomNBT(nbt, false);
-		
+		pos=nbt.getByte("pos");
 		maxProcessCount=nbt.getInt("processes");
 		energyStorage.deserializeNBT(nbt.get("energy"));
 		tank.readFromNBT(nbt.getCompound("tank"));

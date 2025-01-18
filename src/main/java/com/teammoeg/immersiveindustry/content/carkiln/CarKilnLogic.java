@@ -132,6 +132,10 @@ public class CarKilnLogic implements IMultiblockLogic<CarKilnState>, IClientTick
 					}
 				}
 				context.markMasterDirty();
+			}else if(state.pos>0) {
+				state.pos--;
+				state.maxProcessCount=0;
+				context.markDirtyAndSync();
 			}
 			if (state.active != lastActive)
 				context.requestMasterBESync();
