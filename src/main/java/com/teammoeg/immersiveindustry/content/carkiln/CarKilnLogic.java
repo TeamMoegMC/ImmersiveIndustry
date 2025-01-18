@@ -36,14 +36,14 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class CarKilnLogic implements IMultiblockLogic<CarKilnState>, IClientTickableComponent<CarKilnState>, IServerTickableComponent<CarKilnState> {
 	 public static final CapabilityFacing[] outputItemCaps = new CapabilityFacing[]{
-		new CapabilityFacing(0,0,4,RelativeBlockFace.RIGHT),
-		new CapabilityFacing(1,0,4,RelativeBlockFace.RIGHT),
-		new CapabilityFacing(2,0,4,RelativeBlockFace.RIGHT)} ;
+		new CapabilityFacing(0,0,4,RelativeBlockFace.BACK),
+		new CapabilityFacing(1,0,4,RelativeBlockFace.BACK),
+		new CapabilityFacing(2,0,4,RelativeBlockFace.BACK)} ;
 	 public static final CapabilityFacing[] inputItemCaps = new CapabilityFacing[]{
-		new CapabilityFacing(0,1,4,RelativeBlockFace.FRONT),
-		new CapabilityFacing(2,1,4,RelativeBlockFace.BACK)} ;
-	 public static final  CapabilityFacing inputFluidCap = new CapabilityFacing(1,3,0,RelativeBlockFace.LEFT) ;
-	 public static final CapabilityFacing inputEnergyCap = new CapabilityFacing(1,1,0,RelativeBlockFace.LEFT) ;
+		new CapabilityFacing(0,1,4,RelativeBlockFace.RIGHT),
+		new CapabilityFacing(2,1,4,RelativeBlockFace.LEFT)} ;
+	 public static final  CapabilityFacing inputFluidCap = new CapabilityFacing(1,3,0,RelativeBlockFace.FRONT) ;
+	 public static final CapabilityFacing inputEnergyCap = new CapabilityFacing(1,1,0,RelativeBlockFace.FRONT) ;
 	 
 	public CarKilnLogic() {
 		// TODO Auto-generated constructor stub

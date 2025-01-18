@@ -35,10 +35,10 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class IndustrialElectrolyzerLogic
 	implements IMultiblockLogic<IndustrialElectrolyzerState>, IClientTickableComponent<IndustrialElectrolyzerState>, IServerTickableComponent<IndustrialElectrolyzerState> {
-	static final CapabilityFacing out1 = new CapabilityFacing(2, 0, 3, RelativeBlockFace.RIGHT);
-	static final CapabilityFacing out2 = new CapabilityFacing(0, 0, 3, RelativeBlockFace.LEFT);
-	static final CapabilityFacing in1 = new CapabilityFacing(2, 0, 1, RelativeBlockFace.RIGHT);
-	static final CapabilityFacing in2 = new CapabilityFacing(0, 0, 1, RelativeBlockFace.LEFT);
+	static final CapabilityFacing out1 = new CapabilityFacing(2, 0, 3, RelativeBlockFace.LEFT);
+	static final CapabilityFacing out2 = new CapabilityFacing(0, 0, 3, RelativeBlockFace.RIGHT);
+	static final CapabilityFacing in1 = new CapabilityFacing(2, 0, 1, RelativeBlockFace.LEFT);
+	static final CapabilityFacing in2 = new CapabilityFacing(0, 0, 1, RelativeBlockFace.RIGHT);
 	static final CapabilityFacing energy = new CapabilityFacing(1, 1, 0, RelativeBlockFace.FRONT);
 
 	public IndustrialElectrolyzerLogic() {

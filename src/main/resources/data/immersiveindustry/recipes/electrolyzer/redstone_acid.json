@@ -1,5 +1,8 @@
 {
   "type": "immersiveindustry:electrolyzer",
+  "input": {
+    "tag": "forge:raw_materials/redstone"
+  },
   "fluid": {
     "tag": "forge:redstone_acid",
     "amount": 1000

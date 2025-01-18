@@ -52,7 +52,7 @@ public class IndustrialElectrolyzerScreen extends IEContainerScreen<IndustrialEl
     protected void drawContainerBackgroundPre(GuiGraphics transform, float partial, int x, int y) {
     	int w = (int) (21 * menu.process.getValue());
         if (w > 0) {
-        	transform.blit(TEXTURE, leftPos + 77,topPos + 40, 178, 57, 21 - w, 15);
+        	transform.blit(TEXTURE, leftPos + 77,topPos + 40, 178, 57, w, 15);
         }
     }
 

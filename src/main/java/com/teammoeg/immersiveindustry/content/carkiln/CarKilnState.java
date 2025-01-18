@@ -51,7 +51,7 @@ public class CarKilnState implements IMultiblockState {
 		CapabilityBuilder<IItemHandler> itemHandler=capabilities.itemHandler();
 		RangedOutputWrapper outwrap=new RangedOutputWrapper(inventory,4,9);
 		resultwrap=new RangedWrapper(inventory,4,9);
-		RangedCheckedInputWrapper inwrap=new RangedCheckedInputWrapper(inventory,4,9,(i,t)->CarKilnRecipe.isValidInput(level.get(), t));
+		RangedCheckedInputWrapper inwrap=new RangedCheckedInputWrapper(inventory,0,4,(i,t)->CarKilnRecipe.isValidInput(level.get(), t));
 		for(CapabilityFacing i:CarKilnLogic.outputItemCaps) {
 			outputItemCap.add(i.getFacingCapability(capabilitySource, ForgeCapabilities.ITEM_HANDLER));
 			itemHandler.addCapability(i, outwrap);
