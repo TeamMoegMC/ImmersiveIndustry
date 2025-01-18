@@ -180,7 +180,7 @@ public class RotaryKilnLogic implements IMultiblockLogic<RotaryKilnState>, IClie
 		if(pos.getX()==1&&pos.getY()==0) {
 			return Shapes.block();
 		}
-		if(pos.getX()==1&&pos.getY()==1&&pos.getZ()!=0) {
+		if(pos.getX()==1&&pos.getY()==1&&pos.getZ()!=0&&pos.getZ()!=6) {
 			return Shapes.block();
 		}
 		if(pos.getX()==0&pos.getY()<=1&&pos.getZ()==5) {
@@ -202,21 +202,20 @@ public class RotaryKilnLogic implements IMultiblockLogic<RotaryKilnState>, IClie
 			if(pos.getX()==1) {
 				if(pos.getY()==2)
 					return Shapes.or(Shapes.or(Shapes.box(0, .5, 0, 1, 1, 1), Shapes.box(.25, 0, .25, .75, .5, .75)),Shapes.box(0, 0, .75, 1, .5, 1));
-				else
-					return Shapes.box(0, 0, .5625, 1, 1, 1);
+				return Shapes.or(Shapes.box(0, 0, .5625, 1, 1, 1),Shapes.box(.25, .675, .25, .75, 1, .75));
 			}
 		}else if(pos.getZ()==6) {
 			if(pos.getX()==0) {
-				res=Shapes.or(res,Shapes.box(.84375, 0, 0, 1, 1, 1));
+				res=Shapes.or(res,Shapes.box(.84375, 0, 0, 1, 1, .8125));
 			}
 			if(pos.getX()==2) {
-				res=Shapes.or(res,Shapes.box(0, 0, 0, .15625, 1, 1));
+				res=Shapes.or(res,Shapes.box(0, 0, 0, .15625, 1, .8125));
 			}
 			if(pos.getX()==1) {
 				if(pos.getY()==2)
-					res=Shapes.box(0, 0, 0, 1, .5, 1);
+					res=Shapes.box(0, 0, 0, 1, .5, .8125);
 				else
-					res=Shapes.block();
+					res=Shapes.box(0, 0, 0, 1, 1, .8125);
 			}
 		}else {
 			if(pos.getX()==0) {
@@ -227,9 +226,9 @@ public class RotaryKilnLogic implements IMultiblockLogic<RotaryKilnState>, IClie
 			}
 			if(pos.getX()==2) {
 				if(pos.getZ()==5||pos.getZ()==1)
-					res=Shapes.or(res,Shapes.box(.4375, 0, 0, 1, .875, 1));
+					res=Shapes.or(res,Shapes.box(0, 0, 0, .5625, .875, 1));
 				else
-					res=Shapes.or(res,Shapes.box(.4375, 0, 0, 1, .75, 1));
+					res=Shapes.or(res,Shapes.box(0, 0, 0, .5625, .75, 1));
 			}
 			if(pos.getX()==1) {
 				if(pos.getY()==2) {
