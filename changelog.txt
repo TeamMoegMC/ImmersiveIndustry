@@ -1,3 +1,5 @@
-0.1.8f:
-- Added crucible fuel value config
-- Rotary kiln can now have air output
+0.2.0:
+- Upgrade to Minecraft 1.20.1, NeoForge/Forge 36.
+- Add sounds for machines.
+- Crucible has a fluid output slot now.
+- Machines are optimized.
