@@ -3,6 +3,9 @@ package com.teammoeg.immersiveindustry.content.crucible;
 import java.util.Optional;
 import java.util.function.Function;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
+import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent.IIMultiblocks;
 import com.teammoeg.immersiveindustry.util.CapabilityFacing;
@@ -32,6 +35,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
@@ -169,7 +173,7 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 		Level world = context.getLevel().getRawLevel();
 		BlockPos pos = context.getLevel().toAbsolute(IIMultiblocks.CRUCIBLE.masterPosInMB());
 		if(context.getState().active) {
-			if (random.nextFloat() < 0.4F) {
+			if (random.nextFloat() < 0.1F) {
 				for (int i = 0; i < random.nextInt(2) + 2; ++i) {
 					world.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, true, pos.getX() + 0.5D + random.nextDouble() / 3.0D * (random.nextBoolean() ? 1 : -1),
 						pos.getY() + random.nextDouble() + random.nextDouble(), pos.getZ() + 0.5D + random.nextDouble() / 3.0D * (random.nextBoolean() ? 1 : -1), 0.0D, 0.05D, 0.0D);
@@ -177,6 +181,17 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 						pos.getZ() + 0.25D + random.nextDouble() / 2.0D * (random.nextBoolean() ? 1 : -1), 0.002D, 0.01D, 0.0D);
 				}
 			}
+		}
+		CrucibleState state = context.getState();
+		if(!state.active)
+			return;
+		final IMultiblockLevel level = context.getLevel();
+		if(!state.isSoundPlaying.getAsBoolean())
+		{
+			final Vec3 soundPos = level.toAbsolute(new Vec3(1.5, 1.5, 1.5));
+			state.isSoundPlaying = MultiblockSound.startSound(
+					() -> state.active, context.isValid(), soundPos, IESounds.arcFurnace, 0.075f
+			);
 		}
 	}
 

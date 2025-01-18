@@ -106,7 +106,7 @@ public class ElectrolyzerRecipeSerializer extends IERecipeSerializer<Electrolyze
         boolean flag =false;
         if(json.has("large_only"))
         	flag=json.get("large_only").getAsBoolean();
-        FluidStack result_fluid = null;
+        FluidStack result_fluid = FluidStack.EMPTY;
         if (json.has("result_fluid"))
             result_fluid = ApiUtils.jsonDeserializeFluidStack(json.get("result_fluid").getAsJsonObject());
 

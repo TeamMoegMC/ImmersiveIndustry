@@ -2,6 +2,9 @@ package com.teammoeg.immersiveindustry.content.carkiln;
 
 import java.util.function.Function;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
+import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
 import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipe;
@@ -25,6 +28,7 @@ import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
@@ -132,8 +136,17 @@ public class CarKilnLogic implements IMultiblockLogic<CarKilnState>, IClientTick
 
 	@Override
 	public void tickClient(IMultiblockContext<CarKilnState> context) {
-		// TODO Auto-generated method stub
-		
+		CarKilnState state = context.getState();
+		if(!state.active)
+			return;
+		final IMultiblockLevel level = context.getLevel();
+		if(!state.isSoundPlaying.getAsBoolean())
+		{
+			final Vec3 soundPos = level.toAbsolute(new Vec3(1.5, 1.5, 1.5));
+			state.isSoundPlaying = MultiblockSound.startSound(
+					() -> state.active, context.isValid(), soundPos, IESounds.arcFurnace, 0.075f
+			);
+		}
 	}
 
 	@Override
@@ -151,10 +164,13 @@ public class CarKilnLogic implements IMultiblockLogic<CarKilnState>, IClientTick
 		if (context.getLevel().shouldTickModulo(16)) {
 			final IItemHandlerModifiable inventory = state.inventory;
 			for(CapabilityReference<IItemHandler> c:state.outputItemCap)
-				if(c.isPresent())
-					for (int slot = 4; slot < 9; ++slot) {
-						update|=IIUtil.outputItem(inventory, c, 4);
-					}
+				if(c.isPresent()) {
+					update|=IIUtil.outputItem(inventory, c, 4);
+					update|=IIUtil.outputItem(inventory, c, 5);
+					update|=IIUtil.outputItem(inventory, c, 6);
+					update|=IIUtil.outputItem(inventory, c, 7);
+					update|=IIUtil.outputItem(inventory, c, 8);
+				}
 		}
 		return update;
 	}

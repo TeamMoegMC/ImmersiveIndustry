@@ -18,6 +18,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 
+import java.util.function.BooleanSupplier;
+
 public class RotaryKilnState implements IMultiblockState{
 	
 	//common properties
@@ -30,6 +32,7 @@ public class RotaryKilnState implements IMultiblockState{
 	
 	//client properties
 	public int angle;// angle for animation in degrees
+	BooleanSupplier isSoundPlaying = () -> false;
 	
 	
 	//transient capability and interfaces

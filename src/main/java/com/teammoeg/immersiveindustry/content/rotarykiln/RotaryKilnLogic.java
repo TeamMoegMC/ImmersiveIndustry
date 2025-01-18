@@ -3,6 +3,9 @@ package com.teammoeg.immersiveindustry.content.rotarykiln;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
+import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import com.teammoeg.immersiveindustry.util.CapabilityFacing;
 import com.teammoeg.immersiveindustry.util.IIUtil;
 
@@ -21,6 +24,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
@@ -169,6 +173,16 @@ public class RotaryKilnLogic implements IMultiblockLogic<RotaryKilnState>, IClie
 			state.angle += 10;
 			if (state.angle >= 360)
 				state.angle = 0;
+		}
+		if(!state.active)
+			return;
+		final IMultiblockLevel level = context.getLevel();
+		if(!state.isSoundPlaying.getAsBoolean())
+		{
+			final Vec3 soundPos = level.toAbsolute(new Vec3(1.5, 1.5, 1.5));
+			state.isSoundPlaying = MultiblockSound.startSound(
+					() -> state.active, context.isValid(), soundPos, IESounds.arcFurnace, 0.075f
+			);
 		}
 	}
 
