@@ -1,11 +1,13 @@
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import com.teammoeg.immersiveindustry.IIConfig;
+import com.teammoeg.immersiveindustry.content.crucible.CrucibleState;
 import com.teammoeg.immersiveindustry.util.CapabilityFacing;
 import com.teammoeg.immersiveindustry.util.ChangeDetectedItemHandler;
 import com.teammoeg.immersiveindustry.util.IIUtil;
@@ -19,6 +21,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultib
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MBInventoryUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import net.minecraft.core.BlockPos;
@@ -99,11 +102,12 @@ public class IndustrialElectrolyzerLogic
 					if (recipeResult != null) {
 						ElectrolyzerRecipe recipe = recipeResult.recipe();
 						if (inventory.insertItem(4, recipe.output, true).isEmpty() && state.tank[1].fill(recipe.output_fluid, FluidAction.SIMULATE) >= recipe.output_fluid.getAmount()) {
-							inventory.insertItem(4, recipe.output, false);
-							state.tank[1].fill(recipe.output_fluid, FluidAction.EXECUTE);
+							inventory.insertItem(4, recipe.output.copy(), false);
+							state.tank[1].fill(recipe.output_fluid.copy(), FluidAction.EXECUTE);
+							state.tank[0].drain(recipe.input_fluid.getAmount(), FluidAction.EXECUTE);
 							handler.endProcess();
 							recipeResult.runOperations(inventory);
-
+							
 						}
 
 					} else {
@@ -179,5 +183,9 @@ public class IndustrialElectrolyzerLogic
 			update |= IIUtil.outputItem(inventory, state.outInvCap2, 4);
 		}
 		return update;
+	}
+	@Override
+	public void dropExtraItems(IndustrialElectrolyzerState state, Consumer<ItemStack> drop) {
+		MBInventoryUtils.dropItems(state.inventory, drop);
 	}
 }

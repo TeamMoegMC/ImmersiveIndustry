@@ -34,7 +34,7 @@ public class CarKilnRenderer implements BlockEntityRenderer<MultiblockBlockEntit
 		Direction d=pBlockEntity.getHelper().getContext().getLevel().getOrientation().front();
 		int pos=pBlockEntity.getHelper().getState().pos;
 		matrixStack.pushPose();
-		matrixStack.mulPose(RenderHelper.DIR_TO_FACING.apply(d));
+		matrixStack.mulPose(RenderHelper.DIR_TO_FACING.apply(d.getOpposite()));
 		matrixStack.pushPose();
 		if(pos<24) {
 			matrixStack.translate(0,1.75, 0);
@@ -42,8 +42,8 @@ public class CarKilnRenderer implements BlockEntityRenderer<MultiblockBlockEntit
 			matrixStack.translate(0,1.75-(pos-24)/16D,0);
 		}
 		// weird issue, model is shifted, so we fix it
-		matrixStack.translate(-1, 0, -1);
-		RenderUtils.renderModelTESRFast(PARTS.apply(gate.get()), pBuffer.getBuffer(RenderType.solid()), matrixStack, pPackedOverlay, pPackedOverlay);
+		//matrixStack.translate(0, 0, -2);
+		RenderUtils.renderModelTESRFast(PARTS.apply(gate.get()), pBuffer.getBuffer(RenderType.solid()), matrixStack, pPackedLight, pPackedOverlay);
 		matrixStack.popPose();
 		matrixStack.pushPose();
 		if(pos<=24){
@@ -53,7 +53,7 @@ public class CarKilnRenderer implements BlockEntityRenderer<MultiblockBlockEntit
 		int titem=pBlockEntity.getHelper().getState().maxProcessCount;
 
 		// weird issue, model is shifted, so we fix it
-		matrixStack.translate(-1, 0, -1);
+		//matrixStack.translate(0, 0, -2);
 		if(titem>0) {
 			if(titem>16)
 				RenderUtils.renderModelTESRFast(PARTS.apply(s2.get()),pBuffer.getBuffer(RenderType.solid()), matrixStack, pPackedLight, pPackedOverlay);

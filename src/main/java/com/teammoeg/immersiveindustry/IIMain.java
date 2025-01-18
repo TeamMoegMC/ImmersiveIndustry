@@ -41,7 +41,7 @@ public class IIMain {
         IIConfig.register();
         IIContent.IIBlocks.BLOCKS.register(mod);
         IIContent.IItems.ITEMS.register(mod);;
-        IIContent.IIMultiblocks.init();
+       
         IIContent.registerContainers();
         IIContent.IITileTypes.REGISTER.register(mod);
         IIContent.IIRecipes.RECIPE_SERIALIZERS.register(mod);
@@ -50,6 +50,9 @@ public class IIMain {
         DistExecutor.safeRunWhenOn(Dist.CLIENT,()->ClientProxy::setup);
         
 //        DeferredWorkQueue.runLater(IIContent.IIRecipes::registerRecipeTypes);
+    }
+    public static void ieInit() {
+    	 IIContent.IIMultiblocks.init();
     }
 //    public void onMissing(final MissingMappings<Block> ev) {
 //    	ev.getAllMappings().forEach(e->{

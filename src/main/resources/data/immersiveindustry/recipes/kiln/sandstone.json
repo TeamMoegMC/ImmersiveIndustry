@@ -6,7 +6,9 @@
   },
   "inputs": [
     {
-      "item": "minecraft:sand",
+      "base_ingredient":{
+   	   "item": "minecraft:sand"
+      },
       "count": 2
     }
   ],
@@ -16,6 +18,6 @@
       "count": 2
     }
   ],
-  "time": 40,
+  "time": 200,
   "tickEnergy": 32
 }

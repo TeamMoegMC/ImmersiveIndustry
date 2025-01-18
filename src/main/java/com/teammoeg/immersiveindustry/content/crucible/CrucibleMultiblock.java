@@ -20,12 +20,13 @@ package com.teammoeg.immersiveindustry.content.crucible;
 
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
+import com.teammoeg.immersiveindustry.util.IIMultiblock;
 
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 
-public class CrucibleMultiblock extends IETemplateMultiblock {
+public class CrucibleMultiblock extends IIMultiblock {
     public CrucibleMultiblock() {
         super(new ResourceLocation(IIMain.MODID, "multiblocks/crucible"),
                 new BlockPos(1, 1, 1), new BlockPos(1, 1, 2), new BlockPos(3, 4, 3),

@@ -280,4 +280,5 @@ public class RotaryKilnLogic implements IMultiblockLogic<RotaryKilnState>, IClie
 	public void dropExtraItems(RotaryKilnState state, Consumer<ItemStack> drop) {
 		MBInventoryUtils.dropItems(state.inventory, drop);
 	}
+	
 }

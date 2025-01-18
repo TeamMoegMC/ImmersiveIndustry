@@ -20,12 +20,13 @@ package com.teammoeg.immersiveindustry.content.electrolyzer;
 
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
+import com.teammoeg.immersiveindustry.util.IIMultiblock;
 
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 
-public class IndustrialElectrolyzerMultiblock extends IETemplateMultiblock {
+public class IndustrialElectrolyzerMultiblock extends IIMultiblock {
     public IndustrialElectrolyzerMultiblock() {
         super(new ResourceLocation(IIMain.MODID, "multiblocks/industrial_electrolyzer"),
                 new BlockPos(1, 1, 2), new BlockPos(1, 1, 4), new BlockPos(3, 3, 5),

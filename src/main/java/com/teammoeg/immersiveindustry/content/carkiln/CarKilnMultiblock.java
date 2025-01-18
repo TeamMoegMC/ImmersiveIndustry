@@ -21,10 +21,12 @@ package com.teammoeg.immersiveindustry.content.carkiln;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
+import com.teammoeg.immersiveindustry.util.IIMultiblock;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 
-public class CarKilnMultiblock extends IETemplateMultiblock {
+public class CarKilnMultiblock extends IIMultiblock {
 
     // IMPORTANT NOTE ON TRIGGER POS:
     // It is NOT an arbitrary choice!
@@ -39,7 +41,7 @@ public class CarKilnMultiblock extends IETemplateMultiblock {
     // "O" is the structure origin as defined by a structure file
     public CarKilnMultiblock() {
         super(new ResourceLocation(IIMain.MODID, "multiblocks/car_kiln"),
-                new BlockPos(1, 1, 2), new BlockPos(1, 1, 3), new BlockPos(3, 5, 5),
+                new BlockPos(1, 1, 2), new BlockPos(1, 0, 4), new BlockPos(3, 5, 5),
                 IIContent.IIMultiblocks.CAR_KILN);
 
     }

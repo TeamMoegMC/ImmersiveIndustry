@@ -1,5 +1,6 @@
 package com.teammoeg.immersiveindustry.content.carkiln;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
@@ -9,6 +10,7 @@ import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
 import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipe;
 import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerState;
+import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnLogic;
 import com.teammoeg.immersiveindustry.util.CapabilityFacing;
 import com.teammoeg.immersiveindustry.util.ChangeDetectedItemHandler;
 import com.teammoeg.immersiveindustry.util.IIUtil;
@@ -22,9 +24,11 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultib
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MBInventoryUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -79,6 +83,7 @@ public class CarKilnLogic implements IMultiblockLogic<CarKilnState>, IClientTick
 						if(recipeResult.recipe().input_fluid!=null) {
 							state.maxProcessCount=state.tank.getFluidAmount()/recipeResult.recipe().input_fluid.getAmount();
 						}
+						System.out.println(recipeResult.recipe().maxProcess+","+recipeResult.getMaxRuns(inventory)+","+state.maxProcessCount);
 						state.maxProcessCount=Math.min(Math.min(recipeResult.getMaxRuns(inventory), recipeResult.recipe().maxProcess),state.maxProcessCount);
 						
 					}
@@ -113,7 +118,7 @@ public class CarKilnLogic implements IMultiblockLogic<CarKilnState>, IClientTick
 					RecipeProcessResult<CarKilnRecipe> recipeResult = handler.getRecipeResultCache();
 					if (recipeResult != null) {
 						CarKilnRecipe recipe = recipeResult.recipe();
-						recipeResult.runOperations(inventory);
+						recipeResult.runOperations(inventory,state.maxProcessCount);
 						if(recipe.input_fluid!=null)
 						state.tank.drain(recipe.input_fluid.getAmount(), FluidAction.EXECUTE);
 						for(ItemStack output:recipe.output) {
@@ -124,6 +129,7 @@ public class CarKilnLogic implements IMultiblockLogic<CarKilnState>, IClientTick
 						context.markDirtyAndSync();
 					} else {
 						handler.endProcess();
+						state.maxProcessCount=0;
 					}
 				}
 				context.markMasterDirty();
@@ -153,10 +159,58 @@ public class CarKilnLogic implements IMultiblockLogic<CarKilnState>, IClientTick
 	public CarKilnState createInitialState(IInitialMultiblockContext<CarKilnState> capabilitySource) {
 		return new CarKilnState(capabilitySource);
 	}
+	static VoxelShape getShape(BlockPos pos) {
+		if(pos.getZ()<4&&pos.getY()<2) {
+			return Shapes.block();
+		}
+		if(pos.getY()==3&&pos.getX()==1&&pos.getZ()==0) {
+			return Shapes.or(Shapes.box(0, 0, 0, 1, 1, .5), Shapes.box(.125, .125, .5, .825, .825, 1));
+		}
+		if(pos.getY()==2&&pos.getX()==1&&pos.getZ()==0) {
+			return  Shapes.or(Shapes.box(0, 0, 0, 1, .5, 1), Shapes.box(.3125, 0, .0625, .6825, 1, .4375));
+		}
+		if(pos.getY()==3&&pos.getX()==1&&pos.getZ()==1) {
+			return  Shapes.box(.125, 0, 0, .825, .825, .825);
+		}
+		if(pos.getY()==2&&pos.getX()==1&&pos.getZ()==1) {
+			return  Shapes.or(Shapes.box(0, 0, 0, 1, .8125, 1), Shapes.box(.125, 0, .125, .825, 1, .825));
+		}
 
+		VoxelShape base;
+		if(pos.getY()==2)
+			base=Shapes.box(0, 0, 0, 1, .5, 1);
+		else if(pos.getY()==0) {
+			base=Shapes.box(0, 0, 0, 1, .75, 1);
+		}else
+			base=Shapes.empty();
+		
+		if(pos.getY()>2) {
+			if(pos.getX()==0)
+				base=Shapes.or(base, Shapes.box(.125, 0, 0, .375, 1, 1));
+			else if(pos.getX()==2)
+				base=Shapes.or(base, Shapes.box(.625, 0, 0, .875, 1, 1));
+			if(pos.getZ()==3) {
+				base=Shapes.or(base, Shapes.box(0, 0, .5, 1, 1, 1));
+				if(pos.getY()==4)
+					base=Shapes.or(base, Shapes.box(0, .25, .25, 1, .75, 1));
+			}
+		}
+		if(pos.getZ()==4) {
+			if(pos.getX()==0) {
+				base=Shapes.or(base, Shapes.box(0, 0, 0, .625, 1, 1));
+			}else if(pos.getX()==2) {
+				base=Shapes.or(base, Shapes.box(.375, 0, 0, 1, 1, 1));
+			}
+		}
+		
+
+		return base;
+	}
+	static final Function<BlockPos, VoxelShape> shapeCache=Util.memoize(CarKilnLogic::getShape);
 	@Override
 	public Function<BlockPos, VoxelShape> shapeGetter(ShapeType forType) {
-		return t->Shapes.block();
+	
+		return shapeCache;
 	}
 	public boolean tryOutput(IMultiblockContext<CarKilnState> context) {
 		CarKilnState state = context.getState();
@@ -178,6 +232,12 @@ public class CarKilnLogic implements IMultiblockLogic<CarKilnState>, IClientTick
 	@Override
 	public <T> LazyOptional<T> getCapability(IMultiblockContext<CarKilnState> ctx, CapabilityPosition position, Capability<T> cap) {
 		return ctx.getState().capabilities.getCapability(cap, position, ctx);
+	}
+
+	@Override
+	public void dropExtraItems(CarKilnState state, Consumer<ItemStack> drop) {
+		MBInventoryUtils.dropItems(state.inventory, drop);
+		MBInventoryUtils.dropItems(state.result, drop);
 	}
 	
 }

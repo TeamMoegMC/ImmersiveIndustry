@@ -4,6 +4,7 @@
   "package": "com.teammoeg.immersiveindustry.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+  "IEInitMixin"
   ],
   "client": [
   "DatapackFailureScreenMixin"

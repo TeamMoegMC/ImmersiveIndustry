@@ -49,7 +49,9 @@ public class CarKilnState implements IMultiblockState {
 	public CarKilnState(IInitialMultiblockContext<CarKilnState> capabilitySource) {
 		Supplier<Level> level=capabilitySource.levelSupplier();
 		inventory=new ChangeDetectedItemHandler(9,capabilitySource.getMarkDirtyRunnable());
+		
 		recipe=new RecipeHandler<CarKilnRecipe>((r,t)->t.time);
+		inventory.addSlotListener(0, 4,recipe::onContainerChanged);
 		CapabilityBuilder<IItemHandler> itemHandler=capabilities.itemHandler();
 		RangedOutputWrapper outwrap=new RangedOutputWrapper(inventory,4,9);
 		resultwrap=new RangedWrapper(inventory,4,9);
@@ -70,8 +72,8 @@ public class CarKilnState implements IMultiblockState {
 		nbt.put("inv", inventory.serializeNBT());
 		nbt.put("result", result.serializeNBT());
 		recipe.writeCustomNBT(nbt, false);
+		nbt.putInt("processes", maxProcessCount);
 		
-		maxProcessCount=nbt.getInt("processes");
 		nbt.put("energy", energyStorage.serializeNBT());
 		nbt.put("tank", tank.writeToNBT(new CompoundTag()));
 		
@@ -82,7 +84,8 @@ public class CarKilnState implements IMultiblockState {
 		inventory.deserializeNBT(nbt.getCompound("inv"));
 		result.deserializeNBT(nbt.getCompound("result"));
 		recipe.readCustomNBT(nbt, false);
-		nbt.putInt("processes", maxProcessCount);
+		
+		maxProcessCount=nbt.getInt("processes");
 		energyStorage.deserializeNBT(nbt.get("energy"));
 		tank.readFromNBT(nbt.getCompound("tank"));
 		

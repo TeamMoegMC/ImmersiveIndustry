@@ -72,7 +72,9 @@ import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -167,19 +169,20 @@ public class IIContent {
         	Multiblock.init();
         }
         public static class Multiblock{
+        	private static final List<Lazy<? extends IMultiblock>> toregister=new ArrayList<>();
             public static final Lazy<TemplateMultiblock> CRUCIBLE = registerLazily(()->new CrucibleMultiblock());
             public static final Lazy<TemplateMultiblock> STEAMTURBINE = registerLazily(()->new SteamTurbineMultiblock());
             public static final Lazy<TemplateMultiblock> INDUSTRIAL_ELECTROLYZER = registerLazily(()->new IndustrialElectrolyzerMultiblock());
             public static final Lazy<TemplateMultiblock> ROTARY_KILN = registerLazily(()->new RotaryKilnMultiblock());
             public static final Lazy<TemplateMultiblock> CAR_KILN = registerLazily(()->new CarKilnMultiblock());
+            
             public static void init() {
+            	toregister.forEach(r->MultiblockHandler.registerMultiblock(r.get()));
             }
             public static <T extends IMultiblock> Lazy<T> registerLazily(Supplier<T> mb){
-            	return Lazy.of(()->{
-            		T res=mb.get();
-            		MultiblockHandler.registerMultiblock(res);
-            		return res;
-            	});
+            	Lazy<T> r=Lazy.of(mb);
+            	toregister.add(r);
+            	return r;
             }
         }
     }

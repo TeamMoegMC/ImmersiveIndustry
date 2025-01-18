@@ -20,12 +20,13 @@ package com.teammoeg.immersiveindustry.content.rotarykiln;
 
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
+import com.teammoeg.immersiveindustry.util.IIMultiblock;
 
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 
-public class RotaryKilnMultiblock extends IETemplateMultiblock {
+public class RotaryKilnMultiblock extends IIMultiblock {
     public RotaryKilnMultiblock() {
         super(new ResourceLocation(IIMain.MODID, "multiblocks/rotary_kiln"),
                 new BlockPos(1, 1, 3), new BlockPos(1, 1, 6), new BlockPos(3, 3, 7),

@@ -1,6 +1,7 @@
 package com.teammoeg.immersiveindustry.content.crucible;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
@@ -8,6 +9,8 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent.IIMultiblocks;
+import com.teammoeg.immersiveindustry.content.carkiln.CarKilnLogic;
+import com.teammoeg.immersiveindustry.content.carkiln.CarKilnState;
 import com.teammoeg.immersiveindustry.util.CapabilityFacing;
 import com.teammoeg.immersiveindustry.util.ChangeDetectedItemHandler;
 import com.teammoeg.immersiveindustry.util.IIUtil;
@@ -21,10 +24,12 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultib
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MBInventoryUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheaterBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.NonMirrorableWithActiveBlock;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
@@ -152,7 +157,7 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 			context.markMasterDirty();
 		}
 		if (state.active != lastIsActive){
-			NonMirrorableWithActiveBlock.setActive(context.getLevel(), IIMultiblocks.Multiblock.CRUCIBLE, state.active);
+			NonMirrorableWithActiveBlock.setActive(context.getLevel(), IIMultiblocks.Multiblock.CRUCIBLE.get(), state.active);
 		}
 
 	}
@@ -162,9 +167,85 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 		return new CrucibleState(capabilitySource);
 	}
 
+	static VoxelShape getShape(BlockPos pos) {
+		if(pos.getX()==1&&pos.getZ()==1) {
+			return Shapes.block();
+		}
+		double minX=0;
+		double minZ=0;
+		double maxX=1;
+		double maxZ=1;
+		double minSideX=0;
+		double minSideZ=0;
+		double maxSideX=1;
+		double maxSideZ=1;
+		double minorNum=.375;
+		double bottomY=0;
+		double sideGrow=.1875;
+		switch(pos.getY()){
+		case 2:minorNum=.125;break;
+		case 0:bottomY=.125;sideGrow=.125;
+		case 1:minorNum=.25;break;
+		}
+			
+		if(pos.getX()==2) {
+			maxX=1-minorNum;
+			maxSideX=maxX+sideGrow;
+		}else
+		if(pos.getX()==0) {
+			minX=minorNum;
+			minSideX=minX-sideGrow;
+		}
+		if(pos.getZ()==0) {
+			minZ=minorNum;
+			minSideZ=minZ-sideGrow;
+		}else
+		if(pos.getZ()==2) {
+			maxZ=1-minorNum;
+			maxSideZ=maxZ+sideGrow;
+		}
+		
+		VoxelShape pillar=Shapes.empty();
+		double pillarY=1;
+		if(pos.getY()==3) {
+			pillarY=.0625;
+		}
+
+		
+		
+		if(pos.getX()==0) {
+			if(pos.getZ()==0) {
+				pillar=Shapes.box(0, 0, 0, 1-.375, pillarY, 1-.375);
+			}else
+			if(pos.getZ()==2) {
+				pillar=Shapes.box(0, 0, .375, 1-.375, pillarY, 1);
+			}
+		}
+		if(pos.getX()==2) {
+			if(pos.getZ()==0) {
+				pillar=Shapes.box(.375, 0, 0, 1, pillarY, 1-.375);
+			}else
+			if(pos.getZ()==2) {
+				pillar=Shapes.box(.375, 0, .375, 1, pillarY, 1);
+			}
+		}
+
+		VoxelShape base= Shapes.or(pillar,Shapes.box(minX, bottomY, minZ, maxX, 1, maxZ));
+		if(pos.getY()==1) {
+			base=Shapes.or(Shapes.box(minSideX, .5, minSideZ, maxSideX, 1, maxSideZ),base);
+		}
+		if(pos.getY()==0){
+			base=Shapes.or(Shapes.box(minSideX, .125, minSideZ, maxSideX, .5, maxSideZ), base);
+		}
+		if(pos.getX()==1&&pos.getY()==0&&pos.getZ()==0)
+			base=Shapes.or(Shapes.box(.0625, .125, .0625, .9375, .875, .9375), base);
+		return base;
+	}
+	static final Function<BlockPos, VoxelShape> shapeCache=Util.memoize(CrucibleLogic::getShape);
 	@Override
 	public Function<BlockPos, VoxelShape> shapeGetter(ShapeType forType) {
-		return t -> Shapes.block();
+	
+		return shapeCache;
 	}
 
 	@Override
@@ -257,5 +338,9 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 			return 64;
 		}
 		return 0;
+	}
+	@Override
+	public void dropExtraItems(CrucibleState state, Consumer<ItemStack> drop) {
+		MBInventoryUtils.dropItems(state.inventory, drop);
 	}
 }

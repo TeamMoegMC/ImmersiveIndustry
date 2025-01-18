@@ -21,6 +21,18 @@ public record RecipeProcessResult<T extends Recipe<?>>(T recipe,Map<Integer, Int
 			}
 		}
 	}
+	public void runOperations(IItemHandlerModifiable inventory,int multiplier) {
+		if (operations != null) {
+			for (Entry<Integer, Integer> i : operations.entrySet()) {
+				ItemStack stack = inventory.getStackInSlot(i.getKey());
+				int ncount = stack.getCount() + i.getValue()*multiplier;
+				if (ncount > 0)
+					inventory.setStackInSlot(i.getKey(), stack.copyWithCount(ncount));
+				else
+					inventory.setStackInSlot(i.getKey(), ItemStack.EMPTY);
+			}
+		}
+	}
 	public boolean tryRunOperations(IItemHandlerModifiable inventory) {
 		if (operations != null) {
 			for (Entry<Integer, Integer> i : operations.entrySet()) {
@@ -45,7 +57,7 @@ public record RecipeProcessResult<T extends Recipe<?>>(T recipe,Map<Integer, Int
 		if (operations != null) {
 			for (Entry<Integer, Integer> i : operations.entrySet()) {
 				ItemStack stack = inventory.getStackInSlot(i.getKey());
-				maxcount=Math.min(maxcount, stack.getCount()/i.getValue());
+				maxcount=Math.min(maxcount, stack.getCount()/-i.getValue());
 			}
 		}
 		return maxcount;

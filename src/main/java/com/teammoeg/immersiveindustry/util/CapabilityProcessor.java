@@ -52,6 +52,7 @@ public class CapabilityProcessor {
 		@Override
 		public CapabilityQuery<T> append(CapabilityQuery<T> other) {
 			MultipleCapabilityQuery<T> rs= new MultipleCapabilityQuery<T>();
+			this.getAll().forEach(t->rs.cap.put(t.getFirst(),t.getSecond()));
 			other.getAll().forEach(t->rs.cap.put(t.getFirst(), t.getSecond()));
 			return rs;
 		};
