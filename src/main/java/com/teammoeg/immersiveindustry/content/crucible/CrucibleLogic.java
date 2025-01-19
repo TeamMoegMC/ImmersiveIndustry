@@ -9,8 +9,6 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent.IIMultiblocks;
-import com.teammoeg.immersiveindustry.content.carkiln.CarKilnLogic;
-import com.teammoeg.immersiveindustry.content.carkiln.CarKilnState;
 import com.teammoeg.immersiveindustry.util.CapabilityFacing;
 import com.teammoeg.immersiveindustry.util.ChangeDetectedItemHandler;
 import com.teammoeg.immersiveindustry.util.IIUtil;
@@ -51,6 +49,11 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, IMultiblockLogic<CrucibleState>, IServerTickableComponent<CrucibleState> {
 
+	public static final int MAX_TEMP = 1700;
+	public static final int TEMP_ABOVE_WHICH_REQUIRES_FANS = 1000;
+	public static final BlockPos FRONT_PREHEATER_REL_POS = new BlockPos(1, 0, -1);
+	public static final BlockPos BACK_PREHEATER_REL_POS = new BlockPos(1, 0, 3);
+
 	public CrucibleLogic() {
 
 	}
@@ -65,6 +68,7 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 				if (totalTime > 0) {
 					// burnTime = IIConfig.COMMON.coke.get();
 					state.burnTime = totalTime;
+					state.burnTimeMax = totalTime;
 					ItemStack origin = inventory.getStackInSlot(4);
 					if (origin.getCount() == 1)
 						inventory.setStackInSlotNoChange(4, ItemStack.EMPTY);
@@ -96,9 +100,10 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 		// new heating mechanism
 		ensureBurntime(context);
 		if (state.burnTime > 0) {
-			double coefficient = getFanSpeed(context) < 64 ? 0 : Math.sqrt(getFanSpeed(context)) / 8;
+			int fanspeed = getFanSpeed(context);
+			double coefficient = fanspeed < 64 ? 0 : Math.sqrt(fanspeed) / 8;
 			if (coefficient == 0) {// Speed < 64, no boost
-				if (state.temperature > 1000) {
+				if (state.temperature > TEMP_ABOVE_WHICH_REQUIRES_FANS) {
 					state.temperature--;
 				} else {
 					state.active = true;
@@ -106,7 +111,7 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 					state.temperature++;
 				}
 			} else {// Speed >= 64, higher temperature and faster speed up
-				if (state.temperature < 1700) {
+				if (state.temperature < MAX_TEMP) {
 					state.active = true;
 					state.burnTime--;
 					state.temperature++;
@@ -319,25 +324,31 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 		return update;
 	}
 
-	public <V> V getFromPreheater(IMultiblockContext<CrucibleState> context, Function<BlastFurnacePreheaterBlockEntity, V> getter, V orElse) {
-		return getBlast(context).map(getter).orElse(orElse);
-	}
-
-	public Optional<BlastFurnacePreheaterBlockEntity> getBlast(IMultiblockContext<CrucibleState> context) {
-		BlockEntity te = context.getLevel().getBlockEntity(new BlockPos(1, 0, 2));
-		if (te instanceof BlastFurnacePreheaterBlockEntity && ((BlastFurnacePreheaterBlockEntity) te).getFacing().equals(context.getLevel().getOrientation().front().getOpposite()))
-			return Optional.of((BlastFurnacePreheaterBlockEntity) te);
-		return Optional.empty();
+	public int getFromPreheater(IMultiblockContext<CrucibleState> context, Function<BlastFurnacePreheaterBlockEntity, Integer> getter, int orElse) {
+		Optional<BlastFurnacePreheaterBlockEntity> preheater1 = Optional.empty();
+		Optional<BlastFurnacePreheaterBlockEntity> preheater2 = Optional.empty();
+		BlockEntity te1 = context.getLevel().getBlockEntity(FRONT_PREHEATER_REL_POS);
+		BlockEntity te2 = context.getLevel().getBlockEntity(BACK_PREHEATER_REL_POS);
+		if (te1 instanceof BlastFurnacePreheaterBlockEntity && ((BlastFurnacePreheaterBlockEntity) te1).getFacing().equals(context.getLevel().getOrientation().front().getOpposite()))
+			preheater1 = Optional.of((BlastFurnacePreheaterBlockEntity) te1);
+		if (te2 instanceof BlastFurnacePreheaterBlockEntity && ((BlastFurnacePreheaterBlockEntity) te2).getFacing().equals(context.getLevel().getOrientation().front()))
+			preheater2 = Optional.of((BlastFurnacePreheaterBlockEntity) te2);
+		int result1 = preheater1.map(getter).orElse(orElse);
+		int result2 = preheater2.map(getter).orElse(orElse);
+		return result1 + result2;
 	}
 
 	public int getFanSpeed(IMultiblockContext<CrucibleState> context) {
-		boolean preheaterval = getFromPreheater(context, BlastFurnacePreheaterBlockEntity::doSpeedup, 0) > 0;
-		if (preheaterval != context.getState().hasPreheater) {
-			context.getState().hasPreheater = true;
-			context.markDirtyAndSync();
-			return 64;
+		boolean hasPreheater = getFromPreheater(context, BlastFurnacePreheaterBlockEntity::doSpeedup, 0) > 0;
+		int fanSpeed = 0;
+		if (hasPreheater) {
+			fanSpeed = 64;
 		}
-		return 0;
+		if (hasPreheater != context.getState().hasPreheater) {
+			context.getState().hasPreheater = hasPreheater;
+			context.markDirtyAndSync();
+		}
+		return fanSpeed;
 	}
 	@Override
 	public void dropExtraItems(CrucibleState state, Consumer<ItemStack> drop) {

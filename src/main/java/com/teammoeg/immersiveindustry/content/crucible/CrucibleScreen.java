@@ -38,6 +38,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class CrucibleScreen extends IEContainerScreen<CrucibleContainer> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(IIMain.MODID, "textures/gui/crucible.png");
+    public static final int ROOM_TEMPERATURE_KELVIN = 300;
 
     public CrucibleScreen(CrucibleContainer container, Inventory inv, Component title) {
         super(container, inv, title,TEXTURE);
@@ -57,7 +58,7 @@ public class CrucibleScreen extends IEContainerScreen<CrucibleContainer> {
 		super.gatherAdditionalTooltips(mouseX, mouseY, addLine, addGray);
         if (mouseX >= this.leftPos + 10 && mouseX < this.leftPos + 19 && mouseY > this.topPos + 10 && mouseY < this.topPos + 67) {
             //Temperature in kelvins
-            int k = menu.temperature.getValue() *100 + 300;
+            int k = menu.temperature.getValue() + ROOM_TEMPERATURE_KELVIN;
             addLine.accept(Component.translatable("gui.immersiveindustry.crucible.temperature_in_kelvin", k));
         }
 	}
