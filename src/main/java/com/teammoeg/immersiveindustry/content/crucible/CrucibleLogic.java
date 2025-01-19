@@ -53,6 +53,7 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 	public static final int TEMP_ABOVE_WHICH_REQUIRES_FANS = 1000;
 	public static final BlockPos FRONT_PREHEATER_REL_POS = new BlockPos(1, 0, -1);
 	public static final BlockPos BACK_PREHEATER_REL_POS = new BlockPos(1, 0, 3);
+	public static final int DEFAULT_ACTIVE_FAN_SPEED = 64;
 
 	public CrucibleLogic() {
 
@@ -101,7 +102,7 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 		ensureBurntime(context);
 		if (state.burnTime > 0) {
 			int fanspeed = getFanSpeed(context);
-			double coefficient = fanspeed < 64 ? 0 : Math.sqrt(fanspeed) / 8;
+			double coefficient = fanspeed < DEFAULT_ACTIVE_FAN_SPEED ? 0 : Math.sqrt(fanspeed) / 8;
 			if (coefficient == 0) {// Speed < 64, no boost
 				if (state.temperature > TEMP_ABOVE_WHICH_REQUIRES_FANS) {
 					state.temperature--;
@@ -342,7 +343,7 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 		boolean hasPreheater = getFromPreheater(context, BlastFurnacePreheaterBlockEntity::doSpeedup, 0) > 0;
 		int fanSpeed = 0;
 		if (hasPreheater) {
-			fanSpeed = 64;
+			fanSpeed = DEFAULT_ACTIVE_FAN_SPEED;
 		}
 		if (hasPreheater != context.getState().hasPreheater) {
 			context.getState().hasPreheater = hasPreheater;
