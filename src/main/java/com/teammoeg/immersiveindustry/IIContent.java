@@ -74,7 +74,9 @@ import org.apache.commons.lang3.mutable.MutableObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -115,30 +117,34 @@ public class IIContent {
     }
 
     public static class IIMultiblocks {
-    	public static final MultiblockRegistration<CrucibleState> CRUCIBLE = stone(new CrucibleLogic(),"crucible",false)
+    	public static final List<MultiblockRegistration<?>> MULTIBLOCKS=new ArrayList<>();
+    	public static final MultiblockRegistration<CrucibleState> CRUCIBLE = add(stone(new CrucibleLogic(),"crucible",false)
         	.structure(Multiblock.CRUCIBLE)
         	.component(new IIMenuComponent<>(IIMenus.CRUCIBLE))
-        	.build();
-        public static final MultiblockRegistration<SteamTurbineState> STEAMTURBINE = metal(new SteamTurbineLogic(),"steam_turbine")
+        	.build());
+        public static final MultiblockRegistration<SteamTurbineState> STEAMTURBINE = add(metal(new SteamTurbineLogic(),"steam_turbine")
         	.redstone(t->t.rsstate, new BlockPos(0,1,0))
         	.structure(Multiblock.STEAMTURBINE)
-        	.build();
-        public static final MultiblockRegistration<IndustrialElectrolyzerState> INDUSTRIAL_ELECTROLYZER =  metal(new IndustrialElectrolyzerLogic(),"industrial_electrolyzer")
+        	.build());
+        public static final MultiblockRegistration<IndustrialElectrolyzerState> INDUSTRIAL_ELECTROLYZER =  add(metal(new IndustrialElectrolyzerLogic(),"industrial_electrolyzer")
         	.redstone(t->t.state, new BlockPos(1,1,4))
         	.structure(Multiblock.INDUSTRIAL_ELECTROLYZER)
         	.component(new IIMenuComponent<>(IIMenus.INDUSTRIAL_ELECTROLYZER))
-        	.build();
-        public static final MultiblockRegistration<RotaryKilnState> ROTARY_KILN =  metal(new RotaryKilnLogic(),"rotary_kiln")
+        	.build());
+        public static final MultiblockRegistration<RotaryKilnState> ROTARY_KILN =  add(metal(new RotaryKilnLogic(),"rotary_kiln")
         	.redstone(t->t.state, new BlockPos(0,1,5))
         	.structure(Multiblock.ROTARY_KILN)
         	.component(new IIMenuComponent<>(IIMenus.ROTARY_KILN))
-        	.build();
-        public static final MultiblockRegistration<CarKilnState> CAR_KILN = metal(new CarKilnLogic(),"car_kiln")
+        	.build());
+        public static final MultiblockRegistration<CarKilnState> CAR_KILN = add(metal(new CarKilnLogic(),"car_kiln")
         	.redstone(t->t.state, new BlockPos(0,1,2))
         	.structure(Multiblock.CAR_KILN)
         	.component(new IIMenuComponent<>(IIMenus.CAR_KILN))
-        	.build(); 
-    	
+        	.build()); 
+    	public static <T extends IMultiblockState> MultiblockRegistration<T> add(MultiblockRegistration<T> res) {
+    		MULTIBLOCKS.add(res);
+    		return res;
+    	}
 		private static <S extends IMultiblockState> IEMultiblockBuilder<S> stone(IMultiblockLogic<S> logic, String name, boolean solid) {
 			Properties properties = Properties.of()
 				.mapColor(MapColor.STONE)

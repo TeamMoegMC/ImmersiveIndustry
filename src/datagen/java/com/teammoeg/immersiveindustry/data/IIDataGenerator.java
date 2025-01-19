@@ -32,5 +32,6 @@ public class IIDataGenerator {
     public static void gatherData(GatherDataEvent event) {
         DataGenerator gen = event.getGenerator();
         ExistingFileHelper exHelper = event.getExistingFileHelper();
+        gen.addProvider(event.includeServer(), new  IITags(gen.getPackOutput(), event.getLookupProvider(), IIMain.MODID, exHelper));
     }
 }
