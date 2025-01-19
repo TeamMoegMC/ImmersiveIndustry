@@ -4,6 +4,15 @@
     "immersiveindustry:steam_turbine",
     "immersiveindustry:industrial_electrolyzer",
     "immersiveindustry:rotary_kiln",
+    "immersiveindustry:car_kiln",
+    "immersiveindustry:electrolyzer",
+    "immersiveindustry:burning_chamber",
+    "immersiveindustry:car_kiln_brick",
+    "immersiveindustry:rotary_kiln_cylinder",
+    "immersiveindustry:crucible",
+    "immersiveindustry:steam_turbine",
+    "immersiveindustry:industrial_electrolyzer",
+    "immersiveindustry:rotary_kiln",
     "immersiveindustry:car_kiln"
   ]
 }
