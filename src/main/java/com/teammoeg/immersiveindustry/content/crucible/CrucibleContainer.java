@@ -46,8 +46,8 @@ public class CrucibleContainer extends IIBaseContainer {
         super(type, windowId,inventoryPlayer.player,6);
         CrucibleState state=te.mbContext().getState();
         process.bind(()->state.recipe.getProgressRatio());
-        fuelProcess.bind(()->state.burnTime*1f/state.burnTimeMax);
-        temperature.bind(()->state.temperature/100);
+        fuelProcess.bind(state::getBurnProgress);
+        temperature.bind(()->state.temperature);
         tank=state.tank;
         tankSlot.bind(()->tank.getFluid());
         hasPreheater.bind(()->state.hasPreheater);

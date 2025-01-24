@@ -18,16 +18,13 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class IIUtil {
 
-	public IIUtil() {
-		// TODO Auto-generated constructor stub
-	}
 	public static boolean outputItem(IItemHandlerModifiable inventory,CapabilityReference<IItemHandler> outputCap,int slot) {
-		ItemStack stack = inventory.getStackInSlot(3);
+		ItemStack stack = inventory.getStackInSlot(slot);
 		if(!stack.isEmpty())
 		{
 			ItemStack nstack = Utils.insertStackIntoInventory(outputCap, stack, false);
 			if(nstack.getCount()!=stack.getCount()) {
-				inventory.setStackInSlot(3, nstack);
+				inventory.setStackInSlot(slot, nstack);
 				return true;
 			}
 			

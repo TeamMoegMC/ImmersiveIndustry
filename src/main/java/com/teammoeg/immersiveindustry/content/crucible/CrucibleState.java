@@ -53,6 +53,10 @@ public class CrucibleState implements IMultiblockState {
 		outputFluidCap=CrucibleLogic.fluidout.getFacingCapability(capabilitySource, ForgeCapabilities.FLUID_HANDLER);
 	}
 
+	public float getBurnProgress() {
+		return burnTimeMax == 0 ? 0 : burnTime / (float) burnTimeMax;
+	}
+
 	@Override
 	public void writeSaveNBT(CompoundTag nbt) {
 		nbt.put("inv", inventory.serializeNBT());

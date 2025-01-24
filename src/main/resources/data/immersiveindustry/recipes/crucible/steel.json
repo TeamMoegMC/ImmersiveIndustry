@@ -11,5 +11,6 @@
   "result": {
     "item": "immersiveengineering:ingot_steel"
   },
-  "time": 1200
+  "time": 1200,
+  "temperature": 1500
 }

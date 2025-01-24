@@ -18,7 +18,6 @@
 
 package com.teammoeg.immersiveindustry.content.carkiln;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
@@ -32,11 +31,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
-import net.minecraftforge.fluids.FluidStack;
-
 import java.util.ArrayList;
-
-import javax.annotation.Nullable;
 
 public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
 	@Override
