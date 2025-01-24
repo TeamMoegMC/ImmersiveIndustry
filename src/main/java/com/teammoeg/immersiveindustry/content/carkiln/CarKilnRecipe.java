@@ -51,7 +51,7 @@ public class CarKilnRecipe extends IESerializableRecipe {
     public final int tickEnergy;
     public int maxProcess;
 
-    public CarKilnRecipe(ResourceLocation id, ItemStack[] output, IngredientWithSize[] inputs, FluidTagInput input_fluid, int time, int tickEnergy) {
+    public CarKilnRecipe (ResourceLocation id, ItemStack[] output, IngredientWithSize[] inputs, FluidTagInput input_fluid, int time, int tickEnergy) {
         super(Lazy.of(()->output[0]), IIRecipes.CAR_KILN, id);
         this.output = output;
         this.inputs = inputs;

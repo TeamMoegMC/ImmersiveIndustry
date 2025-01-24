@@ -304,12 +304,12 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 	public void onEntityCollision(IMultiblockContext<CrucibleState> ctx, BlockPos posInMultiblock, Entity collided) {
 		if (posInMultiblock.getY() >= 2) {
 			if (!(collided instanceof ItemEntity)) {
-				if (collided instanceof LivingEntity col && ctx.getState().active)
+				if (collided instanceof LivingEntity col && ctx.getState().temperature>100)
 					col.hurt(ctx.getLevel().getRawLevel().damageSources().hotFloor(), 4);
 				return;
 			}
 			ItemEntity itemEntity = (ItemEntity) collided;
-			ItemStack insertItem = ItemHandlerHelper.insertItem(ctx.getState().inventory, itemEntity.getItem().copy(), false);
+			ItemStack insertItem = ItemHandlerHelper.insertItem(ctx.getState().inputHandler.getValue(), itemEntity.getItem().copy(), false);
 			if (insertItem.isEmpty()) {
 				itemEntity.remove(RemovalReason.DISCARDED);
 				return;
