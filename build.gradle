@@ -236,7 +236,6 @@ publishing {
             artifact jar
             artifact deobfJar
             artifact sourcesJar
-            artifact javadocJar
         }
     }
     repositories {
@@ -250,6 +249,10 @@ publishing {
             authentication {
                 basic(BasicAuthentication)
             }
+        }
+        maven {
+            name = "COS"
+            url = "http://127.0.0.1:9999"
         }
     }
 }
