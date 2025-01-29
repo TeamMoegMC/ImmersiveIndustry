@@ -31,6 +31,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
+import net.minecraftforge.fluids.FluidStack;
+
 import java.util.ArrayList;
 
 public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
@@ -48,18 +50,33 @@ public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
 		IngredientWithSize[] inputs = new IngredientWithSize[buffer.readVarInt()];
 		for (int i = 0; i < inputs.length; i++)
 			inputs[i] = IngredientWithSize.read(buffer);
-		return new CarKilnRecipe(recipeId, output, inputs, FluidTagInput.read(buffer),buffer.readVarInt(),buffer.readVarInt());
+
+		FluidTagInput input_fluid = null;
+		if (buffer.readBoolean())
+			input_fluid = FluidTagInput.read(buffer);
+		int time = buffer.readVarInt();
+		int tickEnergy = buffer.readVarInt();
+		return new CarKilnRecipe(recipeId, output, inputs, input_fluid, time, tickEnergy);
 	}
 
 	@Override
 	public void toNetwork(FriendlyByteBuf buffer, CarKilnRecipe recipe) {
+		// write length of output array
 		buffer.writeVarInt(recipe.output.length);
+		// write each output
 		for(int i=0;i<recipe.output.length;i++)
 			buffer.writeItem(recipe.output[i]);
+		// write length of input array
 		buffer.writeVarInt(recipe.inputs.length);
+		// write each input
 		for (IngredientWithSize input : recipe.inputs)
 			input.write(buffer);
-		recipe.input_fluid.write(buffer);
+		// write fluid input
+		if (recipe.input_fluid != null) {
+			buffer.writeBoolean(true);
+			recipe.input_fluid.write(buffer);
+		} else buffer.writeBoolean(false);
+		// write time and tick energy
 		buffer.writeVarInt(recipe.time);
 		buffer.writeVarInt(recipe.tickEnergy);
 	}
