@@ -150,7 +150,7 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 				if (recipeResult != null) {
 					CrucibleRecipe recipe = recipeResult.recipe();
 					if (inventory.insertItem(5, recipe.output.get(), true).isEmpty() && state.tank.fill(recipe.output_fluid, FluidAction.SIMULATE) >= recipe.output_fluid.getAmount()) {
-						inventory.insertItem(5, recipe.output.get(), false);
+						inventory.insertItem(5, recipe.output.get().copy(), false);
 						state.tank.fill(recipe.output_fluid, FluidAction.EXECUTE);
 						handler.endProcess();
 						recipeResult.runOperations(inventory);

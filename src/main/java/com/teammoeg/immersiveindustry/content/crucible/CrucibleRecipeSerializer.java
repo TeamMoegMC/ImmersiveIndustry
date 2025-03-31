@@ -63,7 +63,9 @@ public class CrucibleRecipeSerializer extends IERecipeSerializer<CrucibleRecipe>
         if(json.has("temperature"))
         	temperature= json.get("temperature").getAsInt();
         if(inputs==null||inputs.length==0)
-        	throw new RuntimeException("Error loading crucible recipe "+recipeId);
+        	throw new RuntimeException("Error loading crucible recipe "+recipeId+" because no input found");
+        if(output.get().isEmpty()&&result_fluid.isEmpty())
+        	throw new RuntimeException("Error loading crucible recipe "+recipeId+" because no output found");
         return new CrucibleRecipe(recipeId, output, result_fluid, inputs, time, temperature);
     }
 
