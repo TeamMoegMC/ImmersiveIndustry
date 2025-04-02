@@ -47,8 +47,8 @@ public class ElectrolyzerScreen extends IEContainerScreen<ElectrolyzerContainer>
     protected List<InfoArea> makeInfoAreas()
     {
         return ImmutableList.of(
-                new FluidInfoArea(menu.tank, new Rect2i(leftPos+21, topPos+18, 16, 47), 195, 0, 20, 51, TEXTURE),
-                new EnergyInfoArea(leftPos+158, topPos+22, menu.energyStorage)
+                new FluidInfoArea(menu.tank, new Rect2i(leftPos+21, topPos+18, 16, 47), 195, 0, 20, 51, TEXTURE)
+                //,new EnergyInfoArea(leftPos+158, topPos+22, menu.energyStorage)
         );
     }
 
