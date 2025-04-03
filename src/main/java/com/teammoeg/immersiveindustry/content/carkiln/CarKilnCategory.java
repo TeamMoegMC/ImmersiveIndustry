@@ -74,7 +74,7 @@ public class CarKilnCategory implements IRecipeCategory<CarKilnRecipe> {
 		for (int i = 0; i < 4; ++i) {
 			itemInput.addSlot(29 + i % 2 * 18, 5 + i / 2 * 18);
 		}
-		JEISlotBuilder<ItemStack> itemOutput = JEISlotBuilder.itemStack(builder, recipe.output).asInput();
+		JEISlotBuilder<ItemStack> itemOutput = JEISlotBuilder.itemStack(builder, recipe.output).asOutput();
 		for (int i = 0; i < 5; ++i) {
 			itemOutput.addSlot(90 + i % 3 * 18, 34 + i / 3 * 18);
 		}
