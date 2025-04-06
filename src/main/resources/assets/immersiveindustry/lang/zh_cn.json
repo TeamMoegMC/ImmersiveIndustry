@@ -23,5 +23,5 @@
   "desc.immersiveengineering.info.multiblock.IE:RotaryKiln": "旋转窑",
   "desc.immersiveengineering.info.multiblock.IE:Crucible": "炼钢坩埚",
   "desc.immersiveengineering.info.multiblock.IE:IndustrialElectrolyzer": "工业电解槽",
-  "gui.immersiveindustry.crucible.temperature_in_kelvin": "温度：%s K"
+  "gui.immersiveindustry.crucible.temperature_in_celsius": "温度：%s C"
 }

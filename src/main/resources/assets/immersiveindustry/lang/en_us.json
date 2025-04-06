@@ -23,5 +23,5 @@
   "desc.immersiveengineering.info.multiblock.IE:RotaryKiln": "Rotary Kiln",
   "desc.immersiveengineering.info.multiblock.IE:Crucible": "Crucible",
   "desc.immersiveengineering.info.multiblock.IE:IndustrialElectrolyzer": "Industrial Electrolyzer",
-  "gui.immersiveindustry.crucible.temperature_in_kelvin": "Temperature: %s K"
+  "gui.immersiveindustry.crucible.temperature_in_celsius": "Temperature: %s C"
 }
