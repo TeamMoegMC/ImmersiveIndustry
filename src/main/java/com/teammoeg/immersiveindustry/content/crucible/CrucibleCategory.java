@@ -81,8 +81,8 @@ public class CrucibleCategory implements IRecipeCategory<CrucibleRecipe> {
     @Override
     public void draw(CrucibleRecipe recipe,IRecipeSlotsView view,GuiGraphics transform, double mouseX, double mouseY) {
         ARROW.draw(transform,57, 11);
-        int k = recipe.temperature - recipe.temperature % 100 + 300;
-        String temperature = LangUtil.translate("gui.immersiveindustry.crucible.temperature_in_kelvin", k).getString();
+        int k = recipe.temperature;
+        String temperature = LangUtil.translate("gui.immersiveindustry.crucible.temperature_in_celsius", k).getString();
         transform.drawString(ClientUtils.font(), temperature, 45, 52, 14833698);
     }
 
