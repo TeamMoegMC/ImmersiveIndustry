@@ -149,7 +149,7 @@ public class IIContent {
 			Properties properties = Properties.of()
 				.mapColor(MapColor.STONE)
 				.instrument(NoteBlockInstrument.BASEDRUM)
-				.strength(2, 20);
+				.strength(2, 20).forceSolidOn();
 			if (!solid)
 				properties.noOcclusion();
 			return new IEMultiblockBuilder<>(logic, name)
@@ -167,7 +167,7 @@ public class IIContent {
 				.notMirrored()
 				.customBlock(
 					IIBlocks.BLOCKS, IItems.ITEMS,
-					r -> new NonMirrorableWithActiveBlock<>(IEBlocks.METAL_PROPERTIES_NO_OCCLUSION.get(), r),
+					r -> new NonMirrorableWithActiveBlock<>(IEBlocks.METAL_PROPERTIES_NO_OCCLUSION.get().forceSolidOn(), r),
 					MultiblockItem::new);
 		}
 
