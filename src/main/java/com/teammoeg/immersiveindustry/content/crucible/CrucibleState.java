@@ -9,7 +9,7 @@ import com.teammoeg.immersiveindustry.util.ChangeDetectedItemHandler;
 import com.teammoeg.immersiveindustry.util.RangedCheckedInputWrapper;
 import com.teammoeg.immersiveindustry.util.RangedOutputWrapper;
 import com.teammoeg.immersiveindustry.util.RecipeHandler;
-import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
+import com.teammoeg.immersiveindustry.util.ItemRecipeProcessResult;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
@@ -45,7 +45,7 @@ public class CrucibleState implements IMultiblockState {
 		Supplier<@Nullable Level> level=capabilitySource.levelSupplier();
 		recipe=new RecipeHandler<>((r,t)->t.time);
 		inventory=new ChangeDetectedItemHandler(6, capabilitySource.getMarkDirtyRunnable());
-		inventory.addSlotListener(0,5, recipe::onContainerChanged);
+		inventory.addSlotListener(0,4, recipe::onContainerChanged);
 		inputHandler=new StoredCapability<>(new RangedCheckedInputWrapper(inventory,0,4,(i,r)->CrucibleRecipe.isValidInput(level.get(),r)));
 		fuelHandler=new StoredCapability<>(new RangedCheckedInputWrapper(inventory,4,5,(i,r)->CrucibleRecipe.getFuelTime(level.get(),r)>0));
 		outputHandler=new StoredCapability<>(new RangedOutputWrapper(inventory,5,6));

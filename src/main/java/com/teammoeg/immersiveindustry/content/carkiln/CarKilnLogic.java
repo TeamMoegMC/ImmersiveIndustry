@@ -3,34 +3,28 @@ package com.teammoeg.immersiveindustry.content.carkiln;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
-import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import com.teammoeg.immersiveindustry.IIConfig;
-import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
-import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipe;
-import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerState;
-import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnLogic;
 import com.teammoeg.immersiveindustry.util.CapabilityFacing;
 import com.teammoeg.immersiveindustry.util.ChangeDetectedItemHandler;
 import com.teammoeg.immersiveindustry.util.IIUtil;
 import com.teammoeg.immersiveindustry.util.RecipeHandler;
 import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
 
-import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MBInventoryUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -85,11 +79,10 @@ public class CarKilnLogic implements IMultiblockLogic<CarKilnState>, IClientTick
 						state.maxProcessCount=state.tank.getFluidAmount()/recipeResult.recipe().input_fluid.getAmount();
 					}
 					//System.out.println(recipeResult.recipe().maxProcess+","+recipeResult.getMaxRuns(inventory)+","+state.maxProcessCount);
-					state.maxProcessCount=Math.min(Math.min(recipeResult.getMaxRuns(inventory), recipeResult.recipe().maxProcess),state.maxProcessCount);
+					state.maxProcessCount=Math.min(Math.min(recipeResult.getMaxRuns(inventory,null), recipeResult.recipe().maxProcess),state.maxProcessCount);
 				}
 				context.markDirtyAndSync();
 			}
-			RandomSource rs = context.getLevel().getRawLevel().random;
 			boolean lastActive = state.active;
 			state.active = false;
 			if (handler.shouldTickProcess()) {
@@ -117,7 +110,7 @@ public class CarKilnLogic implements IMultiblockLogic<CarKilnState>, IClientTick
 					RecipeProcessResult<CarKilnRecipe> recipeResult = handler.getRecipeResultCache();
 					if (recipeResult != null) {
 						CarKilnRecipe recipe = recipeResult.recipe();
-						recipeResult.runOperations(inventory,state.maxProcessCount);
+						recipeResult.runOperations(inventory,null,state.maxProcessCount);
 						if(recipe.input_fluid!=null)
 						state.tank.drain(recipe.input_fluid.getAmount()*state.maxProcessCount, FluidAction.EXECUTE);
 						for(ItemStack output:recipe.output) {

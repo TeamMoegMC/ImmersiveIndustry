@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "immersiveindustry:block/multiblocks/chemical_reactor"
+  },
+  "loader": "forge:obj",
+  "model": "immersiveindustry:models/block/multiblocks/chemical_reactor.obj",
+  "automatic_culling": false,
+  "flip_v": true
+}

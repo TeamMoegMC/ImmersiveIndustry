@@ -14,6 +14,7 @@ import com.teammoeg.immersiveindustry.util.ChangeDetectedItemHandler;
 import com.teammoeg.immersiveindustry.util.IIUtil;
 import com.teammoeg.immersiveindustry.util.RecipeHandler;
 import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
+import com.teammoeg.immersiveindustry.util.ItemRecipeProcessResult;
 
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
@@ -101,6 +102,7 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 		// new heating mechanism
 		ensureBurntime(context);
 		if (state.burnTime > 0) {
+			int prevTemp=state.temperature;
 			int fanspeed = getFanSpeed(context);
 			double coefficient = fanspeed < DEFAULT_ACTIVE_FAN_SPEED ? 0 : Math.sqrt(fanspeed) / 8;
 			if (coefficient == 0) {// Speed < 64, no boost
@@ -124,6 +126,8 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 					}
 				}
 			}
+			if(state.temperature!=prevTemp)
+				state.recipe.onContainerChanged();
 			context.markMasterDirty();
 		}
 		if (state.temperature > 0) {
@@ -153,7 +157,7 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 						inventory.insertItem(5, recipe.output.get().copy(), false);
 						state.tank.fill(recipe.output_fluid, FluidAction.EXECUTE);
 						handler.endProcess();
-						recipeResult.runOperations(inventory);
+						recipeResult.runOperations(inventory,null);
 					}
 
 				} else {

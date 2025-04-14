@@ -21,6 +21,7 @@ package com.teammoeg.immersiveindustry.content.electrolyzer;
 import java.util.Map;
 
 import com.teammoeg.immersiveindustry.IIContent.IIRecipes;
+import com.teammoeg.immersiveindustry.util.ItemRecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.RecipeSimulateHelper;
 
@@ -97,7 +98,7 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
     public static RecipeProcessResult<ElectrolyzerRecipe> test(ElectrolyzerRecipe recipe,ItemStack input, ItemStack input2, FluidStack input_fluid,boolean isLarge) {
     	int size=(input.isEmpty()?0:1)+(input2.isEmpty()?0:1);
     	if(isLarge||!recipe.flag) {
-    		Map<Integer,Integer> slotOps=null;
+    		ItemRecipeProcessResult slotOps=null;
     		if(recipe.inputs.length>0) {
     			if(recipe.inputs.length>size) 
     				return null;
@@ -108,7 +109,7 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
     		}
     		if(recipe.input_fluid!=null&&!recipe.input_fluid.test(input_fluid))
     			return null;
-    		return new RecipeProcessResult<>(recipe, slotOps);
+    		return new RecipeProcessResult<>(recipe,slotOps);
     	}
         return null;
     }

@@ -21,6 +21,7 @@ package com.teammoeg.immersiveindustry.content.crucible;
 import java.util.Map;
 
 import com.teammoeg.immersiveindustry.IIContent.IIRecipes;
+import com.teammoeg.immersiveindustry.util.ItemRecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.RecipeSimulateHelper;
 
@@ -87,7 +88,7 @@ public class CrucibleRecipe extends IESerializableRecipe {
         return BlastFurnaceFuel.getBlastFuelTime(l, stack);//stack.getItem().getTags().contains("coal_coke");
     }
 
-    public static CrucibleRecipe findRecipe(Level l,ItemStack input, ItemStack input2, ItemStack input3, ItemStack input4) {
+    /*public static CrucibleRecipe findRecipe(Level l,ItemStack input, ItemStack input2, ItemStack input3, ItemStack input4) {
         int size = (input.isEmpty() ? 0 : 1) + (input2.isEmpty() ? 0 : 1) + (input3.isEmpty() ? 0 : 1) + (input4.isEmpty() ? 0 : 1);
         outer:
         for (CrucibleRecipe recipe : recipeList.getRecipes(l)) {
@@ -102,7 +103,7 @@ public class CrucibleRecipe extends IESerializableRecipe {
             return recipe;
         }
         return null;
-    }
+    }*/
 
     public static RecipeProcessResult<CrucibleRecipe> findRecipe(Level l,IItemHandler handler) {
     	for (CrucibleRecipe recipe : recipeList.getRecipes(l)) {
@@ -123,7 +124,7 @@ public class CrucibleRecipe extends IESerializableRecipe {
     			size++;
     	}
     	
-		Map<Integer,Integer> slotOps=null;
+    	ItemRecipeProcessResult slotOps=null;
 		if(recipe.inputs.length>0) {
 			if(recipe.inputs.length>size) 
 				return null;
@@ -132,7 +133,7 @@ public class CrucibleRecipe extends IESerializableRecipe {
 			if(slotOps==null)
 				return null;
 		}
-		return new RecipeProcessResult<>(recipe, slotOps);
+		return new RecipeProcessResult<>(recipe,slotOps);
     }
     @Override
     public NonNullList<Ingredient> getIngredients() {

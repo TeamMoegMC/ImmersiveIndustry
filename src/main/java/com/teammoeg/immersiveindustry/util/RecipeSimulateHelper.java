@@ -26,23 +26,23 @@ public class RecipeSimulateHelper extends ItemStackHandler{
 		}
 	}
 	private static final BiFunction<Integer,Integer,Integer> sum=(a,b)->a+b;
-	public Map<Integer,Integer> simulateExtract(List<IngredientWithSize> ling) {
+	public ItemRecipeProcessResult simulateExtract(List<IngredientWithSize> ling) {
 		
 		Map<Integer,Integer> slotOps=new HashMap<>();
 		for(IngredientWithSize ing:ling) {
 			if(!simulateExtract(ing,slotOps))
 				return null;
 		}
-		return slotOps;
+		return new ItemRecipeProcessResult(slotOps);
 	}
-	public Map<Integer,Integer> simulateExtract(IngredientWithSize... ling) {
+	public ItemRecipeProcessResult simulateExtract(IngredientWithSize... ling) {
 		
 		Map<Integer,Integer> slotOps=new HashMap<>();
 		for(IngredientWithSize ing:ling) {
 			if(!simulateExtract(ing,slotOps))
 				return null;
 		}
-		return slotOps;
+		return new ItemRecipeProcessResult(slotOps);
 	}
 	
 	private boolean simulateExtract(IngredientWithSize ing,Map<Integer,Integer> slotOps) {

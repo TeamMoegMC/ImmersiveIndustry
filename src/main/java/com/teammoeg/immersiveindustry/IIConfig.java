@@ -37,7 +37,7 @@ public class IIConfig {
         public final ForgeConfigSpec.IntValue steamTurbineGenerator;
         public final ForgeConfigSpec.IntValue steamTurbineSteam;
         public final ForgeConfigSpec.DoubleValue electrodeCost;
-
+        public final ForgeConfigSpec.IntValue chemicalBase;
         Common(ForgeConfigSpec.Builder builder) {
             electrolyzerBase = builder.defineInRange("ElectrolyzerBaseTickEnergy", 32, 0, Integer.MAX_VALUE);
             rotaryKilnBase = builder.defineInRange("RotaryKilnBaseTickEnergy", 32, 0, Integer.MAX_VALUE);
@@ -46,6 +46,7 @@ public class IIConfig {
             steamTurbineSteam = builder.defineInRange("SteamTurbineSteam", 64, 1, Integer.MAX_VALUE);
             electrodeCost = builder.defineInRange("ElectrodeCost", 0.25, 0, 96000);
             crucibleCoolDown=builder.defineInRange("CrucibleCooldownRate",0.25,0,Integer.MAX_VALUE);
+            chemicalBase=builder.defineInRange("ChemicalReactorBaseTickEnergy", 32, 0, Integer.MAX_VALUE);
         }
     }
 

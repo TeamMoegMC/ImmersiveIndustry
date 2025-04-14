@@ -16,15 +16,21 @@
  * along with Immersive Industry. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.teammoeg.immersiveindustry.content.carkiln;
+package com.teammoeg.immersiveindustry.content.chemical_reactor;
+
+import java.util.Map;
 
 import com.teammoeg.immersiveindustry.IIContent.IIRecipes;
+import com.teammoeg.immersiveindustry.util.FluidRecipeProcessResult;
+import com.teammoeg.immersiveindustry.util.FluidRecipeSimulator;
 import com.teammoeg.immersiveindustry.util.ItemRecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.RecipeSimulateHelper;
 
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
@@ -36,86 +42,94 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.RegistryObject;
 
-public class CarKilnRecipe extends IESerializableRecipe {
-    public static RegistryObject<IERecipeSerializer<CarKilnRecipe>> SERIALIZER;
 
-    public final IngredientWithSize[] inputs;
-    public final ItemStack[] output;
-    public final FluidTagInput input_fluid;
+public class ChemicalRecipe extends IESerializableRecipe {
+    public static RegistryObject<IERecipeSerializer<ChemicalRecipe>> SERIALIZER;
+    // Initialized by reload listener
+    public static CachedRecipeList<ChemicalRecipe> recipeList = new CachedRecipeList<>(IIRecipes.CHEMICAL);
+    public final IngredientWithSize inputs[];
+    public final FluidTagInput input_fluids[];
+    public final ItemStack outputs[];
+    public final FluidStack output_fluids[];
     public final int time;
     public final int tickEnergy;
-    public int maxProcess;
-
-    public CarKilnRecipe (ResourceLocation id, ItemStack[] output, IngredientWithSize[] inputs, FluidTagInput input_fluid, int time, int tickEnergy) {
-        super(Lazy.of(()->output[0]), IIRecipes.CAR_KILN, id);
-        this.output = output;
-        this.inputs = inputs;
-        this.input_fluid = input_fluid;
+    public ChemicalRecipe(ResourceLocation id, ItemStack[] output2, FluidStack[] output_fluid, IngredientWithSize[] input, FluidTagInput[] input_fluids, int time,int tickEnergy) {
+        super(Lazy.of(()->ItemStack.EMPTY), IIRecipes.CRUCIBLE, id);
+        this.outputs = output2;
+        this.output_fluids = output_fluid;
+        this.inputs = input;
         this.time = time;
-        this.tickEnergy = tickEnergy;
-        maxProcess=64;
-        for(ItemStack out:output) {
-        	maxProcess=Math.min(maxProcess, out.getMaxStackSize()/out.getCount());
-        }
+        this.input_fluids = input_fluids;
+        this.tickEnergy=tickEnergy;
     }
+
+
 
     @Override
     protected IERecipeSerializer getIESerializer() {
         return SERIALIZER.get();
     }
-    public int getInputAmount() {
-    	int total=0;
-    	for(IngredientWithSize iws:inputs) {
-    		total+=iws.getCount();
-    	}
-    	return total;
+
+    @Override
+    public ItemStack getResultItem(RegistryAccess ra) {
+        return ItemStack.EMPTY;
     }
-    // Initialized by reload listener
-    public static CachedRecipeList<CarKilnRecipe> recipeList = new CachedRecipeList<>(IIRecipes.CAR_KILN);
+
+
+
 
     public static boolean isValidInput(Level l,ItemStack stack) {
-        for (CarKilnRecipe recipe : recipeList.getRecipes(l))
+        for (ChemicalRecipe recipe : recipeList.getRecipes(l))
             for (IngredientWithSize is : recipe.inputs) {
                 if (is.testIgnoringSize(stack))
                     return true;
             }
         return false;
     }
-    
+    public static int getFuelTime(Level l,ItemStack stack) {
+        return BlastFurnaceFuel.getBlastFuelTime(l, stack);//stack.getItem().getTags().contains("coal_coke");
+    }
 
-    public static RecipeProcessResult<CarKilnRecipe> findRecipe(Level l,IItemHandler input, FluidStack input_fluid) {
-    	for (CarKilnRecipe recipe : recipeList.getRecipes(l)) {
-    		RecipeProcessResult<CarKilnRecipe> data=test(recipe,input,input_fluid);
+
+    public static RecipeProcessResult<ChemicalRecipe> findRecipe(Level l,IItemHandler handler,IFluidHandler tanks) {
+    	for (ChemicalRecipe recipe : recipeList.getRecipes(l)) {
+    		RecipeProcessResult<ChemicalRecipe> data=test(recipe,handler,tanks);
     		if(data!=null)
     			return data;
     	}
     	
         return null;
     }
-    public static RecipeProcessResult<CarKilnRecipe> executeRecipe(Level l,ResourceLocation rl,IItemHandler input, FluidStack input_fluid) {
-    	return test(recipeList.getById(l, rl),input,input_fluid);
+    public static RecipeProcessResult<ChemicalRecipe> executeRecipe(Level l,ResourceLocation rl,IItemHandler handler,IFluidHandler tanks) {
+    	return test(recipeList.getById(l, rl),handler,tanks);
     }
-    public static RecipeProcessResult<CarKilnRecipe> test(CarKilnRecipe recipe,IItemHandler input, FluidStack input_fluid) {
+    public static RecipeProcessResult<ChemicalRecipe> test(ChemicalRecipe recipe,IItemHandler handler,IFluidHandler tanks) {
     	int size=0;
     	for(int i=0;i<4;i++) {
-    		if(!input.getStackInSlot(i).isEmpty())
+    		if(!handler.getStackInSlot(i).isEmpty())
     			size++;
     	}
+    	
     	ItemRecipeProcessResult slotOps=null;
 		if(recipe.inputs.length>0) {
 			if(recipe.inputs.length>size) 
 				return null;
-			RecipeSimulateHelper helper=new RecipeSimulateHelper(input,0,4);
+			RecipeSimulateHelper helper=new RecipeSimulateHelper(handler,0,4);
 			slotOps=helper.simulateExtract(recipe.inputs);
 			if(slotOps==null)
 				return null;
 		}
-		if(recipe.input_fluid!=null&&!recipe.input_fluid.test(input_fluid))
-			return null;
-		return new RecipeProcessResult<>(recipe, slotOps);
+		FluidRecipeProcessResult fluid=null;
+		if(recipe.input_fluids.length>0) {
+			fluid=FluidRecipeSimulator.test(recipe.input_fluids, tanks);
+			if(fluid==null)return null;
+		}
+		return new RecipeProcessResult<>(recipe,slotOps,fluid);
     }
     @Override
     public NonNullList<Ingredient> getIngredients() {
@@ -124,9 +138,4 @@ public class CarKilnRecipe extends IESerializableRecipe {
             nonnulllist.add(is.getBaseIngredient());
         return nonnulllist;
     }
-
-	@Override
-	public ItemStack getResultItem(RegistryAccess pRegistryAccess) {
-		return output[0];
-	}
 }

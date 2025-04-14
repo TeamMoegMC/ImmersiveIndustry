@@ -35,6 +35,12 @@ import com.teammoeg.immersiveindustry.content.IIBaseBlock;
 import com.teammoeg.immersiveindustry.content.IIBaseItem;
 import com.teammoeg.immersiveindustry.content.IIBlockItem;
 import com.teammoeg.immersiveindustry.content.carkiln.*;
+import com.teammoeg.immersiveindustry.content.chemical_reactor.ChemicalMultiblock;
+import com.teammoeg.immersiveindustry.content.chemical_reactor.ChemicalRecipe;
+import com.teammoeg.immersiveindustry.content.chemical_reactor.ChemicalRecipeSerializer;
+import com.teammoeg.immersiveindustry.content.chemical_reactor.ChemicalState;
+import com.teammoeg.immersiveindustry.content.chemical_reactor.ChemicalContainer;
+import com.teammoeg.immersiveindustry.content.chemical_reactor.ChemicalLogic;
 import com.teammoeg.immersiveindustry.content.crucible.*;
 import com.teammoeg.immersiveindustry.content.electrolyzer.*;
 import com.teammoeg.immersiveindustry.content.misc.IIDirectionalBlock;
@@ -141,6 +147,11 @@ public class IIContent {
         	.structure(Multiblock.CAR_KILN)
         	.component(new IIMenuComponent<>(IIMenus.CAR_KILN))
         	.build()); 
+        public static final MultiblockRegistration<ChemicalState> CHEMICAL_REACTOR = add(metal(new ChemicalLogic(),"chemical_reactor")
+        	.redstone(t->t.state, new BlockPos(1,1,0))
+        	.structure(Multiblock.CHEMICAL)
+        	.component(new IIMenuComponent<>(IIMenus.CHEMICAL))
+        	.build()); 
     	public static <T extends IMultiblockState> MultiblockRegistration<T> add(MultiblockRegistration<T> res) {
     		MULTIBLOCKS.add(res);
     		return res;
@@ -182,6 +193,7 @@ public class IIContent {
             public static final Lazy<TemplateMultiblock> ROTARY_KILN = registerLazily(()->new RotaryKilnMultiblock());
             public static final Lazy<TemplateMultiblock> CAR_KILN = registerLazily(()->new CarKilnMultiblock());
             
+            public static final Lazy<TemplateMultiblock> CHEMICAL = registerLazily(()->new ChemicalMultiblock());
             public static void init() {
             	toregister.forEach(r->MultiblockHandler.registerMultiblock(r.get()));
             }
@@ -227,6 +239,8 @@ public class IIContent {
     	public static final TypeWithClass<ElectrolyzerRecipe> ELECTROLYZER = register("electrolyzer",ElectrolyzerRecipe.class);
     	public static final TypeWithClass<RotaryKilnRecipe> ROTARY_KILN = register("rotary_kiln",RotaryKilnRecipe.class);
     	public static final TypeWithClass<CarKilnRecipe> CAR_KILN = register("car_kiln",CarKilnRecipe.class);
+    	public static final TypeWithClass<ChemicalRecipe> CHEMICAL=register("chemical",ChemicalRecipe.class);
+    	
         static {
 
             
@@ -234,7 +248,7 @@ public class IIContent {
             ElectrolyzerRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("electrolyzer", ElectrolyzerRecipeSerializer::new);
             RotaryKilnRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("rotary_kiln", RotaryKilnRecipeSerializer::new);
             CarKilnRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("car_kiln",CarKilnRecipeSerializer::new);
-            
+            ChemicalRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("chemical", ChemicalRecipeSerializer::new);
         }
         public static <T extends Recipe<?>> TypeWithClass<T> register(String name,Class<T> clazz){
         	return new TypeWithClass<>(register(name), clazz);
@@ -256,7 +270,7 @@ public class IIContent {
     	public static final MultiblockContainer<CarKilnState, CarKilnContainer> CAR_KILN=registerMultiblock("car_kiln", CarKilnContainer::new,CarKilnContainer::new);
     	public static final MultiblockContainer<IndustrialElectrolyzerState, IndustrialElectrolyzerContainer> INDUSTRIAL_ELECTROLYZER=registerMultiblock("industrial_electrolyzer", IndustrialElectrolyzerContainer::new,IndustrialElectrolyzerContainer::new);
     	public static final RegistryObject<MenuType<ElectrolyzerContainer>> ELECTROLYZER=register("electrolyzer",ElectrolyzerContainer::makeClient);
-    	
+    	public static final MultiblockContainer<ChemicalState, ChemicalContainer> CHEMICAL=registerMultiblock("chemical", ChemicalContainer::new,ChemicalContainer::new);
     	
     	@SuppressWarnings("unchecked")
     	public static <T extends AbstractContainerMenu, BE extends BlockEntity> RegistryObject<MenuType<T>> register(String name, BEMenuFactory<T, BE> factory) {

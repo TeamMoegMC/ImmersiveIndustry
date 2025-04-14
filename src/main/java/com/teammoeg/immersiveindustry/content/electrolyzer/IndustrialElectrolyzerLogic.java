@@ -13,6 +13,7 @@ import com.teammoeg.immersiveindustry.util.ChangeDetectedItemHandler;
 import com.teammoeg.immersiveindustry.util.IIUtil;
 import com.teammoeg.immersiveindustry.util.RecipeHandler;
 import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
+import com.teammoeg.immersiveindustry.util.ItemRecipeProcessResult;
 
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
@@ -106,7 +107,7 @@ public class IndustrialElectrolyzerLogic
 							state.tank[1].fill(recipe.output_fluid.copy(), FluidAction.EXECUTE);
 							state.tank[0].drain(recipe.input_fluid.getAmount(), FluidAction.EXECUTE);
 							handler.endProcess();
-							recipeResult.runOperations(inventory);
+							recipeResult.runOperations(inventory,null);
 							
 						}
 
@@ -123,6 +124,17 @@ public class IndustrialElectrolyzerLogic
 
 	}
 
+	public boolean tryOutput(IMultiblockContext<IndustrialElectrolyzerState> context) {
+		IndustrialElectrolyzerState state = context.getState();
+		boolean update = FluidUtils.multiblockFluidOutput(state.outFluidCap1, state.tank[1], 0, 0, null);
+		update |= FluidUtils.multiblockFluidOutput(state.outFluidCap2, state.tank[1], 0, 0, null);
+		if (context.getLevel().shouldTickModulo(8)) {
+			final IItemHandlerModifiable inventory = state.inventory;
+			update |= IIUtil.outputItem(inventory, state.outInvCap1, 4);
+			update |= IIUtil.outputItem(inventory, state.outInvCap2, 4);
+		}
+		return update;
+	}
 	@Override
 	public void tickClient(IMultiblockContext<IndustrialElectrolyzerState> context) {
 		IndustrialElectrolyzerState state = context.getState();
@@ -173,17 +185,6 @@ public class IndustrialElectrolyzerLogic
 		return IMultiblockLogic.super.click(ctx, posInMultiblock, player, hand, absoluteHit, isClient);
 	}
 
-	public boolean tryOutput(IMultiblockContext<IndustrialElectrolyzerState> context) {
-		IndustrialElectrolyzerState state = context.getState();
-		boolean update = FluidUtils.multiblockFluidOutput(state.outFluidCap1, state.tank[1], 0, 0, null);
-		update |= FluidUtils.multiblockFluidOutput(state.outFluidCap2, state.tank[1], 0, 0, null);
-		if (context.getLevel().shouldTickModulo(8)) {
-			final IItemHandlerModifiable inventory = state.inventory;
-			update |= IIUtil.outputItem(inventory, state.outInvCap1, 4);
-			update |= IIUtil.outputItem(inventory, state.outInvCap2, 4);
-		}
-		return update;
-	}
 	@Override
 	public void dropExtraItems(IndustrialElectrolyzerState state, Consumer<ItemStack> drop) {
 		MBInventoryUtils.dropItems(state.inventory, drop);

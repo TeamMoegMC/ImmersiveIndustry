@@ -30,6 +30,7 @@ import com.teammoeg.immersiveindustry.IIContent.IIMultiblocks;
 import com.teammoeg.immersiveindustry.IIContent.IITileTypes;
 import com.teammoeg.immersiveindustry.content.carkiln.CarKilnRenderer;
 import com.teammoeg.immersiveindustry.content.carkiln.CarKilnScreen;
+import com.teammoeg.immersiveindustry.content.chemical_reactor.ChemicalScreen;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleScreen;
 import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerScreen;
 import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerContainer;
@@ -66,6 +67,7 @@ public class ClientRegistryEvents {
         MenuScreens.register(IIMenus.INDUSTRIAL_ELECTROLYZER.getType(), IndustrialElectrolyzerScreen::new);
         MenuScreens.register(IIMenus.CAR_KILN.getType(), CarKilnScreen::new);
         MenuScreens.register(IIMenus.CRUCIBLE.getType(), CrucibleScreen::new);
+        MenuScreens.register(IIMenus.CHEMICAL.getType(), ChemicalScreen::new);
         /*registerIEScreen(new ResourceLocation(IIMain.MODID, "crucible"), CrucibleScreen::new);
         registerIEScreen(new ResourceLocation(IIMain.MODID, "electrolyzer"), ElectrolyzerScreen::new);
         registerIEScreen(new ResourceLocation(IIMain.MODID, "industrial_electrolyzer"), IndustrialElectrolyzerScreen::new);

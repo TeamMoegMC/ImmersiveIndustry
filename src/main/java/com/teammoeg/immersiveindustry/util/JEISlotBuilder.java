@@ -47,6 +47,9 @@ public class JEISlotBuilder<T> {
 	public static JEISlotBuilderBuilder<FluidStack> fluidStack(IRecipeLayoutBuilder layout,List<List<FluidStack>> items) {
 		return new JEISlotBuilderBuilder<>(layout,ForgeTypes.FLUID_STACK,items);
 	}
+	public static JEISlotBuilderBuilder<FluidStack> fluidStack(IRecipeLayoutBuilder layout,FluidStack[] items) {
+		return new JEISlotBuilderBuilder<>(layout,ForgeTypes.FLUID_STACK,Arrays.stream(items).map(Arrays::asList).collect(Collectors.toList()));
+	}
 	public static <I> IRecipeSlotBuilder addIngredientSlot(RecipeIngredientRole role,IRecipeLayoutBuilder layout,IIngredientType<I> type,List<List<I>> ingredients,int x,int y,int slotNum) {
 		IRecipeSlotBuilder slot=layout.addSlot(role, x, y);
 		if(ingredients.size()>slotNum) {

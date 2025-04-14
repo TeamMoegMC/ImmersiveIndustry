@@ -1,14 +1,13 @@
 package com.teammoeg.immersiveindustry.content.carkiln;
 
-import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
-import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
-import blusunrize.immersiveengineering.client.utils.RenderUtils;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.teammoeg.immersiveindustry.util.DynamicBlockModelReference;
 import com.teammoeg.immersiveindustry.util.RenderHelper;
 
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
+import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
+import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;

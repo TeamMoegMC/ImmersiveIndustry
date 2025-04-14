@@ -18,18 +18,12 @@
 
 package com.teammoeg.immersiveindustry.content.carkiln;
 
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
-
-import java.util.Arrays;
-
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
-import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
 import com.teammoeg.immersiveindustry.util.JEISlotBuilder;
-import com.teammoeg.immersiveindustry.util.JEISlotBuilder.JEISlotBuilderBuilder;
 import com.teammoeg.immersiveindustry.util.LangUtil;
 
-import mezz.jei.api.constants.VanillaTypes;
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
