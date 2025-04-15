@@ -95,7 +95,7 @@ public class ChemicalRecipeSerializer extends IERecipeSerializer<ChemicalRecipe>
         	tickEnergy = json.get("tickEnergy").getAsInt();
         if(inputs.length==0&&input_fluids.length==0)
         	throw new JsonSyntaxException("Error loading chemical recipe "+recipeId+" because no input found");
-        if(outputs.length==0)
+        if(outputs.length==0&&output_fluids.length==0)
         	throw new JsonSyntaxException("Error loading chemical recipe "+recipeId+" because no output found");
         return new ChemicalRecipe(recipeId, outputs, output_fluids, inputs, input_fluids,time,tickEnergy);
     }

@@ -20,7 +20,7 @@ public class JEISlotBuilder<T> {
 			return new JEISlotBuilder<T>(RecipeIngredientRole.INPUT,layout,type,ingredients);
 		}
 		public JEISlotBuilder<T> asOutput(){
-			return new JEISlotBuilder<T>(RecipeIngredientRole.INPUT,layout,type,ingredients);
+			return new JEISlotBuilder<T>(RecipeIngredientRole.OUTPUT,layout,type,ingredients);
 		}
 	} 
 	RecipeIngredientRole role;
