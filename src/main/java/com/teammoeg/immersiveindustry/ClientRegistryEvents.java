@@ -136,6 +136,12 @@ public class ClientRegistryEvents {
             builder.readFromFile(new ResourceLocation(IIMain.MODID, "steam_turbine"));
             man.addEntry(CATEGORY, builder.create(), 5);
         }
+        {
+            ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
+            builder.addSpecialElement(new SpecialElementData("chemical_reactor", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.Multiblock.CHEMICAL.get())));
+            builder.readFromFile(new ResourceLocation(IIMain.MODID, "chemical_reactor"));
+            man.addEntry(CATEGORY, builder.create(), 6);
+        }
         extras.put("steamTurbineGenerator", () -> IIConfig.COMMON.steamTurbineGenerator.get());
         extras.put("electrodeCost", () -> IIConfig.COMMON.electrodeCost.get());
         ManualHelper.ADD_CONFIG_GETTER.getValue().accept((s) -> {
