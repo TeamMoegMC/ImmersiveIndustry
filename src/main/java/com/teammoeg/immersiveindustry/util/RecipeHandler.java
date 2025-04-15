@@ -99,6 +99,7 @@ public class RecipeHandler<T extends Recipe<?>>{
 	public void endProcess() {
 		recipeResultCache=null;
 		process=processMax=0;
+		recipeTested=false;
 	}
 	public void resetProgress() {
 		process=processMax;

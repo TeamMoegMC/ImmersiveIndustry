@@ -113,13 +113,13 @@ public class ChemicalLogic implements IClientTickableComponent<ChemicalState>, I
 							if(recipe.outputs.length>0) {
 								int num=3;
 								for(ItemStack is:recipe.outputs) {
-									inventory.insertItem(num++, is, false);
+									inventory.insertItem(num++, is.copy(), false);
 								}
 							}
 							if(recipe.output_fluids.length>0) {
 								int num=0;
 								for(FluidStack fs:recipe.output_fluids) {
-									state.outTank[num++].fill(fs, FluidAction.EXECUTE);
+									state.outTank[num++].fill(fs.copy(), FluidAction.EXECUTE);
 								}
 							}
 							handler.endProcess();

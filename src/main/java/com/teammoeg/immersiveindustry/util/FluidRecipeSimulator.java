@@ -42,7 +42,7 @@ public class FluidRecipeSimulator {
 				}
 				if(cnt<=0)break;
 			}
-			if(cnt>0)break;
+			if(cnt>0)return null;
 		}
 		return new FluidRecipeProcessResult(li);
 	}

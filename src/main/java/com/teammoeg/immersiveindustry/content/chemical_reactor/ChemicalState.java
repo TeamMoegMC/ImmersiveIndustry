@@ -34,10 +34,23 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 
 public class ChemicalState implements IMultiblockState {
+	class RecipeResetFluidTank extends FluidTank{
+
+		public RecipeResetFluidTank(int capacity) {
+			super(capacity);
+		}
+
+		@Override
+		protected void onContentsChanged() {
+			super.onContentsChanged();
+			recipe.onContainerChanged();
+		}
+		
+	}
 	//common properties
     ChangeDetectedItemHandler inventory;
-    FluidTank[] inTank=new FluidTank[] {new FluidTank(2000),new FluidTank(2000),new FluidTank(2000)};
-    FluidTank[] outTank=new FluidTank[] {new FluidTank(2000),new FluidTank(2000),new FluidTank(2000)};
+    FluidTank[] inTank=new FluidTank[] {new RecipeResetFluidTank(2000),new RecipeResetFluidTank(2000),new RecipeResetFluidTank(2000)};
+    FluidTank[] outTank=new FluidTank[] {new RecipeResetFluidTank(2000),new RecipeResetFluidTank(2000),new RecipeResetFluidTank(2000)};
     public MutableEnergyStorage energyStorage = new MutableEnergyStorage(32000);
     RecipeHandler<ChemicalRecipe> recipe;
     //client properties
