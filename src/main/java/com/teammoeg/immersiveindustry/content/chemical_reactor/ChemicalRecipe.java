@@ -59,7 +59,7 @@ public class ChemicalRecipe extends IESerializableRecipe {
     public final int time;
     public final int tickEnergy;
     public ChemicalRecipe(ResourceLocation id, ItemStack[] output2, FluidStack[] output_fluid, IngredientWithSize[] input, FluidTagInput[] input_fluids, int time,int tickEnergy) {
-        super(Lazy.of(()->ItemStack.EMPTY), IIRecipes.CRUCIBLE, id);
+        super(Lazy.of(()->ItemStack.EMPTY), IIRecipes.CHEMICAL, id);
         this.outputs = output2;
         this.output_fluids = output_fluid;
         this.inputs = input;

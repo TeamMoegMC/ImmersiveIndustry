@@ -1,31 +1,200 @@
 {
-  "parent": "minecraft:block/block",
-  "textures": {
-    "particle": "immersiveindustry:block/multiblocks/chemical_reactor"
-  },
-  "loader": "immersiveengineering:basic_split",
-  "dynamic": false,
-  "inner_model": {
-    "parent": "minecraft:block/block",
-    "textures": {
-      "particle": "immersiveindustry:block/multiblocks/chemical_reactor"
-    },
-    "loader": "forge:obj",
-    "model": "immersiveindustry:models/block/multiblocks/chemical_reactor.obj",
-    "automatic_culling": false,
-    "flip_v": true
-  },
-  "split_parts": [
-  [-1, -1, -1], [-1, -1, 0], [-1, -1, 1],
-  [-1, 0, -1], [-1, 0, 0], [-1, 0, 1],
-  [-1, 1, -1], [-1, 1, 0], [-1, 1, 1],
-  
-  [0, -1, -1], [0, -1, 0], [0, -1, 1],
-  [0, 0, -1], [0, 0, 0], [0, 0, 1],
-  [0, 1, -1], [0, 1, 0], [0, 1, 1],
-  
-  [1, -1, -1], [1, -1, 0], [1, -1, 1],
-  [1, 0, -1], [1, 0, 0], [1, 0, 1],
-  [1, 1, -1], [1, 1, 0], [1, 1, 1], [0, 2, 0]
-]
+	"parent": "minecraft:block/block",
+	"textures": {
+		"particle": "immersiveindustry:block/multiblocks/chemical_reactor"
+	},
+	"loader": "immersiveengineering:basic_split",
+	"dynamic": false,
+	"inner_model": {
+		"parent": "minecraft:block/block",
+		"textures": {
+			"particle": "immersiveindustry:block/multiblocks/chemical_reactor"
+		},
+		"loader": "forge:obj",
+		"model": "immersiveindustry:models/block/multiblocks/chemical_reactor.obj",
+		"automatic_culling": false,
+		"flip_v": true
+	},
+	"split_parts": [
+		[
+			-1,
+			-1,
+			-1
+		],
+		[
+			-1,
+			-1,
+			0
+		],
+		[
+			-1,
+			-1,
+			1
+		],
+		[
+			-1,
+			0,
+			-1
+		],
+		[
+			-1,
+			0,
+			0
+		],
+		[
+			-1,
+			0,
+			1
+		],
+		[
+			-1,
+			1,
+			-1
+		],
+		[
+			-1,
+			1,
+			0
+		],
+		[
+			-1,
+			1,
+			1
+		],
+		[
+			-1,
+			2,
+			-1
+		],
+		[
+			-1,
+			2,
+			0
+		],
+		[
+			-1,
+			2,
+			1
+		],
+		[
+			0,
+			-1,
+			-1
+		],
+		[
+			0,
+			-1,
+			0
+		],
+		[
+			0,
+			-1,
+			1
+		],
+		[
+			0,
+			0,
+			-1
+		],
+		[
+			0,
+			0,
+			0
+		],
+		[
+			0,
+			0,
+			1
+		],
+		[
+			0,
+			1,
+			-1
+		],
+		[
+			0,
+			1,
+			0
+		],
+		[
+			0,
+			1,
+			1
+		],
+		[
+			0,
+			2,
+			-1
+		],
+		[
+			0,
+			2,
+			0
+		],
+		[
+			0,
+			2,
+			1
+		],
+		[
+			1,
+			-1,
+			-1
+		],
+		[
+			1,
+			-1,
+			0
+		],
+		[
+			1,
+			-1,
+			1
+		],
+		[
+			1,
+			0,
+			-1
+		],
+		[
+			1,
+			0,
+			0
+		],
+		[
+			1,
+			0,
+			1
+		],
+		[
+			1,
+			1,
+			-1
+		],
+		[
+			1,
+			1,
+			0
+		],
+		[
+			1,
+			1,
+			1
+		],
+		[
+			1,
+			2,
+			-1
+		],
+		[
+			1,
+			2,
+			0
+		],
+		[
+			1,
+			2,
+			1
+		]
+	]
 }

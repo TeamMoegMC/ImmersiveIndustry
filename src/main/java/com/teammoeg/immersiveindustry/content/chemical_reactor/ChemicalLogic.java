@@ -3,33 +3,34 @@ package com.teammoeg.immersiveindustry.content.chemical_reactor;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
-import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import com.teammoeg.immersiveindustry.IIConfig;
-import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipe;
 import com.teammoeg.immersiveindustry.util.CapabilityFacing;
 import com.teammoeg.immersiveindustry.util.ChangeDetectedItemHandler;
 import com.teammoeg.immersiveindustry.util.IIUtil;
 import com.teammoeg.immersiveindustry.util.RecipeHandler;
 import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
+
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MBInventoryUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -39,23 +40,17 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 public class ChemicalLogic implements IClientTickableComponent<ChemicalState>, IMultiblockLogic<ChemicalState>, IServerTickableComponent<ChemicalState> {
 
 	static final CapabilityFacing[] out = new CapabilityFacing[] {
-		new CapabilityFacing(0, 1, 1, RelativeBlockFace.LEFT),
-		new CapabilityFacing(2, 1, 1, RelativeBlockFace.RIGHT),
-		new CapabilityFacing(1, 1, 2, RelativeBlockFace.BACK)
+		new CapabilityFacing(2, 1, 1, RelativeBlockFace.LEFT),
+		new CapabilityFacing(1, 1, 2, RelativeBlockFace.BACK),
+		new CapabilityFacing(0, 1, 1, RelativeBlockFace.RIGHT),
+		
 	};
 	static final CapabilityFacing[] in = new CapabilityFacing[] {
-		new CapabilityFacing(0, 2, 1, RelativeBlockFace.LEFT),
-		new CapabilityFacing(2, 2, 1, RelativeBlockFace.RIGHT),
-		new CapabilityFacing(1, 2, 2, RelativeBlockFace.BACK)
+		new CapabilityFacing(2, 2, 1, RelativeBlockFace.LEFT),
+		new CapabilityFacing(1, 2, 2, RelativeBlockFace.BACK),
+		new CapabilityFacing(0, 2, 1, RelativeBlockFace.RIGHT),
+		
 	};
-	static final CapabilityFacing[] itemin=new CapabilityFacing[8];
-	static {
-		int num=0;
-		for(int x=0;x<3;x++)
-			for(int y=0;y<3;y++)
-				if(x!=1||y!=1)
-					itemin[num++]= new CapabilityFacing(x, 2, y, RelativeBlockFace.UP);
-	}
 	static final CapabilityFacing itemout= new CapabilityFacing(1, 0, 1, RelativeBlockFace.DOWN);
 	static final CapabilityFacing energy = new CapabilityFacing(1, 3, 1, RelativeBlockFace.UP);
 	public ChemicalLogic() {
@@ -83,7 +78,7 @@ public class ChemicalLogic implements IClientTickableComponent<ChemicalState>, I
 			boolean lastActive = state.active;
 			state.active = false;
 			if (handler.shouldTickProcess()) {
-				ElectrolyzerRecipe rcp = ElectrolyzerRecipe.recipeList.getById(context.getLevel().getRawLevel(), handler.getLastRecipe());
+				ChemicalRecipe rcp = ChemicalRecipe.recipeList.getById(context.getLevel().getRawLevel(), handler.getLastRecipe());
 				energyConsume = rcp.tickEnergy;
 				if (state.energyStorage.extractEnergy(energyConsume, true) >= energyConsume)
 					if (handler.tickProcess(1)) {
@@ -184,6 +179,11 @@ public class ChemicalLogic implements IClientTickableComponent<ChemicalState>, I
 
 	@Override
 	public <T> LazyOptional<T> getCapability(IMultiblockContext<ChemicalState> ctx, CapabilityPosition position, Capability<T> cap) {
+		//specially handle input as it is hard to represent with a bunch of positions
+		if(cap==ForgeCapabilities.ITEM_HANDLER&&position.posInMultiblock().getY()==3) {
+			return ctx.getState().inputHandler.cast(ctx);
+		}
+		//back to normal logic
 		return ctx.getState().capabilities.getCapability(cap, position, ctx);
 	}
 	@Override

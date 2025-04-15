@@ -51,6 +51,7 @@ import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineMultibloc
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineState;
 import com.teammoeg.immersiveindustry.util.ClientContainerConstructor;
 import com.teammoeg.immersiveindustry.util.IIMenuComponent;
+import com.teammoeg.immersiveindustry.util.IIMultiblockBlock;
 import com.teammoeg.immersiveindustry.util.MultiBlockMenuConstructor;
 import com.teammoeg.immersiveindustry.util.MultiblockContainer;
 import net.minecraft.core.BlockPos;
@@ -178,7 +179,7 @@ public class IIContent {
 				.notMirrored()
 				.customBlock(
 					IIBlocks.BLOCKS, IItems.ITEMS,
-					r -> new NonMirrorableWithActiveBlock<>(IEBlocks.METAL_PROPERTIES_NO_OCCLUSION.get().forceSolidOn(), r),
+					r -> new IIMultiblockBlock<>(IEBlocks.METAL_PROPERTIES_NO_OCCLUSION.get().forceSolidOn(), r),
 					MultiblockItem::new);
 		}
 

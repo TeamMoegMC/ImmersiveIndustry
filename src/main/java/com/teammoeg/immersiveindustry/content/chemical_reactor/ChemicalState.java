@@ -44,7 +44,7 @@ public class ChemicalState implements IMultiblockState {
     boolean active;
 	BooleanSupplier isSoundPlaying = () -> false;
     //capability handlers
-	final IItemHandler inputHandler;
+	final StoredCapability<IItemHandler> inputHandler;
     final IItemHandler outputHandler;
     final MultipleTankHandler recipeOutputFluidHandler=new MultipleTankHandler(outTank);
     final MultipleTankHandler recipeInputFluidHandler=new MultipleTankHandler(inTank);
@@ -58,7 +58,7 @@ public class ChemicalState implements IMultiblockState {
 		recipe=new RecipeHandler<>((r,t)->t.time);
 		inventory=new ChangeDetectedItemHandler(6, capabilitySource.getMarkDirtyRunnable());
 		inventory.addSlotListener(0,3, recipe::onContainerChanged);
-		inputHandler=new RangedCheckedInputWrapper(inventory,0,4,(i,r)->ChemicalRecipe.isValidInput(level.get(),r));
+		inputHandler=new StoredCapability<>(new RangedCheckedInputWrapper(inventory,0,4,(i,r)->ChemicalRecipe.isValidInput(level.get(),r)));
 		outputHandler=new RangedOutputWrapper(inventory,4,7);
 		//fluidio definition
 		int num=0;
@@ -70,14 +70,14 @@ public class ChemicalState implements IMultiblockState {
 		}
 		num=0;
 		for(CapabilityFacing i:ChemicalLogic.in) {
-			ArrayFluidHandler tofill=ArrayFluidHandler.drainOnly(inTank[num++], capabilitySource.getMarkDirtyRunnable());
+			ArrayFluidHandler tofill=ArrayFluidHandler.fillOnly(inTank[num++], capabilitySource.getMarkDirtyRunnable());
 			fluid.addCapability(i, tofill);
 		}
 		//itemio definition
-		CapabilityBuilder<IItemHandler> item=capabilities.itemHandler();
+		/*CapabilityBuilder<IItemHandler> item=capabilities.itemHandler();
 		for(CapabilityFacing i:ChemicalLogic.itemin) {
 			item.addCapability(i, inputHandler);
-		}
+		}*/
 		outputItemCap=ChemicalLogic.itemout.getFacingCapability(capabilitySource, ForgeCapabilities.ITEM_HANDLER);
 		//energyio definition
 		capabilities.energy().addCapability(ChemicalLogic.energy, energyStorage);

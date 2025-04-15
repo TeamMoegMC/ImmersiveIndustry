@@ -11,11 +11,11 @@
     "amount": 1000
   }],
   "result_fluids": [{
-    "tag": "minecraft:water",
-    "amount": 200
+    "FluidName": "minecraft:water",
+    "Amount": 200
   },{
-    "tag": "minecraft:lava",
-    "amount": 200
+    "FluidName": "minecraft:lava",
+    "Amount": 200
   }],
    "outputs": [{
     "item": "minecraft:stone",
