@@ -23,6 +23,7 @@ import com.teammoeg.immersiveindustry.IIMain;
 import com.teammoeg.immersiveindustry.util.FluidRecipeSimulator;
 import com.teammoeg.immersiveindustry.util.JEISlotBuilder;
 import com.teammoeg.immersiveindustry.util.LangUtil;
+import com.teammoeg.immersiveindustry.util.RecipeSimulateHelper;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
@@ -88,7 +89,7 @@ public class ChemicalCategory implements IRecipeCategory<ChemicalRecipe> {
     public void setRecipe(IRecipeLayoutBuilder recipeLayout, ChemicalRecipe recipe, IFocusGroup ingredients) {
         IRecipeSlotBuilder fluidOut=recipeLayout.addSlot(RecipeIngredientRole.INPUT, 126, 9).setFluidRenderer(14400, false, 16, 47).setOverlay(TANK, 0, 0);
 
-        JEISlotBuilder<ItemStack> itemInput=JEISlotBuilder.itemStack(recipeLayout, JEIIngredientStackListBuilder.make(recipe.inputs).build()).asInput();
+        JEISlotBuilder<ItemStack> itemInput=JEISlotBuilder.itemStack(recipeLayout, RecipeSimulateHelper.expand(recipe.inputs)).asInput();
         itemInput.addSlot(11,  9);
         itemInput.addSlot(32,  9);
         itemInput.addSlot(11, 30);

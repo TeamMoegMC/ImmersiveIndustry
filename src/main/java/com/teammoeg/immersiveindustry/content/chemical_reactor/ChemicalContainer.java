@@ -38,6 +38,8 @@ import net.minecraftforge.items.SlotItemHandler;
 
 public class ChemicalContainer extends IIBaseContainer {
     CustomDataSlot<Float> process=IIContainerData.SLOT_FIXED.create(this);
+    //integral process for gui animation
+    CustomDataSlot<Integer> process_num=IIContainerData.SLOT_INT.create(this);
     CustomDataSlot<FluidStack>[] tanks=new CustomDataSlot[6];
     {
     	for(int i=0;i<tanks.length;i++) {
@@ -46,11 +48,13 @@ public class ChemicalContainer extends IIBaseContainer {
     }
     FluidTank[] tank=new FluidTank[6];
     CustomDataSlot<Integer> energySlot=IIContainerData.SLOT_INT.create(this);
+    CustomDataSlot<Boolean> active=IIContainerData.SLOT_BOOL.create(this);
 	MutableEnergyStorage energy;
     public ChemicalContainer(MenuType<ChemicalContainer> type, int windowId, Inventory inventoryPlayer, MultiblockMenuContext<ChemicalState> te){
         super(type, windowId,inventoryPlayer.player,6);
         ChemicalState state=te.mbContext().getState();
         process.bind(()->state.recipe.getProgressRatio());
+        process_num.bind(state.recipe::getProcess);
         int num=0;
         for(FluidTank curtank:state.inTank) {
         	int i=num++;
@@ -65,13 +69,14 @@ public class ChemicalContainer extends IIBaseContainer {
         addSlots(state.inventory,inventoryPlayer);
         energy=state.energyStorage;
         energySlot.bind(energy::getEnergyStored);
+        active.bind(()->state.active);
     }
     public ChemicalContainer(MenuType<ChemicalContainer> type, int windowId, Inventory inventoryPlayer){
     	super(type, windowId,inventoryPlayer.player,6);
     	addSlots(new ItemStackHandler(6),inventoryPlayer);
 
         for(int i=0;i<tanks.length;i++) {
-        	tank[i]=new FluidTank(2000);
+        	tank[i]=new FluidTank(7000);
         	tanks[i].bind(tank[i]::setFluid);
         }
         energy=new MutableEnergyStorage(32000);
@@ -81,14 +86,14 @@ public class ChemicalContainer extends IIBaseContainer {
     public void addSlots(IItemHandlerModifiable inv,Inventory inventoryPlayer) {
     	Level l=inventoryPlayer.player.level();
         // input
-        this.addSlot(new ChemicalSlot(inv, 0, 30, 12,l));
-        this.addSlot(new ChemicalSlot(inv, 1, 51, 12,l));
-        this.addSlot(new ChemicalSlot(inv, 2, 72, 12,l));
+        this.addSlot(new ChemicalSlot(inv, 0, 11, 77,l));
+        this.addSlot(new ChemicalSlot(inv, 1, 34, 77,l));
+        this.addSlot(new ChemicalSlot(inv, 2, 57, 77,l));
 
-        this.addSlot(new OutputSlot(inv, 3, 109, 12)); 
-        this.addSlot(new OutputSlot(inv, 4, 130, 12)); 
-        this.addSlot(new OutputSlot(inv, 5, 151, 12)); 
-        super.addPlayerInventory(inventoryPlayer, 8, 84, 142);
+        this.addSlot(new OutputSlot(inv, 3, 181, 77)); 
+        this.addSlot(new OutputSlot(inv, 4, 205, 77)); 
+        this.addSlot(new OutputSlot(inv, 5, 229, 77)); 
+        super.addPlayerInventory(inventoryPlayer, 48, 112, 170);
     }
     static class ChemicalSlot extends SlotItemHandler{
     	Level l;

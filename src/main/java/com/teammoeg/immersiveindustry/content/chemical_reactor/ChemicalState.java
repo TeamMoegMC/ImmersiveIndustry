@@ -49,8 +49,8 @@ public class ChemicalState implements IMultiblockState {
 	}
 	//common properties
     ChangeDetectedItemHandler inventory;
-    FluidTank[] inTank=new FluidTank[] {new RecipeResetFluidTank(2000),new RecipeResetFluidTank(2000),new RecipeResetFluidTank(2000)};
-    FluidTank[] outTank=new FluidTank[] {new RecipeResetFluidTank(2000),new RecipeResetFluidTank(2000),new RecipeResetFluidTank(2000)};
+    FluidTank[] inTank=new FluidTank[] {new RecipeResetFluidTank(7000),new RecipeResetFluidTank(7000),new RecipeResetFluidTank(7000)};
+    FluidTank[] outTank=new FluidTank[] {new RecipeResetFluidTank(7000),new RecipeResetFluidTank(7000),new RecipeResetFluidTank(7000)};
     public MutableEnergyStorage energyStorage = new MutableEnergyStorage(32000);
     RecipeHandler<ChemicalRecipe> recipe;
     //client properties
