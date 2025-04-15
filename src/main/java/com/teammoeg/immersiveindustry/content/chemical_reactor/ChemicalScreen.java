@@ -102,8 +102,8 @@ public class ChemicalScreen extends IEContainerScreen<ChemicalContainer> {
             	 
              }
              //graphics.blit(TEXTURE, leftPos + 18, topPos + 9, 5, 192, 102, 63);//first
-             graphics.blit(TEXTURE, leftPos + 112, topPos + 33+dh1, 99, 211+dh1, 8, h1);//flow
-             graphics.blit(TEXTURE, leftPos + 109, topPos + 57+h2, 108, 204+h2, 40, 21-h2);//pot
+             graphics.blit(TEXTURE, leftPos + 112, topPos + 33+dh1, 95, 210+dh1, 8, h1);//flow
+             graphics.blit(TEXTURE, leftPos + 109, topPos + 57+h2, 104, 206+h2, 40, 21-h2);//pot
              //graphics.blit(TEXTURE, leftPos + 109, topPos + 57, 108, 204, 40, 21);//pot
          }
          if(((menu.process_num.getValue()>>2)&1)==0) {

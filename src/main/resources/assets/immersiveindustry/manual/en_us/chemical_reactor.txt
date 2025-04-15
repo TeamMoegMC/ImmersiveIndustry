@@ -1,0 +1,6 @@
+Chemical Reactor
+Advanced Mixer
+<&chemical_reactor>
+Chemical Reactor can process multiple input fluid/items to produce multiple outputs.
+Interfaces at the side are fluid interfaces. While looking at the redstone interface, fluid interfaces from left to right are connected to tank 1-3.
+Item inputs from anywhere on the top, and it outputs at the bottom center.

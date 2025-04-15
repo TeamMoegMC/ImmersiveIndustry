@@ -1,0 +1,6 @@
+{
+  "chemical_reactor": {
+    "type": "multiblock",
+    "name": "immersiveindustry:multiblocks/chemical_reactor"
+  }
+}
