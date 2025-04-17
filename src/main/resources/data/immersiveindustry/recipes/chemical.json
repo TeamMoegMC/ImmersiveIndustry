@@ -1,0 +1,42 @@
+{
+	"type": "immersiveindustry:chemical",
+	"inputs": [
+		{
+			"base_ingredient": {
+				"tag": "forge:raw_materials/aluminum"
+			},
+			"count": 0
+		}
+	],
+	"input_fluids": [
+		{
+			"tag": "minecraft:water",
+			"amount": 1000
+		},
+		{
+			"tag": "minecraft:lava",
+			"amount": 1000
+		}
+	],
+	"result_fluids": [
+		{
+			"fluid": "minecraft:water",
+			"amount": 200
+		},
+		{
+			"fluid": "minecraft:lava",
+			"amount": 200
+		}
+	],
+	"outputs": [
+		{
+			"item": "minecraft:stone",
+			"count": 1
+		},
+		{
+			"item": "immersiveengineering:dust_aluminum",
+			"count": 1
+		}
+	],
+	"time": 200
+}

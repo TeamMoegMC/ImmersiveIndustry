@@ -31,6 +31,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.NonMirror
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Entity.RemovalReason;
@@ -101,6 +102,12 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 
 		// new heating mechanism
 		ensureBurntime(context);
+		if (state.temperature > 0) {
+			state.temperature -= IIUtil.randomValue(rs, IIConfig.COMMON.crucibleCoolDown.get());
+			context.markMasterDirty();
+		}
+  
+		
 		if (state.burnTime > 0) {
 			int prevTemp=state.temperature;
 			int fanspeed = getFanSpeed(context);
@@ -130,13 +137,11 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 				state.recipe.onContainerChanged();
 			context.markMasterDirty();
 		}
-		if (state.temperature > 0) {
-			state.temperature -= IIUtil.randomValue(rs, IIConfig.COMMON.crucibleCoolDown.get());
-			context.markMasterDirty();
-		}
+		state.temperature=Mth.clamp(state.temperature, 0, MAX_TEMP);
+		
 		RecipeHandler<CrucibleRecipe> handler = state.recipe;
 		if (handler.shouldTestRecipe()) {
-			RecipeProcessResult<CrucibleRecipe> recipeResult = CrucibleRecipe.findRecipe(context.getLevel().getRawLevel(), inventory);
+			RecipeProcessResult<CrucibleRecipe> recipeResult = CrucibleRecipe.findRecipe(context);
 			handler.setRecipe(recipeResult);
 			context.markMasterDirty();
 		}

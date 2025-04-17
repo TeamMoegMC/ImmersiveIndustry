@@ -95,7 +95,7 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
 
     public FluidTank tank = new FluidTank(TANK_CAPACITY, r->ElectrolyzerRecipe.isValidRecipeFluid(this.getLevel(),r));
     private final ResettableCapability<IFluidHandler> tankCap = registerFluidInput(tank);
-    private NonNullList<ItemStack> inventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
+    NonNullList<ItemStack> inventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
     ResettableCapability<IItemHandler> invHandler = registerCapability(
             new IEInventoryHandler(2, this, 0, new boolean[]{true, false},
                     new boolean[]{false, true})
@@ -188,7 +188,7 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
 
     @Nullable
     public ElectrolyzerRecipe getRecipe() {
-    	RecipeProcessResult<ElectrolyzerRecipe> recipe = ElectrolyzerRecipe.findRecipe(this.getLevel(),inventory.get(SLOT_IN),ItemStack.EMPTY, tank.getFluid(),false);
+    	RecipeProcessResult<ElectrolyzerRecipe> recipe = ElectrolyzerRecipe.findRecipe(this);
         if (recipe == null)
             return null;
         if (inventory.get(SLOT_OUT).isEmpty() || (ItemStack.isSameItem(inventory.get(SLOT_OUT), recipe.recipe().output) &&

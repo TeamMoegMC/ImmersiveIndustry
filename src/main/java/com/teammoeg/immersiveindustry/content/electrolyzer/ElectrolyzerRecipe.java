@@ -21,6 +21,8 @@ package com.teammoeg.immersiveindustry.content.electrolyzer;
 import java.util.Map;
 
 import com.teammoeg.immersiveindustry.IIContent.IIRecipes;
+import com.teammoeg.immersiveindustry.util.FluidRecipeProcessResult;
+import com.teammoeg.immersiveindustry.util.FluidRecipeSimulator;
 import com.teammoeg.immersiveindustry.util.ItemRecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.RecipeSimulateHelper;
@@ -31,6 +33,7 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -39,6 +42,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.registries.RegistryObject;
 
 public class ElectrolyzerRecipe extends IESerializableRecipe {
@@ -82,8 +86,13 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
             }
         return false;
     }
-
-    public static RecipeProcessResult<ElectrolyzerRecipe> findRecipe(Level l,ItemStack input, ItemStack input2, FluidStack input_fluid,boolean isLarge) {
+    public static RecipeProcessResult<ElectrolyzerRecipe> findRecipe(ElectrolyzerBlockEntity te) {
+    	return findRecipe(te.getLevel(),te.inventory.get(ElectrolyzerBlockEntity.SLOT_IN),ItemStack.EMPTY,te.tank,false);
+    }
+    public static RecipeProcessResult<ElectrolyzerRecipe> findRecipe(IMultiblockContext<IndustrialElectrolyzerState> context) {
+    	return findRecipe(context.getLevel().getRawLevel(), context.getState().inventory.getStackInSlot(0), context.getState().inventory.getStackInSlot(1), context.getState().tank[0],true);
+    }
+    public static RecipeProcessResult<ElectrolyzerRecipe> findRecipe(Level l,ItemStack input, ItemStack input2, IFluidHandler input_fluid,boolean isLarge) {
     	for (ElectrolyzerRecipe recipe : recipeList.getRecipes(l)) {
     		RecipeProcessResult<ElectrolyzerRecipe> data=test(recipe,input,input2,input_fluid,isLarge);
     		if(data!=null)
@@ -92,10 +101,10 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
     	
         return null;
     }
-    public static RecipeProcessResult<ElectrolyzerRecipe> executeRecipe(Level l,ResourceLocation rl,ItemStack input, ItemStack input2, FluidStack input_fluid,boolean isLarge) {
+    public static RecipeProcessResult<ElectrolyzerRecipe> executeRecipe(Level l,ResourceLocation rl,ItemStack input, ItemStack input2, IFluidHandler input_fluid,boolean isLarge) {
     	return test(recipeList.getById(l, rl),input,input2,input_fluid,isLarge);
     }
-    public static RecipeProcessResult<ElectrolyzerRecipe> test(ElectrolyzerRecipe recipe,ItemStack input, ItemStack input2, FluidStack input_fluid,boolean isLarge) {
+    public static RecipeProcessResult<ElectrolyzerRecipe> test(ElectrolyzerRecipe recipe,ItemStack input, ItemStack input2, IFluidHandler tanks,boolean isLarge) {
     	int size=(input.isEmpty()?0:1)+(input2.isEmpty()?0:1);
     	if(isLarge||!recipe.flag) {
     		ItemRecipeProcessResult slotOps=null;
@@ -107,9 +116,12 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
 				if(slotOps==null)
 					return null;
     		}
-    		if(recipe.input_fluid!=null&&!recipe.input_fluid.test(input_fluid))
-    			return null;
-    		return new RecipeProcessResult<>(recipe,slotOps);
+    		FluidRecipeProcessResult fluid=null;
+    		if(recipe.input_fluid!=null) {
+    			fluid=FluidRecipeSimulator.test(tanks,recipe.input_fluid);
+    			if(fluid==null)return null;
+    		}
+    		return new RecipeProcessResult<>(recipe,slotOps,fluid);
     	}
         return null;
     }

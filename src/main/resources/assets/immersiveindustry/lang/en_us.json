@@ -17,6 +17,7 @@
   "gui.jei.category.immersiveindustry.rotary_kiln": "Rotary Kiln",
   "gui.jei.category.immersiveindustry.rotary_kiln.chance": "Chance: %s%%",
   "gui.jei.category.immersiveindustry.car_kiln": "Car Kiln",
+  "gui.jei.category.immersiveindustry.chemical_reactor": "Chemical Reactor",
   "gui.jei.tooltip.immersiveindustry.start_cost": "Starting Klin costs extra %s mb",
   "gui.jei.tooltip.immersiveindustry.catalyst": "Catalyst",
   "manual.immersiveindustry.main": "Immersive Industry",

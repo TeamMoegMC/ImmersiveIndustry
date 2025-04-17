@@ -71,7 +71,7 @@ public class ChemicalLogic implements IClientTickableComponent<ChemicalState>, I
 			IFluidHandler fluidInput=state.recipeInputFluidHandler;
 			
 			if (handler.shouldTestRecipe()) {
-				RecipeProcessResult<ChemicalRecipe> recipeResult = ChemicalRecipe.findRecipe(context.getLevel().getRawLevel(), inventory, fluidInput);
+				RecipeProcessResult<ChemicalRecipe> recipeResult = ChemicalRecipe.findRecipe(context);
 				handler.setRecipe(recipeResult);
 				context.markMasterDirty();
 			}

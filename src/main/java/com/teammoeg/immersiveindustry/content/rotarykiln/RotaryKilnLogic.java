@@ -116,7 +116,7 @@ public class RotaryKilnLogic implements IMultiblockLogic<RotaryKilnState>, IClie
 			//if process 0 is empty, start process 0
 			if(state.processes[0]==null&&!state.inventory.getStackInSlot(0).isEmpty()) {
 				ItemStack inputSlot=state.inventory.getStackInSlot(0);
-				RotaryKilnRecipe rcp=RotaryKilnRecipe.findRecipe(context.getLevel().getRawLevel(), inputSlot);
+				RotaryKilnRecipe rcp=RotaryKilnRecipe.findRecipe(context);
 				if(rcp!=null) {
 					state.processes[0]=new RotaryKilnProcess(rcp);
 					int inCount=inputSlot.getCount()/rcp.input.getCount();

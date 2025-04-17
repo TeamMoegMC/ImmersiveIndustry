@@ -34,6 +34,7 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -94,7 +95,9 @@ public class ChemicalRecipe extends IESerializableRecipe {
     public static int getFuelTime(Level l,ItemStack stack) {
         return BlastFurnaceFuel.getBlastFuelTime(l, stack);//stack.getItem().getTags().contains("coal_coke");
     }
-
+    public static RecipeProcessResult<ChemicalRecipe> findRecipe(IMultiblockContext<ChemicalState> context) {
+    	return findRecipe(context.getLevel().getRawLevel(), context.getState().inventory, context.getState().recipeInputFluidHandler);
+    }
 
     public static RecipeProcessResult<ChemicalRecipe> findRecipe(Level l,IItemHandler handler,IFluidHandler tanks) {
     	for (ChemicalRecipe recipe : recipeList.getRecipes(l)) {
@@ -126,7 +129,7 @@ public class ChemicalRecipe extends IESerializableRecipe {
 		}
 		FluidRecipeProcessResult fluid=null;
 		if(recipe.input_fluids.length>0) {
-			fluid=FluidRecipeSimulator.test(recipe.input_fluids, tanks);
+			fluid=FluidRecipeSimulator.test(tanks, recipe.input_fluids);
 			if(fluid==null)return null;
 		}
 		return new RecipeProcessResult<>(recipe,slotOps,fluid);

@@ -31,6 +31,7 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -104,7 +105,9 @@ public class CrucibleRecipe extends IESerializableRecipe {
         }
         return null;
     }*/
-
+    public static RecipeProcessResult<CrucibleRecipe> findRecipe(IMultiblockContext<CrucibleState> context) {
+    	return findRecipe(context.getLevel().getRawLevel(),context.getState().inventory);
+    }
     public static RecipeProcessResult<CrucibleRecipe> findRecipe(Level l,IItemHandler handler) {
     	for (CrucibleRecipe recipe : recipeList.getRecipes(l)) {
     		RecipeProcessResult<CrucibleRecipe> data=test(recipe,handler);

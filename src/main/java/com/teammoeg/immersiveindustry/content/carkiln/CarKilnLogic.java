@@ -69,17 +69,14 @@ public class CarKilnLogic implements IMultiblockLogic<CarKilnState>, IClientTick
 			RecipeHandler<CarKilnRecipe> handler = state.recipe;
 			
 			if (handler.shouldTestRecipe()) {
-				RecipeProcessResult<CarKilnRecipe> recipeResult = CarKilnRecipe.findRecipe(context.getLevel().getRawLevel(), inventory, state.tank.getFluid());
+				RecipeProcessResult<CarKilnRecipe> recipeResult = CarKilnRecipe.findRecipe(context);
 				if(handler.setRecipe(recipeResult)) {
 					state.maxProcessCount=0;
 				}
 				if(recipeResult!=null) {
 					state.maxProcessCount=64;
-					if(recipeResult.recipe().input_fluid!=null) {
-						state.maxProcessCount=state.tank.getFluidAmount()/recipeResult.recipe().input_fluid.getAmount();
-					}
 					//System.out.println(recipeResult.recipe().maxProcess+","+recipeResult.getMaxRuns(inventory)+","+state.maxProcessCount);
-					state.maxProcessCount=Math.min(Math.min(recipeResult.getMaxRuns(inventory,null), recipeResult.recipe().maxProcess),state.maxProcessCount);
+					state.maxProcessCount=Math.min(Math.min(recipeResult.getMaxRuns(inventory,state.tank), recipeResult.recipe().maxProcess),state.maxProcessCount);
 				}
 				context.markDirtyAndSync();
 			}
@@ -110,9 +107,7 @@ public class CarKilnLogic implements IMultiblockLogic<CarKilnState>, IClientTick
 					RecipeProcessResult<CarKilnRecipe> recipeResult = handler.getRecipeResultCache();
 					if (recipeResult != null) {
 						CarKilnRecipe recipe = recipeResult.recipe();
-						recipeResult.runOperations(inventory,null,state.maxProcessCount);
-						if(recipe.input_fluid!=null)
-						state.tank.drain(recipe.input_fluid.getAmount()*state.maxProcessCount, FluidAction.EXECUTE);
+						recipeResult.runOperations(inventory,state.tank,state.maxProcessCount);
 						for(ItemStack output:recipe.output) {
 							ItemHandlerHelper.insertItem(state.result, output.copyWithCount(output.getCount()*state.maxProcessCount), false);
 						}

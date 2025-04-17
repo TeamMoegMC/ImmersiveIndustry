@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -77,14 +78,16 @@ public class RotaryKilnRecipe extends IESerializableRecipe {
             return true;
         return false;
     }
-
+    public static RotaryKilnRecipe findRecipe(IMultiblockContext<RotaryKilnState> context) {
+        return findRecipe(context.getLevel().getRawLevel(),context.getState().inventory.getStackInSlot(0));
+    }
     public static RotaryKilnRecipe findRecipe(Level l,ItemStack input) {
         for (RotaryKilnRecipe recipe : recipeList.getRecipes(l))
             if (recipe != null && recipe.matches(input))
                 return recipe;
         return null;
     }
-
+    
     public static boolean isValidRecipeInput(Level l,ItemStack input) {
         for (RotaryKilnRecipe recipe : recipeList.getRecipes(l)) {
             if (recipe.input.test(input))

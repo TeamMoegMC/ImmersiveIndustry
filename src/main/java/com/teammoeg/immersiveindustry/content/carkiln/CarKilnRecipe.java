@@ -19,6 +19,8 @@
 package com.teammoeg.immersiveindustry.content.carkiln;
 
 import com.teammoeg.immersiveindustry.IIContent.IIRecipes;
+import com.teammoeg.immersiveindustry.util.FluidRecipeProcessResult;
+import com.teammoeg.immersiveindustry.util.FluidRecipeSimulator;
 import com.teammoeg.immersiveindustry.util.ItemRecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.RecipeSimulateHelper;
@@ -28,6 +30,7 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -36,6 +39,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -85,8 +89,10 @@ public class CarKilnRecipe extends IESerializableRecipe {
         return false;
     }
     
-
-    public static RecipeProcessResult<CarKilnRecipe> findRecipe(Level l,IItemHandler input, FluidStack input_fluid) {
+    public static RecipeProcessResult<CarKilnRecipe> findRecipe(IMultiblockContext<CarKilnState> context) {
+    	return findRecipe(context.getLevel().getRawLevel(),context.getState().inventory,context.getState().tank);
+    }
+    public static RecipeProcessResult<CarKilnRecipe> findRecipe(Level l,IItemHandler input, IFluidHandler input_fluid) {
     	for (CarKilnRecipe recipe : recipeList.getRecipes(l)) {
     		RecipeProcessResult<CarKilnRecipe> data=test(recipe,input,input_fluid);
     		if(data!=null)
@@ -95,10 +101,10 @@ public class CarKilnRecipe extends IESerializableRecipe {
     	
         return null;
     }
-    public static RecipeProcessResult<CarKilnRecipe> executeRecipe(Level l,ResourceLocation rl,IItemHandler input, FluidStack input_fluid) {
+    public static RecipeProcessResult<CarKilnRecipe> executeRecipe(Level l,ResourceLocation rl,IItemHandler input, IFluidHandler input_fluid) {
     	return test(recipeList.getById(l, rl),input,input_fluid);
     }
-    public static RecipeProcessResult<CarKilnRecipe> test(CarKilnRecipe recipe,IItemHandler input, FluidStack input_fluid) {
+    public static RecipeProcessResult<CarKilnRecipe> test(CarKilnRecipe recipe,IItemHandler input, IFluidHandler tanks) {
     	int size=0;
     	for(int i=0;i<4;i++) {
     		if(!input.getStackInSlot(i).isEmpty())
@@ -113,9 +119,12 @@ public class CarKilnRecipe extends IESerializableRecipe {
 			if(slotOps==null)
 				return null;
 		}
-		if(recipe.input_fluid!=null&&!recipe.input_fluid.test(input_fluid))
-			return null;
-		return new RecipeProcessResult<>(recipe, slotOps);
+		FluidRecipeProcessResult fluid=null;
+		if(recipe.input_fluid!=null) {
+			fluid=FluidRecipeSimulator.test(tanks,recipe.input_fluid);
+			if(fluid==null)return null;
+		}
+		return new RecipeProcessResult<>(recipe,slotOps,fluid);
     }
     @Override
     public NonNullList<Ingredient> getIngredients() {

@@ -17,6 +17,7 @@
   "gui.jei.category.immersiveindustry.rotary_kiln": "旋转窑",
   "gui.jei.category.immersiveindustry.rotary_kiln.chance": "概率：%s%%",
   "gui.jei.category.immersiveindustry.car_kiln": "车窑",
+  "gui.jei.category.immersiveindustry.chemical_reactor": "化学反应釜",
   "gui.jei.tooltip.immersiveindustry.start_cost": "启动窑炉额外需要 %s mb",
   "gui.jei.tooltip.immersiveindustry.catalyst": "催化剂",
   

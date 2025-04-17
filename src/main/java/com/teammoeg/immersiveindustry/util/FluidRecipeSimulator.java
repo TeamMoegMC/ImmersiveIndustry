@@ -19,7 +19,7 @@ public class FluidRecipeSimulator {
 		}
 		return li;
 	}
-	public static FluidRecipeProcessResult test(FluidTagInput[] ftis,IFluidHandler ft){
+	public static FluidRecipeProcessResult test(IFluidHandler ft,FluidTagInput... ftis){
 		List<FluidStack> li=new ArrayList<>(ftis.length);
 		List<FluidStack> all=new ArrayList<>(ft.getTanks());
 		for(int i=0;i<ft.getTanks();i++) {

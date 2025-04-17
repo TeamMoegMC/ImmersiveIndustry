@@ -84,7 +84,7 @@ public class ChemicalRecipeSerializer extends IERecipeSerializer<ChemicalRecipe>
             output_fluids = new FluidStack[ja.size()];
             int i = -1;
             for (JsonElement je : ja) {
-            	output_fluids[++i] =FluidStack.CODEC.parse(JsonOps.INSTANCE, je).resultOrPartial(t->{throw new JsonSyntaxException(t);}).get();
+            	output_fluids[++i] =ApiUtils.jsonDeserializeFluidStack(je.getAsJsonObject());
             }
         } else output_fluids = new FluidStack[0];
         int time=400;

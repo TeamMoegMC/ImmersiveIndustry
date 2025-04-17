@@ -92,13 +92,12 @@ public class ChemicalScreen extends IIContainerScreen<ChemicalContainer> {
 			// graphics.blit(TEXTURE, leftPos + 18, topPos + 9, 5, 192, 102, 63);//first
 			graphics.blit(TEXTURE, leftPos + 112, topPos + 33 + dh1, 95, 210 + dh1, 8, h1);// flow
 			graphics.blit(TEXTURE, leftPos + 109, topPos + 57 + h2, 104, 206 + h2, 40, 21 - h2);// pot
+			graphics.blit(TEXTURE, leftPos + 127, topPos + 54 , 127, 54, 2, 10);
 			// graphics.blit(TEXTURE, leftPos + 109, topPos + 57, 108, 204, 40, 21);//pot
 		}
-		if (((menu.process_num.getValue() >> 2) & 1) == 0) {
-			graphics.blit(TEXTURE, leftPos + 113, topPos + 17, 197, 104, 30, 60);
-		} else {
-			graphics.blit(TEXTURE, leftPos + 118, topPos + 17, 228, 104, 19, 60);
-		}
+		
+		graphics.blit(TEXTURE, leftPos + 120, topPos + 64, 197, 105+11*((menu.process_num.getValue() >> 1)&3), 16, 10);
+		
 		if (menu.energy.getEnergyStored() > 0) {
 			if (process > 0 && process < 1)
 				graphics.blit(TEXTURE, leftPos + 80, topPos + 21, 176 + 7, 155, 7, 21);

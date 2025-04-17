@@ -23,6 +23,9 @@ import com.teammoeg.immersiveindustry.IIMain;
 import com.teammoeg.immersiveindustry.content.carkiln.CarKilnCategory;
 import com.teammoeg.immersiveindustry.content.carkiln.CarKilnRecipe;
 import com.teammoeg.immersiveindustry.content.carkiln.CarKilnScreen;
+import com.teammoeg.immersiveindustry.content.chemical_reactor.ChemicalCategory;
+import com.teammoeg.immersiveindustry.content.chemical_reactor.ChemicalRecipe;
+import com.teammoeg.immersiveindustry.content.chemical_reactor.ChemicalScreen;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleCategory;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleScreen;
@@ -62,6 +65,7 @@ public class JEICompat implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.INDUSTRIAL_ELECTROLYZER.blockItem().get()), IndustrialElectrolyzerCategory.UID);
         registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.ROTARY_KILN.blockItem().get()), RotaryKilnCategory.UID);
         registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.CAR_KILN.blockItem().get()), CarKilnCategory.UID);
+        registration.addRecipeCatalyst(new ItemStack(IIContent.IIMultiblocks.CHEMICAL_REACTOR.blockItem().get()), ChemicalCategory.UID);
     }
 
     @Override
@@ -74,6 +78,7 @@ public class JEICompat implements IModPlugin {
         registration.addRecipes(IndustrialElectrolyzerCategory.UID,ElectrolyzerRecipe.recipeList.getRecipes(world).stream().filter(r -> r.inputs.length < 3).collect(Collectors.toList()));
         registration.addRecipes(RotaryKilnCategory.UID,new ArrayList<>(RotaryKilnRecipe.recipeList.getRecipes(world)));
         registration.addRecipes(CarKilnCategory.UID,new ArrayList<>(CarKilnRecipe.recipeList.getRecipes(world)));
+        registration.addRecipes(ChemicalCategory.UID, new ArrayList<>(ChemicalRecipe.recipeList.getRecipes(world)));
     }
 
     @Override
@@ -84,7 +89,8 @@ public class JEICompat implements IModPlugin {
                 new ElectrolyzerCategory(guiHelper),
                 new IndustrialElectrolyzerCategory(guiHelper),
                 new RotaryKilnCategory(guiHelper),
-                new CarKilnCategory(guiHelper)
+                new CarKilnCategory(guiHelper),
+                new ChemicalCategory(guiHelper)
         );
     }
 
@@ -96,6 +102,7 @@ public class JEICompat implements IModPlugin {
         registry.addGenericGuiContainerHandler(CrucibleScreen.class, new JEIGuiContainerHandler<>(man,76, 14, 19, 25, CrucibleCategory.UID));
         registry.addGenericGuiContainerHandler(RotaryKilnScreen.class, new JEIGuiContainerHandler<>(man,92, 41, 35, 18, RotaryKilnCategory.UID));
         registry.addGenericGuiContainerHandler(CarKilnScreen.class, new JEIGuiContainerHandler<>(man,82, 25, 40, 18, CarKilnCategory.UID));
+        registry.addGenericGuiContainerHandler(ChemicalScreen.class, new JEIGuiContainerHandler<>(man,98, 0, 63, 104, ChemicalCategory.UID));
 
     }
 

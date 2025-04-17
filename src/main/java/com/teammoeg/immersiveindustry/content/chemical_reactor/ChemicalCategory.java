@@ -25,21 +25,15 @@ import com.teammoeg.immersiveindustry.util.JEISlotBuilder;
 import com.teammoeg.immersiveindustry.util.LangUtil;
 import com.teammoeg.immersiveindustry.util.RecipeSimulateHelper;
 
-import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
-import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
-import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
-import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import mezz.jei.library.util.RecipeUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -48,16 +42,14 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class ChemicalCategory implements IRecipeCategory<ChemicalRecipe> {
 
-    public static RecipeType<ChemicalRecipe> UID = new RecipeType<>(new ResourceLocation(IIMain.MODID, "crucible"),ChemicalRecipe.class);
+    public static RecipeType<ChemicalRecipe> UID = new RecipeType<>(new ResourceLocation(IIMain.MODID, "chemical"),ChemicalRecipe.class);
     private IDrawable BACKGROUND;
     private IDrawable ICON;
-    private IDrawable TANK;
     private IDrawableAnimated ARROW;
     public ChemicalCategory(IGuiHelper guiHelper) {
-        this.ICON = guiHelper.createDrawableItemStack(new ItemStack(IIContent.IIMultiblocks.CRUCIBLE.blockItem().get()));
-        this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/crucible_jei.png"), 19, 3, 150, 65);
-        this.TANK = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/crucible.png"),238,34,18, 48);
-        IDrawableStatic arrow=guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/crucible.png"),204,15,21,15);
+        this.ICON = guiHelper.createDrawableItemStack(new ItemStack(IIContent.IIMultiblocks.CHEMICAL_REACTOR.blockItem().get()));
+        this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/chemical_reactor_jei.png"), 0, 0, 176, 82);
+        IDrawableStatic arrow=guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/chemical_reactor_jei.png"),55,82,65,7);
         ARROW=guiHelper.createAnimatedDrawable(arrow,40, IDrawableAnimated.StartDirection.LEFT,false);
     }
 
@@ -67,7 +59,7 @@ public class ChemicalCategory implements IRecipeCategory<ChemicalRecipe> {
 	}
 
 	public Component getTitle() {
-        return (LangUtil.translate("gui.jei.category." + IIMain.MODID + ".crucible"));
+        return (LangUtil.translate("gui.jei.category." + IIMain.MODID + ".chemical_reactor"));
     }
 
     @Override
@@ -82,21 +74,28 @@ public class ChemicalCategory implements IRecipeCategory<ChemicalRecipe> {
 
     @Override
     public void draw(ChemicalRecipe recipe,IRecipeSlotsView view,GuiGraphics transform, double mouseX, double mouseY) {
-        ARROW.draw(transform,57, 11);
+        ARROW.draw(transform,55, 66);
     }
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder recipeLayout, ChemicalRecipe recipe, IFocusGroup ingredients) {
-        IRecipeSlotBuilder fluidOut=recipeLayout.addSlot(RecipeIngredientRole.INPUT, 126, 9).setFluidRenderer(14400, false, 16, 47).setOverlay(TANK, 0, 0);
-
+        
         JEISlotBuilder<ItemStack> itemInput=JEISlotBuilder.itemStack(recipeLayout, RecipeSimulateHelper.expand(recipe.inputs)).asInput();
-        itemInput.addSlot(11,  9);
-        itemInput.addSlot(32,  9);
-        itemInput.addSlot(11, 30);
-        itemInput.addSlot(32, 30);
+        itemInput.addSlot(33, 10);
+        itemInput.addSlot(33, 33);
+        itemInput.addSlot(33, 56);
         JEISlotBuilder<FluidStack> fluidInput=JEISlotBuilder.fluidStack(recipeLayout, FluidRecipeSimulator.expand(recipe.input_fluids)).asInput();
+        fluidInput.addSlot(10, 10).setFluidRenderer(2000, false, 16, 16);
+        fluidInput.addSlot(10, 33).setFluidRenderer(2000, false, 16, 16);
+        fluidInput.addSlot(10, 56).setFluidRenderer(2000, false, 16, 16);
         JEISlotBuilder<ItemStack> itemOutput=JEISlotBuilder.itemStack(recipeLayout, recipe.outputs).asOutput();
+        itemOutput.addSlot(150, 10);
+        itemOutput.addSlot(150, 33);
+        itemOutput.addSlot(150, 56);
         JEISlotBuilder<FluidStack> fluidOutput=JEISlotBuilder.fluidStack(recipeLayout, recipe.output_fluids).asOutput();
+        fluidOutput.addSlot(127, 10).setFluidRenderer(2000, false, 16, 16);
+        fluidOutput.addSlot(127, 33).setFluidRenderer(2000, false, 16, 16);
+        fluidOutput.addSlot(127, 56).setFluidRenderer(2000, false, 16, 16);
         
 
     }

@@ -73,8 +73,7 @@ public class IndustrialElectrolyzerLogic
 			RecipeHandler<ElectrolyzerRecipe> handler = state.recipe;
 			ChangeDetectedItemHandler inventory = state.inventory;
 			if (handler.shouldTestRecipe()) {
-				RecipeProcessResult<ElectrolyzerRecipe> recipeResult = ElectrolyzerRecipe.findRecipe(context.getLevel().getRawLevel(), inventory.getStackInSlot(0), inventory.getStackInSlot(1), state.tank[0].getFluid(),
-					true);
+				RecipeProcessResult<ElectrolyzerRecipe> recipeResult = ElectrolyzerRecipe.findRecipe(context);
 				handler.setRecipe(recipeResult);
 				context.markMasterDirty();
 			}
@@ -103,11 +102,12 @@ public class IndustrialElectrolyzerLogic
 					if (recipeResult != null) {
 						ElectrolyzerRecipe recipe = recipeResult.recipe();
 						if (inventory.insertItem(4, recipe.output, true).isEmpty() && state.tank[1].fill(recipe.output_fluid, FluidAction.SIMULATE) >= recipe.output_fluid.getAmount()) {
+							recipeResult.runOperations(inventory,state.tank[0]);
 							inventory.insertItem(4, recipe.output.copy(), false);
 							state.tank[1].fill(recipe.output_fluid.copy(), FluidAction.EXECUTE);
-							state.tank[0].drain(recipe.input_fluid.getAmount(), FluidAction.EXECUTE);
+
 							handler.endProcess();
-							recipeResult.runOperations(inventory,null);
+							
 							
 						}
 
