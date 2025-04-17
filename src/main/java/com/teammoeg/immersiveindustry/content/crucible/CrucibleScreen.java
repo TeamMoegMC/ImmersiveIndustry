@@ -18,37 +18,29 @@
 
 package com.teammoeg.immersiveindustry.content.crucible;
 
-import java.util.List;
 import java.util.function.Consumer;
 
-import javax.annotation.Nonnull;
-
-import com.google.common.collect.ImmutableList;
 import com.teammoeg.immersiveindustry.IIMain;
-import com.teammoeg.immersiveindustry.util.LangUtil;
-
-import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
-import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
-import blusunrize.immersiveengineering.client.gui.info.InfoArea;
+import com.teammoeg.immersiveindustry.util.AccessableFluidInfoArea;
+import com.teammoeg.immersiveindustry.util.IIContainerScreen;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-public class CrucibleScreen extends IEContainerScreen<CrucibleContainer> {
+public class CrucibleScreen extends IIContainerScreen<CrucibleContainer> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(IIMain.MODID, "textures/gui/crucible.png");
 
     public CrucibleScreen(CrucibleContainer container, Inventory inv, Component title) {
         super(container, inv, title,TEXTURE);
     }
 
-    @Nonnull
     @Override
-    protected List<InfoArea> makeInfoAreas()
+    protected void makeInfoAreas()
     {
-        return ImmutableList.of(
-                new FluidInfoArea(menu.tank, new Rect2i(leftPos+145, topPos+12, 16, 47), 236, 32, 20, 51, TEXTURE)
+        addInfoArea(
+                new AccessableFluidInfoArea(menu.tank, new Rect2i(leftPos+145, topPos+12, 16, 47), 236, 32, 20, 51, TEXTURE)
         );
     }
     

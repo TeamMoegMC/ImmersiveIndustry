@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.teammoeg.immersiveindustry.IIMain;
+import com.teammoeg.immersiveindustry.util.AccessableFluidInfoArea;
+import com.teammoeg.immersiveindustry.util.IIContainerScreen;
 
 import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
@@ -33,32 +35,32 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-public class RotaryKilnScreen extends IEContainerScreen<RotaryKilnContainer> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(IIMain.MODID, "textures/gui/rotary_kiln.png");
+public class RotaryKilnScreen extends IIContainerScreen<RotaryKilnContainer> {
+	private static final ResourceLocation TEXTURE = new ResourceLocation(IIMain.MODID, "textures/gui/rotary_kiln.png");
 
-    public RotaryKilnScreen(RotaryKilnContainer container, Inventory inv, Component title) {
-        super(container, inv, title,TEXTURE);
-        this.imageHeight=178;
-    }
-
-    @Override
-    public void init() {
-        super.init();
-    }
-
-    @Override
-	protected List<InfoArea> makeInfoAreas() {
-		return Arrays.asList(new FluidInfoArea(menu.tank, new Rect2i(leftPos+133,topPos+26,16,47), 196, 0, 20, 51, background),
-							new EnergyInfoArea(leftPos+157,topPos+26,menu.energy));
+	public RotaryKilnScreen(RotaryKilnContainer container, Inventory inv, Component title) {
+		super(container, inv, title, TEXTURE);
+		this.imageHeight = 178;
 	}
 
-    @Override
-    protected void drawContainerBackgroundPre(GuiGraphics transform, float partial, int x, int y) {
-    	int w = (int) (38 * menu.process.getValue());
-        if (w > 0) {
-        	transform.blit(TEXTURE, leftPos + 88,topPos + 44, 178, 59, 38 - w, 16);
-        }
-    }
+	@Override
+	public void init() {
+		super.init();
+	}
 
+	@Override
+	protected void makeInfoAreas() {
+		addInfoArea(new AccessableFluidInfoArea(menu.tank, new Rect2i(leftPos + 133, topPos + 26, 16, 47), 196, 0, 20, 51, background));
+		addInfoArea(new EnergyInfoArea(leftPos + 157, topPos + 26, menu.energy));
+	}
+
+	@Override
+	protected void drawContainerBackgroundPre(GuiGraphics transform, float partial, int x, int y) {
+		int w = (int) (38 * menu.process.getValue());
+		if (w > 0) {
+			transform.blit(TEXTURE, leftPos + 88, topPos + 44, 178, 59, 38 - w, 16);
+		}
+
+	}
 
 }

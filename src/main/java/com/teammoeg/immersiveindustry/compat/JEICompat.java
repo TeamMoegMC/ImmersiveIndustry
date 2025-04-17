@@ -37,6 +37,7 @@ import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
@@ -89,11 +90,13 @@ public class JEICompat implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registry) {
-        registry.addRecipeClickArea(ElectrolyzerScreen.class, 76, 35, 21, 25, ElectrolyzerCategory.UID);
-        registry.addRecipeClickArea(IndustrialElectrolyzerScreen.class, 76, 35,21, 25, IndustrialElectrolyzerCategory.UID);
-        registry.addRecipeClickArea(CrucibleScreen.class, 76, 14, 19, 25, CrucibleCategory.UID);
-        registry.addRecipeClickArea(RotaryKilnScreen.class, 92, 41, 35, 18, RotaryKilnCategory.UID);
-        registry.addRecipeClickArea(CarKilnScreen.class, 82, 25, 40, 18, CarKilnCategory.UID);
+    	IIngredientManager man=registry.getJeiHelpers().getIngredientManager();
+        registry.addGenericGuiContainerHandler(ElectrolyzerScreen.class, new JEIGuiContainerHandler<>(man,76, 35, 21, 25, ElectrolyzerCategory.UID));
+        registry.addGenericGuiContainerHandler(IndustrialElectrolyzerScreen.class, new JEIGuiContainerHandler<>(man,76, 35,21, 25, IndustrialElectrolyzerCategory.UID));
+        registry.addGenericGuiContainerHandler(CrucibleScreen.class, new JEIGuiContainerHandler<>(man,76, 14, 19, 25, CrucibleCategory.UID));
+        registry.addGenericGuiContainerHandler(RotaryKilnScreen.class, new JEIGuiContainerHandler<>(man,92, 41, 35, 18, RotaryKilnCategory.UID));
+        registry.addGenericGuiContainerHandler(CarKilnScreen.class, new JEIGuiContainerHandler<>(man,82, 25, 40, 18, CarKilnCategory.UID));
+
     }
 
     public static <T> void checkNotNull(@Nullable T object, String name) {

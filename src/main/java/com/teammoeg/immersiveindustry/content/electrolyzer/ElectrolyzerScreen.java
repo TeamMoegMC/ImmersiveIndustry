@@ -24,6 +24,8 @@ import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableList;
 import com.teammoeg.immersiveindustry.IIMain;
+import com.teammoeg.immersiveindustry.util.AccessableFluidInfoArea;
+import com.teammoeg.immersiveindustry.util.IIContainerScreen;
 
 import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
@@ -35,19 +37,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-public class ElectrolyzerScreen extends IEContainerScreen<ElectrolyzerContainer> {
+public class ElectrolyzerScreen extends IIContainerScreen<ElectrolyzerContainer> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(IIMain.MODID, "textures/gui/electrolyzer.png");
 
     public ElectrolyzerScreen(ElectrolyzerContainer container, Inventory inventoryPlayer, Component title) {
         super(container, inventoryPlayer, title, TEXTURE);
     }
 
-    @Nonnull
     @Override
-    protected List<InfoArea> makeInfoAreas()
+    protected void makeInfoAreas()
     {
-        return ImmutableList.of(
-                new FluidInfoArea(menu.tank, new Rect2i(leftPos+21, topPos+18, 16, 47), 195, 0, 20, 51, TEXTURE)
+        addInfoArea(
+                new AccessableFluidInfoArea(menu.tank, new Rect2i(leftPos+21, topPos+18, 16, 47), 195, 0, 20, 51, TEXTURE)
                 //,new EnergyInfoArea(leftPos+158, topPos+22, menu.energyStorage)
         );
     }
