@@ -41,7 +41,7 @@ public class IICreativeTab {
                                             .listElements()
                                             .map(Holder::get)
                                             .forEach(out::accept)))
-                    .withTabsAfter(MOD_TAB.getKey())
+                    .withTabsBefore(MOD_TAB.getKey())
                     .build()
             );
 
