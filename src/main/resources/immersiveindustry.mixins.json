@@ -4,10 +4,12 @@
   "package": "com.teammoeg.immersiveindustry.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-  "IEInitMixin"
+    "IEInitMixin",
+    "MixinMultiBlockItem",
+    "MixinMultiblockPartBlockAccess"
   ],
   "client": [
-  "DatapackFailureScreenMixin"
+    "DatapackFailureScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

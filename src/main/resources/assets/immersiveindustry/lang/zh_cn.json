@@ -1,5 +1,6 @@
 {
   "itemGroup.immersiveindustry": "沉浸工业",
+  "itemGroup.immersive_multiblocks": "沉浸工程:多方块(仅调试用)",
   "item.immersiveindustry.refractory_kiln_brick": "耐火窑砖",
   "block.immersiveindustry.burning_chamber": "燃烧室",
   "block.immersiveindustry.electrolyzer": "简易电解槽",
