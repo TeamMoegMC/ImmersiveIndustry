@@ -51,7 +51,7 @@ public record FluidRecipeProcessResult(List<FluidStack> operations) {
 						count+=fs.getAmount();
 					}
 				}
-				maxcount=Math.min(maxcount, i.getAmount()/count);
+				maxcount=Math.min(maxcount, count/i.getAmount());
 			}
 		}
 		return maxcount;

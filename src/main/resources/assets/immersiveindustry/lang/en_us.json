@@ -1,5 +1,6 @@
 {
   "itemGroup.immersiveindustry": "Immersive Industry",
+  "itemGroup.immersive_multiblocks": "Immersive Engineering : MultiBlocks (Debug only)",
   "item.immersiveindustry.refractory_kiln_brick": "Refractory Kiln Brick",
   "block.immersiveindustry.burning_chamber": "Burning Chamber",
   "block.immersiveindustry.electrolyzer": "Simple Electrolyzer",

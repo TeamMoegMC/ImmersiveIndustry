@@ -34,4 +34,13 @@ public class ForgeEvents {
 //        DataPackRegistries dataPackRegistries = event.getDataPackRegistries();
 //        event.addListener(new IIRecipeCachingReloadListener(dataPackRegistries));
 //    }
+//
+//    @SubscribeEvent
+//    @SuppressWarnings("deprecation")
+//    public static void onTick(TickEvent.ServerTickEvent event) {
+//        if (event.phase == TickEvent.Phase.END) {
+//            var list = BuiltInRegistries.ITEM.stream().filter(i -> i instanceof MultiblockItem).toList();
+//            System.out.println(list);
+//        }
+//    }
 }
