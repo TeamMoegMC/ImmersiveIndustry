@@ -56,7 +56,7 @@ public class ElectrolyzerScreen extends IIContainerScreen<ElectrolyzerContainer>
     @Override
     protected void drawContainerBackgroundPre(GuiGraphics transform, float partial, int x, int y) {
 
-        float process = menu.guiProgress.get();
+        float process = menu.guiProgress.getValue();
         int h = (int) (21 * process);
         transform.blit(TEXTURE, leftPos + 76, topPos + 35, 178, 57, h, 15);
 

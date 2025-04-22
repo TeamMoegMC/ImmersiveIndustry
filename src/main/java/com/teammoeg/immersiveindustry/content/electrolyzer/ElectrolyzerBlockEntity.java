@@ -147,7 +147,7 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
             if (process > 0) {
                 process--;
                 energyStorage.extractEnergy(tickEnergy, false);
-                this.markContainingBlockForUpdate(null);
+                this.setChanged();
                 return;
             }
             // Process is finished, check if we can output the result.
@@ -159,14 +159,16 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
                     result = ItemStack.EMPTY;
                     process = processMax = 0;
                     tickEnergy = 0;
+                    this.setChanged();
                 } else if (inventory.get(SLOT_OUT).is(result.getItem())) {
                     inventory.get(SLOT_OUT).grow(result.getCount());
                     result = ItemStack.EMPTY;
                     process = processMax = 0;
                     tickEnergy = 0;
+                    this.setChanged();
                 } else return;
             }
-            // If we can't output the result, check if we can start a new process.
+            // If all result dumped, check if we can start a new process.
             ElectrolyzerRecipe recipe = getRecipe();
             if (recipe != null) {
                 this.processMax = this.process = recipe.time;
@@ -177,12 +179,13 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
                 if (recipe.input_fluid != null)
                     tank.drain(recipe.input_fluid.getAmount(), IFluidHandler.FluidAction.EXECUTE);
                 result = recipe.output.copy();
+                this.setChanged();
             }
         }
         // Else if energy is not enough, but process started, reset process.
         else if (process > 0) {
             process = processMax;
-            this.markContainingBlockForUpdate(null);
+            this.setChanged();
         }
     }
 
@@ -310,14 +313,14 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
     public float getGuiProgress() {
         float progress = 0;
         if (processMax != 0) {
-            progress = Mth.clamp(1 - process / processMax, 0, 1);
+            progress = Mth.clamp(1 - process*1f / processMax, 0, 1);
         }
         return progress;
     }
 
 	@Override
 	public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
-		return ElectrolyzerContainer.makeServer(IIMenus.ELECTROLYZER.get(), pContainerId, pPlayerInventory, this);
+		return new ElectrolyzerContainer(IIMenus.ELECTROLYZER.get(), pContainerId, pPlayerInventory, this);
 	}
 
 	@Override

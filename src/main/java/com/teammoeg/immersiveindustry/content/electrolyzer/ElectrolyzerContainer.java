@@ -20,9 +20,13 @@ package com.teammoeg.immersiveindustry.content.electrolyzer;
 
 import static com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerBlockEntity.*;
 
+import com.teammoeg.immersiveindustry.util.IIBaseContainer;
+import com.teammoeg.immersiveindustry.util.IIContainerData;
+import com.teammoeg.immersiveindustry.util.IIContainerData.CustomDataSlot;
 import com.teammoeg.immersiveindustry.util.OutputSlot;
 
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
+import blusunrize.immersiveengineering.common.gui.IEBaseContainerOld;
 import blusunrize.immersiveengineering.common.gui.IEContainerMenu;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers;
@@ -33,41 +37,39 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class ElectrolyzerContainer extends IEContainerMenu {
-    public final EnergyStorage energyStorage;
-    public final FluidTank tank;
-    public final GetterAndSetter<Float> guiProgress;
-
-    public static ElectrolyzerContainer makeServer(MenuType<?> type, int id, Inventory invPlayer,
-                                                   ElectrolyzerBlockEntity be) {
-        return new ElectrolyzerContainer(
-                blockCtx(type, id, be), invPlayer, new ItemStackHandler(be.getInventory()),
-                be.energyStorage, be.tank,
-                GetterAndSetter.getterOnly(be::getGuiProgress)
-        );
+public class ElectrolyzerContainer extends IIBaseContainer {
+    public MutableEnergyStorage energyStorage;
+    public FluidTank tank;
+    public final CustomDataSlot<FluidStack> guiTank=IIContainerData.SLOT_TANK.create(this);
+    public final CustomDataSlot<Float> guiProgress=IIContainerData.SLOT_FIXED.create(this);
+    public final CustomDataSlot<Integer> energy=IIContainerData.SLOT_INT.create(this);
+    public ElectrolyzerContainer(MenuType<?> type, int id, Inventory invPlayer,ElectrolyzerBlockEntity be) {
+    	this(type,id,invPlayer,new ItemStackHandler(be.inventory));
+    	energyStorage=be.energyStorage;
+    	tank=be.tank;
+    	energy.bind(energyStorage::getEnergyStored);
+    	guiTank.bind(tank::getFluid);
+    	guiProgress.bind(be::getGuiProgress);
     }
 
-    public static ElectrolyzerContainer makeClient(MenuType<?> type, int id, Inventory invPlayer) {
-        return new ElectrolyzerContainer(
-                clientCtx(type, id), invPlayer, new ItemStackHandler(NUM_SLOTS),
-                new MutableEnergyStorage(ENERGY_CAPACITY), new FluidTank(TANK_CAPACITY),
-                GetterAndSetter.standalone(0f)
-        );
+    public ElectrolyzerContainer(MenuType<?> type, int id, Inventory invPlayer) {
+        this(type, id, invPlayer, new ItemStackHandler(NUM_SLOTS));
+        this.energyStorage=new MutableEnergyStorage(ENERGY_CAPACITY);
+        this.tank=new FluidTank(TANK_CAPACITY);
+        guiTank.bind(tank::setFluid);
+        energy.bind(energyStorage::setStoredEnergy);
     }
 
-    public ElectrolyzerContainer(MenuContext ctx, Inventory inventoryPlayer, IItemHandlerModifiable inv,
-                                 MutableEnergyStorage energyStorage, FluidTank tank,
-                                 GetterAndSetter<Float> guiProgress) {
-        super(ctx);
-        this.energyStorage = energyStorage;
-        this.tank = tank;
-        this.guiProgress = guiProgress;
-        Level level = inventoryPlayer.player.level();
+    protected ElectrolyzerContainer(MenuType<?> type, int id, Inventory invPlayer,IItemHandlerModifiable inv) {
+        super(type,id,invPlayer.player,2);
+        Level level = invPlayer.player.level();
         // input
         this.addSlot(new SlotItemHandler(inv, 0, 51, 34) {
         	@Override
@@ -77,17 +79,8 @@ public class ElectrolyzerContainer extends IEContainerMenu {
         });
         // output
         this.addSlot(new OutputSlot(inv, 1, 107, 34));
-        this.ownSlotCount = NUM_SLOTS;
-
-        for (int i = 0; i < 3; i++)
-            for (int j = 0; j < 9; j++)
-                addSlot(new Slot(inventoryPlayer, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
-        for (int i = 0; i < 9; i++)
-            addSlot(new Slot(inventoryPlayer, i, 8 + i * 18, 142));
-
-        addGenericData(GenericContainerData.energy(energyStorage));
-        addGenericData(GenericContainerData.fluid(tank));
-        addGenericData(new GenericContainerData<>(GenericDataSerializers.FLOAT, guiProgress));
+ 
+        super.addPlayerInventory(invPlayer, 8, 84, 142);
     }
 
 

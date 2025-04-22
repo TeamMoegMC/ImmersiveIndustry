@@ -270,7 +270,7 @@ public class IIContent {
     	public static final MultiblockContainer<RotaryKilnState, RotaryKilnContainer> ROTARY_KILN=registerMultiblock("rotary_kiln", RotaryKilnContainer::new,RotaryKilnContainer::new);
     	public static final MultiblockContainer<CarKilnState, CarKilnContainer> CAR_KILN=registerMultiblock("car_kiln", CarKilnContainer::new,CarKilnContainer::new);
     	public static final MultiblockContainer<IndustrialElectrolyzerState, IndustrialElectrolyzerContainer> INDUSTRIAL_ELECTROLYZER=registerMultiblock("industrial_electrolyzer", IndustrialElectrolyzerContainer::new,IndustrialElectrolyzerContainer::new);
-    	public static final RegistryObject<MenuType<ElectrolyzerContainer>> ELECTROLYZER=register("electrolyzer",ElectrolyzerContainer::makeClient);
+    	public static final RegistryObject<MenuType<ElectrolyzerContainer>> ELECTROLYZER=register("electrolyzer",ElectrolyzerContainer::new);
     	public static final MultiblockContainer<ChemicalState, ChemicalContainer> CHEMICAL=registerMultiblock("chemical", ChemicalContainer::new,ChemicalContainer::new);
     	
     	@SuppressWarnings("unchecked")
