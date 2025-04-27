@@ -13,5 +13,5 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface MixinTemplateMultiblockAccess {
     
     @Invoker(remap = false)
-    public abstract void callForm(Level world, BlockPos pos, Rotation rot, Mirror mirror, Direction sideHit);
+    void callForm(Level world, BlockPos pos, Rotation rot, Mirror mirror, Direction sideHit);
 }
