@@ -17,5 +17,12 @@ public class RangedCheckedInputWrapper extends RangedInputWrapper {
 	public boolean isItemValid(int slot, @NotNull ItemStack stack) {
 		return check.test(slot, stack)&&super.isItemValid(slot, stack);
 	}
+	@Override
+	public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+		if(!isItemValid(slot,stack))
+			return stack;
+		return super.insertItem(slot, stack, simulate);
+	}
+
 
 }

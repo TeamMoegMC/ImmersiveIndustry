@@ -318,12 +318,15 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 				return;
 			}
 			ItemEntity itemEntity = (ItemEntity) collided;
-			ItemStack insertItem = ItemHandlerHelper.insertItem(ctx.getState().inputHandler.getValue(), itemEntity.getItem().copy(), false);
-			if (insertItem.isEmpty()) {
-				itemEntity.remove(RemovalReason.DISCARDED);
-				return;
+			if(!itemEntity.isRemoved()) {
+				ItemStack insertItem = ItemHandlerHelper.insertItem(ctx.getState().inputHandler.getValue(), itemEntity.getItem().copy(), false);
+				if (insertItem.isEmpty()) {
+					itemEntity.setItem(ItemStack.EMPTY);
+					itemEntity.remove(RemovalReason.DISCARDED);
+					return;
+				}
+				itemEntity.setItem(insertItem);
 			}
-			itemEntity.setItem(insertItem);
 
 		}
 	}
