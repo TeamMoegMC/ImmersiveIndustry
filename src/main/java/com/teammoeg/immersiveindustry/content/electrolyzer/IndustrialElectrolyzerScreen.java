@@ -47,7 +47,7 @@ public class IndustrialElectrolyzerScreen extends IIContainerScreen<IndustrialEl
 	protected void makeInfoAreas() {
 		addInfoArea(new AccessableFluidInfoArea(menu.tank[0], new Rect2i(leftPos + 10, topPos + 25, 16, 47), 196, 0, 20, 51, background));
 		addInfoArea(new AccessableFluidInfoArea(menu.tank[1], new Rect2i(leftPos + 132, topPos + 25, 16, 47), 196, 0, 20, 51, background));
-		addInfoArea(new EnergyInfoArea(leftPos + 157, topPos + 25, menu.energy));
+		addInfoArea(new EnergyInfoArea(leftPos + 156, topPos + 25, menu.energy));
 	}
 
 	@Override
