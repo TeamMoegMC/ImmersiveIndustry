@@ -71,8 +71,8 @@ public class ChemicalState implements IMultiblockState {
 		recipe=new RecipeHandler<>((r,t)->t.time);
 		inventory=new ChangeDetectedItemHandler(6, capabilitySource.getMarkDirtyRunnable());
 		inventory.addSlotListener(0,3, recipe::onContainerChanged);
-		inputHandler=new StoredCapability<>(new RangedCheckedInputWrapper(inventory,0,4,(i,r)->ChemicalRecipe.isValidInput(level.get(),r)));
-		outputHandler=new RangedOutputWrapper(inventory,4,7);
+		inputHandler=new StoredCapability<>(new RangedCheckedInputWrapper(inventory,0,3,(i,r)->ChemicalRecipe.isValidInput(level.get(),r)));
+		outputHandler=new RangedOutputWrapper(inventory,3,6);
 		//fluidio definition
 		int num=0;
 		CapabilityBuilder<IFluidHandler> fluid=capabilities.fluidHandler();
