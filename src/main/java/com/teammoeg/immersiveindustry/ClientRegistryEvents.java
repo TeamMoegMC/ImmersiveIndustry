@@ -143,6 +143,9 @@ public class ClientRegistryEvents {
             man.addEntry(CATEGORY, builder.create(), 6);
         }
         extras.put("steamTurbineGenerator", () -> IIConfig.SERVER.steamTurbineGenerator.get());
+        extras.put("SteamTurbineMaximumInput", () -> IIConfig.SERVER.steamTurbineInputMax.get());
+        extras.put("SteamTurbineMinimumInput", () -> IIConfig.SERVER.steamTurbineInputMin.get());
+        
         extras.put("electrodeCost", () -> IIConfig.SERVER.electrodeCost.get());
         ManualHelper.ADD_CONFIG_GETTER.getValue().accept((s) -> {
             if (s.startsWith(IIMain.MODID)) {
