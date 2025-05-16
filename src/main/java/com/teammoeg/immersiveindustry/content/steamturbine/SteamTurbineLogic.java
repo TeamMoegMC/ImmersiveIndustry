@@ -83,7 +83,7 @@ public class SteamTurbineLogic implements IMultiblockLogic<SteamTurbineState>,IS
 		if(cap==ForgeCapabilities.FLUID_HANDLER&&FLUID_INPUT.equalsOrNullFace(position)) {
 			return ctx.getState().fluidCap.cast(ctx);
 		}
-		if(cap==ForgeCapabilities.ENERGY&&position.side()==RelativeBlockFace.UP||position.side()==null) {
+		if(cap==ForgeCapabilities.ENERGY&&(position.side()==RelativeBlockFace.UP||position.side()==null)) {
 			if(ENERGY_OUT1.isCapabilityPosition(position)||ENERGY_OUT2.isCapabilityPosition(position)) {
 				return ctx.getState().energyView.cast(ctx);
 			}
