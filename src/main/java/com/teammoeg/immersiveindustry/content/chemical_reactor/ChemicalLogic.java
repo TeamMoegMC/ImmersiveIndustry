@@ -61,7 +61,7 @@ public class ChemicalLogic implements IClientTickableComponent<ChemicalState>, I
 	public void tickServer(IMultiblockContext<ChemicalState> context) {
 		ChemicalState state = context.getState();
 
-		int energyConsume = IIConfig.COMMON.chemicalBase.get();
+		int energyConsume = IIConfig.SERVER.chemicalBase.get();
 		if (tryOutput(context))
 			context.markMasterDirty();
 

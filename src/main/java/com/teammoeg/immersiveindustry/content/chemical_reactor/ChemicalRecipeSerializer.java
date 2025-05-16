@@ -90,7 +90,7 @@ public class ChemicalRecipeSerializer extends IERecipeSerializer<ChemicalRecipe>
         int time=400;
         if(json.has("time"))
         time = json.get("time").getAsInt();
-        int tickEnergy=IIConfig.COMMON.chemicalBase.get();
+        int tickEnergy=IIConfig.SERVER.chemicalBase.get();
         if(json.has("tickEnergy"))
         	tickEnergy = json.get("tickEnergy").getAsInt();
         if(inputs.length==0&&input_fluids.length==0)

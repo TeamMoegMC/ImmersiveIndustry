@@ -33,6 +33,7 @@ public class SteamTurbineState implements IMultiblockState{
 	final StoredCapability<IFluidHandler> fluidCap;
 	final StoredCapability<IEnergyStorage> energyView=new StoredCapability<>(NullEnergyStorage.INSTANCE);
 	ImmutableList<CapabilityReference<IEnergyStorage>> energyOutputs;
+	int saturation=0;
 	public SteamTurbineState(IInitialMultiblockContext<SteamTurbineState> capabilitySource) {
 		ImmutableList.Builder<CapabilityReference<IEnergyStorage>> outputs = ImmutableList.builder();
 		

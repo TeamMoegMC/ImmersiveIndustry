@@ -58,7 +58,7 @@ public class IndustrialElectrolyzerLogic
 	public void tickServer(IMultiblockContext<IndustrialElectrolyzerState> context) {
 		IndustrialElectrolyzerState state = context.getState();
 
-		int energyConsume = IIConfig.COMMON.electrolyzerBase.get() * 6;
+		int energyConsume = IIConfig.SERVER.electrolyzerBase.get() * 6;
 		if (tryOutput(context))
 			context.markMasterDirty();
 		boolean hasElectrode1 = state.inventory.getStackInSlot(2).is(IndustrialElectrolyzerContainer.Electrode_Tag);
@@ -86,7 +86,7 @@ public class IndustrialElectrolyzerLogic
 				if (state.energyStorage.extractEnergy(energyConsume, true) >= energyConsume)
 					if (handler.tickProcess(8)) {
 						int ele;
-						int duracost = IIUtil.randomValue(rs, IIConfig.COMMON.electrodeCost.get());
+						int duracost = IIUtil.randomValue(rs, IIConfig.SERVER.electrodeCost.get());
 						if (duracost > 0)
 							for (ele = 2; ele < 4; ++ele) {
 								if (inventory.getStackInSlot(ele).hurt(1, rs, null)) {

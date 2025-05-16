@@ -112,8 +112,8 @@ public class SteamTurbineLogic implements IMultiblockLogic<SteamTurbineState>,IS
 				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
             if (!presentOutputs.isEmpty()) {
-            	int steam=IIConfig.COMMON.steamTurbineSteam.get();
-                int out = IIConfig.COMMON.steamTurbineGenerator.get();
+            	int steam=IIConfig.SERVER.steamTurbineSteam.get();
+                int out = IIConfig.SERVER.steamTurbineGenerator.get();
             	if(!presentOutputs.isEmpty()&&state.tanks.getFluidAmount() >= steam&&EnergyHelper.distributeFlux(presentOutputs, out, false) < out)
 				{
             		state.active = true;

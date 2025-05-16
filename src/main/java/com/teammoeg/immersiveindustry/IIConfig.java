@@ -25,37 +25,46 @@ import net.minecraftforge.fml.config.ModConfig;
 public class IIConfig {
 
     public static void register() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, IIConfig.COMMON_CONFIG);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, IIConfig.SERVER_CONFIG);
     }
 
 
-    public static class Common {
+    public static class Server {
         public final ForgeConfigSpec.IntValue electrolyzerBase;
         public final ForgeConfigSpec.IntValue rotaryKilnBase;
         public final ForgeConfigSpec.IntValue carKilnBase;
         public final ForgeConfigSpec.DoubleValue crucibleCoolDown;
         public final ForgeConfigSpec.IntValue steamTurbineGenerator;
         public final ForgeConfigSpec.IntValue steamTurbineSteam;
+        public final ForgeConfigSpec.DoubleValue steamTurbineSaturationRate;
+        public final ForgeConfigSpec.DoubleValue steamTurbineUnsaturationRate;
+        public final ForgeConfigSpec.DoubleValue steamTurbineSaturationMin;
+        public final ForgeConfigSpec.DoubleValue steamTurbineSaturationMax;
         public final ForgeConfigSpec.DoubleValue electrodeCost;
         public final ForgeConfigSpec.IntValue chemicalBase;
-        Common(ForgeConfigSpec.Builder builder) {
+        Server(ForgeConfigSpec.Builder builder) {
             electrolyzerBase = builder.defineInRange("ElectrolyzerBaseTickEnergy", 32, 0, Integer.MAX_VALUE);
             rotaryKilnBase = builder.defineInRange("RotaryKilnBaseTickEnergy", 32, 0, Integer.MAX_VALUE);
             carKilnBase = builder.defineInRange("CarKilnBaseTickEnergy", 64, 0, Integer.MAX_VALUE);
             steamTurbineGenerator = builder.defineInRange("SteamTurbineGenerator", 1024, 0, Integer.MAX_VALUE);
             steamTurbineSteam = builder.defineInRange("SteamTurbineSteam", 64, 1, Integer.MAX_VALUE);
+            steamTurbineSaturationRate=builder.defineInRange("SteamTurbineSaturationPerSteam", 0.002, 0, 1);
+            steamTurbineUnsaturationRate=builder.defineInRange("SteamTurbineUnsaturationPerTickPerLevel", 0.16, 0, 1);
+            steamTurbineSaturationMin=builder.defineInRange("SteamTurbineMinimumSaturation", 0.6d, 0d, 100000d);
+            steamTurbineSaturationMax=builder.defineInRange("SteamTurbineMaximumSaturation", 4d, 0d, 100000d);
             electrodeCost = builder.defineInRange("ElectrodeCost", 0.25, 0, 96000);
             crucibleCoolDown=builder.defineInRange("CrucibleCooldownRate",0.25,0,Integer.MAX_VALUE);
             chemicalBase=builder.defineInRange("ChemicalReactorBaseTickEnergy", 32, 0, Integer.MAX_VALUE);
+            
         }
     }
 
-    public static final ForgeConfigSpec COMMON_CONFIG;
-    public static final Common COMMON;
+    public static final ForgeConfigSpec SERVER_CONFIG;
+    public static final Server SERVER;
 
     static {
         ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
-        COMMON = new Common(COMMON_BUILDER);
-        COMMON_CONFIG = COMMON_BUILDER.build();
+        SERVER = new Server(COMMON_BUILDER);
+        SERVER_CONFIG = COMMON_BUILDER.build();
     }
 }
