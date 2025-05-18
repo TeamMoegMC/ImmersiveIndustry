@@ -61,11 +61,10 @@ public class ChemicalLogic implements IClientTickableComponent<ChemicalState>, I
 	public void tickServer(IMultiblockContext<ChemicalState> context) {
 		ChemicalState state = context.getState();
 
-		int energyConsume = IIConfig.COMMON.chemicalBase.get();
 		if (tryOutput(context))
 			context.markMasterDirty();
 
-		if (state.state.isEnabled(context) && state.energyStorage.getEnergyStored() >= energyConsume) {
+		if (state.state.isEnabled(context)) {
 			RecipeHandler<ChemicalRecipe> handler = state.recipe;
 			ChangeDetectedItemHandler inventory = state.inventory;
 			IFluidHandler fluidInput=state.recipeInputFluidHandler;
@@ -79,7 +78,7 @@ public class ChemicalLogic implements IClientTickableComponent<ChemicalState>, I
 			state.active = false;
 			if (handler.shouldTickProcess()) {
 				ChemicalRecipe rcp = ChemicalRecipe.recipeList.getById(context.getLevel().getRawLevel(), handler.getLastRecipe());
-				energyConsume = rcp.tickEnergy;
+				int energyConsume = (int) (rcp.tickEnergy*IIConfig.COMMON.chemicalBaseRate.get());
 				if (state.energyStorage.extractEnergy(energyConsume, true) >= energyConsume)
 					if (handler.tickProcess(1)) {
 						state.energyStorage.extractEnergy(energyConsume, false);

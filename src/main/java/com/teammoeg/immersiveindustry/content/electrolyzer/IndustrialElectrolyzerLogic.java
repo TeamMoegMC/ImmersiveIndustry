@@ -58,7 +58,6 @@ public class IndustrialElectrolyzerLogic
 	public void tickServer(IMultiblockContext<IndustrialElectrolyzerState> context) {
 		IndustrialElectrolyzerState state = context.getState();
 
-		int energyConsume = IIConfig.COMMON.electrolyzerBase.get() * 6;
 		if (tryOutput(context))
 			context.markMasterDirty();
 		boolean hasElectrode1 = state.inventory.getStackInSlot(2).is(IndustrialElectrolyzerContainer.Electrode_Tag);
@@ -69,7 +68,7 @@ public class IndustrialElectrolyzerLogic
 			context.markDirtyAndSync();
 		}
 
-		if (state.state.isEnabled(context) && state.energyStorage.getEnergyStored() >= energyConsume && hasElectrode1 && hasElectrode2) {
+		if (state.state.isEnabled(context) && hasElectrode1 && hasElectrode2) {
 			RecipeHandler<ElectrolyzerRecipe> handler = state.recipe;
 			ChangeDetectedItemHandler inventory = state.inventory;
 			if (handler.shouldTestRecipe()) {
@@ -82,7 +81,7 @@ public class IndustrialElectrolyzerLogic
 			state.active = false;
 			if (handler.shouldTickProcess()) {
 				ElectrolyzerRecipe rcp = ElectrolyzerRecipe.recipeList.getById(context.getLevel().getRawLevel(), handler.getLastRecipe());
-				energyConsume = rcp.tickEnergy * 6;
+				int energyConsume = (int) (rcp.tickEnergy * 6*IIConfig.COMMON.electrolyzerBaseRate.get());
 				if (state.energyStorage.extractEnergy(energyConsume, true) >= energyConsume)
 					if (handler.tickProcess(8)) {
 						int ele;

@@ -26,6 +26,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPumpBlockEntity;
+
+import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent.IIMenus;
 import com.teammoeg.immersiveindustry.IIContent.IITileTypes;
 import com.teammoeg.immersiveindustry.util.LangUtil;
@@ -172,7 +174,7 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
             ElectrolyzerRecipe recipe = getRecipe();
             if (recipe != null) {
                 this.processMax = this.process = recipe.time;
-                this.tickEnergy = recipe.tickEnergy;
+                this.tickEnergy = (int) (recipe.tickEnergy*IIConfig.COMMON.electrolyzerBaseRate.get());
                 if (recipe.inputs.length > 0) {
                     Utils.modifyInvStackSize(inventory, SLOT_IN, -recipe.inputs[0].getCount());
                 }

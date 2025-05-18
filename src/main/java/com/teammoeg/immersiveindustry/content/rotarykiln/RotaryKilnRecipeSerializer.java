@@ -72,7 +72,7 @@ public class RotaryKilnRecipeSerializer extends IERecipeSerializer<RotaryKilnRec
         int time = 200;
         if (json.has("time"))
             time = json.get("time").getAsInt();
-        int tickEnergy = IIConfig.COMMON.rotaryKilnBase.get();
+        int tickEnergy = 32;
         if (json.has("tickEnergy"))
             tickEnergy = json.get("tickEnergy").getAsInt();
         StackWithChance byout=null;

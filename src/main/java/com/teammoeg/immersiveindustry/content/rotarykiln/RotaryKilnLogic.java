@@ -6,6 +6,8 @@ import java.util.function.Function;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
+
+import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.util.CapabilityFacing;
 import com.teammoeg.immersiveindustry.util.IIUtil;
 
@@ -138,6 +140,7 @@ public class RotaryKilnLogic implements IMultiblockLogic<RotaryKilnState>, IClie
 				needRun=true;
 			}
 			if(needRun) {
+				energycost*=IIConfig.COMMON.rotaryKilnBaseRate.get();
 				int extracted=state.energyStorage.extractEnergy(energycost, true);
 				if(extracted>=energycost) {
 					state.energyStorage.extractEnergy(energycost, false);

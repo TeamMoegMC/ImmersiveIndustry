@@ -30,23 +30,23 @@ public class IIConfig {
 
 
     public static class Common {
-        public final ForgeConfigSpec.IntValue electrolyzerBase;
-        public final ForgeConfigSpec.IntValue rotaryKilnBase;
-        public final ForgeConfigSpec.IntValue carKilnBase;
+        public final ForgeConfigSpec.DoubleValue electrolyzerBaseRate;
+        public final ForgeConfigSpec.DoubleValue rotaryKilnBaseRate;
+        public final ForgeConfigSpec.DoubleValue carKilnBaseRate;
         public final ForgeConfigSpec.DoubleValue crucibleCoolDown;
         public final ForgeConfigSpec.IntValue steamTurbineGenerator;
         public final ForgeConfigSpec.IntValue steamTurbineSteam;
         public final ForgeConfigSpec.DoubleValue electrodeCost;
-        public final ForgeConfigSpec.IntValue chemicalBase;
+        public final ForgeConfigSpec.DoubleValue chemicalBaseRate;
         Common(ForgeConfigSpec.Builder builder) {
-            electrolyzerBase = builder.defineInRange("ElectrolyzerBaseTickEnergy", 32, 0, Integer.MAX_VALUE);
-            rotaryKilnBase = builder.defineInRange("RotaryKilnBaseTickEnergy", 32, 0, Integer.MAX_VALUE);
-            carKilnBase = builder.defineInRange("CarKilnBaseTickEnergy", 64, 0, Integer.MAX_VALUE);
+            electrolyzerBaseRate = builder.defineInRange("ElectrolyzerBaseTickEnergyRate", 1d, 0, Integer.MAX_VALUE);
+            rotaryKilnBaseRate = builder.defineInRange("RotaryKilnBaseTickEnergyRate", 1d, 0, Integer.MAX_VALUE);
+            carKilnBaseRate = builder.defineInRange("CarKilnBaseTickEnergyRate", 1d, 0, Integer.MAX_VALUE);
             steamTurbineGenerator = builder.defineInRange("SteamTurbineGenerator", 1024, 0, Integer.MAX_VALUE);
             steamTurbineSteam = builder.defineInRange("SteamTurbineSteam", 64, 1, Integer.MAX_VALUE);
             electrodeCost = builder.defineInRange("ElectrodeCost", 0.25, 0, 96000);
             crucibleCoolDown=builder.defineInRange("CrucibleCooldownRate",0.25,0,Integer.MAX_VALUE);
-            chemicalBase=builder.defineInRange("ChemicalReactorBaseTickEnergy", 32, 0, Integer.MAX_VALUE);
+            chemicalBaseRate=builder.defineInRange("ChemicalReactorBaseTickEnergyRate", 1d, 0, Integer.MAX_VALUE);
         }
     }
 
