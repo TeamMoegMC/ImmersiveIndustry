@@ -78,7 +78,7 @@ public class ChemicalLogic implements IClientTickableComponent<ChemicalState>, I
 			state.active = false;
 			if (handler.shouldTickProcess()) {
 				ChemicalRecipe rcp = ChemicalRecipe.recipeList.getById(context.getLevel().getRawLevel(), handler.getLastRecipe());
-				int energyConsume = (int) (rcp.tickEnergy*IIConfig.COMMON.chemicalBaseRate.get());
+				int energyConsume = (int) (rcp.tickEnergy*IIConfig.SERVER.chemicalBaseRate.get());
 				if (state.energyStorage.extractEnergy(energyConsume, true) >= energyConsume)
 					if (handler.tickProcess(1)) {
 						state.energyStorage.extractEnergy(energyConsume, false);

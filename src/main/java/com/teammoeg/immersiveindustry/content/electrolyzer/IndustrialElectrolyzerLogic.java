@@ -81,11 +81,11 @@ public class IndustrialElectrolyzerLogic
 			state.active = false;
 			if (handler.shouldTickProcess()) {
 				ElectrolyzerRecipe rcp = ElectrolyzerRecipe.recipeList.getById(context.getLevel().getRawLevel(), handler.getLastRecipe());
-				int energyConsume = (int) (rcp.tickEnergy * 6*IIConfig.COMMON.electrolyzerBaseRate.get());
+				int energyConsume = (int) (rcp.tickEnergy * 6*IIConfig.SERVER.electrolyzerBaseRate.get());
 				if (state.energyStorage.extractEnergy(energyConsume, true) >= energyConsume)
 					if (handler.tickProcess(8)) {
 						int ele;
-						int duracost = IIUtil.randomValue(rs, IIConfig.COMMON.electrodeCost.get());
+						int duracost = IIUtil.randomValue(rs, IIConfig.SERVER.electrodeCost.get());
 						if (duracost > 0)
 							for (ele = 2; ele < 4; ++ele) {
 								if (inventory.getStackInSlot(ele).hurt(1, rs, null)) {

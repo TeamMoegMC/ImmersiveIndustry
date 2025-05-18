@@ -1,6 +1,8 @@
 蒸汽涡轮
 不只是大型蒸汽机
 <&steam_turbine>
-蒸汽涡轮机可以快速消耗蒸汽（高达64mb/t）产生电力。
-燃料需要从发电机的管口位置输入，而能量的输出口最多两个。它所拥有的<config;i;immersiveindustry.steamTurbineGenerator>Flux/t的输出量将会平均分散在各个连接点上。发电机只有至少一个输出口有需求的时候才会工作。
+蒸汽涡轮机可以快速消耗蒸汽（<config;i;immersiveindustry.SteamTurbineMinimumInput>~<config;i;immersiveindustry.SteamTurbineMaximumInput>mb/t）产生电力。
+蒸汽涡轮机具有转速机制，输入蒸汽足够快就可以逐渐提升转速，如果不能输出或者蒸汽不足等导致的运行停止会导致转速逐渐下降，低转速下的发电量是<config;i;immersiveindustry.steamTurbineGenerator>Flux/mb，高转速下发电量数倍于该值。
+具体发电效率可以用工程师多用表点击蒸汽涡轮查询。
+燃料需要从发电机的管口位置输入，而能量的输出口最多两个。所有发电量将会平均分散在各个连接点上。发电机只有至少一个输出口有需求的时候才会工作。
 用红石信号激活侧面的控制面板可以关闭发电机。

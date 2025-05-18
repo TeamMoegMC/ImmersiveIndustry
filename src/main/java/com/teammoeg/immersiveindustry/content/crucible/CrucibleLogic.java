@@ -103,7 +103,7 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 		// new heating mechanism
 		ensureBurntime(context);
 		if (state.temperature > 0) {
-			state.temperature -= IIUtil.randomValue(rs, IIConfig.COMMON.crucibleCoolDown.get());
+			state.temperature -= IIUtil.randomValue(rs, IIConfig.SERVER.crucibleCoolDown.get());
 			context.markMasterDirty();
 		}
   

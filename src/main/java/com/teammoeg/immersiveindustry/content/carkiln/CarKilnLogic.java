@@ -55,7 +55,6 @@ public class CarKilnLogic implements IMultiblockLogic<CarKilnState>, IClientTick
 	public void tickServer(IMultiblockContext<CarKilnState> context) {
 		CarKilnState state=context.getState();
 		ChangeDetectedItemHandler inventory = state.inventory;
-		
 		tryOutput(context);
 		boolean shouldEarlyExit=false;
 		for(int i=0;i<state.result.getSlots();i++) {
@@ -84,7 +83,7 @@ public class CarKilnLogic implements IMultiblockLogic<CarKilnState>, IClientTick
 			state.active = false;
 			if (handler.shouldTickProcess()) {
 				CarKilnRecipe rcp = CarKilnRecipe.recipeList.getById(context.getLevel().getRawLevel(), handler.getLastRecipe());
-				int energyConsume = (int) (rcp.tickEnergy*IIConfig.COMMON.carKilnBaseRate.get());
+				int energyConsume = (int) (rcp.tickEnergy*IIConfig.SERVER.carKilnBaseRate.get());
 				if (state.energyStorage.extractEnergy(energyConsume, true) >= energyConsume)
 					if (handler.tickProcess(1)) {
 						state.energyStorage.extractEnergy(energyConsume, false);

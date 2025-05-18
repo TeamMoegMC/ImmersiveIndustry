@@ -1,5 +1,7 @@
 package com.teammoeg.immersiveindustry.content.steamturbine;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -8,6 +10,7 @@ import java.util.stream.Collectors;
 import com.google.common.collect.ImmutableList;
 import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.util.CapabilityFacing;
+import com.teammoeg.immersiveindustry.util.LangUtil;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
@@ -18,13 +21,19 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPos
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import blusunrize.immersiveengineering.common.register.IEItems;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -103,21 +112,41 @@ public class SteamTurbineLogic implements IMultiblockLogic<SteamTurbineState>,IS
 	}
 
 	@Override
+	public InteractionResult click(IMultiblockContext<SteamTurbineState> ctx, BlockPos posInMultiblock, Player player, InteractionHand hand, BlockHitResult absoluteHit, boolean isClient) {
+		if(player.getItemInHand(hand).is(IEItems.Tools.VOLTMETER.get())) {
+			if(!player.level().isClientSide) {
+				NumberFormat num=new DecimalFormat("#0.0%");
+				double eff=0;
+				final double saturationMin=IIConfig.SERVER.steamTurbineSaturationMin.get();
+				player.sendSystemMessage(LangUtil.translate("message.immersiveindustry.steam_turbine.saturation",num.format((Mth.clamp(ctx.getState().saturation-saturationMin,0, IIConfig.SERVER.steamTurbineSaturationMax.get()-saturationMin)+1)) ));
+			}
+			return InteractionResult.sidedSuccess(player.level().isClientSide);
+		}
+		return IMultiblockLogic.super.click(ctx, posInMultiblock, player, hand, absoluteHit, isClient);
+	}
+
+	@Override
 	public void tickServer(IMultiblockContext<SteamTurbineState> context) {
 		SteamTurbineState state=context.getState();
 		boolean pactive=context.getState().active;
-        if (state.rsstate.isEnabled(context)&& !state.tanks.isEmpty()) {
+		final int minSteam=IIConfig.SERVER.steamTurbineInputMin.get();
+        if (state.rsstate.isEnabled(context)&& state.tanks.getFluidAmount()>=minSteam) {
+        	
             List<IEnergyStorage> presentOutputs = state.energyOutputs.stream()
 				.map(CapabilityReference::getNullable)
 				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
             if (!presentOutputs.isEmpty()) {
-            	int steam=IIConfig.COMMON.steamTurbineSteam.get();
-                int out = IIConfig.COMMON.steamTurbineGenerator.get();
-            	if(!presentOutputs.isEmpty()&&state.tanks.getFluidAmount() >= steam&&EnergyHelper.distributeFlux(presentOutputs, out, false) < out)
+            	
+            	final double saturationMin=IIConfig.SERVER.steamTurbineSaturationMin.get();
+            	int steamCost=Math.min(state.tanks.getFluidAmount(), IIConfig.SERVER.steamTurbineInputMax.get());
+                int out = (int) ((steamCost*IIConfig.SERVER.steamTurbineGenerator.get())*(Mth.clamp(state.saturation-saturationMin,0, IIConfig.SERVER.steamTurbineSaturationMax.get()-saturationMin)+1));
+            	if(!presentOutputs.isEmpty()&&EnergyHelper.distributeFlux(presentOutputs, out, true) <=0)
 				{
+            		state.saturation+=IIConfig.SERVER.steamTurbineSaturationRate.get()*steamCost;
             		state.active = true;
-            		state.tanks.drain(steam, IFluidHandler.FluidAction.EXECUTE);
+            		state.tanks.drain(steamCost, IFluidHandler.FluidAction.EXECUTE);
+            		EnergyHelper.distributeFlux(presentOutputs, out, false);
             		context.markMasterDirty();
 				}else
 					state.active = false;
@@ -125,6 +154,8 @@ public class SteamTurbineLogic implements IMultiblockLogic<SteamTurbineState>,IS
             	state.active = false;
         } else if (state.active)
         	state. active = false;
+        if(state.saturation!=0)
+        	state.saturation=Math.max(0, state.saturation-=state.saturation*IIConfig.SERVER.steamTurbineUnsaturationRate.get());
         if(pactive!=state.active) {
         	context.markDirtyAndSync();
         }

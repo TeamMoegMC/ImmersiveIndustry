@@ -142,8 +142,11 @@ public class ClientRegistryEvents {
             builder.readFromFile(new ResourceLocation(IIMain.MODID, "chemical_reactor"));
             man.addEntry(CATEGORY, builder.create(), 6);
         }
-        extras.put("steamTurbineGenerator", () -> IIConfig.COMMON.steamTurbineGenerator.get());
-        extras.put("electrodeCost", () -> IIConfig.COMMON.electrodeCost.get());
+        extras.put("steamTurbineGenerator", () -> IIConfig.SERVER.steamTurbineGenerator.get());
+        extras.put("SteamTurbineMaximumInput", () -> IIConfig.SERVER.steamTurbineInputMax.get());
+        extras.put("SteamTurbineMinimumInput", () -> IIConfig.SERVER.steamTurbineInputMin.get());
+        
+        extras.put("electrodeCost", () -> IIConfig.SERVER.electrodeCost.get());
         ManualHelper.ADD_CONFIG_GETTER.getValue().accept((s) -> {
             if (s.startsWith(IIMain.MODID)) {
                 String path = s.substring(s.indexOf(".") + 1);

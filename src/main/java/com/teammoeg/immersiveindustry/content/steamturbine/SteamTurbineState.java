@@ -3,6 +3,7 @@ package com.teammoeg.immersiveindustry.content.steamturbine;
 import java.util.function.BooleanSupplier;
 
 import com.google.common.collect.ImmutableList;
+import com.teammoeg.immersiveindustry.IIConfig;
 
 import blusunrize.immersiveengineering.api.energy.NullEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.RedstoneControl.RSState;
@@ -26,13 +27,14 @@ public class SteamTurbineState implements IMultiblockState{
 	public final RSState rsstate=RSState.enabledByDefault();
 	public boolean active = false;
 	@SuppressWarnings("deprecation")
-	public FluidTank tanks= new FluidTank(24 * 1000, fluidStack -> {
+	public FluidTank tanks= new FluidTank(4*20*IIConfig.SERVER.steamTurbineInputMax.get(), fluidStack -> {
         return fluidStack.getFluid().is(fluidTag);
     });
 	BooleanSupplier isSoundPlaying=()->false;
 	final StoredCapability<IFluidHandler> fluidCap;
 	final StoredCapability<IEnergyStorage> energyView=new StoredCapability<>(NullEnergyStorage.INSTANCE);
 	ImmutableList<CapabilityReference<IEnergyStorage>> energyOutputs;
+	float saturation=0;
 	public SteamTurbineState(IInitialMultiblockContext<SteamTurbineState> capabilitySource) {
 		ImmutableList.Builder<CapabilityReference<IEnergyStorage>> outputs = ImmutableList.builder();
 		
@@ -47,12 +49,14 @@ public class SteamTurbineState implements IMultiblockState{
 	public void writeSaveNBT(CompoundTag nbt) {
 		tanks.writeToNBT(nbt);
 		nbt.putBoolean("active", active);
+		nbt.putFloat("saturation", saturation);
 	}
 
 	@Override
 	public void readSaveNBT(CompoundTag nbt) {
 		tanks.readFromNBT(nbt);
 		active = nbt.getBoolean("active");
+		saturation=nbt.getFloat("saturation");
 	}
 
 	@Override

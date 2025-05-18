@@ -48,37 +48,58 @@ public class MultipleTankHandler implements IFluidHandler {
 
 	@Override
 	public int fill(FluidStack resource, FluidAction action) {
+		int maxFill=resource.getAmount();
 		for(int i=0;i<tanks.length;i++) {
-			if(tanks[i].isFluidValid(resource)&&resource.isFluidEqual(tanks[i].getFluid())) {
-				return tanks[i].fill(resource, action);
-			}
+			int amount=tanks[i].fill(resource, action);
+			resource.shrink(amount);
+			if(resource.isEmpty())
+				return amount;
 		}
-		for(int i=0;i<tanks.length;i++) {
-			int filled=tanks[i].fill(resource, action);
-			if(filled>0)
-				return filled;
-		}
-		return 0;
+		return maxFill-resource.getAmount();
 	}
 
 	@Override
 	public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+		FluidStack out=FluidStack.EMPTY;
 		for(int i=0;i<tanks.length;i++) {
-			FluidStack draineded=tanks[i].drain(resource, action);
-			if(!draineded.isEmpty())
-				return draineded;
+			FluidStack drained=tanks[i].drain(resource, action);
+			if(!drained.isEmpty()) {
+				if(out.isEmpty())
+					out=drained;
+				else {
+					out.setAmount(out.getAmount()+drained.getAmount());
+				}
+				if(out.getAmount()>=resource.getAmount())
+					break;
+			}
 		}
-		return FluidStack.EMPTY;
+		return out;
 	}
 
 	@Override
 	public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+		FluidStack filter=FluidStack.EMPTY;
+		FluidStack out=FluidStack.EMPTY;
 		for(int i=0;i<tanks.length;i++) {
-			FluidStack draineded=tanks[i].drain(maxDrain, action);
-			if(!draineded.isEmpty())
-				return draineded;
+			
+			if(filter.isEmpty()) {
+				FluidStack drained=tanks[i].drain(maxDrain, action);
+				if(!drained.isEmpty()) {
+					out=drained;
+					filter=new FluidStack(out,maxDrain-out.getAmount());
+				}
+			}else{
+				FluidStack drained=tanks[i].drain(filter, action);
+				if(!drained.isEmpty()) {
+					out.setAmount(out.getAmount()+drained.getAmount());
+					filter.shrink(drained.getAmount());
+				}
+			}
+			
+			if(out.getAmount()>=maxDrain)
+				break;
 		}
-		return FluidStack.EMPTY;
+		return out;
 	}
 
 }

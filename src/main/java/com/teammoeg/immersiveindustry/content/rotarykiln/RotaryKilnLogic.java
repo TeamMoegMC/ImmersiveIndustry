@@ -140,7 +140,7 @@ public class RotaryKilnLogic implements IMultiblockLogic<RotaryKilnState>, IClie
 				needRun=true;
 			}
 			if(needRun) {
-				energycost*=IIConfig.COMMON.rotaryKilnBaseRate.get();
+				energycost*=IIConfig.SERVER.rotaryKilnBaseRate.get();
 				int extracted=state.energyStorage.extractEnergy(energycost, true);
 				if(extracted>=energycost) {
 					state.energyStorage.extractEnergy(energycost, false);

@@ -174,7 +174,7 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
             ElectrolyzerRecipe recipe = getRecipe();
             if (recipe != null) {
                 this.processMax = this.process = recipe.time;
-                this.tickEnergy = (int) (recipe.tickEnergy*IIConfig.COMMON.electrolyzerBaseRate.get());
+                this.tickEnergy = (int) (recipe.tickEnergy*IIConfig.SERVER.electrolyzerBaseRate.get());
                 if (recipe.inputs.length > 0) {
                     Utils.modifyInvStackSize(inventory, SLOT_IN, -recipe.inputs[0].getCount());
                 }

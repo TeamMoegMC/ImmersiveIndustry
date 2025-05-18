@@ -13,11 +13,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 
 public record FluidRecipeProcessResult(List<FluidStack> operations) {
 	public void runOperations(IFluidHandler inventory) {
-		if (operations != null) {
-			for (FluidStack i : operations) {
-				inventory.drain(i, FluidAction.EXECUTE);
-			}
-		}
+		runOperations(inventory,1);
 	}
 	public void runOperations(IFluidHandler inventory,int multiplier) {
 		if (operations != null) {
