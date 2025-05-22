@@ -18,14 +18,17 @@
 
 package com.teammoeg.immersiveindustry;
 
+import javax.annotation.Nullable;
+
+import com.teammoeg.immersiveindustry.mixin.MixinIETemplateMultiblockAccess;
+import com.teammoeg.immersiveindustry.mixin.MixinMultiblockPartBlockAccess;
+import com.teammoeg.immersiveindustry.mixin.MixinTemplateMultiblockAccess;
+
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
-import com.teammoeg.immersiveindustry.mixin.MixinIETemplateMultiblockAccess;
-import com.teammoeg.immersiveindustry.mixin.MixinMultiblockPartBlockAccess;
-import com.teammoeg.immersiveindustry.mixin.MixinTemplateMultiblockAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -46,8 +49,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
-
-import javax.annotation.Nullable;
 
 @Mod.EventBusSubscriber(modid = IIMain.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents {
@@ -107,7 +108,6 @@ public class ForgeEvents {
         }
     }
     
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean updateMultiblockInHand(Player player, ItemStack itemStack){
         if(itemStack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof MixinMultiblockPartBlockAccess block) {
             var multiblock = getITEMFromReg(block.getMultiblock());

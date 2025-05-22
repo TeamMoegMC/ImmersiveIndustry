@@ -18,8 +18,6 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
-import java.util.Map;
-
 import com.teammoeg.immersiveindustry.IIContent.IIRecipes;
 import com.teammoeg.immersiveindustry.util.FluidRecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.FluidRecipeSimulator;
@@ -29,7 +27,6 @@ import com.teammoeg.immersiveindustry.util.RecipeSimulateHelper;
 
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
-import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;

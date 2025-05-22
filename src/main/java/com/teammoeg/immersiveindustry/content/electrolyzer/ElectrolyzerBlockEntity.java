@@ -25,14 +25,11 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import blusunrize.immersiveengineering.common.blocks.metal.FluidPumpBlockEntity;
-
 import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent.IIMenus;
 import com.teammoeg.immersiveindustry.IIContent.IITileTypes;
 import com.teammoeg.immersiveindustry.util.LangUtil;
 import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
-import com.teammoeg.immersiveindustry.util.ItemRecipeProcessResult;
 
 import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.Lib;
@@ -64,7 +61,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;

@@ -2,7 +2,6 @@ package com.teammoeg.immersiveindustry.content.rotarykiln;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -16,7 +15,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.Multibloc
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
-import net.minecraft.Util;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;

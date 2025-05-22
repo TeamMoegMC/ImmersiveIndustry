@@ -5,10 +5,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class ChangeDetectedItemHandler extends ItemStackHandler{

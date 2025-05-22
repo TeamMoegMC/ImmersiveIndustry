@@ -22,7 +22,6 @@
 package com.teammoeg.immersiveindustry.util;
 
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import org.jetbrains.annotations.NotNull;
 

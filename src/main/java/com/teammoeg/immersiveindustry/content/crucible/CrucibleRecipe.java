@@ -18,8 +18,6 @@
 
 package com.teammoeg.immersiveindustry.content.crucible;
 
-import java.util.Map;
-
 import com.teammoeg.immersiveindustry.IIContent.IIRecipes;
 import com.teammoeg.immersiveindustry.util.ItemRecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
@@ -27,7 +25,6 @@ import com.teammoeg.immersiveindustry.util.RecipeSimulateHelper;
 
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
-import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;

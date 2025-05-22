@@ -18,8 +18,6 @@
 
 package com.teammoeg.immersiveindustry.content.chemical_reactor;
 
-import java.util.Map;
-
 import com.teammoeg.immersiveindustry.IIContent.IIRecipes;
 import com.teammoeg.immersiveindustry.util.FluidRecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.FluidRecipeSimulator;
@@ -30,7 +28,6 @@ import com.teammoeg.immersiveindustry.util.RecipeSimulateHelper;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
-import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
@@ -43,7 +40,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.RegistryObject;

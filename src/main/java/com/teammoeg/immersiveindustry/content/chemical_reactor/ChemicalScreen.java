@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 import com.teammoeg.immersiveindustry.IIMain;
 import com.teammoeg.immersiveindustry.util.AccessableFluidInfoArea;
 import com.teammoeg.immersiveindustry.util.IIContainerScreen;
+
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;

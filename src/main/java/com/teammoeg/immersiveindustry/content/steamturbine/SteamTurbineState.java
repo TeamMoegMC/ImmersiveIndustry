@@ -35,6 +35,7 @@ public class SteamTurbineState implements IMultiblockState{
 	final StoredCapability<IEnergyStorage> energyView=new StoredCapability<>(NullEnergyStorage.INSTANCE);
 	ImmutableList<CapabilityReference<IEnergyStorage>> energyOutputs;
 	float saturation=0;
+	int energyBuffer=0;
 	public SteamTurbineState(IInitialMultiblockContext<SteamTurbineState> capabilitySource) {
 		ImmutableList.Builder<CapabilityReference<IEnergyStorage>> outputs = ImmutableList.builder();
 		
@@ -50,6 +51,7 @@ public class SteamTurbineState implements IMultiblockState{
 		tanks.writeToNBT(nbt);
 		nbt.putBoolean("active", active);
 		nbt.putFloat("saturation", saturation);
+		nbt.putInt("energyBuffer", energyBuffer);
 	}
 
 	@Override
@@ -57,6 +59,7 @@ public class SteamTurbineState implements IMultiblockState{
 		tanks.readFromNBT(nbt);
 		active = nbt.getBoolean("active");
 		saturation=nbt.getFloat("saturation");
+		energyBuffer=nbt.getInt("energyBuffer");
 	}
 
 	@Override

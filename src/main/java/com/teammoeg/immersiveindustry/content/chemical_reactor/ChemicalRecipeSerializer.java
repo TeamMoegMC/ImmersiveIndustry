@@ -24,10 +24,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.mojang.serialization.JsonOps;
-import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.IIContent;
-import com.teammoeg.immersiveindustry.IIMain;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
@@ -37,7 +34,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
-import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 
 public class ChemicalRecipeSerializer extends IERecipeSerializer<ChemicalRecipe> {

@@ -8,7 +8,6 @@ import com.teammoeg.immersiveindustry.util.ChangeDetectedItemHandler;
 import com.teammoeg.immersiveindustry.util.RangedCheckedInputWrapper;
 import com.teammoeg.immersiveindustry.util.RangedOutputWrapper;
 import com.teammoeg.immersiveindustry.util.RecipeHandler;
-import com.teammoeg.immersiveindustry.util.ItemRecipeProcessResult;
 
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.energy.WrappingEnergyStorage;

@@ -1,15 +1,10 @@
 package com.teammoeg.immersiveindustry.util;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.items.IItemHandlerModifiable;
 
 public record FluidRecipeProcessResult(List<FluidStack> operations) {
 	public void runOperations(IFluidHandler inventory) {

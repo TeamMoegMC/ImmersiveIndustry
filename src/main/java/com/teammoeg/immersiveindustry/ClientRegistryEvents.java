@@ -18,42 +18,37 @@
 
 package com.teammoeg.immersiveindustry;
 
-import blusunrize.immersiveengineering.api.ManualHelper;
-import blusunrize.immersiveengineering.client.manual.ManualElementMultiblock;
-import blusunrize.lib.manual.ManualEntry;
-import blusunrize.lib.manual.ManualEntry.SpecialElementData;
-import blusunrize.lib.manual.ManualInstance;
-import blusunrize.lib.manual.Tree;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
 
 import com.teammoeg.immersiveindustry.IIContent.IIMenus;
 import com.teammoeg.immersiveindustry.IIContent.IIMultiblocks;
-import com.teammoeg.immersiveindustry.IIContent.IITileTypes;
 import com.teammoeg.immersiveindustry.content.carkiln.CarKilnRenderer;
 import com.teammoeg.immersiveindustry.content.carkiln.CarKilnScreen;
 import com.teammoeg.immersiveindustry.content.chemical_reactor.ChemicalScreen;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleScreen;
 import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerScreen;
-import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerContainer;
 import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerRenderer;
 import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerScreen;
 import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnRenderer;
 import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnScreen;
 import com.teammoeg.immersiveindustry.util.DynamicBlockModelReference;
 
+import blusunrize.immersiveengineering.api.ManualHelper;
+import blusunrize.immersiveengineering.client.manual.ManualElementMultiblock;
+import blusunrize.lib.manual.ManualEntry;
+import blusunrize.lib.manual.ManualEntry.SpecialElementData;
+import blusunrize.lib.manual.ManualInstance;
+import blusunrize.lib.manual.Tree;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = IIMain.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientRegistryEvents {

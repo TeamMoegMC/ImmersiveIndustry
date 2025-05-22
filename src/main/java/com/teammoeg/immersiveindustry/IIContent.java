@@ -18,34 +18,55 @@
 
 package com.teammoeg.immersiveindustry;
 
-import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
-import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
-import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
-import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockItem;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.IEMultiblockBuilder;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.NonMirrorableWithActiveBlock;
-import blusunrize.immersiveengineering.common.register.IEBlocks;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.mutable.Mutable;
+import org.apache.commons.lang3.mutable.MutableObject;
+
 import com.google.common.collect.ImmutableSet;
 import com.teammoeg.immersiveindustry.content.IIBaseBlock;
 import com.teammoeg.immersiveindustry.content.IIBaseItem;
 import com.teammoeg.immersiveindustry.content.IIBlockItem;
-import com.teammoeg.immersiveindustry.content.carkiln.*;
+import com.teammoeg.immersiveindustry.content.carkiln.CarKilnContainer;
+import com.teammoeg.immersiveindustry.content.carkiln.CarKilnLogic;
+import com.teammoeg.immersiveindustry.content.carkiln.CarKilnMultiblock;
+import com.teammoeg.immersiveindustry.content.carkiln.CarKilnRecipe;
+import com.teammoeg.immersiveindustry.content.carkiln.CarKilnRecipeSerializer;
+import com.teammoeg.immersiveindustry.content.carkiln.CarKilnState;
+import com.teammoeg.immersiveindustry.content.chemical_reactor.ChemicalContainer;
+import com.teammoeg.immersiveindustry.content.chemical_reactor.ChemicalLogic;
 import com.teammoeg.immersiveindustry.content.chemical_reactor.ChemicalMultiblock;
 import com.teammoeg.immersiveindustry.content.chemical_reactor.ChemicalRecipe;
 import com.teammoeg.immersiveindustry.content.chemical_reactor.ChemicalRecipeSerializer;
 import com.teammoeg.immersiveindustry.content.chemical_reactor.ChemicalState;
-import com.teammoeg.immersiveindustry.content.chemical_reactor.ChemicalContainer;
-import com.teammoeg.immersiveindustry.content.chemical_reactor.ChemicalLogic;
-import com.teammoeg.immersiveindustry.content.crucible.*;
-import com.teammoeg.immersiveindustry.content.electrolyzer.*;
+import com.teammoeg.immersiveindustry.content.crucible.CrucibleContainer;
+import com.teammoeg.immersiveindustry.content.crucible.CrucibleLogic;
+import com.teammoeg.immersiveindustry.content.crucible.CrucibleMultiblock;
+import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
+import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipeSerializer;
+import com.teammoeg.immersiveindustry.content.crucible.CrucibleState;
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerBlock;
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerBlockEntity;
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerContainer;
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipe;
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipeSerializer;
+import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerContainer;
+import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerLogic;
+import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerMultiblock;
+import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerState;
 import com.teammoeg.immersiveindustry.content.misc.IIDirectionalBlock;
 import com.teammoeg.immersiveindustry.content.misc.IIHorizontalBlock;
-import com.teammoeg.immersiveindustry.content.rotarykiln.*;
+import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnContainer;
+import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnLogic;
+import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnMultiblock;
+import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnRecipe;
+import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnRecipeSerializer;
+import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnState;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineLogic;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineMultiblock;
 import com.teammoeg.immersiveindustry.content.steamturbine.SteamTurbineState;
@@ -54,6 +75,18 @@ import com.teammoeg.immersiveindustry.util.IIMenuComponent;
 import com.teammoeg.immersiveindustry.util.IIMultiblockBlock;
 import com.teammoeg.immersiveindustry.util.MultiBlockMenuConstructor;
 import com.teammoeg.immersiveindustry.util.MultiblockContainer;
+
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes.TypeWithClass;
+import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
+import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockItem;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.IEMultiblockBuilder;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.NonMirrorableWithActiveBlock;
+import blusunrize.immersiveengineering.common.register.IEBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -76,17 +109,6 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import org.apache.commons.lang3.mutable.Mutable;
-import org.apache.commons.lang3.mutable.MutableObject;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class IIContent {
 
@@ -273,7 +295,6 @@ public class IIContent {
     	public static final RegistryObject<MenuType<ElectrolyzerContainer>> ELECTROLYZER=register("electrolyzer",ElectrolyzerContainer::new);
     	public static final MultiblockContainer<ChemicalState, ChemicalContainer> CHEMICAL=registerMultiblock("chemical", ChemicalContainer::new,ChemicalContainer::new);
     	
-    	@SuppressWarnings("unchecked")
     	public static <T extends AbstractContainerMenu, BE extends BlockEntity> RegistryObject<MenuType<T>> register(String name, BEMenuFactory<T, BE> factory) {
     		MutableObject<RegistryObject<MenuType<T>>> i=new MutableObject<>();
     		

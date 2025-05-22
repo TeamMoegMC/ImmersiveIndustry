@@ -1,5 +1,7 @@
 package com.teammoeg.immersiveindustry.content.rotarykiln;
 
+import java.util.function.BooleanSupplier;
+
 import com.teammoeg.immersiveindustry.util.CapabilityProcessor;
 import com.teammoeg.immersiveindustry.util.ChangeDetectedItemHandler;
 import com.teammoeg.immersiveindustry.util.RangedCheckedInputWrapper;
@@ -17,8 +19,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
-
-import java.util.function.BooleanSupplier;
 
 public class RotaryKilnState implements IMultiblockState{
 	

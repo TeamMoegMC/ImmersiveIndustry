@@ -18,17 +18,11 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.teammoeg.immersiveindustry.IIMain;
 import com.teammoeg.immersiveindustry.util.AccessableFluidInfoArea;
 import com.teammoeg.immersiveindustry.util.IIContainerScreen;
 
-import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
-import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
-import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;

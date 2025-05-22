@@ -3,10 +3,6 @@ package com.teammoeg.immersiveindustry.content.rotarykiln;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
-import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
-
 import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.util.CapabilityFacing;
 import com.teammoeg.immersiveindustry.util.IIUtil;
@@ -16,16 +12,18 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientT
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MBInventoryUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
+import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;

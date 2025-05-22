@@ -18,6 +18,11 @@
 
 package com.teammoeg.immersiveindustry.compat;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
+
 import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
 import com.teammoeg.immersiveindustry.content.carkiln.CarKilnCategory;
@@ -29,10 +34,15 @@ import com.teammoeg.immersiveindustry.content.chemical_reactor.ChemicalScreen;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleCategory;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleRecipe;
 import com.teammoeg.immersiveindustry.content.crucible.CrucibleScreen;
-import com.teammoeg.immersiveindustry.content.electrolyzer.*;
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerCategory;
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerRecipe;
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerScreen;
+import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerCategory;
+import com.teammoeg.immersiveindustry.content.electrolyzer.IndustrialElectrolyzerScreen;
 import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnCategory;
 import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnRecipe;
 import com.teammoeg.immersiveindustry.content.rotarykiln.RotaryKilnScreen;
+
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -45,11 +55,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
-
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 @JeiPlugin
 public class JEICompat implements IModPlugin {

@@ -7,14 +7,12 @@ import java.util.Optional;
 import com.teammoeg.immersiveindustry.util.AccessableInfoArea;
 import com.teammoeg.immersiveindustry.util.IIContainerScreen;
 
-import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.runtime.IClickableIngredient;
 import mezz.jei.api.runtime.IIngredientManager;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.Rect2i;
 
 public class JEIGuiContainerHandler<T extends IIContainerScreen<?>> implements IGuiContainerHandler<T> {

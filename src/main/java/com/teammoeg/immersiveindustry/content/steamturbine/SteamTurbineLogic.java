@@ -116,7 +116,6 @@ public class SteamTurbineLogic implements IMultiblockLogic<SteamTurbineState>,IS
 		if(player.getItemInHand(hand).is(IEItems.Tools.VOLTMETER.get())) {
 			if(!player.level().isClientSide) {
 				NumberFormat num=new DecimalFormat("#0.0%");
-				double eff=0;
 				final double saturationMin=IIConfig.SERVER.steamTurbineSaturationMin.get();
 				player.sendSystemMessage(LangUtil.translate("message.immersiveindustry.steam_turbine.saturation",num.format((Mth.clamp(ctx.getState().saturation-saturationMin,0, IIConfig.SERVER.steamTurbineSaturationMax.get()-saturationMin)+1)) ));
 			}
@@ -128,32 +127,39 @@ public class SteamTurbineLogic implements IMultiblockLogic<SteamTurbineState>,IS
 	@Override
 	public void tickServer(IMultiblockContext<SteamTurbineState> context) {
 		SteamTurbineState state=context.getState();
-		boolean pactive=context.getState().active;
+		boolean pactive=state.active;
+		state.active=false;
 		final int minSteam=IIConfig.SERVER.steamTurbineInputMin.get();
+		//System.out.println("start tick");
         if (state.rsstate.isEnabled(context)&& state.tanks.getFluidAmount()>=minSteam) {
-        	
+        	//System.out.println("switch on");
             List<IEnergyStorage> presentOutputs = state.energyOutputs.stream()
 				.map(CapabilityReference::getNullable)
 				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
             if (!presentOutputs.isEmpty()) {
             	
+            	//System.out.println("outputs not empty");
             	final double saturationMin=IIConfig.SERVER.steamTurbineSaturationMin.get();
             	int steamCost=Math.min(state.tanks.getFluidAmount(), IIConfig.SERVER.steamTurbineInputMax.get());
                 int out = (int) ((steamCost*IIConfig.SERVER.steamTurbineGenerator.get())*(Mth.clamp(state.saturation-saturationMin,0, IIConfig.SERVER.steamTurbineSaturationMax.get()-saturationMin)+1));
-            	if(!presentOutputs.isEmpty()&&EnergyHelper.distributeFlux(presentOutputs, out, true) <=0)
-				{
-            		state.saturation+=IIConfig.SERVER.steamTurbineSaturationRate.get()*steamCost;
+                if(state.energyBuffer<out) {
+                	state.saturation+=IIConfig.SERVER.steamTurbineSaturationRate.get()*steamCost;
             		state.active = true;
             		state.tanks.drain(steamCost, IFluidHandler.FluidAction.EXECUTE);
-            		EnergyHelper.distributeFlux(presentOutputs, out, false);
+            		state.energyBuffer+=out;
             		context.markMasterDirty();
-				}else
-					state.active = false;
-            }else
-            	state.active = false;
-        } else if (state.active)
-        	state. active = false;
+            	}
+                //System.out.println("simulated filled remain "+ simFill+"/"+out);
+                if(state.energyBuffer >0)
+				{
+                	int preOut=state.energyBuffer;
+                	state.energyBuffer=EnergyHelper.distributeFlux(presentOutputs, state.energyBuffer, false);
+            		if(state.energyBuffer!=preOut)
+            			context.markMasterDirty();
+				}
+            }
+        }
         if(state.saturation!=0)
         	state.saturation=Math.max(0, state.saturation-=state.saturation*IIConfig.SERVER.steamTurbineUnsaturationRate.get());
         if(pactive!=state.active) {
