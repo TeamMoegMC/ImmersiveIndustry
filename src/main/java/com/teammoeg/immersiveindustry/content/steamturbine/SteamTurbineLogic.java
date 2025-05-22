@@ -160,8 +160,10 @@ public class SteamTurbineLogic implements IMultiblockLogic<SteamTurbineState>,IS
 				}
             }
         }
-        if(state.saturation!=0)
+        if(state.saturation!=0) {
         	state.saturation=Math.max(0, state.saturation-=state.saturation*IIConfig.SERVER.steamTurbineUnsaturationRate.get());
+        	context.markMasterDirty();
+        }
         if(pactive!=state.active) {
         	context.markDirtyAndSync();
         }
