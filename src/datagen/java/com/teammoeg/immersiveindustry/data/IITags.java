@@ -2,6 +2,7 @@ package com.teammoeg.immersiveindustry.data;
 
 import java.util.concurrent.CompletableFuture;
 
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import com.teammoeg.immersiveindustry.IIContent.IIBlocks;
@@ -32,6 +33,7 @@ public class IITags extends BlockTagsProvider {
 	protected void addTags(Provider pProvider) {
 		for(MultiblockRegistration<?> i:IIMultiblocks.MULTIBLOCKS) {
 			tag(BlockTags.MINEABLE_WITH_PICKAXE).add(i.block().get());
+			tag(BlockTags.create(new ResourceLocation("create", "non_movable"))).add(i.block().get());
 			
 		}
 		for(RegistryObject<Block> i:IIBlocks.BLOCKS.getEntries()) {
