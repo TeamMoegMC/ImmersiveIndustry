@@ -2,14 +2,14 @@
   "type": "immersiveindustry:crucible",
   "inputs": [
     {
-      "tag": "forge:dusts/iron"
+      "tag": "c:dusts/iron"
     },
     {
       "item": "minecraft:calcite"
     }
   ],
   "result": {
-    "item": "immersiveengineering:ingot_steel"
+    "id": "immersiveengineering:ingot_steel"
   },
   "time": 1200,
   "temperature": 1500

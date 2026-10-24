@@ -18,6 +18,7 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
+import net.minecraft.world.item.ItemStack;
 import com.teammoeg.immersiveindustry.IIContent;
 
 import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
@@ -40,8 +41,7 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.fluids.FluidUtil;
 
 public class ElectrolyzerBlock extends IEEntityBlock<ElectrolyzerBlockEntity> {
 
@@ -67,15 +67,15 @@ public class ElectrolyzerBlock extends IEEntityBlock<ElectrolyzerBlockEntity> {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+    public net.minecraft.world.ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
     	if (FluidUtil.interactWithFluidHandler(player, handIn,world, pos, hit.getDirection()))
-			return InteractionResult.SUCCESS;
+			return net.minecraft.world.ItemInteractionResult.SUCCESS;
     	if (!world.isClientSide) {
             BlockEntity tile = world.getBlockEntity(pos);
             if(tile instanceof MenuProvider menu)
-            	NetworkHooks.openScreen((ServerPlayer) player, menu);
+            	player.openMenu(menu);
         }
-        return InteractionResult.SUCCESS;
+        return net.minecraft.world.ItemInteractionResult.SUCCESS;
     }
 
 }

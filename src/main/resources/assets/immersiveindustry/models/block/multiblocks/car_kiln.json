@@ -3,7 +3,7 @@
   "textures": {
     "particle": "immersiveindustry:block/multiblocks/car_kiln_base"
   },
-  "loader": "forge:obj",
+  "loader": "neoforge:obj",
   "model": "immersiveindustry:models/block/multiblocks/car_kiln.obj",
   "automatic_culling": false,
   "flip_v": true

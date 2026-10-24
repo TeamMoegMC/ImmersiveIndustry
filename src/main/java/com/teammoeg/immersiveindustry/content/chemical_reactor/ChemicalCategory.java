@@ -38,18 +38,18 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 public class ChemicalCategory implements IRecipeCategory<ChemicalRecipe> {
 
-    public static RecipeType<ChemicalRecipe> UID = new RecipeType<>(new ResourceLocation(IIMain.MODID, "chemical"),ChemicalRecipe.class);
+    public static RecipeType<ChemicalRecipe> UID = new RecipeType<>(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "chemical"),ChemicalRecipe.class);
     private IDrawable BACKGROUND;
     private IDrawable ICON;
     private IDrawableAnimated ARROW;
     public ChemicalCategory(IGuiHelper guiHelper) {
         this.ICON = guiHelper.createDrawableItemStack(new ItemStack(IIContent.IIMultiblocks.CHEMICAL_REACTOR.blockItem().get()));
-        this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/chemical_reactor_jei.png"), 0, 0, 176, 82);
-        IDrawableStatic arrow=guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/chemical_reactor_jei.png"),55,82,65,7);
+        this.BACKGROUND = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "textures/gui/chemical_reactor_jei.png"), 0, 0, 176, 82);
+        IDrawableStatic arrow=guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "textures/gui/chemical_reactor_jei.png"),55,82,65,7);
         ARROW=guiHelper.createAnimatedDrawable(arrow,40, IDrawableAnimated.StartDirection.LEFT,false);
     }
 

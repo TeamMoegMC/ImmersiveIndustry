@@ -1,0 +1,47 @@
+# Mod metadata for NeoForge 1.21.1.
+#
+# Renamed from mods.toml: NeoForge 1.21 reads neoforge.mods.toml. The loader is
+# FML 4.x (previously 36+ from Forge), the platform dependency is "neoforge"
+# instead of "forge", and mixin configs are declared here rather than in the jar
+# manifest's MixinConfigs attribute.
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "GPLv3"
+issueTrackerURL = "https://github.com/TeamMoegMC/ImmersiveIndustry/issues"
+
+[[mods]]
+modId = "immersiveindustry"
+version = "${file.jarVersion}"
+displayName = "Immersive Industry"
+authors = "[TeamMoeg] dashuaibia khjxiaogu YueSha"
+itemIcon = "immersiveindustry:electrolyzer"
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/immersive-industry"
+description = '''
+Introduce more various process and energy production machines to Immersive Engineering.
+
+Discord: https://discord.gg/BWn6E94
+'''
+
+[[mixins]]
+config = "immersiveindustry.mixins.json"
+
+[[dependencies.immersiveindustry]]
+modId = "neoforge"
+mandatory = true
+versionRange = "[21.1.0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.immersiveindustry]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.21.1,1.22)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.immersiveindustry]]
+modId = "immersiveengineering"
+mandatory = true
+versionRange = "[12.4.2,)"
+ordering = "BEFORE"
+side = "BOTH"

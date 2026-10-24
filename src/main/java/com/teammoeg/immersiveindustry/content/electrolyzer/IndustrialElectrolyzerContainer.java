@@ -34,12 +34,12 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.SlotItemHandler;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
 
 public class IndustrialElectrolyzerContainer extends IIBaseContainer {
 	CustomDataSlot<FluidStack> tankSlot1=IIContainerData.SLOT_TANK.create(this);
@@ -48,7 +48,7 @@ public class IndustrialElectrolyzerContainer extends IIBaseContainer {
 	CustomDataSlot<Integer> energySlot=IIContainerData.SLOT_INT.create(this);
 	FluidTank[] tank;
 	MutableEnergyStorage energy;
-	public static final TagKey<Item> Electrode_Tag=ItemTags.create(new ResourceLocation(IIMain.MODID,"electrodes"));
+	public static final TagKey<Item> Electrode_Tag=ItemTags.create(ResourceLocation.fromNamespaceAndPath(IIMain.MODID,"electrodes"));
     public IndustrialElectrolyzerContainer(MenuType<IndustrialElectrolyzerContainer> type, int windowId, Inventory inventoryPlayer, MultiblockMenuContext<IndustrialElectrolyzerState> te){
         super(type, windowId,inventoryPlayer.player,5);
         IndustrialElectrolyzerState state=te.mbContext().getState();

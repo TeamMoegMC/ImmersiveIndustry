@@ -18,6 +18,7 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import com.teammoeg.immersiveindustry.IIContent.IIRecipes;
 import com.teammoeg.immersiveindustry.util.FluidRecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.FluidRecipeSimulator;
@@ -25,36 +26,38 @@ import com.teammoeg.immersiveindustry.util.ItemRecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.RecipeSimulateHelper;
 
-import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
+import blusunrize.immersiveengineering.api.crafting.TagOutput;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class ElectrolyzerRecipe extends IESerializableRecipe {
-    public static RegistryObject<IERecipeSerializer<ElectrolyzerRecipe>> SERIALIZER;
+    public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<ElectrolyzerRecipe>> SERIALIZER;
 
     public final IngredientWithSize[] inputs;
-    public final FluidTagInput input_fluid;
+    public final SizedFluidIngredient input_fluid;
     public final ItemStack output;
     public final FluidStack output_fluid;
     public final int time;
     public final int tickEnergy;
     public final boolean flag;
 
-    public ElectrolyzerRecipe(ResourceLocation id, ItemStack output, IngredientWithSize[] input, FluidTagInput input_fluid, FluidStack output_fluid, int time, int tickEnergy, boolean flag) {
-        super(Lazy.of(()->output),IIRecipes.ELECTROLYZER, id);
+    public ElectrolyzerRecipe(ItemStack output, IngredientWithSize[] input, SizedFluidIngredient input_fluid, FluidStack output_fluid, int time, int tickEnergy, boolean flag) {
+        super(new TagOutput(output), IIRecipes.ELECTROLYZER);
         this.output = output;
         this.inputs = input;
         this.input_fluid = input_fluid;
@@ -70,14 +73,14 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess ra) {
+    public ItemStack getResultItem(HolderLookup.Provider ra) {
         return this.output;
     }
 
     public static CachedRecipeList<ElectrolyzerRecipe> recipeList = new CachedRecipeList<>(IIRecipes.ELECTROLYZER);
     public static boolean isValidRecipeInput(Level l,ItemStack input) {
-        for (ElectrolyzerRecipe recipe : recipeList.getRecipes(l))
-            for(IngredientWithSize is:recipe.inputs) {
+        for (RecipeHolder<ElectrolyzerRecipe> holder : recipeList.getRecipes(l))
+            for(IngredientWithSize is:holder.value().inputs) {
             	if(is.testIgnoringSize(input))
             		return true;
             }
@@ -90,7 +93,8 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
     	return findRecipe(context.getLevel().getRawLevel(), context.getState().inventory.getStackInSlot(0), context.getState().inventory.getStackInSlot(1), context.getState().tank[0],true);
     }
     public static RecipeProcessResult<ElectrolyzerRecipe> findRecipe(Level l,ItemStack input, ItemStack input2, IFluidHandler input_fluid,boolean isLarge) {
-    	for (ElectrolyzerRecipe recipe : recipeList.getRecipes(l)) {
+    	for (RecipeHolder<ElectrolyzerRecipe> holder : recipeList.getRecipes(l)) {
+            ElectrolyzerRecipe recipe = holder.value();
     		RecipeProcessResult<ElectrolyzerRecipe> data=test(recipe,input,input2,input_fluid,isLarge);
     		if(data!=null)
     			return data;
@@ -123,8 +127,8 @@ public class ElectrolyzerRecipe extends IESerializableRecipe {
         return null;
     }
     public static boolean isValidRecipeFluid(Level l,FluidStack input_fluid) {
-        for (ElectrolyzerRecipe recipe : recipeList.getRecipes(l))
-            if (recipe.input_fluid!=null && recipe.input_fluid.testIgnoringAmount(input_fluid))
+        for (RecipeHolder<ElectrolyzerRecipe> holder : recipeList.getRecipes(l))
+            if (holder.value().input_fluid!=null && holder.value().input_fluid.ingredient().test(input_fluid))
                 return true;
         return false;
     }

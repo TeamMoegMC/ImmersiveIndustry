@@ -1,5 +1,6 @@
 package com.teammoeg.immersiveindustry.content.rotarykiln;
 
+import net.neoforged.neoforge.capabilities.Capabilities;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -7,6 +8,7 @@ import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.util.CapabilityFacing;
 import com.teammoeg.immersiveindustry.util.IIUtil;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IMultiblockComponent.CapabilityRegistrar;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
@@ -27,12 +29,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 public class RotaryKilnLogic implements IMultiblockLogic<RotaryKilnState>, IClientTickableComponent<RotaryKilnState>, IServerTickableComponent<RotaryKilnState> {
 	static final CapabilityFacing itemout = new CapabilityFacing(1, 0, 6,RelativeBlockFace.BACK);
@@ -59,8 +61,8 @@ public class RotaryKilnLogic implements IMultiblockLogic<RotaryKilnState>, IClie
 				ItemStack process1Slot=state.inventory.getStackInSlot(2);
 				ItemStack outSlot=state.inventory.getStackInSlot(3);
 				ItemStack secoutSlot=state.inventory.getStackInSlot(4);
-				if((outSlot.isEmpty()||rcp.output.isEmpty()||ItemHandlerHelper.canItemStacksStack(outSlot, rcp.output))) {
-					if((secoutSlot.isEmpty()||rcp.secoutput==null||ItemHandlerHelper.canItemStacksStack(secoutSlot,rcp.secoutput.stack().get()))) {
+				if((outSlot.isEmpty()||rcp.output.isEmpty()||ItemStack.isSameItemSameComponents(outSlot, rcp.output))) {
+					if((secoutSlot.isEmpty()||rcp.secoutput==null||ItemStack.isSameItemSameComponents(secoutSlot,rcp.secoutput.stack().get()))) {
 						if(state.tankout.isEmpty()||rcp.output_fluid.isEmpty()||state.tankout.fill(rcp.output_fluid, FluidAction.SIMULATE)==rcp.output_fluid.getAmount()) {
 						int maxoutcount=outSlot.getMaxStackSize()-outSlot.getCount();
 						int maxsecoutcount=secoutSlot.getMaxStackSize()-secoutSlot.getCount();
@@ -79,7 +81,7 @@ public class RotaryKilnLogic implements IMultiblockLogic<RotaryKilnState>, IClie
 							if(!rcp.output.isEmpty())
 								IIUtil.insertToOutput(state.inventory, 3, rcp.output.copyWithCount(maxouttimes*rcp.output.getCount()));
 							if(!rcp.output_fluid.isEmpty()) {
-								state.tankout.fill(new FluidStack(rcp.output_fluid,rcp.output_fluid.getAmount()*maxouttimes), FluidAction.EXECUTE);
+								state.tankout.fill(rcp.output_fluid.copyWithAmount(rcp.output_fluid.getAmount()*maxouttimes), FluidAction.EXECUTE);
 							}
 							if(rcp.secoutput!=null) {
 								@SuppressWarnings("resource")
@@ -162,9 +164,14 @@ public class RotaryKilnLogic implements IMultiblockLogic<RotaryKilnState>, IClie
 		
 	}
 
-	@Override
-	public <T> LazyOptional<T> getCapability(IMultiblockContext<RotaryKilnState> ctx, CapabilityPosition position, Capability<T> cap) {
-		return ctx.getState().capabilities.getCapability(cap, position, ctx);
+		@Override
+	public void registerCapabilities(CapabilityRegistrar<RotaryKilnState> registrar) {
+		registrar.register(Capabilities.ItemHandler.BLOCK,
+				(state, pos) -> state.capabilities.getCapability(Capabilities.ItemHandler.BLOCK, pos));
+		registrar.register(Capabilities.FluidHandler.BLOCK,
+				(state, pos) -> state.capabilities.getCapability(Capabilities.FluidHandler.BLOCK, pos));
+		registrar.register(Capabilities.EnergyStorage.BLOCK,
+				(state, pos) -> state.capabilities.getCapability(Capabilities.EnergyStorage.BLOCK, pos));
 	}
 
 	@Override
@@ -268,7 +275,7 @@ public class RotaryKilnLogic implements IMultiblockLogic<RotaryKilnState>, IClie
 	}
 	public boolean tryOutput(IMultiblockContext<RotaryKilnState> context) {
 		RotaryKilnState state=context.getState();
-		boolean update = FluidUtils.multiblockFluidOutput(state.outFluidCap, state.tankout, 0, 0, null);
+		boolean update = FluidUtils.multiblockFluidOutput(state.outFluidCap.getNullable(), state.tankout, 0, 0, null);
 		if(context.getLevel().shouldTickModulo(8)){
 			final IItemHandlerModifiable inventory = state.inventory;
 			update|=IIUtil.outputItem(inventory, state.outInvCap, 3);

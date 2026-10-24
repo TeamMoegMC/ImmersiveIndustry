@@ -32,7 +32,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-import net.minecraftforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 public record DynamicBlockModelReference(ResourceLocation name) implements Supplier<BakedModel>,Function<ModelData,List<BakedQuad>>
 {
@@ -56,12 +56,12 @@ public record DynamicBlockModelReference(ResourceLocation name) implements Suppl
 	public static DynamicBlockModelReference getModelCached(String modid,String path)
 	{
 
-		return cache.apply(new ResourceLocation(modid,path));
+		return cache.apply(ResourceLocation.fromNamespaceAndPath(modid,path));
 	}
 	@Override
 	public BakedModel get()
 	{
-		return Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getModelManager().getModel(name);
+		return Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getModelManager().getModel(net.minecraft.client.resources.model.ModelResourceLocation.standalone(name));
 	}
 
 	public List<BakedQuad> getAllQuads()

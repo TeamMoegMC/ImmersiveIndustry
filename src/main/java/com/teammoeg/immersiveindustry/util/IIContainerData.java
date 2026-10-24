@@ -11,7 +11,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.DataSlot;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 /**
  * FHContainerData
  * a utility class for menu data sync and type convertion
@@ -372,12 +372,12 @@ public class IIContainerData {
 
 		@Override
 		public FluidStack read(FriendlyByteBuf network) {
-			return FluidStack.readFromPacket(network);
+			return FluidStack.OPTIONAL_STREAM_CODEC.decode((net.minecraft.network.RegistryFriendlyByteBuf) network);
 		}
 
 		@Override
 		public void write(FriendlyByteBuf network, FluidStack data) {
-			data.writeToPacket(network);
+			FluidStack.OPTIONAL_STREAM_CODEC.encode((net.minecraft.network.RegistryFriendlyByteBuf) network, data);
 		}
 
 		@Override

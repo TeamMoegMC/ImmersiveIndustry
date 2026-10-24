@@ -9,13 +9,13 @@
       "item": "immersiveengineering:wirecoil_copper"
     },
     "c": {
-      "tag": "forge:ingots/silver"
+      "tag": "c:ingots/silver"
     },
     "d": {
-      "tag": "forge:ingots/gold"
+      "tag": "c:ingots/gold"
     },
     "e": {
-      "tag": "forge:ingots/steel"
+      "tag": "c:ingots/steel"
     }
   },
   "pattern": [
@@ -24,7 +24,7 @@
     "eae"
   ],
   "result": {
-    "item": "immersiveindustry:electrolyzer"
+    "id": "immersiveindustry:electrolyzer"
   },
   "show_notification": true
 }

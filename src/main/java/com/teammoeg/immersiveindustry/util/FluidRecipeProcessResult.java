@@ -2,9 +2,9 @@ package com.teammoeg.immersiveindustry.util;
 
 import java.util.List;
 
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 
 public record FluidRecipeProcessResult(List<FluidStack> operations) {
 	public void runOperations(IFluidHandler inventory) {
@@ -13,7 +13,7 @@ public record FluidRecipeProcessResult(List<FluidStack> operations) {
 	public void runOperations(IFluidHandler inventory,int multiplier) {
 		if (operations != null) {
 			for (FluidStack i : operations) {
-				inventory.drain(new FluidStack(i,i.getAmount()*multiplier), FluidAction.EXECUTE);
+				inventory.drain(i.copyWithAmount(i.getAmount()*multiplier), FluidAction.EXECUTE);
 			}
 		}
 	}
@@ -26,7 +26,7 @@ public record FluidRecipeProcessResult(List<FluidStack> operations) {
 				}
 			}
 			for (FluidStack i : operations) {
-				inventory.drain(new FluidStack(i,i.getAmount()), FluidAction.EXECUTE);
+				inventory.drain(i.copyWithAmount(i.getAmount()), FluidAction.EXECUTE);
 			}
 		}
 		return true;

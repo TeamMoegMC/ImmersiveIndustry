@@ -27,7 +27,7 @@ import com.teammoeg.immersiveindustry.util.JEISlotBuilder;
 import com.teammoeg.immersiveindustry.util.LangUtil;
 
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
-import mezz.jei.api.forge.ForgeTypes;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -48,21 +48,21 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public class IndustrialElectrolyzerCategory implements IRecipeCategory<ElectrolyzerRecipe> {
-    public static RecipeType<ElectrolyzerRecipe> UID = new RecipeType<>(new ResourceLocation(IIMain.MODID, "industrial_electrolyzer"),ElectrolyzerRecipe.class);
+    public static RecipeType<ElectrolyzerRecipe> UID = new RecipeType<>(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "industrial_electrolyzer"),ElectrolyzerRecipe.class);
     private IDrawable BACKGROUND;
     private IDrawable ICON;
     private IDrawable TANK;
     private IDrawableAnimated ARROW;
-    public static final TagKey<Item> Electrode_Tag = ItemTags.create(new ResourceLocation(IIMain.MODID, "electrodes"));
+    public static final TagKey<Item> Electrode_Tag = ItemTags.create(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "electrodes"));
 
     public IndustrialElectrolyzerCategory(IGuiHelper guiHelper) {
         this.ICON = guiHelper.createDrawableItemStack(new ItemStack(IIContent.IIMultiblocks.INDUSTRIAL_ELECTROLYZER.blockItem().get()));
-        this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/industrial_electrolyzer.png"), 6,6,145, 68);
-        this.TANK = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/industrial_electrolyzer.png"),197,1,18, 48);
-        IDrawableStatic arrow=guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/industrial_electrolyzer.png"),178,57,21,15);
+        this.BACKGROUND = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "textures/gui/industrial_electrolyzer.png"), 6,6,145, 68);
+        this.TANK = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "textures/gui/industrial_electrolyzer.png"),197,1,18, 48);
+        IDrawableStatic arrow=guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "textures/gui/industrial_electrolyzer.png"),178,57,21,15);
         ARROW=guiHelper.createAnimatedDrawable(arrow,20,StartDirection.LEFT,false);
     }
 
@@ -78,7 +78,9 @@ public class IndustrialElectrolyzerCategory implements IRecipeCategory<Electroly
 		JEISlotBuilder<ItemStack> itemInput=JEISlotBuilder.itemStack(builder, JEIIngredientStackListBuilder.make(recipe.inputs).build()).asInput();
 		itemInput.addSlot(28, 33);
 		itemInput.addSlot(46, 33);
-		List<ItemStack> electrode = ForgeRegistries.ITEMS.tags().getTag(IndustrialElectrolyzerCategory.Electrode_Tag).stream().map(ItemStack::new).collect(Collectors.toList());
+		List<ItemStack> electrode = BuiltInRegistries.ITEM.getTag(IndustrialElectrolyzerCategory.Electrode_Tag)
+				.map(tag -> tag.stream().map(h -> new ItemStack(h.value())).collect(Collectors.toList()))
+				.orElseGet(java.util.List::of);
 		builder.addSlot(RecipeIngredientRole.CATALYST, 28, 4).addItemStacks(electrode);
 		builder.addSlot(RecipeIngredientRole.CATALYST, 46, 4).addItemStacks(electrode);
 
@@ -88,10 +90,10 @@ public class IndustrialElectrolyzerCategory implements IRecipeCategory<Electroly
 		IRecipeSlotBuilder fluidIn=builder.addSlot(RecipeIngredientRole.INPUT, 4, 19).setFluidRenderer(1000, false, 16, 47).setOverlay(TANK, 0, 0);
 		IRecipeSlotBuilder fluidOut=builder.addSlot(RecipeIngredientRole.OUTPUT, 126, 19).setFluidRenderer(1000, false, 16, 47).setOverlay(TANK, 0, 0);
 		if (recipe.input_fluid != null) {
-        	fluidIn.addIngredients(ForgeTypes.FLUID_STACK, recipe.input_fluid.getMatchingFluidStacks());
+        	fluidIn.addIngredients(NeoForgeTypes.FLUID_STACK, java.util.Arrays.asList(recipe.input_fluid.getFluids()));
         }
         if (recipe.output_fluid != null) {
-        	fluidOut.addIngredient(ForgeTypes.FLUID_STACK, recipe.output_fluid);
+        	fluidOut.addIngredient(NeoForgeTypes.FLUID_STACK, recipe.output_fluid);
         }
 
 		

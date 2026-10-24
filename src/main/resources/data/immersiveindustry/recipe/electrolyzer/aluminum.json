@@ -1,15 +1,17 @@
 {
   "type": "immersiveindustry:electrolyzer",
-  "input": {
-    "tag": "forge:raw_materials/aluminum"
-  },
   "fluid": {
     "tag": "minecraft:water",
     "amount": 1000
   },
   "result": {
-    "item": "immersiveengineering:dust_aluminum",
+    "id": "immersiveengineering:dust_aluminum",
     "count": 3
   },
-  "time": 200
+  "time": 200,
+  "inputs": [
+    {
+      "tag": "c:raw_materials/aluminum"
+    }
+  ]
 }

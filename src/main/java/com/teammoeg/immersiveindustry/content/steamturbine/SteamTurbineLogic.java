@@ -12,6 +12,7 @@ import com.teammoeg.immersiveindustry.IIConfig;
 import com.teammoeg.immersiveindustry.util.CapabilityFacing;
 import com.teammoeg.immersiveindustry.util.LangUtil;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IMultiblockComponent.CapabilityRegistrar;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
@@ -20,7 +21,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockL
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import com.teammoeg.immersiveindustry.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.register.IEItems;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
@@ -30,18 +31,18 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.Capabilities;
+
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class SteamTurbineLogic implements IMultiblockLogic<SteamTurbineState>,IServerTickableComponent<SteamTurbineState>,IClientTickableComponent<SteamTurbineState> {
 	static final CapabilityPosition FLUID_INPUT = new CapabilityPosition(2, 1, 0, RelativeBlockFace.FRONT);
@@ -87,17 +88,19 @@ public class SteamTurbineLogic implements IMultiblockLogic<SteamTurbineState>,IS
 		return getterFunc;
 	}
 
-	@Override
-	public <T> LazyOptional<T> getCapability(IMultiblockContext<SteamTurbineState> ctx, CapabilityPosition position, Capability<T> cap) {
-		if(cap==ForgeCapabilities.FLUID_HANDLER&&FLUID_INPUT.equalsOrNullFace(position)) {
-			return ctx.getState().fluidCap.cast(ctx);
-		}
-		if(cap==ForgeCapabilities.ENERGY&&(position.side()==RelativeBlockFace.UP||position.side()==null)) {
-			if(ENERGY_OUT1.isCapabilityPosition(position)||ENERGY_OUT2.isCapabilityPosition(position)) {
-				return ctx.getState().energyView.cast(ctx);
+		@Override
+	public void registerCapabilities(CapabilityRegistrar<SteamTurbineState> registrar) {
+		registrar.register(Capabilities.FluidHandler.BLOCK,
+				(state, pos) -> FLUID_INPUT.equalsOrNullFace(pos) ? state.fluidCap : null);
+		registrar.register(Capabilities.EnergyStorage.BLOCK, (state, pos) -> {
+			if (pos.side() != RelativeBlockFace.UP && pos.side() != null) {
+				return null;
 			}
-		}
-		return IMultiblockLogic.super.getCapability(ctx, position, cap);
+			if (ENERGY_OUT1.isCapabilityPosition(pos) || ENERGY_OUT2.isCapabilityPosition(pos)) {
+				return state.energyView;
+			}
+			return null;
+		});
 	}
 
 	@Override
@@ -112,14 +115,14 @@ public class SteamTurbineLogic implements IMultiblockLogic<SteamTurbineState>,IS
 	}
 
 	@Override
-	public InteractionResult click(IMultiblockContext<SteamTurbineState> ctx, BlockPos posInMultiblock, Player player, InteractionHand hand, BlockHitResult absoluteHit, boolean isClient) {
+	public ItemInteractionResult click(IMultiblockContext<SteamTurbineState> ctx, BlockPos posInMultiblock, Player player, InteractionHand hand, BlockHitResult absoluteHit, boolean isClient) {
 		if(player.getItemInHand(hand).is(IEItems.Tools.VOLTMETER.get())) {
 			if(!player.level().isClientSide) {
 				NumberFormat num=new DecimalFormat("#0.0%");
 				final double saturationMin=IIConfig.SERVER.steamTurbineSaturationMin.get();
 				player.sendSystemMessage(LangUtil.translate("message.immersiveindustry.steam_turbine.saturation",num.format((Mth.clamp(ctx.getState().saturation-saturationMin,0, IIConfig.SERVER.steamTurbineSaturationMax.get()-saturationMin)+1)) ));
 			}
-			return InteractionResult.sidedSuccess(player.level().isClientSide);
+			return ItemInteractionResult.sidedSuccess(player.level().isClientSide);
 		}
 		return IMultiblockLogic.super.click(ctx, posInMultiblock, player, hand, absoluteHit, isClient);
 	}

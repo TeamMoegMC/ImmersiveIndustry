@@ -1,6 +1,6 @@
 {
   "flip_v": true,
-  "loader": "forge:obj",
+  "loader": "neoforge:obj",
   "model": "immersiveindustry:models/block/multiblocks/steam_turbine.obj",
   "display": {
     "firstperson_lefthand": {

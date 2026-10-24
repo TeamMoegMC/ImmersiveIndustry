@@ -11,14 +11,14 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class MultiblockContainer<S extends IMultiblockState, C extends AbstractContainerMenu>
 {
-	private final RegistryObject<MenuType<C>> type;
+	private final DeferredHolder<MenuType<?>, MenuType<C>> type;
 	private final MultiBlockMenuConstructor<S, C> factory;
 
-	public MultiblockContainer(RegistryObject<MenuType<C>> type, MultiBlockMenuConstructor<S, C> factory) {
+	public MultiblockContainer(DeferredHolder<MenuType<?>, MenuType<C>> type, MultiBlockMenuConstructor<S, C> factory) {
 		super();
 		this.type = type;
 		this.factory = factory;

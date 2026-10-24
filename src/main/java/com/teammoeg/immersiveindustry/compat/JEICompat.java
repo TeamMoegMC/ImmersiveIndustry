@@ -18,6 +18,7 @@
 
 package com.teammoeg.immersiveindustry.compat;
 
+import net.minecraft.world.item.crafting.RecipeHolder;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -60,7 +61,7 @@ import net.minecraft.world.item.ItemStack;
 public class JEICompat implements IModPlugin {
     @Override
     public ResourceLocation getPluginUid() {
-        return new ResourceLocation(IIMain.MODID, "jei_plugin");
+        return ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "jei_plugin");
     }
 
     @Override
@@ -78,12 +79,26 @@ public class JEICompat implements IModPlugin {
         ClientLevel world = Minecraft.getInstance().level;
         checkNotNull(world, "minecraft world");
         //RecipeManager recipeManager = world.getRecipeManager();
-        registration.addRecipes(CrucibleCategory.UID,new ArrayList<>(CrucibleRecipe.recipeList.getRecipes(world)));
-        registration.addRecipes(ElectrolyzerCategory.UID,ElectrolyzerRecipe.recipeList.getRecipes(world).stream().filter(r->!r.flag).filter(r->r.inputs.length<2).collect(Collectors.toList()));
-        registration.addRecipes(IndustrialElectrolyzerCategory.UID,ElectrolyzerRecipe.recipeList.getRecipes(world).stream().filter(r -> r.inputs.length < 3).collect(Collectors.toList()));
-        registration.addRecipes(RotaryKilnCategory.UID,new ArrayList<>(RotaryKilnRecipe.recipeList.getRecipes(world)));
-        registration.addRecipes(CarKilnCategory.UID,new ArrayList<>(CarKilnRecipe.recipeList.getRecipes(world)));
-        registration.addRecipes(ChemicalCategory.UID, new ArrayList<>(ChemicalRecipe.recipeList.getRecipes(world)));
+        // JEI wants plain recipes; the lists now come back wrapped in RecipeHolder.
+        registration.addRecipes(CrucibleCategory.UID,
+                CrucibleRecipe.recipeList.getRecipes(world).stream().map(RecipeHolder::value).toList());
+        registration.addRecipes(ElectrolyzerCategory.UID,
+                ElectrolyzerRecipe.recipeList.getRecipes(world).stream()
+                        .map(RecipeHolder::value)
+                        .filter(r -> !r.flag)
+                        .filter(r -> r.inputs.length < 2)
+                        .toList());
+        registration.addRecipes(IndustrialElectrolyzerCategory.UID,
+                ElectrolyzerRecipe.recipeList.getRecipes(world).stream()
+                        .map(RecipeHolder::value)
+                        .filter(r -> r.inputs.length < 3)
+                        .toList());
+        registration.addRecipes(RotaryKilnCategory.UID,
+                RotaryKilnRecipe.recipeList.getRecipes(world).stream().map(RecipeHolder::value).toList());
+        registration.addRecipes(CarKilnCategory.UID,
+                CarKilnRecipe.recipeList.getRecipes(world).stream().map(RecipeHolder::value).toList());
+        registration.addRecipes(ChemicalCategory.UID,
+                ChemicalRecipe.recipeList.getRecipes(world).stream().map(RecipeHolder::value).toList());
     }
 
     @Override

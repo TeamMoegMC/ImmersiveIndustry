@@ -30,7 +30,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class RotaryKilnScreen extends IIContainerScreen<RotaryKilnContainer> {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(IIMain.MODID, "textures/gui/rotary_kiln.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "textures/gui/rotary_kiln.png");
 
 	public RotaryKilnScreen(RotaryKilnContainer container, Inventory inv, Component title) {
 		super(container, inv, title, TEXTURE);

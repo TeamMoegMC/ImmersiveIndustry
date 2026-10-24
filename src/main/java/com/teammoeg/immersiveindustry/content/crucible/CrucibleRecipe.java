@@ -18,6 +18,7 @@
 
 package com.teammoeg.immersiveindustry.content.crucible;
 
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import com.teammoeg.immersiveindustry.IIContent.IIRecipes;
 import com.teammoeg.immersiveindustry.util.ItemRecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
@@ -27,31 +28,33 @@ import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.crafting.TagOutput;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 
 public class CrucibleRecipe extends IESerializableRecipe {
-    public static RegistryObject<IERecipeSerializer<CrucibleRecipe>> SERIALIZER;
+    public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<CrucibleRecipe>> SERIALIZER;
     // Initialized by reload listener
     public static CachedRecipeList<CrucibleRecipe> recipeList = new CachedRecipeList<>(IIRecipes.CRUCIBLE);
     public final IngredientWithSize inputs[];
-    public final Lazy<ItemStack> output;
+    public final TagOutput output;
     public final FluidStack output_fluid;
     public final int time;
     public final int temperature ;
-    public CrucibleRecipe(ResourceLocation id, Lazy<ItemStack> output2, FluidStack output_fluid, IngredientWithSize[] input, int time, int temperature) {
-        super(output2, IIRecipes.CRUCIBLE, id);
+    public CrucibleRecipe(TagOutput output2, FluidStack output_fluid, IngredientWithSize[] input, int time, int temperature) {
+        super(output2, IIRecipes.CRUCIBLE);
         this.output = output2;
         this.output_fluid = output_fluid;
         this.inputs = input;
@@ -67,7 +70,7 @@ public class CrucibleRecipe extends IESerializableRecipe {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess ra) {
+    public ItemStack getResultItem(HolderLookup.Provider ra) {
         return this.output.get();
     }
 
@@ -75,8 +78,8 @@ public class CrucibleRecipe extends IESerializableRecipe {
 
 
     public static boolean isValidInput(Level l,ItemStack stack) {
-        for (CrucibleRecipe recipe : recipeList.getRecipes(l))
-            for (IngredientWithSize is : recipe.inputs) {
+        for (RecipeHolder<CrucibleRecipe> holder : recipeList.getRecipes(l))
+            for (IngredientWithSize is : holder.value().inputs) {
                 if (is.testIgnoringSize(stack))
                     return true;
             }
@@ -89,7 +92,8 @@ public class CrucibleRecipe extends IESerializableRecipe {
     /*public static CrucibleRecipe findRecipe(Level l,ItemStack input, ItemStack input2, ItemStack input3, ItemStack input4) {
         int size = (input.isEmpty() ? 0 : 1) + (input2.isEmpty() ? 0 : 1) + (input3.isEmpty() ? 0 : 1) + (input4.isEmpty() ? 0 : 1);
         outer:
-        for (CrucibleRecipe recipe : recipeList.getRecipes(l)) {
+        for (RecipeHolder<CrucibleRecipe> holder : recipeList.getRecipes(l)) {
+            CrucibleRecipe recipe = holder.value();
             if (recipe.inputs.length > 0) {
                 if (recipe.inputs.length <= size) {
                     for (IngredientWithSize is : recipe.inputs) {
@@ -106,7 +110,8 @@ public class CrucibleRecipe extends IESerializableRecipe {
     	return findRecipe(context.getLevel().getRawLevel(),context.getState().inventory);
     }
     public static RecipeProcessResult<CrucibleRecipe> findRecipe(Level l,IItemHandler handler) {
-    	for (CrucibleRecipe recipe : recipeList.getRecipes(l)) {
+    	for (RecipeHolder<CrucibleRecipe> holder : recipeList.getRecipes(l)) {
+            CrucibleRecipe recipe = holder.value();
     		RecipeProcessResult<CrucibleRecipe> data=test(recipe,handler);
     		if(data!=null)
     			return data;

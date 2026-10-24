@@ -18,103 +18,61 @@
 
 package com.teammoeg.immersiveindustry.content.carkiln;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.teammoeg.immersiveindustry.IIContent;
 
-import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeMapCodecs;
+import malte0811.dualcodecs.DualMapCodec;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
+/**
+ * Serialises {@link CarKilnRecipe} through a single {@link DualMapCodec}.
+ *
+ * <p>1.21 replaced the old {@code readFromJson} / {@code toNetwork} pair with one codec that
+ * serves both the data pack and the network. IE's {@code IERecipeSerializer} keeps
+ * {@code codec()} and {@code streamCodec()} final and asks subclasses for the dual codec, so
+ * the fields are declared once here.
+ *
+ * <p>Note the JSON keys keep their 1.20.1 names ({@code results}, {@code inputs},
+ * {@code input_fluid}, {@code time}, {@code tickEnergy}) so existing data packs keep working.
+ */
 public class CarKilnRecipeSerializer extends IERecipeSerializer<CarKilnRecipe> {
-	@Override
-	public ItemStack getIcon() {
-		return new ItemStack(IIContent.IIMultiblocks.CAR_KILN.blockItem().get());
-	}
 
-	@Override
-	public @org.jetbrains.annotations.Nullable CarKilnRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-		int outs=buffer.readVarInt();
-		ItemStack[] output=new ItemStack[outs] ;
-		for(int i=0;i<outs;i++)
-			output[i]= buffer.readItem();
-		IngredientWithSize[] inputs = new IngredientWithSize[buffer.readVarInt()];
-		for (int i = 0; i < inputs.length; i++)
-			inputs[i] = IngredientWithSize.read(buffer);
+    private static final DualCodec<RegistryFriendlyByteBuf, SizedFluidIngredient> FLUID_INGREDIENT =
+            new DualCodec<>(SizedFluidIngredient.FLAT_CODEC, SizedFluidIngredient.STREAM_CODEC);
 
-		FluidTagInput input_fluid = null;
-		if (buffer.readBoolean())
-			input_fluid = FluidTagInput.read(buffer);
-		int time = buffer.readVarInt();
-		int tickEnergy = buffer.readVarInt();
-		return new CarKilnRecipe(recipeId, output, inputs, input_fluid, time, tickEnergy);
-	}
+    @Override
+    public ItemStack getIcon() {
+        return new ItemStack(IIContent.IIMultiblocks.CAR_KILN.blockItem().get());
+    }
 
-	@Override
-	public void toNetwork(FriendlyByteBuf buffer, CarKilnRecipe recipe) {
-		// write length of output array
-		buffer.writeVarInt(recipe.output.length);
-		// write each output
-		for(int i=0;i<recipe.output.length;i++)
-			buffer.writeItem(recipe.output[i]);
-		// write length of input array
-		buffer.writeVarInt(recipe.inputs.length);
-		// write each input
-		for (IngredientWithSize input : recipe.inputs)
-			input.write(buffer);
-		// write fluid input
-		if (recipe.input_fluid != null) {
-			buffer.writeBoolean(true);
-			recipe.input_fluid.write(buffer);
-		} else buffer.writeBoolean(false);
-		// write time and tick energy
-		buffer.writeVarInt(recipe.time);
-		buffer.writeVarInt(recipe.tickEnergy);
-	}
-
-	@Override
-	public CarKilnRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context) {
-		ItemStack[] output;
-		if(json.has("results")) {
-			JsonArray ja=json.get("results").getAsJsonArray();
-			ArrayList<ItemStack> ops=new ArrayList<>();
-			for(JsonElement je:ja) {
-				ops.add(readOutput(je).get());
-			}
-			output=ops.toArray(new ItemStack[0]);
-				
-		}else
-			output= new ItemStack[]{readOutput(json.get("result")).get()};
-		IngredientWithSize[] inputs;
-		if (json.has("inputs")) {
-			JsonArray ja = json.get("inputs").getAsJsonArray();
-			inputs = new IngredientWithSize[ja.size()];
-			int i = -1;
-			for (JsonElement je : ja) {
-				inputs[++i] = IngredientWithSize.deserialize(je);
-			}
-		} else if (json.has("input")) {
-			inputs = new IngredientWithSize[1];
-			inputs[0] = IngredientWithSize.deserialize(json.get("input"));
-		} else
-			inputs = new IngredientWithSize[0];
-		FluidTagInput input_fluid = null;
-		if (json.has("input_fluid"))
-			input_fluid = FluidTagInput.deserialize(json.get("input_fluid"));
-
-		int time = 200;
-		if (json.has("time"))
-			time = json.get("time").getAsInt();
-		int tickEnergy = 32;
-		if (json.has("tickEnergy"))
-			tickEnergy = json.get("tickEnergy").getAsInt();
-		return new CarKilnRecipe(recipeId, output, inputs, input_fluid, time, tickEnergy);
-	}
+    @Override
+    protected DualMapCodec<RegistryFriendlyByteBuf, CarKilnRecipe> codecs() {
+        return DualCompositeMapCodecs.composite(
+                DualCodecs.ITEM_STACK.listOf().fieldOf("results"),
+                (CarKilnRecipe r) -> List.of(r.output),
+                IngredientWithSize.CODECS.listOf().optionalFieldOf("inputs", List.of()),
+                (CarKilnRecipe r) -> List.of(r.inputs),
+                FLUID_INGREDIENT.optionalFieldOf("input_fluid"),
+                (CarKilnRecipe r) -> Optional.ofNullable(r.input_fluid),
+                DualCodecs.INT.fieldOf("time"),
+                (CarKilnRecipe r) -> r.time,
+                DualCodecs.INT.fieldOf("tickEnergy"),
+                (CarKilnRecipe r) -> r.tickEnergy,
+                (List<ItemStack> output, List<IngredientWithSize> inputs, Optional<SizedFluidIngredient> fluid,
+                 Integer time, Integer tickEnergy) -> new CarKilnRecipe(
+                        output.toArray(new ItemStack[0]),
+                        inputs.toArray(new IngredientWithSize[0]),
+                        fluid.orElse(null),
+                        time,
+                        tickEnergy));
+    }
 }

@@ -2,9 +2,9 @@ package com.teammoeg.immersiveindustry.util;
 
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 public class MultipleTankHandler implements IFluidHandler {
 	final int numtanks;
@@ -86,7 +86,7 @@ public class MultipleTankHandler implements IFluidHandler {
 				FluidStack drained=tanks[i].drain(maxDrain, action);
 				if(!drained.isEmpty()) {
 					out=drained;
-					filter=new FluidStack(out,maxDrain-out.getAmount());
+					filter=out.copyWithAmount(maxDrain-out.getAmount());
 				}
 			}else{
 				FluidStack drained=tanks[i].drain(filter, action);

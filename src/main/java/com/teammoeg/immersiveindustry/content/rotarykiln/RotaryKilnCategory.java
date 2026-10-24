@@ -22,7 +22,7 @@ import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
 import com.teammoeg.immersiveindustry.util.LangUtil;
 
-import mezz.jei.api.forge.ForgeTypes;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -42,7 +42,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public class RotaryKilnCategory implements IRecipeCategory<RotaryKilnRecipe> {
-    public static RecipeType<RotaryKilnRecipe> UID = new RecipeType<>(new ResourceLocation(IIMain.MODID, "rotary_kiln"),RotaryKilnRecipe.class);
+    public static RecipeType<RotaryKilnRecipe> UID = new RecipeType<>(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "rotary_kiln"),RotaryKilnRecipe.class);
     private IDrawable BACKGROUND;
     private IDrawable ICON;
     private IDrawable TANK;
@@ -50,9 +50,9 @@ public class RotaryKilnCategory implements IRecipeCategory<RotaryKilnRecipe> {
 
     public RotaryKilnCategory(IGuiHelper guiHelper) {
         this.ICON = guiHelper.createDrawableItemStack(new ItemStack(IIContent.IIMultiblocks.ROTARY_KILN.blockItem().get()));
-        this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/rotary_kiln.png"), 9, 22, 143, 59);
-        this.TANK = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/rotary_kiln.png"), 197, 1, 18, 48);
-        IDrawableStatic arrow = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/rotary_kiln.png"), 178, 59, 38, 16);
+        this.BACKGROUND = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "textures/gui/rotary_kiln.png"), 9, 22, 143, 59);
+        this.TANK = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "textures/gui/rotary_kiln.png"), 197, 1, 18, 48);
+        IDrawableStatic arrow = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "textures/gui/rotary_kiln.png"), 178, 59, 38, 16);
         ARROW = guiHelper.createAnimatedDrawable(arrow, 40, StartDirection.LEFT, false);
     }
 
@@ -77,7 +77,7 @@ public class RotaryKilnCategory implements IRecipeCategory<RotaryKilnRecipe> {
         }
         IRecipeSlotBuilder fluidOut=builder.addSlot(RecipeIngredientRole.OUTPUT, 124, 4).setFluidRenderer(3200, false, 16, 47).setOverlay(TANK, 0, 0);
         if (!recipe.output_fluid.isEmpty()) {
-        	fluidOut.addIngredient(ForgeTypes.FLUID_STACK, recipe.output_fluid);
+        	fluidOut.addIngredient(NeoForgeTypes.FLUID_STACK, recipe.output_fluid);
 
         }
 	}

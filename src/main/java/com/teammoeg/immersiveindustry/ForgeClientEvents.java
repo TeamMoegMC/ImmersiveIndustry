@@ -6,12 +6,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 
-@Mod.EventBusSubscriber(modid = IIMain.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
+@EventBusSubscriber(modid = IIMain.MODID, value = Dist.CLIENT)
 public class ForgeClientEvents {
     
     @SubscribeEvent
@@ -25,12 +26,8 @@ public class ForgeClientEvents {
         var poseStack = event.getPoseStack();
         var camera = event.getCamera();
         var vec3 = camera.getPosition();
-        var pos = blockHitResult.getBlockPos().above();
-        switch (player.getDirection()){
-            case EAST -> pos = pos.east();
-            case WEST -> pos = pos.south();
-            case SOUTH -> pos = pos.east().south();
-        }
+        // Same anchor the placement uses, so the hologram is exactly where the machine lands.
+        var pos = ForgeEvents.getPlacementOrigin(blockHitResult.getBlockPos(), player.getDirection());
         double d0 = vec3.x();
         double d1 = vec3.y();
         double d2 = vec3.z();

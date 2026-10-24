@@ -18,30 +18,31 @@
 
 package com.teammoeg.immersiveindustry;
 
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import com.teammoeg.immersiveindustry.content.electrolyzer.ElectrolyzerBlockEntity;
 
-@Mod.EventBusSubscriber(modid = IIMain.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+
+/**
+ * Mod-bus hooks that only publish capabilities.
+ *
+ * <p>The 1.20.1 version of this class held {@code RegistryEvent} handlers, which NeoForge
+ * replaced with {@code DeferredRegister} (already wired in {@code IIContent}). What is left
+ * here is the capability registration that used to happen by overriding
+ * {@code BlockEntity#getCapability}.
+ */
+@EventBusSubscriber(modid = IIMain.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class RegistryEvents {
-//    @SubscribeEvent
-//    public static void registerBlocks(RegistryEvent.Register<Block> event) {
-//        for (Block block : registeredBlocks) {
-//            try {
-//            	event.getRegistry().register(block);
-//            } catch (Throwable e) {
-//                throw e;
-//            }
-//        }
-//    }
-//
-//
-//    @SubscribeEvent
-//    public static void registerItems(RegistryEvent.Register<Item> event) {
-//        for (Item item : registeredItems) {
-//            try {
-//                event.getRegistry().register(item);
-//            } catch (Throwable e) {
-//                throw e;
-//            }
-//        }
-//    }
+
+    @SubscribeEvent
+    public static void registerPayloads(net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent event) {
+        IINetwork.register(event);
+    }
+
+    @SubscribeEvent
+    public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        ElectrolyzerBlockEntity.registerCapabilities(event);
+    }
 }

@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 public record ItemRecipeProcessResult(Map<Integer, Integer> operations) {
 	public void runOperations(IItemHandlerModifiable inventory) {

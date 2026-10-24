@@ -14,8 +14,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.common.util.Lazy;
+import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.common.util.Lazy;
 
 public class CarKilnRenderer implements BlockEntityRenderer<MultiblockBlockEntityMaster<CarKilnState>> {
 	public CarKilnRenderer(BlockEntityRendererProvider.Context rendererDispatcherIn) {

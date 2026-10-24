@@ -1,5 +1,6 @@
 package com.teammoeg.immersiveindustry.content.crucible;
 
+import net.minecraft.core.HolderLookup;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -12,15 +13,14 @@ import com.teammoeg.immersiveindustry.util.RecipeHandler;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import com.teammoeg.immersiveindustry.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.IItemHandler;
 
 public class CrucibleState implements IMultiblockState {
 	//common properties
@@ -35,21 +35,21 @@ public class CrucibleState implements IMultiblockState {
     boolean hasPreheater;
 	BooleanSupplier isSoundPlaying = () -> false;
     //capability handlers
-    StoredCapability<IItemHandler> inputHandler;
-    StoredCapability<IItemHandler> fuelHandler;
-    StoredCapability<IItemHandler> outputHandler;
-    StoredCapability<IFluidHandler> outputFluidHandler;
+    IItemHandler inputHandler;
+    IItemHandler fuelHandler;
+    IItemHandler outputHandler;
+    IFluidHandler outputFluidHandler;
     CapabilityReference<IFluidHandler> outputFluidCap;
 	public CrucibleState(IInitialMultiblockContext<CrucibleState> capabilitySource) {
 		Supplier<@Nullable Level> level=capabilitySource.levelSupplier();
 		recipe=new RecipeHandler<>((r,t)->t.time);
 		inventory=new ChangeDetectedItemHandler(6, capabilitySource.getMarkDirtyRunnable());
 		inventory.addSlotListener(0,4, recipe::onContainerChanged);
-		inputHandler=new StoredCapability<>(new RangedCheckedInputWrapper(inventory,0,4,(i,r)->CrucibleRecipe.isValidInput(level.get(),r)));
-		fuelHandler=new StoredCapability<>(new RangedCheckedInputWrapper(inventory,4,5,(i,r)->CrucibleRecipe.getFuelTime(level.get(),r)>0));
-		outputHandler=new StoredCapability<>(new RangedOutputWrapper(inventory,5,6));
-		outputFluidHandler=new StoredCapability<>(ArrayFluidHandler.drainOnly(tank, capabilitySource.getMarkDirtyRunnable()));
-		outputFluidCap=CrucibleLogic.fluidout.getFacingCapability(capabilitySource, ForgeCapabilities.FLUID_HANDLER);
+		inputHandler=new RangedCheckedInputWrapper(inventory,0,4,(i,r)->CrucibleRecipe.isValidInput(level.get(),r));
+		fuelHandler=new RangedCheckedInputWrapper(inventory,4,5,(i,r)->CrucibleRecipe.getFuelTime(level.get(),r)>0);
+		outputHandler=new RangedOutputWrapper(inventory,5,6);
+		outputFluidHandler=ArrayFluidHandler.drainOnly(tank, capabilitySource.getMarkDirtyRunnable());
+		outputFluidCap=CrucibleLogic.fluidout.getFacingCapability(capabilitySource, Capabilities.FluidHandler.BLOCK);
 	}
 
 	public float getBurnProgress() {
@@ -57,32 +57,32 @@ public class CrucibleState implements IMultiblockState {
 	}
 
 	@Override
-	public void writeSaveNBT(CompoundTag nbt) {
-		nbt.put("inv", inventory.serializeNBT());
+	public void writeSaveNBT(CompoundTag nbt, HolderLookup.Provider provider) {
+		nbt.put("inv", inventory.serializeNBT(provider));
 		recipe.writeCustomNBT(nbt, false);
 		nbt.putInt("temperature", temperature);
         nbt.putInt("burntime", burnTime);
         nbt.putInt("burnTimeMax", burnTimeMax);
-        nbt.put("tank", tank.writeToNBT(new CompoundTag()));
+        nbt.put("tank", tank.writeToNBT(provider, new CompoundTag()));
 	}
 
 	@Override
-	public void readSaveNBT(CompoundTag nbt) {
-        inventory.deserializeNBT(nbt.getCompound("inv"));
+	public void readSaveNBT(CompoundTag nbt, HolderLookup.Provider provider) {
+        inventory.deserializeNBT(provider, nbt.getCompound("inv"));
         recipe.readCustomNBT(nbt, false);
         temperature=nbt.getInt("temperature");
         burnTime=nbt.getInt("burntime");
         burnTimeMax=nbt.getInt("burnTimeMax");
-        tank.readFromNBT(nbt.getCompound("tank"));
+        tank.readFromNBT(provider, nbt.getCompound("tank"));
 	}
 
 	@Override
-	public void writeSyncNBT(CompoundTag nbt) {
+	public void writeSyncNBT(CompoundTag nbt, HolderLookup.Provider provider) {
 		nbt.putBoolean("active", active);
 	}
 
 	@Override
-	public void readSyncNBT(CompoundTag nbt) {
+	public void readSyncNBT(CompoundTag nbt, HolderLookup.Provider provider) {
 		active=nbt.getBoolean("active");
 	}
 

@@ -29,7 +29,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ElectrolyzerScreen extends IIContainerScreen<ElectrolyzerContainer> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(IIMain.MODID, "textures/gui/electrolyzer.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "textures/gui/electrolyzer.png");
 
     public ElectrolyzerScreen(ElectrolyzerContainer container, Inventory inventoryPlayer, Component title) {
         super(container, inventoryPlayer, title, TEXTURE);

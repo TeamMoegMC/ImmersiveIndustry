@@ -1,5 +1,6 @@
 package com.teammoeg.immersiveindustry.content.carkiln;
 
+import net.neoforged.neoforge.capabilities.Capabilities;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -10,6 +11,7 @@ import com.teammoeg.immersiveindustry.util.IIUtil;
 import com.teammoeg.immersiveindustry.util.RecipeHandler;
 import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IMultiblockComponent.CapabilityRegistrar;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
@@ -20,7 +22,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPos
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MBInventoryUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import com.teammoeg.immersiveindustry.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import net.minecraft.Util;
@@ -29,11 +31,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 public class CarKilnLogic implements IMultiblockLogic<CarKilnState>, IClientTickableComponent<CarKilnState>, IServerTickableComponent<CarKilnState> {
 	 public static final CapabilityFacing[] outputItemCaps = new CapabilityFacing[]{
@@ -218,9 +220,14 @@ public class CarKilnLogic implements IMultiblockLogic<CarKilnState>, IClientTick
 		return update;
 	}
 
-	@Override
-	public <T> LazyOptional<T> getCapability(IMultiblockContext<CarKilnState> ctx, CapabilityPosition position, Capability<T> cap) {
-		return ctx.getState().capabilities.getCapability(cap, position, ctx);
+		@Override
+	public void registerCapabilities(CapabilityRegistrar<CarKilnState> registrar) {
+		registrar.register(Capabilities.ItemHandler.BLOCK,
+				(state, pos) -> state.capabilities.getCapability(Capabilities.ItemHandler.BLOCK, pos));
+		registrar.register(Capabilities.FluidHandler.BLOCK,
+				(state, pos) -> state.capabilities.getCapability(Capabilities.FluidHandler.BLOCK, pos));
+		registrar.register(Capabilities.EnergyStorage.BLOCK,
+				(state, pos) -> state.capabilities.getCapability(Capabilities.EnergyStorage.BLOCK, pos));
 	}
 
 	@Override

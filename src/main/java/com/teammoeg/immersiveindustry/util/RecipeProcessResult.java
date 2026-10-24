@@ -1,9 +1,10 @@
 package com.teammoeg.immersiveindustry.util;
 
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 public record RecipeProcessResult<T extends Recipe<?>>(T recipe,ItemRecipeProcessResult item,FluidRecipeProcessResult fluid) {
 	public RecipeProcessResult(T recipe,ItemRecipeProcessResult item) {
@@ -12,8 +13,13 @@ public record RecipeProcessResult<T extends Recipe<?>>(T recipe,ItemRecipeProces
 	public RecipeProcessResult(T recipe,FluidRecipeProcessResult fluid) {
 		this(recipe,null,fluid);
 	}
-	public ResourceLocation getId() {
-		return recipe.getId();
+	/**
+	 * Recipes no longer carry their registry id in 1.21 - it belongs to the enclosing
+	 * {@code RecipeHolder} - so this returns null. Callers that persist a recipe should
+	 * re-resolve it rather than store an id.
+	 */
+	public @Nullable ResourceLocation getId() {
+		return null;
 	}
 	public void runOperations(IItemHandlerModifiable inventory,IFluidHandler hand) {
 		if(item!=null)

@@ -11,7 +11,7 @@
       "particle": "immersiveindustry:block/multiblocks/crucible_cup",
       "side": "immersiveindustry:block/multiblocks/crucible_cup"
     },
-    "loader": "forge:obj",
+    "loader": "neoforge:obj",
     "model": "immersiveindustry:models/block/multiblocks/crucible.obj",
     "automatic_culling": false,
     "flip_v": true

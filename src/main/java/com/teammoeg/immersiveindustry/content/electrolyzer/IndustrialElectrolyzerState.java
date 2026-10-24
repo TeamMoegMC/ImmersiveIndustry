@@ -1,5 +1,6 @@
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
+import net.minecraft.core.HolderLookup;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -14,14 +15,14 @@ import blusunrize.immersiveengineering.api.energy.WrappingEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import com.teammoeg.immersiveindustry.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.IItemHandler;
 
 public class IndustrialElectrolyzerState implements IMultiblockState {
 	//common properties
@@ -57,10 +58,10 @@ public class IndustrialElectrolyzerState implements IMultiblockState {
 			capabilitySource.getMarkDirtyRunnable().run();
 			recipe.onContainerChanged();
 		});
-		outFluidCap1=IndustrialElectrolyzerLogic.out1.getFacingCapability(capabilitySource, ForgeCapabilities.FLUID_HANDLER);
-		outFluidCap2=IndustrialElectrolyzerLogic.out2.getFacingCapability(capabilitySource, ForgeCapabilities.FLUID_HANDLER);
-		outInvCap1=IndustrialElectrolyzerLogic.out1.getFacingCapability(capabilitySource, ForgeCapabilities.ITEM_HANDLER);
-		outInvCap2=IndustrialElectrolyzerLogic.out2.getFacingCapability(capabilitySource, ForgeCapabilities.ITEM_HANDLER);
+		outFluidCap1=IndustrialElectrolyzerLogic.out1.getFacingCapability(capabilitySource, Capabilities.FluidHandler.BLOCK);
+		outFluidCap2=IndustrialElectrolyzerLogic.out2.getFacingCapability(capabilitySource, Capabilities.FluidHandler.BLOCK);
+		outInvCap1=IndustrialElectrolyzerLogic.out1.getFacingCapability(capabilitySource, Capabilities.ItemHandler.BLOCK);
+		outInvCap2=IndustrialElectrolyzerLogic.out2.getFacingCapability(capabilitySource, Capabilities.ItemHandler.BLOCK);
 		capabilities.fluidHandler()
 		.addCapability(IndustrialElectrolyzerLogic.in1,inFluidHandler1)
 		.addCapability(IndustrialElectrolyzerLogic.in2,inFluidHandler2)
@@ -76,23 +77,23 @@ public class IndustrialElectrolyzerState implements IMultiblockState {
 		
 	}
 	@Override
-	public void writeSaveNBT(CompoundTag nbt) {
+	public void writeSaveNBT(CompoundTag nbt, HolderLookup.Provider provider) {
 		recipe.writeCustomNBT(nbt, false);
-		nbt.put("energy",energyStorage.serializeNBT());
-		nbt.put("tank0",tank[0].writeToNBT(new CompoundTag()));
-		nbt.put("tank1",tank[1].writeToNBT(new CompoundTag()));
-		nbt.put("inv",inventory.serializeNBT());
+		nbt.putInt("energy", energyStorage.getEnergyStored());
+		nbt.put("tank0",tank[0].writeToNBT(provider, new CompoundTag()));
+		nbt.put("tank1",tank[1].writeToNBT(provider, new CompoundTag()));
+		nbt.put("inv",inventory.serializeNBT(provider));
 		
 		nbt.putBoolean("elec1",hasElectrode1);
 		nbt.putBoolean("elec2",hasElectrode2);
 	}
 	@Override
-	public void readSaveNBT(CompoundTag nbt) {
+	public void readSaveNBT(CompoundTag nbt, HolderLookup.Provider provider) {
 		recipe.readCustomNBT(nbt, false);
-		energyStorage.deserializeNBT(nbt.get("energy"));
-		tank[0].readFromNBT(nbt.getCompound("tank0"));
-		tank[1].readFromNBT(nbt.getCompound("tank1"));
-		inventory.deserializeNBT(nbt.getCompound("inv"));
+		energyStorage.setStoredEnergy(nbt.getInt("energy"));
+		tank[0].readFromNBT(provider, nbt.getCompound("tank0"));
+		tank[1].readFromNBT(provider, nbt.getCompound("tank1"));
+		inventory.deserializeNBT(provider, nbt.getCompound("inv"));
 		
 		hasElectrode1=nbt.getBoolean("elec1");
 		hasElectrode2=nbt.getBoolean("elec2");
@@ -100,13 +101,13 @@ public class IndustrialElectrolyzerState implements IMultiblockState {
 	}
 	
 	@Override
-	public void writeSyncNBT(CompoundTag nbt) {
+	public void writeSyncNBT(CompoundTag nbt, HolderLookup.Provider provider) {
 		nbt.putBoolean("active", active);
 		nbt.putBoolean("elec1",hasElectrode1);
 		nbt.putBoolean("elec2",hasElectrode2);
 	}
 	@Override
-	public void readSyncNBT(CompoundTag nbt) {
+	public void readSyncNBT(CompoundTag nbt, HolderLookup.Provider provider) {
 		active=nbt.getBoolean("active");
 		hasElectrode1=nbt.getBoolean("elec1");
 		hasElectrode2=nbt.getBoolean("elec2");

@@ -10,6 +10,7 @@ import com.teammoeg.immersiveindustry.util.IIUtil;
 import com.teammoeg.immersiveindustry.util.RecipeHandler;
 import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IMultiblockComponent.CapabilityRegistrar;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
@@ -21,7 +22,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPos
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MBInventoryUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import com.teammoeg.immersiveindustry.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import net.minecraft.core.BlockPos;
@@ -29,13 +30,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.Capabilities;
+
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 public class ChemicalLogic implements IClientTickableComponent<ChemicalState>, IMultiblockLogic<ChemicalState>, IServerTickableComponent<ChemicalState> {
 
@@ -144,7 +145,7 @@ public class ChemicalLogic implements IClientTickableComponent<ChemicalState>, I
 		boolean update = false;
 		int num=0;
 		for(CapabilityReference<IFluidHandler> i:state.outputFluidCap) {
-			update|=FluidUtils.multiblockFluidOutput(i, state.outTank[num++], 0, 0, null);
+			update|=FluidUtils.multiblockFluidOutput(i.getNullable(), state.outTank[num++], 0, 0, null);
 		}
 		if (context.getLevel().shouldTickModulo(8)) {
 			final IItemHandlerModifiable inventory = state.inventory;
@@ -176,14 +177,18 @@ public class ChemicalLogic implements IClientTickableComponent<ChemicalState>, I
 		}
 	}
 
-	@Override
-	public <T> LazyOptional<T> getCapability(IMultiblockContext<ChemicalState> ctx, CapabilityPosition position, Capability<T> cap) {
-		//specially handle input as it is hard to represent with a bunch of positions
-		if(cap==ForgeCapabilities.ITEM_HANDLER&&position.posInMultiblock().getY()==3) {
-			return ctx.getState().inputHandler.cast(ctx);
-		}
-		//back to normal logic
-		return ctx.getState().capabilities.getCapability(cap, position, ctx);
+		@Override
+	public void registerCapabilities(CapabilityRegistrar<ChemicalState> registrar) {
+		// The input row is one logical inventory spread over several positions, which the
+		// position table cannot express, so it stays special-cased as it was before the port.
+		registrar.register(Capabilities.ItemHandler.BLOCK, (state, pos) -> {
+			if (pos.posInMultiblock().getY() == 3) {
+				return state.inputHandler;
+			}
+			return state.capabilities.getCapability(Capabilities.ItemHandler.BLOCK, pos);
+		});
+		registrar.register(Capabilities.FluidHandler.BLOCK,
+				(state, pos) -> state.capabilities.getCapability(Capabilities.FluidHandler.BLOCK, pos));
 	}
 	@Override
 	public void dropExtraItems(ChemicalState state, Consumer<ItemStack> drop) {

@@ -33,7 +33,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ChemicalScreen extends IIContainerScreen<ChemicalContainer> {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(IIMain.MODID, "textures/gui/chemical_reactor.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "textures/gui/chemical_reactor.png");
 
 	public ChemicalScreen(ChemicalContainer container, Inventory inv, Component title) {
 		super(container, inv, title, TEXTURE);

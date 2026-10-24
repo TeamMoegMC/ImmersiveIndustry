@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.forge.ForgeTypes;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 public class JEISlotBuilder<T> {
 	public static record JEISlotBuilderBuilder<T>(IRecipeLayoutBuilder layout,IIngredientType<T> type,List<List<T>> ingredients){
@@ -45,10 +45,10 @@ public class JEISlotBuilder<T> {
 		return new JEISlotBuilderBuilder<>(layout,VanillaTypes.ITEM_STACK,items.stream().map(t->Arrays.asList(t.getItems())).collect(Collectors.toList()));
 	}
 	public static JEISlotBuilderBuilder<FluidStack> fluidStack(IRecipeLayoutBuilder layout,List<List<FluidStack>> items) {
-		return new JEISlotBuilderBuilder<>(layout,ForgeTypes.FLUID_STACK,items);
+		return new JEISlotBuilderBuilder<>(layout,NeoForgeTypes.FLUID_STACK,items);
 	}
 	public static JEISlotBuilderBuilder<FluidStack> fluidStack(IRecipeLayoutBuilder layout,FluidStack[] items) {
-		return new JEISlotBuilderBuilder<>(layout,ForgeTypes.FLUID_STACK,Arrays.stream(items).map(Arrays::asList).collect(Collectors.toList()));
+		return new JEISlotBuilderBuilder<>(layout,NeoForgeTypes.FLUID_STACK,Arrays.stream(items).map(Arrays::asList).collect(Collectors.toList()));
 	}
 	public static <I> IRecipeSlotBuilder addIngredientSlot(RecipeIngredientRole role,IRecipeLayoutBuilder layout,IIngredientType<I> type,List<List<I>> ingredients,int x,int y,int slotNum) {
 		IRecipeSlotBuilder slot=layout.addSlot(role, x, y);

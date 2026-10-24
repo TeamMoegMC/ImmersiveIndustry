@@ -5,7 +5,7 @@ import java.util.function.BiPredicate;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 public class RangedCheckedInputWrapper extends RangedInputWrapper {
 	BiPredicate<Integer,ItemStack> check;

@@ -10,7 +10,7 @@
 		"textures": {
 			"particle": "immersiveindustry:block/multiblocks/chemical_reactor"
 		},
-		"loader": "forge:obj",
+		"loader": "neoforge:obj",
 		"model": "immersiveindustry:models/block/multiblocks/chemical_reactor.obj",
 		"automatic_culling": false,
 		"flip_v": true

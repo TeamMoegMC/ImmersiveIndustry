@@ -25,7 +25,7 @@ import com.teammoeg.immersiveindustry.util.LangUtil;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
-import mezz.jei.api.forge.ForgeTypes;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -42,20 +42,20 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 public class CrucibleCategory implements IRecipeCategory<CrucibleRecipe> {
 
-    public static RecipeType<CrucibleRecipe> UID = new RecipeType<>(new ResourceLocation(IIMain.MODID, "crucible"),CrucibleRecipe.class);
+    public static RecipeType<CrucibleRecipe> UID = new RecipeType<>(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "crucible"),CrucibleRecipe.class);
     private IDrawable BACKGROUND;
     private IDrawable ICON;
     private IDrawable TANK;
     private IDrawableAnimated ARROW;
     public CrucibleCategory(IGuiHelper guiHelper) {
         this.ICON = guiHelper.createDrawableItemStack(new ItemStack(IIContent.IIMultiblocks.CRUCIBLE.blockItem().get()));
-        this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/crucible_jei.png"), 19, 3, 150, 65);
-        this.TANK = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/crucible.png"),238,34,18, 48);
-        IDrawableStatic arrow=guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/crucible.png"),204,15,21,15);
+        this.BACKGROUND = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "textures/gui/crucible_jei.png"), 19, 3, 150, 65);
+        this.TANK = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "textures/gui/crucible.png"),238,34,18, 48);
+        IDrawableStatic arrow=guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "textures/gui/crucible.png"),204,15,21,15);
         ARROW=guiHelper.createAnimatedDrawable(arrow,40, IDrawableAnimated.StartDirection.LEFT,false);
     }
 
@@ -90,7 +90,7 @@ public class CrucibleCategory implements IRecipeCategory<CrucibleRecipe> {
     public void setRecipe(IRecipeLayoutBuilder recipeLayout, CrucibleRecipe recipe, IFocusGroup ingredients) {
         IRecipeSlotBuilder fluidOut=recipeLayout.addSlot(RecipeIngredientRole.INPUT, 126, 9).setFluidRenderer(14400, false, 16, 47).setOverlay(TANK, 0, 0);
         if (recipe.output_fluid != FluidStack.EMPTY) {
-        	fluidOut.addIngredient(ForgeTypes.FLUID_STACK, recipe.output_fluid);
+        	fluidOut.addIngredient(NeoForgeTypes.FLUID_STACK, recipe.output_fluid);
         }
         JEISlotBuilder<ItemStack> itemInput=JEISlotBuilder.itemStack(recipeLayout, JEIIngredientStackListBuilder.make(recipe.inputs).build()).asInput();
         itemInput.addSlot(11,  9);

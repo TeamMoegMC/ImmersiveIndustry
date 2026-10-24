@@ -24,7 +24,7 @@ import com.teammoeg.immersiveindustry.util.JEISlotBuilder;
 import com.teammoeg.immersiveindustry.util.LangUtil;
 
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
-import mezz.jei.api.forge.ForgeTypes;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -43,7 +43,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public class CarKilnCategory implements IRecipeCategory<CarKilnRecipe> {
-	public static RecipeType<CarKilnRecipe> UID = new RecipeType<>(new ResourceLocation(IIMain.MODID, "car_kiln"), CarKilnRecipe.class);
+	public static RecipeType<CarKilnRecipe> UID = new RecipeType<>(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "car_kiln"), CarKilnRecipe.class);
 	private IDrawable BACKGROUND;
 	private IDrawable ICON;
 	private IDrawable TANK;
@@ -51,9 +51,9 @@ public class CarKilnCategory implements IRecipeCategory<CarKilnRecipe> {
 
 	public CarKilnCategory(IGuiHelper guiHelper) {
 		this.ICON = guiHelper.createDrawableItemStack(new ItemStack(IIContent.IIMultiblocks.CAR_KILN.blockItem().get()));
-		this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/car_kiln.png"), 6, 16, 143, 71);
-		this.TANK = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/car_kiln.png"), 197, 1, 18, 48);
-		IDrawableStatic arrow = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/car_kiln.png"), 177, 57, 37, 17);
+		this.BACKGROUND = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "textures/gui/car_kiln.png"), 6, 16, 143, 71);
+		this.TANK = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "textures/gui/car_kiln.png"), 197, 1, 18, 48);
+		IDrawableStatic arrow = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "textures/gui/car_kiln.png"), 177, 57, 37, 17);
 		ARROW = guiHelper.createAnimatedDrawable(arrow, 40, StartDirection.LEFT, false);
 	}
 
@@ -74,7 +74,7 @@ public class CarKilnCategory implements IRecipeCategory<CarKilnRecipe> {
 		}
 		IRecipeSlotBuilder fluidSlot = builder.addSlot(RecipeIngredientRole.INPUT, 4, 10).setFluidRenderer(3200, false, 16, 47).setOverlay(TANK, 0, 0);
 		if (recipe.input_fluid!=null) {
-			fluidSlot.addIngredients(ForgeTypes.FLUID_STACK, recipe.input_fluid.getMatchingFluidStacks());
+			fluidSlot.addIngredients(NeoForgeTypes.FLUID_STACK, java.util.Arrays.asList(recipe.input_fluid.getFluids()));
 			//if (recipe.start_fluid_cost != 0)
 			//	fluidSlot.addTooltipCallback((l, t) -> t.add(LangUtil.translate("gui.jei.tooltip.immersiveindustry.start_cost", recipe.start_fluid_cost)));
 		}

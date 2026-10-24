@@ -3,19 +3,19 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:plates/iron"
+      "item": "immersiveengineering:dust_hop_graphite"
     },
     "b": {
-      "tag": "forge:plates/steel"
+      "item": "minecraft:clay_ball"
     }
   },
   "pattern": [
     "aba",
-    "bab",
+    "b b",
     "aba"
   ],
   "result": {
-    "item": "immersiveindustry:burning_chamber",
+    "id": "immersiveindustry:refractory_kiln_brick",
     "count": 2
   },
   "show_notification": true

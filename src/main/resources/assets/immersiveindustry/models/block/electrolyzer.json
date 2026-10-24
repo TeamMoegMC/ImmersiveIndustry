@@ -3,7 +3,7 @@
   "textures": {
     "particle": "immersiveindustry:block/electrolyzer"
   },
-  "loader": "forge:obj",
+  "loader": "neoforge:obj",
   "model": "immersiveindustry:models/block/electrolyzer.obj",
   "automatic_culling": false,
   "flip_v": true

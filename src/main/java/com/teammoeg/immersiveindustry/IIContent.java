@@ -104,45 +104,45 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class IIContent {
 
     public static class IIBlocks {
-        public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, IIMain.MODID);
+        public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(BuiltInRegistries.BLOCK, IIMain.MODID);
         
-        protected static <T extends Block> RegistryObject<T> register(String name, Supplier<T> block, String itemName, Function<T, Item> item) {
-            RegistryObject<T> blk = BLOCKS.register(name, block);
+        protected static <T extends Block> DeferredHolder<Block, T> register(String name, Supplier<T> block, String itemName, Function<T, Item> item) {
+            DeferredHolder<Block, T> blk = BLOCKS.register(name, block);
             IItems.ITEMS.register(itemName, () -> item.apply(blk.get()));
             return blk;
         }
 
-        protected static <T extends Block> RegistryObject<T> register(String name, Supplier<T> block) {
+        protected static <T extends Block> DeferredHolder<Block, T> register(String name, Supplier<T> block) {
             return register(name, block, name, IIBlockItem::new);
         }
 
         
-        protected static <T extends Block> RegistryObject<T> register(String name, Supplier<T> block, Function<T, Item> item) {
+        protected static <T extends Block> DeferredHolder<Block, T> register(String name, Supplier<T> block, Function<T, Item> item) {
             return register(name, block, name, item);
         }
         
 
-        public static RegistryObject<ElectrolyzerBlock> electrolyzer = register("electrolyzer", ()->new ElectrolyzerBlock(IIProps.MACHINEProps));
-        public static RegistryObject<IIBaseBlock> burning_chamber = register("burning_chamber", ()->new IIBaseBlock(IIProps.METALProps));
-        public static RegistryObject<IIHorizontalBlock> car_kiln_brick = register("car_kiln_brick", ()->new IIHorizontalBlock(IIProps.MACHINEProps));
-        public static RegistryObject<IIDirectionalBlock> rotary_kiln_cylinder = register("rotary_kiln_cylinder", ()->new IIDirectionalBlock(IIProps.MACHINEProps));
+        public static DeferredHolder<Block, ElectrolyzerBlock> electrolyzer = register("electrolyzer", ()->new ElectrolyzerBlock(IIProps.MACHINEProps));
+        public static DeferredHolder<Block, IIBaseBlock> burning_chamber = register("burning_chamber", ()->new IIBaseBlock(IIProps.METALProps));
+        public static DeferredHolder<Block, IIHorizontalBlock> car_kiln_brick = register("car_kiln_brick", ()->new IIHorizontalBlock(IIProps.MACHINEProps));
+        public static DeferredHolder<Block, IIDirectionalBlock> rotary_kiln_cylinder = register("rotary_kiln_cylinder", ()->new IIDirectionalBlock(IIProps.MACHINEProps));
     }
 
     public static class IItems {
-        public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, IIMain.MODID);
+        public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(BuiltInRegistries.ITEM, IIMain.MODID);
         static Item.Properties createProps() {
             return new Item.Properties();
         }
-        public static RegistryObject<IIBaseItem> refractory_kiln_brick = ITEMS.register("refractory_kiln_brick",()->new IIBaseItem(createProps()));
+        public static DeferredHolder<Item, IIBaseItem> refractory_kiln_brick = ITEMS.register("refractory_kiln_brick",()->new IIBaseItem(createProps()));
     }
 
     public static class IIMultiblocks {
@@ -231,8 +231,8 @@ public class IIContent {
 
     public static class IITileTypes {
         public static final DeferredRegister<BlockEntityType<?>> REGISTER = DeferredRegister.create(
-                ForgeRegistries.BLOCK_ENTITY_TYPES, IIMain.MODID);
-        public static final RegistryObject<BlockEntityType<ElectrolyzerBlockEntity>> ELECTROLYZER = REGISTER.register(
+                BuiltInRegistries.BLOCK_ENTITY_TYPE, IIMain.MODID);
+        public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ElectrolyzerBlockEntity>> ELECTROLYZER = REGISTER.register(
                 "electrolyzer", makeType(ElectrolyzerBlockEntity::new, IIBlocks.electrolyzer)
         );
         public static <T extends BlockEntity> Supplier<BlockEntityType<T>> makeType(BlockEntityType.BlockEntitySupplier<T> create, Supplier<? extends Block> valid)
@@ -253,10 +253,10 @@ public class IIContent {
 
     public static class IIRecipes {
         public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(
-                ForgeRegistries.RECIPE_SERIALIZERS, IIMain.MODID
+                BuiltInRegistries.RECIPE_SERIALIZER, IIMain.MODID
         );
         public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(
-            ForgeRegistries.RECIPE_TYPES, IIMain.MODID
+            BuiltInRegistries.RECIPE_TYPE, IIMain.MODID
         	);
     	public static final TypeWithClass<CrucibleRecipe> CRUCIBLE = register("crucible",CrucibleRecipe.class);
     	public static final TypeWithClass<ElectrolyzerRecipe> ELECTROLYZER = register("electrolyzer",ElectrolyzerRecipe.class);
@@ -276,8 +276,8 @@ public class IIContent {
         public static <T extends Recipe<?>> TypeWithClass<T> register(String name,Class<T> clazz){
         	return new TypeWithClass<>(register(name), clazz);
         }
-        public static <T extends Recipe<?>> RegistryObject<RecipeType<T>> register(String name) {
-        	return RECIPE_TYPES.register(name, ()->RecipeType.simple(new ResourceLocation(IIMain.MODID,name)));
+        public static <T extends Recipe<?>> DeferredHolder<RecipeType<?>, RecipeType<T>> register(String name) {
+        	return RECIPE_TYPES.register(name, ()->RecipeType.simple(ResourceLocation.fromNamespaceAndPath(IIMain.MODID,name)));
         }
     }
     public static class IIMenus{
@@ -286,19 +286,19 @@ public class IIContent {
     		T get(MenuType<T> type,int id, Inventory inventoryPlayer);
     	}
     	  public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(
-              ForgeRegistries.MENU_TYPES, IIMain.MODID
+              BuiltInRegistries.MENU, IIMain.MODID
           	);
     	public static final MultiblockContainer<CrucibleState, CrucibleContainer> CRUCIBLE=registerMultiblock("crucible", CrucibleContainer::new,CrucibleContainer::new);
     	public static final MultiblockContainer<RotaryKilnState, RotaryKilnContainer> ROTARY_KILN=registerMultiblock("rotary_kiln", RotaryKilnContainer::new,RotaryKilnContainer::new);
     	public static final MultiblockContainer<CarKilnState, CarKilnContainer> CAR_KILN=registerMultiblock("car_kiln", CarKilnContainer::new,CarKilnContainer::new);
     	public static final MultiblockContainer<IndustrialElectrolyzerState, IndustrialElectrolyzerContainer> INDUSTRIAL_ELECTROLYZER=registerMultiblock("industrial_electrolyzer", IndustrialElectrolyzerContainer::new,IndustrialElectrolyzerContainer::new);
-    	public static final RegistryObject<MenuType<ElectrolyzerContainer>> ELECTROLYZER=register("electrolyzer",ElectrolyzerContainer::new);
+    	public static final DeferredHolder<MenuType<?>, MenuType<ElectrolyzerContainer>> ELECTROLYZER=register("electrolyzer",ElectrolyzerContainer::new);
     	public static final MultiblockContainer<ChemicalState, ChemicalContainer> CHEMICAL=registerMultiblock("chemical", ChemicalContainer::new,ChemicalContainer::new);
     	
-    	public static <T extends AbstractContainerMenu, BE extends BlockEntity> RegistryObject<MenuType<T>> register(String name, BEMenuFactory<T, BE> factory) {
-    		MutableObject<RegistryObject<MenuType<T>>> i=new MutableObject<>();
+    	public static <T extends AbstractContainerMenu, BE extends BlockEntity> DeferredHolder<MenuType<?>, MenuType<T>> register(String name, BEMenuFactory<T, BE> factory) {
+    		MutableObject<DeferredHolder<MenuType<?>, MenuType<T>>> i=new MutableObject<>();
     		
-    		RegistryObject<MenuType<T>> type=MENU_TYPES.register(name, () -> IForgeMenuType.create((id, inv, pb) -> factory.get(i.getValue().get(),id, inv)));
+    		DeferredHolder<MenuType<?>, MenuType<T>> type=MENU_TYPES.register(name, () -> IMenuTypeExtension.create((id, inv, pb) -> factory.get(i.getValue().get(),id, inv)));
     		i.setValue(type);
     		return type;
     	}
@@ -307,7 +307,7 @@ public class IIContent {
     		String name,
     		MultiBlockMenuConstructor<S, C> container,
     		ClientContainerConstructor<C> client) {
-    		RegistryObject<MenuType<C>> typeRef = MENU_TYPES.register(name,() -> {
+    		DeferredHolder<MenuType<?>, MenuType<C>> typeRef = MENU_TYPES.register(name,() -> {
     			Mutable<MenuType<C>> typeBox = new MutableObject<>();
     			MenuType<C> type = new MenuType<>((id, inv) -> client.construct(typeBox.getValue(), id, inv), FeatureFlagSet.of());
     			typeBox.setValue(type);

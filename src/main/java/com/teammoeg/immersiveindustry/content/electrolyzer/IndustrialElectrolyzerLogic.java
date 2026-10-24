@@ -1,5 +1,6 @@
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
+import net.neoforged.neoforge.capabilities.Capabilities;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -10,6 +11,7 @@ import com.teammoeg.immersiveindustry.util.IIUtil;
 import com.teammoeg.immersiveindustry.util.RecipeHandler;
 import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IMultiblockComponent.CapabilityRegistrar;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
@@ -26,18 +28,18 @@ import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+
+import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 public class IndustrialElectrolyzerLogic
 	implements IMultiblockLogic<IndustrialElectrolyzerState>, IClientTickableComponent<IndustrialElectrolyzerState>, IServerTickableComponent<IndustrialElectrolyzerState> {
@@ -85,7 +87,14 @@ public class IndustrialElectrolyzerLogic
 						int duracost = IIUtil.randomValue(rs, IIConfig.SERVER.electrodeCost.get());
 						if (duracost > 0)
 							for (ele = 2; ele < 4; ++ele) {
-								if (inventory.getStackInSlot(ele).hurt(1, rs, null)) {
+								// No LivingEntity here, so damage the electrode by hand instead of
+								// calling hurtAndBreak (which dereferences its owner).
+								ItemStack electrode = inventory.getStackInSlot(ele);
+								if (electrode.isEmpty() || !electrode.isDamageableItem()) {
+									continue;
+								}
+								electrode.setDamageValue(electrode.getDamageValue() + 1);
+								if (electrode.getDamageValue() >= electrode.getMaxDamage()) {
 									inventory.setStackInSlotNoChange(ele, ItemStack.EMPTY);
 								}
 							}
@@ -122,8 +131,8 @@ public class IndustrialElectrolyzerLogic
 
 	public boolean tryOutput(IMultiblockContext<IndustrialElectrolyzerState> context) {
 		IndustrialElectrolyzerState state = context.getState();
-		boolean update = FluidUtils.multiblockFluidOutput(state.outFluidCap1, state.tank[1], 0, 0, null);
-		update |= FluidUtils.multiblockFluidOutput(state.outFluidCap2, state.tank[1], 0, 0, null);
+		boolean update = FluidUtils.multiblockFluidOutput(state.outFluidCap1.getNullable(), state.tank[1], 0, 0, null);
+		update |= FluidUtils.multiblockFluidOutput(state.outFluidCap2.getNullable(), state.tank[1], 0, 0, null);
 		if (context.getLevel().shouldTickModulo(8)) {
 			final IItemHandlerModifiable inventory = state.inventory;
 			update |= IIUtil.outputItem(inventory, state.outInvCap1, 4);
@@ -157,22 +166,27 @@ public class IndustrialElectrolyzerLogic
 		return t -> Shapes.block();
 	}
 
-	@Override
-	public <T> LazyOptional<T> getCapability(IMultiblockContext<IndustrialElectrolyzerState> ctx, CapabilityPosition position, Capability<T> cap) {
-		return ctx.getState().capabilities.getCapability(cap, position, ctx);
+		@Override
+	public void registerCapabilities(CapabilityRegistrar<IndustrialElectrolyzerState> registrar) {
+		registrar.register(Capabilities.ItemHandler.BLOCK,
+				(state, pos) -> state.capabilities.getCapability(Capabilities.ItemHandler.BLOCK, pos));
+		registrar.register(Capabilities.FluidHandler.BLOCK,
+				(state, pos) -> state.capabilities.getCapability(Capabilities.FluidHandler.BLOCK, pos));
+		registrar.register(Capabilities.EnergyStorage.BLOCK,
+				(state, pos) -> state.capabilities.getCapability(Capabilities.EnergyStorage.BLOCK, pos));
 	}
 
 	@Override
-	public InteractionResult click(IMultiblockContext<IndustrialElectrolyzerState> ctx, BlockPos posInMultiblock, Player player, InteractionHand hand, BlockHitResult absoluteHit, boolean isClient) {
+	public ItemInteractionResult click(IMultiblockContext<IndustrialElectrolyzerState> ctx, BlockPos posInMultiblock, Player player, InteractionHand hand, BlockHitResult absoluteHit, boolean isClient) {
 
 		if (posInMultiblock.getY() == 2) {
 			if (player.getItemInHand(hand).is(IndustrialElectrolyzerContainer.Electrode_Tag)) {
 				ChangeDetectedItemHandler handler = ctx.getState().inventory;
 				for (int i = 2; i <= 3; i++) {
 					if (handler.getStackInSlot(i).isEmpty()) {
-						handler.setStackInSlot(i, ItemHandlerHelper.copyStackWithSize(player.getItemInHand(hand), 1));
+						handler.setStackInSlot(i, player.getItemInHand(hand).copyWithCount(1));
 						player.getItemInHand(hand).shrink(1);
-						return InteractionResult.sidedSuccess(ctx.getLevel().getRawLevel().isClientSide);
+						return ItemInteractionResult.sidedSuccess(ctx.getLevel().getRawLevel().isClientSide);
 					}
 				}
 			}

@@ -1,258 +1,105 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-        maven { url = 'https://maven.parchmentmc.org' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: "${forgegradle_version}", changing: true
-        classpath group: 'org.spongepowered', name: 'mixingradle', version: "${mixingradle_version}"
-        classpath group: 'org.parchmentmc', name: 'librarian', version: "${librarian_version}"
-    }
-}
+// Build script for the NeoForge 1.21.1 port of Immersive Industry.
+//
+// Upstream targeted Forge 1.20.1 through ForgeGradle 6 + Parchment + MixinGradle.
+// NeoForge 1.21.1 builds with ModDevGradle, which provides the official Mojang
+// mappings and wires mixin into the runs itself, so those three are gone.
+//
+// Third-party APIs come from the public maven repositories; versions match
+// the values in gradle.properties.
 
 plugins {
-    id 'com.matthewprenger.cursegradle' version '1.4.0'
+    id 'java-library'
     id 'idea'
+    id 'net.neoforged.moddev' version '2.0.148'
 }
-
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.spongepowered.mixin'
-apply plugin: 'org.parchmentmc.librarian.forgegradle'
-apply plugin: 'maven-publish'
-apply plugin: 'idea'
 
 version = "${minecraft_version}-${mod_version}"
 group = 'com.teammoeg'
-archivesBaseName = 'ImmersiveIndustry'
-compileJava.options.encoding = "UTF-8"
-compileTestJava.options.encoding = "UTF-8"
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '17'
-
-repositories {
-	mavenLocal()
-    maven {
-        name = "BlameJared"
-        url = "https://maven.blamejared.com/"
-    }
-    maven {
-        name = "DVS1 Maven FS"
-        url = "https://dvs1.progwml6.com/files/maven"
-    }
-    maven {
-        name = "TeamMoeg COS Maven"
-        url = "https://maven-1301510336.cos.ap-guangzhou.myqcloud.com"
-    }
+base {
+    archivesName = 'ImmersiveIndustry'
 }
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
 sourceSets {
     main {
         resources {
             srcDirs = [
-                    "$rootDir/src/main/resources",
+                    'src/main/resources',
                     'src/generated/resources'
             ]
         }
     }
-	datagen {
-        compileClasspath += main.compileClasspath
-        runtimeClasspath += main.runtimeClasspath
-        compileClasspath += main.output
-        runtimeClasspath += main.output
-    }
+    // NOTE: upstream's separate `datagen` source set is intentionally not declared here.
+    // ModDevGradle's data() run only puts the mod's *main* output on the transforming
+    // class path, so a second source set made mixin fail with ClassNotFoundException for
+    // the mod's own mixin classes. The two datagen classes are picked up from src/main.
 }
 
-minecraft {
-    mappings channel: 'parchment', version: "${parchment_version}-${minecraft_version}"
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+neoForge {
+    version = project.neo_version
+
+    // META-INF/accesstransformer.cfg is picked up automatically.
+
     runs {
         client {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-			arg "-mixin.config=" + "immersiveindustry.mixins.json"
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                immersiveindustry {
-                    source sourceSets.main
-                }
-            }
+            client()
         }
         server {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-			arg "-mixin.config=" + "immersiveindustry.mixins.json"
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                immersiveindustry {
-                    source sourceSets.main
-                }
-            }
+            server()
         }
-
         data {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-			arg "-mixin.config=" + "immersiveindustry.mixins.json"
-            property 'forge.logging.console.level', 'debug'
-            args '--mod', 'immersiveindustry', '--all', '--output', file('src/generated/resources/'),'validate', '--existing', file('src/main/resources/'), '--existing-mod', 'immersiveengineering'
-            mods {
-                immersiveindustry {
-                	source sourceSets.main
-                    source sourceSets.datagen
-                }
-            }
+            data()
+            programArguments.addAll '--mod', 'immersiveindustry',
+                    '--all',
+                    '--output', file('src/generated/resources/').absolutePath,
+                    '--existing', file('src/main/resources/').absolutePath
         }
     }
 }
 
-
-dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-
-    implementation fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:${ie_version}")
-    implementation fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:${ie_version}:datagen")
-	//compile fg.deobf('com.cannolicatfish:Project-Rankine:1.16.5-1.3')
-    //implementation fg.deobf('com.cannolicatfish:Project-Rankine:1.16.5-1.3')
-
-    compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"))
-    compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
-    // at runtime, use the full JEI jar for Forge
-    implementation(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
-
-//    implementation fg.deobf("com.teammoeg:FrostedHeart:+")
-
-    annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
-    testAnnotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
+repositories {
+    mavenCentral()
+    // IE, JEI and DualCodecs are all published here.
+    maven { url = 'https://maven.blamejared.com/' }
 }
 
+dependencies {
+    compileOnly "blusunrize.immersiveengineering:ImmersiveEngineering:${ie_version}"
+    runtimeOnly "blusunrize.immersiveengineering:ImmersiveEngineering:${ie_version}"
+
+    compileOnly "mezz.jei:jei-1.21.1-neoforge:${jei_version}"
+    runtimeOnly "mezz.jei:jei-1.21.1-neoforge:${jei_version}"
+
+    // IE declares IERecipeSerializer#codecs() in terms of DualMapCodec and ships the library
+    // jar-in-jar, which does not put it on the compile classpath, so it is needed explicitly.
+    compileOnly "malte0811:DualCodecs:0.1.2"
+}
 jar {
     manifest {
         attributes([
                 "Specification-Title"     : "Immersive Industry",
                 "Specification-Vendor"    : "TeamMoeg",
-                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Specification-Version"   : "1",
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.version,
                 "Implementation-Vendor"   : "TeamMoeg",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "MixinConfigs": "immersiveindustry.mixins.json"
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
-    finalizedBy('reobfJar')
 }
 
-def getPrivateString(String key) {
-    File propFile = file("private.properties")
-    if (propFile.exists()) {
-        Properties props = new Properties()
-        props.load(new FileInputStream(propFile))
-        if ((props[key]).isEmpty()) {
-            return "NULL"
-        } else return props[key]
-    } else {
-        return "NULL"
-    }
-}
-
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    archiveClassifier.set('javadoc')
-    from javadoc.destinationDir
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
+tasks.register('sourcesJar', Jar) {
+    dependsOn classes
     from sourceSets.main.allSource
     archiveClassifier.set('sources')
 }
 
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    archiveClassifier.set('deobf')
-}
-
-javadoc {
-    source = [sourceSets.main.allJava]
-    // prevent java 8's strict doclint for javadocs from failing builds
-    options.addStringOption('Xdoclint:none', '-quiet')
-}
-
 artifacts {
     archives sourcesJar
-    archives deobfJar
-}
-
-String getChangelogText() {
-    def changelogFile = file('changelog.txt')
-    String str = ''
-    int lineCount = 0
-    boolean done = false
-    changelogFile.eachLine {
-        if (done || it == null) {
-            return
-        }
-        if (it.size() > 1) {
-            def temp = it
-            if (lineCount == 0) {
-                temp = "ImmersiveIndustry ${version}"
-                temp = "<span style=\"font-size: 18px; color: #333399;\">ImmersiveIndustry v${mod_version}</span>&nbsp;&nbsp;<em>for Minecraft ${minecraft_version}</em><br/>"
-            } else if (it.startsWith('-')) {
-                temp = "&nbsp;&nbsp;&nbsp;$temp<br/>"
-            } else {
-                temp = "<h4>$temp</h4>"
-            }
-            str += temp
-            lineCount++
-        }
-    }
-    return str
-}
-curseforge {
-    project {
-        def envApiKey = System.getenv('CURSEFORGE_API_KEY')
-        apiKey = envApiKey == null ? 'nope' : envApiKey
-
-        id = '542053' // Immersive Industry
-        changelog = getChangelogText()
-
-        changelogType = 'markdown'
-
-        releaseType = 'release' // Default versions are marked release
-
-        addGameVersion "1.20.1"
-
-        mainArtifact (jar) {
-            relations {
-                requiredDependency 'immersive-engineering'
-            }
-        }
-    }
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-            artifact deobfJar
-            artifact sourcesJar
-        }
-    }
-    repositories {
-        maven {
-            name = "TeamMoeg"
-            url = "http://server.teammoeg.com:8888/releases"
-            credentials {
-                username = getPrivateString("mavenUser")
-                password = getPrivateString("mavenToken")
-            }
-            authentication {
-                basic(BasicAuthentication)
-            }
-        }
-        maven {
-            name = "COS"
-            url = "http://127.0.0.1:9999"
-        }
-    }
 }

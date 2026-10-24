@@ -13,8 +13,8 @@ public class ClientProxy {
 	public static void setup() {
 		IndustrialElectrolyzerRenderer.ELECTRODES = DynamicBlockModelReference.getModelCached(IIMain.MODID, "block/multiblocks/industrial_electrode").register();
 		RotaryKilnRenderer.ROLL= DynamicBlockModelReference.getModelCached(IIMain.MODID, "block/multiblocks/rotary_kiln_rotor").register();
-		CarKilnRenderer.PARTS= DynamicBlockModelReference.getModelCached(new ResourceLocation(IIMain.MODID, "block/multiblocks/car_kiln_anim")).register();
-		IEOBJCallbacks.register(new ResourceLocation(IIMain.MODID,"rotary_kiln"), RotaryKilnCallback.INSTANCE);
+		CarKilnRenderer.PARTS= DynamicBlockModelReference.getModelCached(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "block/multiblocks/car_kiln_anim")).register();
+		IEOBJCallbacks.register(ResourceLocation.fromNamespaceAndPath(IIMain.MODID,"rotary_kiln"), RotaryKilnCallback.INSTANCE);
 	}
 
 }

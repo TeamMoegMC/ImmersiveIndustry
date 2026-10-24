@@ -1,15 +1,15 @@
 {
   "type": "immersiveindustry:electrolyzer",
   "fluid": {
-    "tag": "forge:redstone_acid",
+    "tag": "c:redstone_acid",
     "amount": 1000
   },
   "result_fluid": {
-    "fluid": "minecraft:water",
+    "id": "minecraft:water",
     "amount": 1000
   },
   "result": {
-    "item": "minecraft:redstone",
+    "id": "minecraft:redstone",
     "count": 4
   },
   "large_only": true,

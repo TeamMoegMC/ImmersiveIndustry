@@ -18,127 +18,64 @@
 
 package com.teammoeg.immersiveindustry.content.chemical_reactor;
 
-import javax.annotation.Nullable;
+import java.util.List;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import com.teammoeg.immersiveindustry.IIContent;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeMapCodecs;
+import malte0811.dualcodecs.DualMapCodec;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
+/**
+ * Codec-based serializer for {@link ChemicalRecipe}.
+ *
+ * <p>Both the item and the fluid sides are arrays here, so each becomes a {@code listOf()}
+ * field. Fluid <em>stacks</em> use {@link FluidStack#OPTIONAL_CODEC} plus the matching
+ * optional stream codec, because a recipe may produce no fluid at all.
+ */
 public class ChemicalRecipeSerializer extends IERecipeSerializer<ChemicalRecipe> {
+
+    private static final DualCodec<RegistryFriendlyByteBuf, SizedFluidIngredient> FLUID_INGREDIENT =
+            new DualCodec<>(SizedFluidIngredient.FLAT_CODEC, SizedFluidIngredient.STREAM_CODEC);
+
+    private static final DualCodec<RegistryFriendlyByteBuf, FluidStack> FLUID_STACK =
+            new DualCodec<>(FluidStack.OPTIONAL_CODEC, FluidStack.OPTIONAL_STREAM_CODEC);
+
     @Override
     public ItemStack getIcon() {
         return new ItemStack(IIContent.IIMultiblocks.CRUCIBLE.blockItem().get());
     }
 
     @Override
-    public ChemicalRecipe readFromJson(ResourceLocation recipeId, JsonObject json,IContext ctx) {
-
-        IngredientWithSize[] inputs;
-        if (json.has("inputs")) {
-            JsonArray ja = json.get("inputs").getAsJsonArray();
-            inputs = new IngredientWithSize[ja.size()];
-            int i = -1;
-            for (JsonElement je : ja) {
-                inputs[++i] = IngredientWithSize.deserialize(je);
-            }
-        } else inputs = new IngredientWithSize[0];
-        FluidTagInput[] input_fluids;
-        if (json.has("input_fluids")) {
-        	JsonArray ja = json.get("input_fluids").getAsJsonArray();
-        	input_fluids=new FluidTagInput[ja.size()];
-        	int i = -1;
-            for (JsonElement je : ja) {
-            	input_fluids[++i] = FluidTagInput.deserialize(je);
-            }
-        }else input_fluids=new FluidTagInput[0];
-        
-        ItemStack[] outputs;
-        if (json.has("outputs")) {
-            JsonArray ja = json.get("outputs").getAsJsonArray();
-            outputs = new ItemStack[ja.size()];
-            int i = -1;
-            for (JsonElement je : ja) {
-            	outputs[++i] =readOutput(je).get();
-            }
-        } else outputs = new ItemStack[0];
-        
-        FluidStack[] output_fluids;
-        if (json.has("result_fluids")) {
-            JsonArray ja = json.get("result_fluids").getAsJsonArray();
-            output_fluids = new FluidStack[ja.size()];
-            int i = -1;
-            for (JsonElement je : ja) {
-            	output_fluids[++i] =ApiUtils.jsonDeserializeFluidStack(je.getAsJsonObject());
-            }
-        } else output_fluids = new FluidStack[0];
-        int time=400;
-        if(json.has("time"))
-        time = json.get("time").getAsInt();
-        int tickEnergy=32;
-        if(json.has("tickEnergy"))
-        	tickEnergy = json.get("tickEnergy").getAsInt();
-        if(inputs.length==0&&input_fluids.length==0)
-        	throw new JsonSyntaxException("Error loading chemical recipe "+recipeId+" because no input found");
-        if(outputs.length==0&&output_fluids.length==0)
-        	throw new JsonSyntaxException("Error loading chemical recipe "+recipeId+" because no output found");
-        return new ChemicalRecipe(recipeId, outputs, output_fluids, inputs, input_fluids,time,tickEnergy);
+    protected DualMapCodec<RegistryFriendlyByteBuf, ChemicalRecipe> codecs() {
+        return DualCompositeMapCodecs.composite(
+                IngredientWithSize.CODECS.listOf().fieldOf("inputs"),
+                (ChemicalRecipe r) -> List.of(r.inputs),
+                FLUID_INGREDIENT.listOf().fieldOf("input_fluids"),
+                (ChemicalRecipe r) -> List.of(r.input_fluids),
+                DualCodecs.ITEM_STACK.listOf().fieldOf("outputs"),
+                (ChemicalRecipe r) -> List.of(r.outputs),
+                FLUID_STACK.listOf().fieldOf("result_fluids"),
+                (ChemicalRecipe r) -> List.of(r.output_fluids),
+                DualCodecs.INT.optionalFieldOf("time", 200),
+                (ChemicalRecipe r) -> r.time,
+                DualCodecs.INT.optionalFieldOf("tickEnergy", 32),
+                (ChemicalRecipe r) -> r.tickEnergy,
+                (List<IngredientWithSize> inputs, List<SizedFluidIngredient> inputFluids,
+                 List<ItemStack> outputs, List<FluidStack> outputFluids,
+                 Integer time, Integer tickEnergy) -> new ChemicalRecipe(
+                        outputs.toArray(new ItemStack[0]),
+                        outputFluids.toArray(new FluidStack[0]),
+                        inputs.toArray(new IngredientWithSize[0]),
+                        inputFluids.toArray(new SizedFluidIngredient[0]),
+                        time,
+                        tickEnergy));
     }
-
-    @Nullable
-    @Override
-    public ChemicalRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-        IngredientWithSize[] inputs = new IngredientWithSize[buffer.readVarInt()];
-        for (int i = 0; i < inputs.length; i++)
-            inputs[i] = IngredientWithSize.read(buffer);
-        FluidTagInput[] input_fluids=new FluidTagInput[buffer.readVarInt()];
-        for (int i = 0; i < input_fluids.length; i++)
-        	input_fluids[i] = FluidTagInput.read(buffer);
-        ItemStack[] outputs=new ItemStack[buffer.readVarInt()];
-        for (int i = 0; i < outputs.length; i++)
-        	outputs[i] = buffer.readItem();
-        FluidStack[] output_fluids = new FluidStack[buffer.readVarInt()];
-        for (int i = 0; i < output_fluids.length; i++)
-        	output_fluids[i] = FluidStack.readFromPacket(buffer);
-        int time = buffer.readVarInt();
-        int tickEnergy=buffer.readVarInt();
-        return new ChemicalRecipe(recipeId, outputs, output_fluids, inputs, input_fluids,time,tickEnergy);
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buffer, ChemicalRecipe recipe) {
-        buffer.writeVarInt(recipe.inputs.length);
-        for (IngredientWithSize input : recipe.inputs)
-            input.write(buffer);
-        
-        buffer.writeVarInt(recipe.input_fluids.length);
-        for (FluidTagInput input : recipe.input_fluids)
-            input.write(buffer);
-        
-        buffer.writeVarInt(recipe.outputs.length);
-        for (ItemStack input : recipe.outputs)
-            buffer.writeItem(input);
-        
-        buffer.writeVarInt(recipe.output_fluids.length);
-        for (FluidStack input : recipe.output_fluids)
-        	input.writeToPacket(buffer);
-        
-        
-        
-        buffer.writeVarInt(recipe.time);
-        buffer.writeVarInt(recipe.tickEnergy);
-    }
-
-
 }

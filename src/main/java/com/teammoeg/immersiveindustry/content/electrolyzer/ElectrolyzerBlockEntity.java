@@ -45,13 +45,13 @@ import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -65,14 +65,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.Capabilities;
+
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.IItemHandler;
 
 public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
         IIEInventory, IEServerTickableBE,
@@ -89,41 +89,38 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
     public int tickEnergy = 0;
     public ItemStack result = ItemStack.EMPTY;
     public MutableEnergyStorage energyStorage = new MutableEnergyStorage(ENERGY_CAPACITY);
-    private final ResettableCapability<IEnergyStorage> energyCap = registerEnergyInput(energyStorage);
-
+    // IE 12 dropped ResettableCapability: the handlers are plain objects and are published
+    // to NeoForge once, through registerCapabilities below.
     public FluidTank tank = new FluidTank(TANK_CAPACITY, r->ElectrolyzerRecipe.isValidRecipeFluid(this.getLevel(),r));
-    private final ResettableCapability<IFluidHandler> tankCap = registerFluidInput(tank);
     NonNullList<ItemStack> inventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
-    ResettableCapability<IItemHandler> invHandler = registerCapability(
-            new IEInventoryHandler(2, this, 0, new boolean[]{true, false},
-                    new boolean[]{false, true})
-    );
+    public final IItemHandler invHandler = new IEInventoryHandler(2, this, 0, new boolean[]{true, false},
+            new boolean[]{false, true});
 
     public ElectrolyzerBlockEntity(BlockPos pos, BlockState state) {
         super(IITileTypes.ELECTROLYZER.get(), pos, state);
     }
 
     @Override
-    public void readCustomNBT(CompoundTag nbt, boolean descPacket) {
-        EnergyHelper.deserializeFrom(energyStorage, nbt);
-        tank.readFromNBT(nbt.getCompound("tank"));
+    public void readCustomNBT(CompoundTag nbt, boolean descPacket, HolderLookup.Provider provider) {
+        EnergyHelper.deserializeFrom(energyStorage, nbt, provider);
+        tank.readFromNBT(provider, nbt.getCompound("tank"));
         process = nbt.getInt("process");
         processMax = nbt.getInt("processMax");
         int[] sideConfigArray = nbt.getIntArray("sideConfig");
         for(Direction d : DirectionUtils.VALUES)
             sideConfig.put(d, IEEnums.IOSideConfig.VALUES[sideConfigArray[d.ordinal()]]);
         if (!descPacket) {
-            result = ItemStack.of(nbt.getCompound("result"));
+            result = ItemStack.parseOptional(provider, nbt.getCompound("result"));
             tickEnergy = nbt.getInt("tickEnergy");
             Collections.fill(inventory, ItemStack.EMPTY);
-            ContainerHelper.loadAllItems(nbt, inventory);
+            ContainerHelper.loadAllItems(nbt, inventory, provider);
         }
     }
 
     @Override
-    public void writeCustomNBT(CompoundTag nbt, boolean descPacket) {
-        EnergyHelper.serializeTo(energyStorage, nbt);
-        nbt.put("tank", tank.writeToNBT(new CompoundTag()));
+    public void writeCustomNBT(CompoundTag nbt, boolean descPacket, HolderLookup.Provider provider) {
+        EnergyHelper.serializeTo(energyStorage, nbt, provider);
+        nbt.put("tank", tank.writeToNBT(provider, new CompoundTag()));
         nbt.putInt("process", process);
         nbt.putInt("processMax", processMax);
         int[] sideConfigArray = new int[6];
@@ -131,9 +128,9 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
             sideConfigArray[d.ordinal()] = sideConfig.get(d).ordinal();
         nbt.putIntArray("sideConfig", sideConfigArray);
         if (!descPacket) {
-            nbt.put("result", result.serializeNBT());
+            nbt.put("result", result.save(provider));
             nbt.putInt("tickEnergy", tickEnergy);
-            ContainerHelper.saveAllItems(nbt, inventory);
+            ContainerHelper.saveAllItems(nbt, inventory, provider);
         }
     }
 
@@ -175,7 +172,7 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
                     Utils.modifyInvStackSize(inventory, SLOT_IN, -recipe.inputs[0].getCount());
                 }
                 if (recipe.input_fluid != null)
-                    tank.drain(recipe.input_fluid.getAmount(), IFluidHandler.FluidAction.EXECUTE);
+                    tank.drain(recipe.input_fluid.amount(), IFluidHandler.FluidAction.EXECUTE);
                 result = recipe.output.copy();
                 this.setChanged();
             }
@@ -210,20 +207,21 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
     }
 
     @Nonnull
-    @Override
-    public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing) {
-        if (facing != null) {
-            if (capability == ForgeCapabilities.ENERGY) {
-                return energyCap.cast();
-            }
-            if (capability == ForgeCapabilities.FLUID_HANDLER && sideConfig.get(facing) == IEEnums.IOSideConfig.INPUT) {
-                return tankCap.cast();
-            }
-            if (capability == ForgeCapabilities.ITEM_HANDLER) {
-                return invHandler.cast();
-            }
-        }
-        return super.getCapability(capability, facing);
+    
+
+    /**
+     * Publishes this block entity's handlers to NeoForge.
+     *
+     * <p>Capabilities are no longer fetched by overriding {@code getCapability}; NeoForge asks
+     * each side through the mod bus, so the mapping is declared once here.
+     */
+    public static void registerCapabilities(net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, IITileTypes.ELECTROLYZER.get(),
+                (be, side) -> side == null ? null : be.energyStorage);
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, IITileTypes.ELECTROLYZER.get(),
+                (be, side) -> side != null && be.sideConfig.get(side) == IEEnums.IOSideConfig.INPUT ? be.tank : null);
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, IITileTypes.ELECTROLYZER.get(),
+                (be, side) -> side == null ? null : be.invHandler);
     }
 
     public Map<Direction, IEEnums.IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
@@ -258,7 +256,7 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
     }
 
     @Override
-    public Component[] getOverlayText(Player player, HitResult mop, boolean hammer)
+    public Component[] getOverlayText(BlockState state, Player player, HitResult mop, boolean hammer)
     {
         if(hammer&& IEClientConfig.showTextOverlay.get()&&mop instanceof BlockHitResult)
         {
@@ -268,11 +266,6 @@ public class ElectrolyzerBlockEntity extends IEBaseBlockEntity implements
             return TextUtils.sideConfigWithOpposite(Lib.DESC_INFO+"blockSide.connectFluid.", i, j);
         }
         return null;
-    }
-
-    @Override
-    public boolean useNixieFont(Player player, HitResult mop) {
-        return false;
     }
 
     @Nullable

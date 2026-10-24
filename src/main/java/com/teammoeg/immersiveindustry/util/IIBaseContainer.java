@@ -41,7 +41,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.Lazy;
+import net.neoforged.neoforge.common.util.Lazy;
 
 public abstract class IIBaseContainer extends AbstractContainerMenu {
 	public static class Validator implements Predicate<Player> {
@@ -190,7 +190,7 @@ public abstract class IIBaseContainer extends AbstractContainerMenu {
 				Slot slot = this.slots.get(i);
 				ItemStack itemstack = slot.getItem();
 				if(slot.mayPlace(pStack))
-					if (!itemstack.isEmpty() && ItemStack.isSameItemSameTags(pStack, itemstack)) {
+					if (!itemstack.isEmpty() && ItemStack.isSameItemSameComponents(pStack, itemstack)) {
 						int j = itemstack.getCount() + pStack.getCount();
 						int maxSize = Math.min(slot.getMaxStackSize(), pStack.getMaxStackSize());
 						if (j <= maxSize) {

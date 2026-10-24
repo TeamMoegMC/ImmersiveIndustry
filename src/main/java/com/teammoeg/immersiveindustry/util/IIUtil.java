@@ -6,15 +6,15 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import com.teammoeg.immersiveindustry.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 public class IIUtil {
 
@@ -38,7 +38,7 @@ public class IIUtil {
 		ItemStack is = inv.getStackInSlot(slot);
 		if (is.isEmpty()) {
 			inv.setStackInSlot(slot, in.split(Math.min(inv.getSlotLimit(slot), in.getMaxStackSize())));
-		} else if (ItemHandlerHelper.canItemStacksStack(in, is)) {
+		} else if (ItemStack.isSameItemSameComponents(in, is)) {
 			int limit = Math.min(inv.getSlotLimit(slot), is.getMaxStackSize());
 			limit -= is.getCount();
 			limit = Math.min(limit, in.getCount());

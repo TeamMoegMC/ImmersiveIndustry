@@ -27,7 +27,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class CrucibleMultiblock extends IIMultiblock {
     public CrucibleMultiblock() {
-        super(new ResourceLocation(IIMain.MODID, "multiblocks/crucible"),
+        super(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "multiblocks/crucible"),
                 new BlockPos(1, 1, 1), new BlockPos(1, 1, 2), new BlockPos(3, 4, 3),
                 IIContent.IIMultiblocks.CRUCIBLE);
     }

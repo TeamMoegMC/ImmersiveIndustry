@@ -3,8 +3,8 @@ package com.teammoeg.immersiveindustry.util;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.wrapper.RangedWrapper;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.wrapper.RangedWrapper;
 
 public class RangedInputWrapper extends RangedWrapper {
 

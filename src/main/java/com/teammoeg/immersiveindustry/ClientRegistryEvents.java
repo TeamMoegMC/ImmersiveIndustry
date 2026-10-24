@@ -18,6 +18,7 @@
 
 package com.teammoeg.immersiveindustry;
 
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -43,31 +44,40 @@ import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.Tree;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers;
-import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterRenderers;
+import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 
-@Mod.EventBusSubscriber(modid = IIMain.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = IIMain.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientRegistryEvents {
     private static Tree.InnerNode<ResourceLocation, ManualEntry> CATEGORY;
 
     @SuppressWarnings("unused")
+        /**
+     * Screens are registered through the mod bus in NeoForge; vanilla's
+     * {@code MenuScreens.register} is no longer callable from mod code.
+     */
     @SubscribeEvent
+    public static void registerScreens(RegisterMenuScreensEvent event) {
+        event.register(IIMenus.ELECTROLYZER.get(), ElectrolyzerScreen::new);
+        event.register(IIMenus.ROTARY_KILN.getType(), RotaryKilnScreen::new);
+        event.register(IIMenus.INDUSTRIAL_ELECTROLYZER.getType(), IndustrialElectrolyzerScreen::new);
+        event.register(IIMenus.CAR_KILN.getType(), CarKilnScreen::new);
+        event.register(IIMenus.CRUCIBLE.getType(), CrucibleScreen::new);
+        event.register(IIMenus.CHEMICAL.getType(), ChemicalScreen::new);
+    }
+
+@SubscribeEvent
     public static void onClientSetup(final FMLClientSetupEvent event) {
-        MenuScreens.register(IIMenus.ELECTROLYZER.get(), ElectrolyzerScreen::new);
-        MenuScreens.register(IIMenus.ROTARY_KILN.getType(), RotaryKilnScreen::new);
-        MenuScreens.register(IIMenus.INDUSTRIAL_ELECTROLYZER.getType(), IndustrialElectrolyzerScreen::new);
-        MenuScreens.register(IIMenus.CAR_KILN.getType(), CarKilnScreen::new);
-        MenuScreens.register(IIMenus.CRUCIBLE.getType(), CrucibleScreen::new);
-        MenuScreens.register(IIMenus.CHEMICAL.getType(), ChemicalScreen::new);
-        /*registerIEScreen(new ResourceLocation(IIMain.MODID, "crucible"), CrucibleScreen::new);
-        registerIEScreen(new ResourceLocation(IIMain.MODID, "electrolyzer"), ElectrolyzerScreen::new);
-        registerIEScreen(new ResourceLocation(IIMain.MODID, "industrial_electrolyzer"), IndustrialElectrolyzerScreen::new);
-        registerIEScreen(new ResourceLocation(IIMain.MODID, "car_kiln"), CarKilnScreen::new);
-        registerIEScreen(new ResourceLocation(IIMain.MODID, "rotary_kiln"), RotaryKilnScreen::new);
+        /*registerIEScreen(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "crucible"), CrucibleScreen::new);
+        registerIEScreen(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "electrolyzer"), ElectrolyzerScreen::new);
+        registerIEScreen(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "industrial_electrolyzer"), IndustrialElectrolyzerScreen::new);
+        registerIEScreen(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "car_kiln"), CarKilnScreen::new);
+        registerIEScreen(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "rotary_kiln"), RotaryKilnScreen::new);
         RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.crucible, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(IIContent.IIMultiblocks.steam_turbine, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(IIContent.IIBlocks.electrolyzer, RenderType.getCutout());
@@ -89,52 +99,52 @@ public class ClientRegistryEvents {
 	public static void registerModels(ModelEvent.RegisterAdditional ev)
 	{
 		DynamicBlockModelReference.registeredModels.forEach(rl->{
-			ev.register(rl);
+			ev.register(net.minecraft.client.resources.model.ModelResourceLocation.standalone(rl));
 		});
 	}
 
     public static void addManual() {
         ManualInstance man = ManualHelper.getManual();
-        CATEGORY = man.getRoot().getOrCreateSubnode(new ResourceLocation(IIMain.MODID, "main"), 100);
+        CATEGORY = man.getRoot().getOrCreateSubnode(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "main"), 100);
         {
             ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
             builder.addSpecialElement(new SpecialElementData("crucible", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.Multiblock.CRUCIBLE.get())));
-            builder.readFromFile(new ResourceLocation(IIMain.MODID, "crucible"));
+            builder.readFromFile(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "crucible"));
             man.addEntry(CATEGORY, builder.create(), 0);
         }
         {
             ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
-            builder.readFromFile(new ResourceLocation(IIMain.MODID, "electrolyzer"));
+            builder.readFromFile(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "electrolyzer"));
             man.addEntry(CATEGORY, builder.create(), 1);
         }
         {
             ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
             builder.addSpecialElement(new SpecialElementData("industrial_electrolyzer", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.Multiblock.INDUSTRIAL_ELECTROLYZER.get())));
-            builder.readFromFile(new ResourceLocation(IIMain.MODID, "industrial_electrolyzer"));
+            builder.readFromFile(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "industrial_electrolyzer"));
             man.addEntry(CATEGORY, builder.create(), 2);
         }
         {
             ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
             builder.addSpecialElement(new SpecialElementData("car_kiln", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.Multiblock.CAR_KILN.get())));
-            builder.readFromFile(new ResourceLocation(IIMain.MODID, "car_kiln"));
+            builder.readFromFile(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "car_kiln"));
             man.addEntry(CATEGORY, builder.create(), 3);
         }
         {
             ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
             builder.addSpecialElement(new SpecialElementData("rotary_kiln", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.Multiblock.ROTARY_KILN.get())));
-            builder.readFromFile(new ResourceLocation(IIMain.MODID, "rotary_kiln"));
+            builder.readFromFile(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "rotary_kiln"));
             man.addEntry(CATEGORY, builder.create(), 4);
         }
         {
             ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
             builder.addSpecialElement(new SpecialElementData("steam_turbine", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.Multiblock.STEAMTURBINE.get())));
-            builder.readFromFile(new ResourceLocation(IIMain.MODID, "steam_turbine"));
+            builder.readFromFile(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "steam_turbine"));
             man.addEntry(CATEGORY, builder.create(), 5);
         }
         {
             ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(man);
             builder.addSpecialElement(new SpecialElementData("chemical_reactor", 0, () -> new ManualElementMultiblock(man, IIContent.IIMultiblocks.Multiblock.CHEMICAL.get())));
-            builder.readFromFile(new ResourceLocation(IIMain.MODID, "chemical_reactor"));
+            builder.readFromFile(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "chemical_reactor"));
             man.addEntry(CATEGORY, builder.create(), 6);
         }
         extras.put("steamTurbineGenerator", () -> IIConfig.SERVER.steamTurbineGenerator.get());
@@ -142,7 +152,7 @@ public class ClientRegistryEvents {
         extras.put("SteamTurbineMinimumInput", () -> IIConfig.SERVER.steamTurbineInputMin.get());
         
         extras.put("electrodeCost", () -> IIConfig.SERVER.electrodeCost.get());
-        ManualHelper.ADD_CONFIG_GETTER.getValue().accept((s) -> {
+        ManualHelper.ADD_CONFIG_GETTER.get().accept((s) -> {
             if (s.startsWith(IIMain.MODID)) {
                 String path = s.substring(s.indexOf(".") + 1);
                 if (extras.containsKey(path))

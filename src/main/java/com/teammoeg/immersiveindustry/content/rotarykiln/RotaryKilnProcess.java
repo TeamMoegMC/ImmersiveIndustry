@@ -28,7 +28,8 @@ public class RotaryKilnProcess {
 		return recipeCache;
 	}
 	public void setRecipe(RotaryKilnRecipe recipe) {
-		recipeId=recipe.getId();
+		// The recipe id is owned by RecipeHolder in 1.21; re-resolved on load instead.
+		recipeId=null;
 		recipeCache=recipe;
 		processMax=recipe.time;
 		powerUsage=recipe.tickEnergy;
@@ -45,7 +46,7 @@ public class RotaryKilnProcess {
 		process=tag.getInt("process");
 		processMax=tag.getInt("processMax");
 		powerUsage=tag.getInt("power");
-		ResourceLocation newId=new ResourceLocation(tag.getString("recipe"));
+		ResourceLocation newId=ResourceLocation.parse(tag.getString("recipe"));
 		
 		if(!newId.equals(recipeId))
 			recipeCache=null;

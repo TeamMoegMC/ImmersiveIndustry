@@ -1,0 +1,12 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        // ModDevGradle's own artifact set, in case the plugin portal is slow.
+        maven {
+            name = 'localSeed'
+            url = 'file:///F:/workspace/m2seed'
+        }
+    }
+}
+
+rootProject.name = 'ImmersiveIndustry'

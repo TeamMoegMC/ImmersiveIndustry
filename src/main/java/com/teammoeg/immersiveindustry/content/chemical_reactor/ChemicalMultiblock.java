@@ -27,7 +27,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ChemicalMultiblock extends IIMultiblock {
     public ChemicalMultiblock() {
-        super(new ResourceLocation(IIMain.MODID, "multiblocks/chemical_reactor"),
+        super(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "multiblocks/chemical_reactor"),
                 new BlockPos(1, 1, 1), new BlockPos(1, 1, 2), new BlockPos(3, 4, 3),
                 IIContent.IIMultiblocks.CHEMICAL_REACTOR);
     }

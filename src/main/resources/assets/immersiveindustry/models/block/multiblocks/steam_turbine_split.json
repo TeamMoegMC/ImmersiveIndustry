@@ -10,7 +10,7 @@
     "textures": {
       "particle": "immersiveindustry:block/multiblocks/steam_turbine"
     },
-    "loader": "forge:obj",
+    "loader": "neoforge:obj",
     "model": "immersiveindustry:models/block/multiblocks/steam_turbine.obj",
     "automatic_culling": false,
     "flip_v": true

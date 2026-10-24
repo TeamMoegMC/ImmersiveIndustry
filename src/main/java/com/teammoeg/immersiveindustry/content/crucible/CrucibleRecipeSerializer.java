@@ -18,85 +18,54 @@
 
 package com.teammoeg.immersiveindustry.content.crucible;
 
-import javax.annotation.Nullable;
+import java.util.List;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.teammoeg.immersiveindustry.IIContent;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import blusunrize.immersiveengineering.api.crafting.TagOutput;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeMapCodecs;
+import malte0811.dualcodecs.DualMapCodec;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
+/**
+ * Codec-based serializer for {@link CrucibleRecipe}.
+ *
+ * <p>The item output is decoded straight as a {@link TagOutput}, which is what
+ * {@code IESerializableRecipe} now wants as its preview stack. The 1.20.1 reader deferred that
+ * with a {@code Lazy} because the item might not exist yet; the codec path resolves the same
+ * problem by keeping the tag-vs-stack decision inside {@code TagOutput} itself.
+ */
 public class CrucibleRecipeSerializer extends IERecipeSerializer<CrucibleRecipe> {
+
     @Override
     public ItemStack getIcon() {
         return new ItemStack(IIContent.IIMultiblocks.CRUCIBLE.blockItem().get());
     }
 
     @Override
-    public CrucibleRecipe readFromJson(ResourceLocation recipeId, JsonObject json,IContext ctx) {
-        Lazy<ItemStack> output = readOutput(json.get("result"));
-        IngredientWithSize[] inputs;
-        if (json.has("inputs")) {
-            JsonArray ja = json.get("inputs").getAsJsonArray();
-            inputs = new IngredientWithSize[ja.size()];
-            int i = -1;
-            for (JsonElement je : ja) {
-                inputs[++i] = IngredientWithSize.deserialize(je);
-            }
-        } else inputs = new IngredientWithSize[0];
-        FluidStack result_fluid = FluidStack.EMPTY;
-        if (json.has("result_fluid"))
-            result_fluid = ApiUtils.jsonDeserializeFluidStack(json.getAsJsonObject("result_fluid"));
-        int time=400;
-        if(json.has("time"))
-        time = json.get("time").getAsInt();
-        int temperature=0;
-        if(json.has("temperature"))
-        	temperature= json.get("temperature").getAsInt();
-        if(inputs==null||inputs.length==0)
-        	throw new RuntimeException("Error loading crucible recipe "+recipeId+" because no input found");
-        if(output.get().isEmpty()&&result_fluid.isEmpty())
-        	throw new RuntimeException("Error loading crucible recipe "+recipeId+" because no output found");
-        return new CrucibleRecipe(recipeId, output, result_fluid, inputs, time, temperature);
+    protected DualMapCodec<RegistryFriendlyByteBuf, CrucibleRecipe> codecs() {
+        return DualCompositeMapCodecs.composite(
+                TagOutput.CODECS.fieldOf("result"),
+                (CrucibleRecipe r) -> r.output,
+                IngredientWithSize.CODECS.listOf().fieldOf("inputs"),
+                (CrucibleRecipe r) -> List.of(r.inputs),
+                optionalFluidOutput("result_fluid"),
+                (CrucibleRecipe r) -> r.output_fluid == null ? FluidStack.EMPTY : r.output_fluid,
+                DualCodecs.INT.optionalFieldOf("time", 400),
+                (CrucibleRecipe r) -> r.time,
+                DualCodecs.INT.optionalFieldOf("temperature", 0),
+                (CrucibleRecipe r) -> r.temperature,
+                (TagOutput output, List<IngredientWithSize> inputs, FluidStack outputFluid,
+                 Integer time, Integer temperature) -> new CrucibleRecipe(
+                        output,
+                        outputFluid,
+                        inputs.toArray(new IngredientWithSize[0]),
+                        time,
+                        temperature));
     }
-
-    @Nullable
-    @Override
-    public CrucibleRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-        ItemStack output = buffer.readItem();
-        IngredientWithSize[] inputs = new IngredientWithSize[buffer.readVarInt()];
-        for (int i = 0; i < inputs.length; i++)
-            inputs[i] = IngredientWithSize.read(buffer);
-        FluidStack output_fluid = null;
-        if (buffer.readBoolean())
-            output_fluid = FluidStack.readFromPacket(buffer);
-        int time = buffer.readInt();
-        int temperature = buffer.readInt();
-        return new CrucibleRecipe(recipeId, Lazy.of(()->output), output_fluid, inputs, time, temperature);
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buffer, CrucibleRecipe recipe) {
-        buffer.writeItem(recipe.output.get());
-        buffer.writeVarInt(recipe.inputs.length);
-        for (IngredientWithSize input : recipe.inputs)
-            input.write(buffer);
-        if (recipe.output_fluid != null) {
-            buffer.writeBoolean(true);
-            recipe.output_fluid.writeToPacket(buffer);
-        } else buffer.writeBoolean(false);
-        buffer.writeInt(recipe.time);
-        buffer.writeInt(recipe.temperature);
-    }
-
-
 }

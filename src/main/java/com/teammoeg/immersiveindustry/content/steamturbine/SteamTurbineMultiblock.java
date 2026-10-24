@@ -27,7 +27,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class SteamTurbineMultiblock extends IIMultiblock {
     public SteamTurbineMultiblock() {
-        super(new ResourceLocation(IIMain.MODID, "multiblocks/steam_turbine"),
+        super(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "multiblocks/steam_turbine"),
                 new BlockPos(1, 1, 3), new BlockPos(1, 1, 6), new BlockPos(3, 3, 7),
                 IIContent.IIMultiblocks.STEAMTURBINE);
         

@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraftforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 public class IndustrialElectrolyzerRenderer implements BlockEntityRenderer<MultiblockBlockEntityMaster<IndustrialElectrolyzerState>> {
 	public IndustrialElectrolyzerRenderer(BlockEntityRendererProvider.Context rendererDispatcherIn) {

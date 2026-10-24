@@ -18,97 +18,66 @@
 
 package com.teammoeg.immersiveindustry.content.electrolyzer;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import java.util.List;
+import java.util.Optional;
+
 import com.teammoeg.immersiveindustry.IIContent;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeMapCodecs;
+import malte0811.dualcodecs.DualMapCodec;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
+/**
+ * Codec-based serializer for {@link ElectrolyzerRecipe}.
+ *
+ * <p>Field names match the 1.20.1 JSON so existing data packs keep loading. Two behaviours the
+ * old hand-written reader had are preserved through DualCodecs helpers rather than by
+ * hand: {@code listOrSingle} keeps accepting both {@code inputs} and a lone {@code input},
+ * and {@code optionalFieldOf(name, default)} keeps the historic defaults for
+ * {@code time} / {@code tickEnergy} / {@code large_only}.
+ */
 public class ElectrolyzerRecipeSerializer extends IERecipeSerializer<ElectrolyzerRecipe> {
+
+    private static final DualCodec<RegistryFriendlyByteBuf, SizedFluidIngredient> FLUID_INGREDIENT =
+            new DualCodec<>(SizedFluidIngredient.FLAT_CODEC, SizedFluidIngredient.STREAM_CODEC);
+
     @Override
     public ItemStack getIcon() {
         return new ItemStack(IIContent.IIBlocks.electrolyzer.get());
     }
 
-	@Override
-	public @org.jetbrains.annotations.Nullable ElectrolyzerRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-		ItemStack output = buffer.readItem();
-        IngredientWithSize[] inputs = new IngredientWithSize[buffer.readVarInt()];
-        for (int i = 0; i < inputs.length; i++)
-            inputs[i] = IngredientWithSize.read(buffer);
-        FluidTagInput input_fluid = null;
-        FluidStack output_fluid = null;
-        if (buffer.readBoolean())
-            input_fluid = FluidTagInput.read(buffer);
-        if (buffer.readBoolean())
-            output_fluid = FluidStack.readFromPacket(buffer);
-        int time = buffer.readVarInt();
-        int tickEnergy = buffer.readVarInt();
-        boolean flag = buffer.readBoolean();
-        return new ElectrolyzerRecipe(recipeId, output, inputs, input_fluid, output_fluid, time, tickEnergy, flag);
-	}
-
-	@Override
-	public void toNetwork(FriendlyByteBuf buffer, ElectrolyzerRecipe recipe) {
-		buffer.writeItem(recipe.output);
-        buffer.writeVarInt(recipe.inputs.length);
-        for (IngredientWithSize input : recipe.inputs)
-            input.write(buffer);
-        if (recipe.input_fluid != null) {
-            buffer.writeBoolean(true);
-            recipe.input_fluid.write(buffer);
-        } else buffer.writeBoolean(false);
-        if (recipe.output_fluid != null) {
-            buffer.writeBoolean(true);
-            recipe.output_fluid.writeToPacket(buffer);
-        } else buffer.writeBoolean(false);
-        buffer.writeVarInt(recipe.time);
-        buffer.writeVarInt(recipe.tickEnergy);
-        buffer.writeBoolean(recipe.flag);
-	}
-
-	@Override
-	public ElectrolyzerRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context) {
-		ItemStack output = readOutput(json.get("result")).get();
-        IngredientWithSize[] inputs;
-        if(json.has("inputs")) {
-        	JsonArray ja=json.get("inputs").getAsJsonArray();
-        	inputs=new IngredientWithSize[ja.size()];
-        	int i=-1;
-            for (JsonElement je : ja) {
-                inputs[++i] = IngredientWithSize.deserialize(je);
-            }
-        } else if (json.has("input")) {
-            inputs = new IngredientWithSize[1];
-            inputs[0] = IngredientWithSize.deserialize(json.get("input"));
-        } else inputs = new IngredientWithSize[0];
-        FluidTagInput input_fluid = null;
-        if (json.has("fluid"))
-            input_fluid = FluidTagInput.deserialize(json.get("fluid"));
-
-        int time = 200;
-        if (json.has("time"))
-            time = json.get("time").getAsInt();
-        int tickEnergy = 32;
-        if (json.has("tickEnergy"))
-            tickEnergy = json.get("tickEnergy").getAsInt();
-
-        boolean flag =false;
-        if(json.has("large_only"))
-        	flag=json.get("large_only").getAsBoolean();
-        FluidStack result_fluid = FluidStack.EMPTY;
-        if (json.has("result_fluid"))
-            result_fluid = ApiUtils.jsonDeserializeFluidStack(json.get("result_fluid").getAsJsonObject());
-
-        return new ElectrolyzerRecipe(recipeId, output, inputs, input_fluid, result_fluid, time, tickEnergy, flag);
-	}
+    @Override
+    protected DualMapCodec<RegistryFriendlyByteBuf, ElectrolyzerRecipe> codecs() {
+        return DualCompositeMapCodecs.composite(
+                DualCodecs.ITEM_STACK.fieldOf("result"),
+                (ElectrolyzerRecipe r) -> r.output,
+                IngredientWithSize.CODECS.listOf().optionalFieldOf("inputs", List.of()),
+                (ElectrolyzerRecipe r) -> List.of(r.inputs),
+                FLUID_INGREDIENT.optionalFieldOf("fluid"),
+                (ElectrolyzerRecipe r) -> Optional.ofNullable(r.input_fluid),
+                optionalFluidOutput("result_fluid"),
+                (ElectrolyzerRecipe r) -> r.output_fluid == null ? FluidStack.EMPTY : r.output_fluid,
+                DualCodecs.INT.optionalFieldOf("time", 200),
+                (ElectrolyzerRecipe r) -> r.time,
+                DualCodecs.INT.optionalFieldOf("tickEnergy", 32),
+                (ElectrolyzerRecipe r) -> r.tickEnergy,
+                DualCodecs.BOOL.optionalFieldOf("large_only", false),
+                (ElectrolyzerRecipe r) -> r.flag,
+                (ItemStack output, List<IngredientWithSize> inputs, Optional<SizedFluidIngredient> fluid,
+                 FluidStack outputFluid, Integer time, Integer tickEnergy, Boolean flag) -> new ElectrolyzerRecipe(
+                        output,
+                        inputs.toArray(new IngredientWithSize[0]),
+                        fluid.orElse(null),
+                        outputFluid,
+                        time,
+                        tickEnergy,
+                        flag));
+    }
 }

@@ -4,10 +4,10 @@
     "item": "minecraft:coal"
   },
   "result": {
-    "item": "immersiveengineering:coal_coke"
+    "id": "immersiveengineering:coal_coke"
   },
   "result_fluid": {
-    "fluid": "immersiveengineering:creosote",
+    "id": "immersiveengineering:creosote",
     "amount": 500
   },
   "time": 900,

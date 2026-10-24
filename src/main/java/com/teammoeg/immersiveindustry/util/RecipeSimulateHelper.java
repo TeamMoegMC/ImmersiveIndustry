@@ -11,8 +11,8 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 public class RecipeSimulateHelper extends ItemStackHandler{
 	int slotOffset=0;
@@ -50,7 +50,7 @@ public class RecipeSimulateHelper extends ItemStackHandler{
 	}
 	private static ListTag catalyst=new ListTag();
 	static {
-		catalyst.add(StringTag.valueOf(Component.Serializer.toJson(Component.translatable("gui.jei.tooltip.immersiveindustry.catalyst"))));
+		catalyst.add(StringTag.valueOf(Component.Serializer.toJson(Component.translatable("gui.jei.tooltip.immersiveindustry.catalyst"), net.minecraft.core.RegistryAccess.EMPTY)));
 	}
 	public static List<List<ItemStack>> expand(IngredientWithSize...ft){
 		List<List<ItemStack>> li=new ArrayList<>(ft.length);
@@ -62,7 +62,7 @@ public class RecipeSimulateHelper extends ItemStackHandler{
 				for(ItemStack is:iss) {
 					ItemStack cis=is.copy();
 					
-					cis.getOrCreateTagElement(ItemStack.TAG_DISPLAY).put(ItemStack.TAG_LORE, catalyst);
+					cis.set(net.minecraft.core.component.DataComponents.LORE, new net.minecraft.world.item.component.ItemLore(java.util.List.of(Component.translatable("gui.jei.tooltip.immersiveindustry.catalyst"))));
 					sli.add(cis);
 				}
 				li.add(sli);

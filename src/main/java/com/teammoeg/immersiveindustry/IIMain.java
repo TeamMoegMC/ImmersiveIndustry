@@ -20,12 +20,12 @@ package com.teammoeg.immersiveindustry;
 
 import com.teammoeg.immersiveindustry.content.IICreativeTab;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
 
 @Mod(IIMain.MODID)
@@ -33,12 +33,11 @@ public class IIMain {
     public static final String MODID = "immersiveindustry";
     public static final String MODNAME = "Immersive Industry";
     public static boolean loadfailed=false;
-    public IIMain() {
-        IEventBus mod = FMLJavaModLoadingContext.get().getModEventBus();
+    public IIMain(IEventBus mod, ModContainer container) {
         mod.addListener(this::setup);
 //        MinecraftForge.EVENT_BUS.addGenericListener(Block.class,this::onMissing);
         IICreativeTab.register(mod);
-        IIConfig.register();
+        IIConfig.register(container);
         IIContent.IIBlocks.BLOCKS.register(mod);
         IIContent.IItems.ITEMS.register(mod);;
        
@@ -47,7 +46,10 @@ public class IIMain {
         IIContent.IIRecipes.RECIPE_SERIALIZERS.register(mod);
         IIContent.IIRecipes.RECIPE_TYPES.register(mod);
         IIContent.IIMenus.MENU_TYPES.register(mod);
-        DistExecutor.safeRunWhenOn(Dist.CLIENT,()->ClientProxy::setup);
+        // NeoForge removed DistExecutor; the client dist is checked directly instead.
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            ClientProxy.setup();
+        }
         
 //        DeferredWorkQueue.runLater(IIContent.IIRecipes::registerRecipeTypes);
     }
@@ -65,7 +67,6 @@ public class IIMain {
 //    }
     public void setup(final FMLCommonSetupEvent event) {
         //MinecraftForge.EVENT_BUS.register(new IIRecipeReloadListener());
-        IINetwork.register();
     }
     
 }

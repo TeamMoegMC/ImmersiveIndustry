@@ -39,7 +39,7 @@ public class CarKilnMultiblock extends IIMultiblock {
     // "T" is the trigger position that must be on the opposite side of the x-axis baseline
     // "O" is the structure origin as defined by a structure file
     public CarKilnMultiblock() {
-        super(new ResourceLocation(IIMain.MODID, "multiblocks/car_kiln"),
+        super(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "multiblocks/car_kiln"),
                 new BlockPos(1, 1, 2), new BlockPos(1, 0, 4), new BlockPos(3, 5, 5),
                 IIContent.IIMultiblocks.CAR_KILN);
 

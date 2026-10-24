@@ -12,6 +12,7 @@ import com.teammoeg.immersiveindustry.util.IIUtil;
 import com.teammoeg.immersiveindustry.util.RecipeHandler;
 import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IMultiblockComponent.CapabilityRegistrar;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
@@ -42,11 +43,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.Capabilities;
+
+import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, IMultiblockLogic<CrucibleState>, IServerTickableComponent<CrucibleState> {
 
@@ -290,22 +291,19 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 		}
 	}
 
-	@Override
-	public <T> LazyOptional<T> getCapability(IMultiblockContext<CrucibleState> ctx, CapabilityPosition position, Capability<T> cap) {
-		if (cap == ForgeCapabilities.ITEM_HANDLER) {
-
-			if (position.posInMultiblock().getY() <= 1)
-				return ctx.getState().fuelHandler.cast(ctx);
-			else if (position.side() == RelativeBlockFace.UP)
-				return ctx.getState().inputHandler.cast(ctx);
-			else
-				return ctx.getState().outputHandler.cast(ctx);
-		}
-		if (cap == ForgeCapabilities.FLUID_HANDLER) {
-			if (fluidout.isCapabilityPosition(position))
-				return ctx.getState().outputFluidHandler.cast(ctx);
-		}
-		return LazyOptional.empty();
+		@Override
+	public void registerCapabilities(CapabilityRegistrar<CrucibleState> registrar) {
+		registrar.register(Capabilities.ItemHandler.BLOCK, (state, pos) -> {
+			if (pos.posInMultiblock().getY() <= 1) {
+				return state.fuelHandler;
+			}
+			if (pos.side() == RelativeBlockFace.UP) {
+				return state.inputHandler;
+			}
+			return state.outputHandler;
+		});
+		registrar.register(Capabilities.FluidHandler.BLOCK,
+				(state, pos) -> fluidout.isCapabilityPosition(pos) ? state.outputFluidHandler : null);
 	}
 
 	@Override
@@ -318,7 +316,7 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 			}
 			ItemEntity itemEntity = (ItemEntity) collided;
 			if(!itemEntity.isRemoved()) {
-				ItemStack insertItem = ItemHandlerHelper.insertItem(ctx.getState().inputHandler.getValue(), itemEntity.getItem().copy(), false);
+				ItemStack insertItem = ItemHandlerHelper.insertItem(ctx.getState().inputHandler, itemEntity.getItem().copy(), false);
 				if (insertItem.isEmpty()) {
 					itemEntity.setItem(ItemStack.EMPTY);
 					itemEntity.remove(RemovalReason.DISCARDED);
@@ -332,7 +330,7 @@ public class CrucibleLogic implements IClientTickableComponent<CrucibleState>, I
 
 	public boolean tryOutput(IMultiblockContext<CrucibleState> context) {
 		CrucibleState state = context.getState();
-		boolean update = FluidUtils.multiblockFluidOutput(state.outputFluidCap, state.tank, 0, 0, null);
+		boolean update = FluidUtils.multiblockFluidOutput(state.outputFluidCap.getNullable(), state.tank, 0, 0, null);
 		return update;
 	}
 

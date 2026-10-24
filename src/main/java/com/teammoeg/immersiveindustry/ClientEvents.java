@@ -23,14 +23,15 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderHighlightEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.client.event.RenderHighlightEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-@Mod.EventBusSubscriber(modid = IIMain.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
+@EventBusSubscriber(modid = IIMain.MODID, value = Dist.CLIENT)
 public class ClientEvents {
 
     @SubscribeEvent
@@ -79,16 +80,16 @@ public class ClientEvents {
                             RenderHelper.drawVerticalIndicator(transform.last(), buffers, y, facing, hitSide);
 
                         } else {
-                            Matrix4f mat = transform.last().pose();
+                            PoseStack.Pose pose = transform.last();
                             Matrix3f matN = transform.last().normal();
 
                             VertexConsumer lineBuilder = buffers.getBuffer(IERenderTypes.LINES);
                             float sqrt2Half = (float) (Math.sqrt(2) / 2);
 
-                            lineBuilder.vertex(mat, 0 - eps, y, 0 - eps).color(0, 0, 0, 0.4F).normal(matN, sqrt2Half, 0, sqrt2Half).endVertex();
-                            lineBuilder.vertex(mat, 1 + eps, y, 1 + eps).color(0, 0, 0, 0.4F).normal(matN, sqrt2Half, 0, sqrt2Half).endVertex();
-                            lineBuilder.vertex(mat, 0 - eps, y, 1 + eps).color(0, 0, 0, 0.4F).normal(matN, sqrt2Half, 0, -sqrt2Half).endVertex();
-                            lineBuilder.vertex(mat, 1 + eps, y, 0 - eps).color(0, 0, 0, 0.4F).normal(matN, sqrt2Half, 0, -sqrt2Half).endVertex();
+                            lineBuilder.addVertex(pose, 0 - eps, y, 0 - eps).setColor(0, 0, 0, 0.4F);
+                            lineBuilder.addVertex(pose, 1 + eps, y, 1 + eps).setColor(0, 0, 0, 0.4F);
+                            lineBuilder.addVertex(pose, 0 - eps, y, 1 + eps).setColor(0, 0, 0, 0.4F);
+                            lineBuilder.addVertex(pose, 1 + eps, y, 0 - eps).setColor(0, 0, 0, 0.4F);
 
 
                             Vec3 dir = new Vec3(facing.getStepX(), 0, facing.getStepZ());

@@ -18,68 +18,57 @@
 
 package com.teammoeg.immersiveindustry.content.rotarykiln;
 
-import com.google.gson.JsonObject;
+import java.util.Optional;
+
 import com.teammoeg.immersiveindustry.IIContent;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeMapCodecs;
+import malte0811.dualcodecs.DualMapCodec;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
+/**
+ * Codec-based serializer for {@link RotaryKilnRecipe}.
+ *
+ * <p>The old reader resolved the {@code byproduct} through a condition context, which no
+ * longer travels with recipes in 1.21 - conditions are applied by the recipe manager before
+ * the codec sees the JSON. The field is therefore decoded as a plain optional
+ * {@link StackWithChance}.
+ */
 public class RotaryKilnRecipeSerializer extends IERecipeSerializer<RotaryKilnRecipe> {
+
     @Override
     public ItemStack getIcon() {
         return new ItemStack(IIContent.IIMultiblocks.ROTARY_KILN.blockItem().get());
     }
 
-	@Override
-	public @org.jetbrains.annotations.Nullable RotaryKilnRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-		 return new RotaryKilnRecipe(recipeId,buffer.readItem(), IngredientWithSize.read(buffer),FluidStack.readFromPacket(buffer),buffer.readVarInt(),buffer.readVarInt(),buffer.readBoolean()?StackWithChance.read(buffer):null);
-	}
-
-	@Override
-	public void toNetwork(FriendlyByteBuf buffer, RotaryKilnRecipe recipe) {
-		buffer.writeItem(recipe.output);
-        recipe.input.write(buffer);
-        recipe.output_fluid.writeToPacket(buffer);
-        buffer.writeVarInt(recipe.time);
-        buffer.writeVarInt(recipe.tickEnergy);
-        if(recipe.secoutput==null)
-        	buffer.writeBoolean(false);
-        else {
-        	buffer.writeBoolean(true);
-        	recipe.secoutput.write(buffer);
-        }
-	}
-
-	@Override
-	public RotaryKilnRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context) {
-		
-		ItemStack output=ItemStack.EMPTY;
-		if(json.has("result"))
-			output= readOutput(json.get("result")).get();
-        IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
-        FluidStack result_fluid = FluidStack.EMPTY;
-        if (json.has("result_fluid"))
-            result_fluid = ApiUtils.jsonDeserializeFluidStack(json.get("result_fluid").getAsJsonObject());
-
-        int time = 200;
-        if (json.has("time"))
-            time = json.get("time").getAsInt();
-        int tickEnergy = 32;
-        if (json.has("tickEnergy"))
-            tickEnergy = json.get("tickEnergy").getAsInt();
-        StackWithChance byout=null;
-        if(json.has("byproduct")) {
-        	byout=readConditionalStackWithChance(json.get("byproduct"),context);
-        }
-        	
-
-        return new RotaryKilnRecipe(recipeId, output, input, result_fluid, time, tickEnergy,byout);
-	}
+    @Override
+    protected DualMapCodec<RegistryFriendlyByteBuf, RotaryKilnRecipe> codecs() {
+        return DualCompositeMapCodecs.composite(
+                DualCodecs.ITEM_STACK.optionalFieldOf("result", ItemStack.EMPTY),
+                (RotaryKilnRecipe r) -> r.output,
+                IngredientWithSize.CODECS.fieldOf("input"),
+                (RotaryKilnRecipe r) -> r.input,
+                optionalFluidOutput("result_fluid"),
+                (RotaryKilnRecipe r) -> r.output_fluid == null ? FluidStack.EMPTY : r.output_fluid,
+                DualCodecs.INT.optionalFieldOf("time", 200),
+                (RotaryKilnRecipe r) -> r.time,
+                DualCodecs.INT.optionalFieldOf("tickEnergy", 32),
+                (RotaryKilnRecipe r) -> r.tickEnergy,
+                StackWithChance.CODECS.optionalFieldOf("byproduct"),
+                (RotaryKilnRecipe r) -> Optional.ofNullable(r.secoutput),
+                (ItemStack output, IngredientWithSize input, FluidStack outputFluid,
+                 Integer time, Integer tickEnergy, Optional<StackWithChance> byproduct) -> new RotaryKilnRecipe(
+                        output,
+                        input,
+                        outputFluid,
+                        time,
+                        tickEnergy,
+                        byproduct.orElse(null)));
+    }
 }

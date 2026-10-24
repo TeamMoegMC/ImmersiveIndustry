@@ -1,5 +1,6 @@
 package com.teammoeg.immersiveindustry.content.chemical_reactor;
 
+import net.minecraft.core.HolderLookup;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -20,17 +21,16 @@ import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import com.teammoeg.immersiveindustry.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.IItemHandler;
 
 public class ChemicalState implements IMultiblockState {
 	class RecipeResetFluidTank extends FluidTank{
@@ -56,7 +56,7 @@ public class ChemicalState implements IMultiblockState {
     boolean active;
 	BooleanSupplier isSoundPlaying = () -> false;
     //capability handlers
-	final StoredCapability<IItemHandler> inputHandler;
+	final IItemHandler inputHandler;
     final IItemHandler outputHandler;
     final MultipleTankHandler recipeOutputFluidHandler=new MultipleTankHandler(outTank);
     final MultipleTankHandler recipeInputFluidHandler=new MultipleTankHandler(inTank);
@@ -70,14 +70,14 @@ public class ChemicalState implements IMultiblockState {
 		recipe=new RecipeHandler<>((r,t)->t.time);
 		inventory=new ChangeDetectedItemHandler(6, capabilitySource.getMarkDirtyRunnable());
 		inventory.addSlotListener(0,3, recipe::onContainerChanged);
-		inputHandler=new StoredCapability<>(new RangedCheckedInputWrapper(inventory,0,3,(i,r)->ChemicalRecipe.isValidInput(level.get(),r)));
+		inputHandler=new RangedCheckedInputWrapper(inventory,0,3,(i,r)->ChemicalRecipe.isValidInput(level.get(),r));
 		outputHandler=new RangedOutputWrapper(inventory,3,6);
 		//fluidio definition
 		int num=0;
 		CapabilityBuilder<IFluidHandler> fluid=capabilities.fluidHandler();
 		for(CapabilityFacing i:ChemicalLogic.out) {
 			ArrayFluidHandler todrain=ArrayFluidHandler.drainOnly(inTank[num++], capabilitySource.getMarkDirtyRunnable());
-			outputFluidCap.add(i.getFacingCapability(capabilitySource, ForgeCapabilities.FLUID_HANDLER));
+			outputFluidCap.add(i.getFacingCapability(capabilitySource, Capabilities.FluidHandler.BLOCK));
 			fluid.addCapability(i, todrain);
 		}
 		num=0;
@@ -90,46 +90,46 @@ public class ChemicalState implements IMultiblockState {
 		for(CapabilityFacing i:ChemicalLogic.itemin) {
 			item.addCapability(i, inputHandler);
 		}*/
-		outputItemCap=ChemicalLogic.itemout.getFacingCapability(capabilitySource, ForgeCapabilities.ITEM_HANDLER);
+		outputItemCap=ChemicalLogic.itemout.getFacingCapability(capabilitySource, Capabilities.ItemHandler.BLOCK);
 		//energyio definition
 		capabilities.energy().addCapability(ChemicalLogic.energy, energyStorage);
 		
 	}
 
 	@Override
-	public void writeSaveNBT(CompoundTag nbt) {
-		nbt.put("inv", inventory.serializeNBT());
+	public void writeSaveNBT(CompoundTag nbt, HolderLookup.Provider provider) {
+		nbt.put("inv", inventory.serializeNBT(provider));
 		recipe.writeCustomNBT(nbt, false);
-		nbt.put("energy", energyStorage.serializeNBT());
+		nbt.putInt("energy", energyStorage.getEnergyStored());
 		ListTag tanks=new ListTag();
 		for(FluidTank tank:inTank) {
-			tanks.add(tank.writeToNBT(new CompoundTag()));
+			tanks.add(tank.writeToNBT(provider, new CompoundTag()));
 		}
 		for(FluidTank tank:outTank) {
-			tanks.add(tank.writeToNBT(new CompoundTag()));
+			tanks.add(tank.writeToNBT(provider, new CompoundTag()));
 		}
 		nbt.put("tanks", tanks);
 	}
 
 	@Override
-	public void readSaveNBT(CompoundTag nbt) {
-        inventory.deserializeNBT(nbt.getCompound("inv"));
+	public void readSaveNBT(CompoundTag nbt, HolderLookup.Provider provider) {
+        inventory.deserializeNBT(provider, nbt.getCompound("inv"));
         recipe.readCustomNBT(nbt, false);
-        energyStorage.deserializeNBT(nbt.get("energy"));
+        energyStorage.setStoredEnergy(nbt.getInt("energy"));
         ListTag tanks=nbt.getList("tanks", Tag.TAG_COMPOUND);
         for(int i=0;i<3;i++)
-        	inTank[i].readFromNBT(tanks.getCompound(i));
+        	inTank[i].readFromNBT(provider, tanks.getCompound(i));
         for(int i=0;i<3;i++)
-        	outTank[i].readFromNBT(tanks.getCompound(i+3));
+        	outTank[i].readFromNBT(provider, tanks.getCompound(i+3));
 	}
 
 	@Override
-	public void writeSyncNBT(CompoundTag nbt) {
+	public void writeSyncNBT(CompoundTag nbt, HolderLookup.Provider provider) {
 		nbt.putBoolean("active", active);
 	}
 
 	@Override
-	public void readSyncNBT(CompoundTag nbt) {
+	public void readSyncNBT(CompoundTag nbt, HolderLookup.Provider provider) {
 		active=nbt.getBoolean("active");
 	}
 

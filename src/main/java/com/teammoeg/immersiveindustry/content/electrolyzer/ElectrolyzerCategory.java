@@ -24,7 +24,7 @@ import com.teammoeg.immersiveindustry.IIContent;
 import com.teammoeg.immersiveindustry.IIMain;
 import com.teammoeg.immersiveindustry.util.LangUtil;
 
-import mezz.jei.api.forge.ForgeTypes;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -44,16 +44,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public class ElectrolyzerCategory implements IRecipeCategory<ElectrolyzerRecipe> {
-    public static RecipeType<ElectrolyzerRecipe> UID = new RecipeType<>(new ResourceLocation(IIMain.MODID, "electrolyzer"),ElectrolyzerRecipe.class);
+    public static RecipeType<ElectrolyzerRecipe> UID = new RecipeType<>(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "electrolyzer"),ElectrolyzerRecipe.class);
     private IDrawable BACKGROUND;
     private IDrawable ICON;
     private IDrawable TANK;
     private IDrawableAnimated ARROW;
     public ElectrolyzerCategory(IGuiHelper guiHelper) {
         this.ICON = guiHelper.createDrawableItemStack(new ItemStack(IIContent.IIBlocks.electrolyzer.get()));
-        this.BACKGROUND = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/electrolyzer.png"), 17, 14, 115, 60);
-        this.TANK = guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/electrolyzer.png"),197,1,18, 48);
-        IDrawableStatic arrow=guiHelper.createDrawable(new ResourceLocation(IIMain.MODID, "textures/gui/electrolyzer.png"),178,57,21,15);
+        this.BACKGROUND = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "textures/gui/electrolyzer.png"), 17, 14, 115, 60);
+        this.TANK = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "textures/gui/electrolyzer.png"),197,1,18, 48);
+        IDrawableStatic arrow=guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(IIMain.MODID, "textures/gui/electrolyzer.png"),178,57,21,15);
         ARROW=guiHelper.createAnimatedDrawable(arrow,20,StartDirection.LEFT,false);
     }
 
@@ -74,7 +74,7 @@ public class ElectrolyzerCategory implements IRecipeCategory<ElectrolyzerRecipe>
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 90, 20).addItemStack(RecipeUtil.getResultItem(recipe));
 		
 		if(recipe.input_fluid!=null)
-			fluidSlot.addIngredients(ForgeTypes.FLUID_STACK, recipe.input_fluid.getMatchingFluidStacks());
+			fluidSlot.addIngredients(NeoForgeTypes.FLUID_STACK, java.util.Arrays.asList(recipe.input_fluid.getFluids()));
 
 		
 	}

@@ -18,6 +18,7 @@
 
 package com.teammoeg.immersiveindustry.content.chemical_reactor;
 
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import com.teammoeg.immersiveindustry.IIContent.IIRecipes;
 import com.teammoeg.immersiveindustry.util.FluidRecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.FluidRecipeSimulator;
@@ -26,37 +27,39 @@ import com.teammoeg.immersiveindustry.util.RecipeProcessResult;
 import com.teammoeg.immersiveindustry.util.RecipeSimulateHelper;
 
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
-import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
+import blusunrize.immersiveengineering.api.crafting.TagOutput;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 
 public class ChemicalRecipe extends IESerializableRecipe {
-    public static RegistryObject<IERecipeSerializer<ChemicalRecipe>> SERIALIZER;
+    public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<ChemicalRecipe>> SERIALIZER;
     // Initialized by reload listener
     public static CachedRecipeList<ChemicalRecipe> recipeList = new CachedRecipeList<>(IIRecipes.CHEMICAL);
     public final IngredientWithSize inputs[];
-    public final FluidTagInput input_fluids[];
+    public final SizedFluidIngredient input_fluids[];
     public final ItemStack outputs[];
     public final FluidStack output_fluids[];
     public final int time;
     public final int tickEnergy;
-    public ChemicalRecipe(ResourceLocation id, ItemStack[] output2, FluidStack[] output_fluid, IngredientWithSize[] input, FluidTagInput[] input_fluids, int time,int tickEnergy) {
-        super(Lazy.of(()->ItemStack.EMPTY), IIRecipes.CHEMICAL, id);
+    public ChemicalRecipe(ItemStack[] output2, FluidStack[] output_fluid, IngredientWithSize[] input, SizedFluidIngredient[] input_fluids, int time,int tickEnergy) {
+        super(new TagOutput(ItemStack.EMPTY), IIRecipes.CHEMICAL);
         this.outputs = output2;
         this.output_fluids = output_fluid;
         this.inputs = input;
@@ -73,7 +76,7 @@ public class ChemicalRecipe extends IESerializableRecipe {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess ra) {
+    public ItemStack getResultItem(HolderLookup.Provider ra) {
         return ItemStack.EMPTY;
     }
 
@@ -81,8 +84,8 @@ public class ChemicalRecipe extends IESerializableRecipe {
 
 
     public static boolean isValidInput(Level l,ItemStack stack) {
-        for (ChemicalRecipe recipe : recipeList.getRecipes(l))
-            for (IngredientWithSize is : recipe.inputs) {
+        for (RecipeHolder<ChemicalRecipe> holder : recipeList.getRecipes(l))
+            for (IngredientWithSize is : holder.value().inputs) {
                 if (is.testIgnoringSize(stack))
                     return true;
             }
@@ -96,8 +99,8 @@ public class ChemicalRecipe extends IESerializableRecipe {
     }
 
     public static RecipeProcessResult<ChemicalRecipe> findRecipe(Level l,IItemHandler handler,IFluidHandler tanks) {
-    	for (ChemicalRecipe recipe : recipeList.getRecipes(l)) {
-    		RecipeProcessResult<ChemicalRecipe> data=test(recipe,handler,tanks);
+    	for (RecipeHolder<ChemicalRecipe> holder : recipeList.getRecipes(l)) {
+    		RecipeProcessResult<ChemicalRecipe> data=test(holder.value(),handler,tanks);
     		if(data!=null)
     			return data;
     	}

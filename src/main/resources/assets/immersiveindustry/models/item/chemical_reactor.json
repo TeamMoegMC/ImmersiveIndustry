@@ -1,6 +1,6 @@
 {
   "flip_v": true,
-  "loader": "forge:obj",
+  "loader": "neoforge:obj",
   "model": "immersiveindustry:models/block/multiblocks/chemical_reactor.obj",
   "display": {
     "firstperson_lefthand": {

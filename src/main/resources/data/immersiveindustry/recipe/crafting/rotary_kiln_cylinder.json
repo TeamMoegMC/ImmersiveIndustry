@@ -6,19 +6,19 @@
       "item": "immersiveindustry:refractory_kiln_brick"
     },
     "b": {
-      "tag": "forge:plates/steel"
+      "tag": "c:plates/steel"
     },
     "c": {
-      "item": "immersiveengineering:wirecoil_copper"
+      "item": "minecraft:brick"
     }
   },
   "pattern": [
     "aaa",
-    "aca",
+    "ccc",
     "bbb"
   ],
   "result": {
-    "item": "immersiveindustry:car_kiln_brick",
+    "id": "immersiveindustry:rotary_kiln_cylinder",
     "count": 2
   },
   "show_notification": true

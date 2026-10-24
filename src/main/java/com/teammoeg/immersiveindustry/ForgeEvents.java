@@ -44,13 +44,14 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.LogicalSide;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 
-@Mod.EventBusSubscriber(modid = IIMain.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = IIMain.MODID)
 public class ForgeEvents {
 //
 //    @SubscribeEvent
@@ -87,21 +88,25 @@ public class ForgeEvents {
                 formMultiblockOld(level, pos, multiblockReg);
             }
             else {
-                var placePos = pos.above(multiblock.getMasterFromOriginOffset().getY());
+                // One shared anchor for both the hologram and the actual placement, so what the
+                // player sees is exactly what gets built: the structure's base sits on top of
+                // the clicked block, shifted so a rotated structure still occupies the space
+                // the preview box was drawn around.
                 var rot = DirectionUtils.getRotationBetweenFacings(Direction.NORTH, event.getEntity().getDirection());
-                ((MixinTemplateMultiblockAccess) multiblock).callForm(level, placePos, rot, Mirror.NONE, event.getEntity().getDirection().getOpposite());
+                ((MixinTemplateMultiblockAccess) multiblock).callForm(level,
+                        getPlacementOrigin(pos, event.getEntity().getDirection()),
+                        rot, Mirror.NONE, event.getEntity().getDirection().getOpposite());
             }
        
         }
     }
     
     @SubscribeEvent
-    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if(event.side == LogicalSide.SERVER) return;
-        if(event.phase == TickEvent.Phase.END) return;
-        var itemInOffHand = event.player.getOffhandItem();
-        var itemInMainHand = event.player.getMainHandItem();
-        if(!updateMultiblockInHand(event.player, itemInMainHand) && !updateMultiblockInHand(event.player, itemInOffHand)) {
+    public static void onPlayerTick(PlayerTickEvent.Pre event) {
+        if(!event.getEntity().level().isClientSide) return;
+        var itemInOffHand = event.getEntity().getOffhandItem();
+        var itemInMainHand = event.getEntity().getMainHandItem();
+        if(!updateMultiblockInHand(event.getEntity(), itemInMainHand) && !updateMultiblockInHand(event.getEntity(), itemInOffHand)) {
             multiblockCache = null;
             rotCache = null;
             multiblockBound = null;
@@ -123,7 +128,27 @@ public class ForgeEvents {
     }
     
     public static AABB getStructureOutBounds(Level level, IETemplateMultiblock multiblock, Rotation rot, Mirror mirror) {
-        return new AABB(BlockPos.ZERO, TemplateMultiblock.getAbsoluteOffset(new BlockPos(multiblock.getSize(level)),mirror,rot));
+        return new AABB(net.minecraft.world.phys.Vec3.atLowerCornerOf(BlockPos.ZERO), net.minecraft.world.phys.Vec3.atLowerCornerOf(TemplateMultiblock.getAbsoluteOffset(new BlockPos(multiblock.getSize(level)),mirror,rot)));
+    }
+
+    /**
+     * Where a directly placed multiblock should start.
+     *
+     * <p>Two things matter: the base sits on top of the clicked block (so the structure is not
+     * buried in it), and a rotated structure grows towards the other side, so the origin has to
+     * move as well. The client hologram uses this same method, which keeps the preview box and
+     * the finished machine in exactly the same space.
+     */
+    public static BlockPos getPlacementOrigin(BlockPos clicked, Direction facing) {
+        BlockPos pos = clicked.above();
+        switch (facing) {
+            case EAST -> pos = pos.east();
+            case WEST -> pos = pos.south();
+            case SOUTH -> pos = pos.east().south();
+            default -> {
+            }
+        }
+        return pos;
     }
     
     public static void formMultiblockOld(Level level, BlockPos pos, MultiblockRegistration<?> multiblockReg) {
@@ -139,7 +164,7 @@ public class ForgeEvents {
                 if (aBlock.nbt() != null) {
                     BlockEntity be = level.getBlockEntity(pos_);
                     if (be != null) {
-                        be.load(aBlock.nbt());
+                        be.loadWithComponents(aBlock.nbt(), level.registryAccess());
                         be.setChanged();
                     }
                 }
